@@ -11,7 +11,7 @@ description: >
   portais circulares que permitem viagem a outros planetas.
 # Build settings
 
-remote_theme: minima
+remote_theme: jekyll/minima
 
 plugins:
   - jekyll-remote-theme
