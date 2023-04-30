@@ -1,16 +1,18 @@
-title: Escrevendo posts quando o trabalho deixa
+title: Vndmtrx
 author:
   name: Eduardo N.S.R.
   email: vndmtrx@duck.com
 
 # The `>` after `description:` means to ignore line-breaks until next key.
 # If you want to omit the line-break after the end of text, use `>-` instead.
+#
 description: >
   Um blog com a proposta de falar sobre vários assuntos, desde desenvolvimento,
   passando por infra, devops, hacktivismo e até sobre conspirações alienígenas e
   portais circulares que permitem viagem a outros planetas.
-# Build settings
 
+# Build settings
+#
 remote_theme: jekyll/minima
 
 plugins:
@@ -19,15 +21,10 @@ plugins:
   - jekyll-seo-tag
 
 # Theme-specific settings
-
+#
 minima:
-  # Minima date format.
-  # Refer to https://shopify.github.io/liquid/filters/date/ if you want to customize this.
-  #
-  # date_format: "%b %-d, %Y"
+  skin: auto
 
-  # Generate social links in footer.
-  #
   social_links:
     - { platform: github,         user_url: "https://github.com/vndmtrx" }
     - { platform: mastodon,       user_url: "https://bolha.us/@dudu" }
@@ -41,4 +38,4 @@ header_pages:
 
 # Set to `true` to show excerpts on the homepage.
 #
-# show_excerpts: false
+show_excerpts: true
