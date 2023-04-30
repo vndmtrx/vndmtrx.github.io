@@ -14,6 +14,7 @@ description: >
 remote_theme: minima
 
 plugins:
+  - jekyll-remote-theme
   - jekyll-feed
   - jekyll-seo-tag
 
