@@ -13,7 +13,7 @@ description: >
 
 # Build settings
 #
-remote_theme: pages-themes/cayman
+remote_theme: jekyll/minima
 
 plugins:
   - jekyll-remote-theme
