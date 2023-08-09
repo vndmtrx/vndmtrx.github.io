@@ -13,7 +13,7 @@ Há alguns anos eu estava aqui a pensar sobre o que é desenvolvimento de softwa
 > Alistair Cockburn diz que é como um jogo (2002).
 > Eric Raymond diz que é como um bazar (2000).
 > Paul Heckel diz que é como filmar "Branca de Neve e os Sete Anões" (1994).
-> Fred Brooks diz que é como a agricultura, caçar lobisomens ou afogar com dinossauros em um poço de piche (famoso pela frase "quanto mais programadores há em um projeto, mais ele demorará") (1995).
+> Fred Brooks diz que é como a agricultura, caçar lobisomens ou se afogar com dinossauros em um poço de piche (famoso pela frase "quanto mais programadores há em um projeto, mais ele demorará") (1995).
 
 Quais são as melhores metáforas?
 
