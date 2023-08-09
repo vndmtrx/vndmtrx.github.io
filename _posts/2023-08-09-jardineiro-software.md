@@ -17,9 +17,9 @@ Há alguns anos eu estava aqui a pensar sobre o que é desenvolvimento de softwa
 
 Quais são as melhores metáforas?
 
-Na minha opinião, a melhor de todas é a de que a de que programação é como cuidar de um Jardim, que nem diz Andy Hunt and Dave Thomas. Este texto vêm abordar justamente esta idéia. Espero que vocês gostem...
+Na minha opinião, a melhor de todas é a de que a de que programação é como cuidar de um Jardim, que nem diz Andy Hunt e Dave Thomas. Este texto vêm abordar justamente esta idéia. Espero que vocês gostem...
 
-Você NÃO é um Engenheiro de Software. Você não constrói arranha-céus. Você não constrói pontes.
+### Você NÃO é um Engenheiro de Software. Você não constrói arranha-céus. Você não constrói pontes.
 
 Você planta jardins.
 
