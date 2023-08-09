@@ -6,14 +6,14 @@ tags: Programação, Análise de Sistemas
 
 Há alguns anos eu estava aqui a pensar sobre o que é desenvolvimento de software na verdade. Há uma quantidade enorme de metáforas à respeito disso:
 
-> David Gries diz que escrever software é uma ciência (1981).
-> Donald Knuth diz que é uma arte (1998).
-> Watts Humphrey diz que é um processo (1989).
-> P. J. Plauger e Kent Beck dizem que é como dirigir um carro, no entanto eles chegam à conclusões opostas (Plauger 1993, Beck 2000).
-> Alistair Cockburn diz que é como um jogo (2002).
-> Eric Raymond diz que é como um bazar (2000).
-> Paul Heckel diz que é como filmar "Branca de Neve e os Sete Anões" (1994).
-> Fred Brooks diz que é como a agricultura, caçar lobisomens ou se afogar com dinossauros em um poço de piche (famoso pela frase "quanto mais programadores há em um projeto, mais ele demorará") (1995).
+- David Gries diz que escrever software é uma ciência (1981).
+- Donald Knuth diz que é uma arte (1998).
+- Watts Humphrey diz que é um processo (1989).
+- P. J. Plauger e Kent Beck dizem que é como dirigir um carro, no entanto eles chegam à conclusões opostas (Plauger 1993, Beck 2000).
+- Alistair Cockburn diz que é como um jogo (2002).
+- Eric Raymond diz que é como um bazar (2000).
+- Paul Heckel diz que é como filmar "Branca de Neve e os Sete Anões" (1994).
+- Fred Brooks diz que é como a agricultura, caçar lobisomens ou se afogar com dinossauros em um poço de piche (famoso pela frase "quanto mais programadores há em um projeto, mais ele demorará") (1995).
 
 Quais são as melhores metáforas?
 
