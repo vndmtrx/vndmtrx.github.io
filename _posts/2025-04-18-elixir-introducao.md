@@ -16,15 +16,15 @@ Agora, com Elixir, sinto um misto desses mundos: a elegância da sintaxe, combin
 
 ## Entendendo o Elixir e sua proposta 🔍
 
-💡 Antes de começarmos a codificar, vale uma breve introdução à linguagem Elixir. Elixir é uma linguagem de programação funcional, concorrente e tolerante a falhas, construída sobre a máquina virtual do Erlang (BEAM). Essa base permite que aplicações Elixir herdem características como escalabilidade massiva, alta disponibilidade e comunicação entre processos leves, o que torna a linguagem uma escolha excelente para sistemas distribuídos, aplicações em tempo real e arquiteturas resilientes [1].
+💡 Antes de começarmos a codificar, vale uma breve introdução à linguagem Elixir. Elixir é uma linguagem de programação funcional, concorrente e tolerante a falhas, construída sobre a máquina virtual do Erlang (BEAM). Essa base permite que aplicações Elixir herdem características como escalabilidade massiva, alta disponibilidade e comunicação entre processos leves, o que torna a linguagem uma escolha excelente para sistemas distribuídos, aplicações em tempo real e arquiteturas resilientes.
 
-Por ser funcional, Elixir adota conceitos como imutabilidade de dados e funções puras. Isso favorece a previsibilidade do código e simplifica testes e paralelismo. Além disso, Elixir possui uma sintaxe moderna e acessível, e integra ferramentas como o `mix` (para gerenciamento de projetos) e o `ExUnit` (para testes automatizados), o que torna o ecossistema produtivo e acolhedor para desenvolvedores iniciantes e experientes [2].
+Por ser funcional, Elixir adota conceitos como imutabilidade de dados e funções puras. Isso favorece a previsibilidade do código e simplifica testes e paralelismo. Além disso, Elixir possui uma sintaxe moderna e acessível, e integra ferramentas como o `mix` (para gerenciamento de projetos) e o `ExUnit` (para testes automatizados), o que torna o ecossistema produtivo e acolhedor para desenvolvedores iniciantes e experientes.
 
 Neste primeiro módulo, configurei meu ambiente com ASDF, criei um projeto simples com `mix` e implementei uma função básica acompanhada de testes automatizados com `ExUnit`. Tudo isso dentro de uma estrutura clara e replicável — e todos os exemplos deste módulo estão disponíveis no item [01-saudacao](https://github.com/vndmtrx/estudo_elixir/tree/main/01-saudacao), e os demais estarão organizados no [repositório principal do projeto](https://github.com/vndmtrx/estudo_elixir) 🧰
 
 ## Instalação do ASDF e das dependências 🛠️
 
-> ⚠️ **Aviso**: este guia de instalação foi testado no Debian 12 (Bookworm). Os comandos e pacotes listados podem variar ligeiramente dependendo da sua distribuição Linux ou sistema operacional. Usuários de Arch, Fedora, macOS ou Windows podem precisar adaptar os comandos conforme seus respectivos gerenciadores de pacotes ou ambientes. A documentação oficial do ASDF fornece instruções específicas para cada sistema [5].
+> ⚠️ **Aviso**: este guia de instalação foi testado no Debian 12 (Bookworm). Os comandos e pacotes listados podem variar ligeiramente dependendo da sua distribuição Linux ou sistema operacional. Usuários de Arch, Fedora, macOS ou Windows podem precisar adaptar os comandos conforme seus respectivos gerenciadores de pacotes ou ambientes. A documentação oficial do ASDF fornece instruções específicas para cada sistema.
 
 ### Requisitos de sistema
 Antes de iniciar, é necessário instalar bibliotecas de desenvolvimento que permitirão compilar e utilizar tanto Erlang quanto Elixir. Se estiver usando um sistema baseado em Debian (como Ubuntu), execute:
@@ -181,15 +181,15 @@ Para executar os testes, basta rodar:
 mix test
 ```
 
-## Considerações 📚
+## Considerações Finais 📚
 
 Este primeiro módulo dá uma base mínima, mas essencial, para começar com Elixir. Dá para ter uma noção do poder da modularização, como a linguagem valoriza a clareza das funções, e como o sistema de testes é integrado desde o início. Nos próximos posts, vou expandir esse projeto e explorar novos conceitos, mantendo sempre o foco na prática.
 
-## Referências 🔗
+### Referências 🔗
 
-- [1]: [Wikipedia — Elixir (linguagem de programação)](https://pt.wikipedia.org/wiki/Elixir_(linguagem_de_programa%C3%A7%C3%A3o))
-- [2]: [Documentação oficial do Elixir](https://elixir-lang.org/)
-- [3]: [Guia do Mix (oficial)](https://hexdocs.pm/mix/Mix.html)
-- [4]: [Guia do ExUnit (oficial)](https://hexdocs.pm/ex_unit/ExUnit.html)
-- [5]: [Documentação do ASDF](https://asdf-vm.com/)
+- \[1\]: [Wikipedia — Elixir (linguagem de programação)](https://pt.wikipedia.org/wiki/Elixir_(linguagem_de_programa%C3%A7%C3%A3o))
+- \[2\]: [Documentação oficial do Elixir](https://elixir-lang.org/)
+- \[3\]: [Guia do Mix (oficial)](https://hexdocs.pm/mix/Mix.html)
+- \[4\]: [Guia do ExUnit (oficial)](https://hexdocs.pm/ex_unit/ExUnit.html)
+- \[5\]: [Documentação do ASDF](https://asdf-vm.com/)
 

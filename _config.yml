@@ -23,11 +23,17 @@ plugins:
 # Theme-specific settings
 #
 minima:
-  skin: auto
+  skin: classic
+
+  show_excerpts: true
 
   social_links:
-    - { platform: github,         user_url: "https://github.com/vndmtrx" }
-    - { platform: mastodon,       user_url: "https://tech.lgbt/@vndmtrx" }
+    - title: Perfil no Github
+      icon: github
+      url: "https://github.com/vndmtrx"
+    - title: Mastodon
+      icon: mastodon
+      url: "https://tech.lgbt/@vndmtrx"
 
 
 # If you want to link only specific pages in your header, uncomment this and add the path to the pages in
