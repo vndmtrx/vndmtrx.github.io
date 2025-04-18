@@ -1,10 +1,8 @@
 ---
 layout: page
-title: About
+title: "💫 Sobre euzinhe"
 permalink: /about/
 ---
-
-# 💫 Sobre euzinhe
 🐮 *A Spherical Cow in a Vacuum*
 
 - 🖥️ Devops hardcore e militante open-source, fechado com hacktivismo.
