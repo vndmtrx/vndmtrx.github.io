@@ -27,7 +27,7 @@ minima:
 
   social_links:
     - { platform: github,         user_url: "https://github.com/vndmtrx" }
-    - { platform: mastodon,       user_url: "https://bolha.us/@dudu" }
+    - { platform: mastodon,       user_url: "https://tech.lgbt/@vndmtrx" }
 
 
 # If you want to link only specific pages in your header, uncomment this and add the path to the pages in
