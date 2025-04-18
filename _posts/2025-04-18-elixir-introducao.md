@@ -1,5 +1,5 @@
 ---
-title: Aprendendo Elixir: Introdução
+title: Aprendendo Elixir - Introdução
 date: 2025-04-18 15:09:00
 tags: Programação, Programação Funcional, Elixir, Mix, ExUnit
 ---
