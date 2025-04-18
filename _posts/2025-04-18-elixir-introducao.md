@@ -4,17 +4,13 @@ date: 2025-04-18 15:09:00
 tags: Programação, Programação Funcional, Elixir, Mix, ExUnit
 ---
 
-🚀 Depois de quase uma década sem escrever posts, resolvi tentar voltar a escrever aqui, com essa nova série de posts baseada em meus estudos de Elixir. Eu tive alguns blogs em quase 20 anos de internet que vieram e se foram com o passar o tempo. E eu sinto que voltar a escrever é uma boa, mesmo que esse conteúdo provavelmente não vá ser lido, nesses tempos de tik tok e mídias efêmeras, mas né, o mais importante é escrever, ser lido é só um extra. Então vamos lá. Espero que vocês gostem desse conteúdo, assim como eu estou gostando de escrevê-lo.
-
-## Introdução
-
 Este post inaugura uma série intitulada *Aprendendo Elixir*, na qual registro minha jornada de aprendizado com essa linguagem. Minha ideia aqui é descrever meu aprendizado — e escrever sobre isso é uma forma de consolidar esse processo. Ao longo dos próximos módulos, iremos construir uma base sólida em Elixir por meio de projetos práticos, cada um introduzindo novos conceitos e boas práticas da programação funcional. Espero que este conteúdo te ajude tanto quanto está me ajudando.
 
 Sempre tive afinidade com linguagens funcionais. Meu primeiro contato foi ainda nos anos 90, em que usava AutoLisp, no AutoCAD R14. O AutoLisp me criou o interesse para o paradigma funcional de forma inesperada. Mais tarde, usei Python extensivamente, não apenas por sua clareza sintática, mas principalmente pelos recursos funcionais que ele mescla com programação imperativa e orientação a objetos. Também sempre tive bastante apreço por Java: mesmo não sendo funcional, sua estrutura e clareza sempre me pareceram convidativas à manutenção e organização do código.
 
 Agora, com Elixir, sinto um misto desses mundos: a elegância da sintaxe, combinada com o poder do paradigma funcional. Recursos como o operador `|>` (pipe) e o pattern matching são conceitos que eu nunca havia usado diretamente em outras linguagens, e vou abordar cada um deles com calma nos próximos posts 🙂
 
-## Entendendo o Elixir e sua proposta 🔍
+## Entendendo o Elixir e sua proposta
 
 💡 Antes de começarmos a codificar, vale uma breve introdução à linguagem Elixir. Elixir é uma linguagem de programação funcional, concorrente e tolerante a falhas, construída sobre a máquina virtual do Erlang (BEAM). Essa base permite que aplicações Elixir herdem características como escalabilidade massiva, alta disponibilidade e comunicação entre processos leves, o que torna a linguagem uma escolha excelente para sistemas distribuídos, aplicações em tempo real e arquiteturas resilientes.
 
@@ -22,7 +18,7 @@ Por ser funcional, Elixir adota conceitos como imutabilidade de dados e funçõe
 
 Neste primeiro módulo, configurei meu ambiente com ASDF, criei um projeto simples com `mix` e implementei uma função básica acompanhada de testes automatizados com `ExUnit`. Tudo isso dentro de uma estrutura clara e replicável — e todos os exemplos deste módulo estão disponíveis no item [01-saudacao](https://github.com/vndmtrx/estudo_elixir/tree/main/01-saudacao), e os demais estarão organizados no [repositório principal do projeto](https://github.com/vndmtrx/estudo_elixir) 🧰
 
-## Instalação do ASDF e das dependências 🛠️
+## Instalação do ASDF e das dependências
 
 > ⚠️ **Aviso**: este guia de instalação foi testado no Debian 12 (Bookworm). Os comandos e pacotes listados podem variar ligeiramente dependendo da sua distribuição Linux ou sistema operacional. Usuários de Arch, Fedora, macOS ou Windows podem precisar adaptar os comandos conforme seus respectivos gerenciadores de pacotes ou ambientes. A documentação oficial do ASDF fornece instruções específicas para cada sistema.
 
@@ -30,7 +26,8 @@ Neste primeiro módulo, configurei meu ambiente com ASDF, criei um projeto simpl
 Antes de iniciar, é necessário instalar bibliotecas de desenvolvimento que permitirão compilar e utilizar tanto Erlang quanto Elixir. Se estiver usando um sistema baseado em Debian (como Ubuntu), execute:
 
 ```bash
-sudo apt update && sudo apt install -y git curl autoconf build-essential libssl-dev libncurses-dev unzip
+sudo apt update && sudo apt install -y git curl autoconf \
+  build-essential libssl-dev libncurses-dev unzip
 ```
 
 Esses pacotes incluem compiladores, bibliotecas de SSL e ferramentas necessárias para o ASDF e as linguagens que serão instaladas.
@@ -47,7 +44,7 @@ source ~/.bashrc
 
 Esses comandos instalam o ASDF no diretório pessoal e o tornam acessível no terminal ao iniciar novas sessões de shell.
 
-### Instalação dos plugins Erlang e Elixir ⚙️
+### Instalação dos plugins Erlang e Elixir
 
 Agora, adicionamos os plugins necessários e instalamos versões compatíveis:
 
@@ -71,7 +68,7 @@ asdf set elixir 1.18.3-otp-27
 
 Isso garante que, ao entrar no diretório do projeto, o ASDF carregue automaticamente as versões corretas.
 
-## Criação do primeiro projeto Elixir ✨
+## Criação do primeiro projeto Elixir
 
 ```bash
 mix new saudacao
@@ -88,7 +85,7 @@ O comando `mix new` cria a estrutura básica de um projeto Elixir. A pasta gerad
 
 ---
 
-## Implementação da função principal 🧠
+## Implementação da função principal
 
 **Arquivo:** `lib/saudacao.ex`
 
@@ -124,7 +121,7 @@ A função `ola/1` recebe um argumento `nome` e retorna uma string interpolada c
 
 O *guard* `when is_binary(nome)` assegura que a função só será executada se o parâmetro `nome` for uma string, o que evita chamadas incorretas e reforça a expressividade do código.
 
-### Testando no IEx 💡
+### Testando no IEx
 
 Para testar essa função de forma interativa, você pode carregar seu projeto no console do Elixir com o comando:
 
@@ -140,7 +137,7 @@ Saudacao.ola("Dudu")
 
 Isso é excelente para explorar a linguagem, testar funções rapidamente e experimentar variações sem recompilar tudo a cada alteração.
 
-## Criação de testes com ExUnit 🧪
+## Criação de testes com ExUnit
 
 **Arquivo:** `test/saudacao_test.exs`
 
@@ -181,7 +178,7 @@ Para executar os testes, basta rodar:
 mix test
 ```
 
-## Considerações Finais 📚
+## Considerações Finais
 
 Este primeiro módulo dá uma base mínima, mas essencial, para começar com Elixir. Dá para ter uma noção do poder da modularização, como a linguagem valoriza a clareza das funções, e como o sistema de testes é integrado desde o início. Nos próximos posts, vou expandir esse projeto e explorar novos conceitos, mantendo sempre o foco na prática.
 
