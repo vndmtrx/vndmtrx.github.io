@@ -83,8 +83,6 @@ O comando `mix new` cria a estrutura básica de um projeto Elixir. A pasta gerad
 - `test/saudacao_test.exs`: arquivo de testes automatizados com `ExUnit`;
 - `mix.exs`: arquivo de configuração do projeto, contendo nome, versão, dependências, etc.
 
----
-
 ## Implementação da função principal
 
 **Arquivo:** `lib/saudacao.ex`
