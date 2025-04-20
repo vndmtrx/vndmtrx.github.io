@@ -209,7 +209,13 @@ Para rodar nosso projeto de forma *standalone*, temos três formas diferentes de
 
 ### Usando mix run
 
-> ⚠️ **Aviso**: Apesar de existir a opção de fazermos a execução usando `mix run`, isso pode causar problemas inesperados com outras partes da execução do projeto (como testes, compilação ou Servers), pois o `mix run` por padrão executa um script, ou, quando você define uma application com `mod: {Main, []}`, em que ele chama `start/2` e se a função `start/2` não estiver bem configurada, podemos gerar problemas de difícil depuração, por isso não iremos abordar esse método aqui. Mas se quiser verificar, você pode checar na documentação do [start/2 no módulo Application](https://hexdocs.pm/elixir/Application.html#c:start/2), na documentação do Elixir.
+Não têm muito o que falar, só mostrar:
+
+```bash
+mix run -e 'Main.main'
+```
+
+> ⚠️ **Aviso**: Apesar de existir a opção de fazermos a execução usando `mix run` sem parâmetros, isso pode causar problemas inesperados com outras partes da execução do projeto (como testes, compilação ou Servers), pois o `mix run` por padrão executa um script, ou, quando você define uma application com `mod: {Main, []}`, em que ele chama `start/2` e se a função `start/2` não estiver bem configurada, podemos gerar problemas de difícil depuração, por isso não iremos abordar esse método aqui. Mas se quiser verificar, você pode checar na documentação do [start/2 no módulo Application](https://hexdocs.pm/elixir/Application.html#c:start/2), na documentação do Elixir.
 
 ### Usando Aliases
 
