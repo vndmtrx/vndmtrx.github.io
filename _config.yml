@@ -25,6 +25,7 @@ plugins:
 minima:
   skin: classic
 
+  permalink: /posts/:title/
   show_excerpts: true
 
   social_links:
