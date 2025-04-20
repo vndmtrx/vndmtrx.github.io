@@ -183,9 +183,9 @@ Este primeiro módulo dá uma base mínima, mas essencial, para começar com Eli
 
 ### Referências 🔗
 
-- \[1\]: [Wikipedia — Elixir (linguagem de programação)](https://pt.wikipedia.org/wiki/Elixir_(linguagem_de_programa%C3%A7%C3%A3o))
-- \[2\]: [Documentação oficial do Elixir](https://elixir-lang.org/)
-- \[3\]: [Guia do Mix (oficial)](https://hexdocs.pm/mix/Mix.html)
-- \[4\]: [Guia do ExUnit (oficial)](https://hexdocs.pm/ex_unit/ExUnit.html)
-- \[5\]: [Documentação do ASDF](https://asdf-vm.com/)
+- [Wikipedia — Elixir (linguagem de programação)](https://pt.wikipedia.org/wiki/Elixir_(linguagem_de_programa%C3%A7%C3%A3o))
+- [Documentação oficial do Elixir](https://elixir-lang.org/)
+- [Guia do Mix (oficial)](https://hexdocs.pm/mix/Mix.html)
+- [Guia do ExUnit (oficial)](https://hexdocs.pm/ex_unit/ExUnit.html)
+- [Documentação do ASDF](https://asdf-vm.com/)
 
