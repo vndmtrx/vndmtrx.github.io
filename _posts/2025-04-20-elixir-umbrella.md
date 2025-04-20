@@ -144,9 +144,9 @@ end
 
 ## Módulo integrador: `Main`
 
-Para usar nossos módulos, iremos implementar uma classe para chamarmos a função direto do terminal. Não é para ser algo bonito, é só para mostrar como podemos rodar nosso projeto do terminal.
+Para usar nossos módulos, iremos implementar um módulo para chamarmos direto do terminal. Pela simplicidade, vamos implementar uma simples aplicação de terminal com captura de input.
 
-Este módulo serve como ponto de entrada para o sistema.
+Não é para ser algo bonito, é só para mostrar como podemos rodar nosso projeto do terminal, mas serve facilmente para entender como funciona o ponto de entrada para nossa aplicação.
 
 No `mix.exs` do `main`, declaramos dependências para os outros dois módulos:
 
@@ -160,6 +160,8 @@ defp deps do
   ]
 end
 ```
+
+> 💡 Em projetos do tipo *umbrella*, cada app é isolado em sua própria pasta, mas todos compartilham o mesmo ambiente de execução, o que permite que módulos definidos em um app sejam utilizados em outro. Para isso, basta declarar a dependência no `mix.exs` do app que irá consumir (com `{:nome_do_app, in_umbrella: true}`), como fizemos em `main`, e os módulos ficam disponíveis automaticamente para uso, sem necessidade de configuração adicional. Isso torna a comunicação entre os apps simples e direta, mantendo a modularização do projeto.
 
 O código interativo:
 
