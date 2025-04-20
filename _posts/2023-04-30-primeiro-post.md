@@ -1,6 +1,7 @@
 ---
-layout: post
 title: "Recomeçando tudo de novo de algum lugar"
+date: 2023-04-30 11:17:00
+permalink: /posts/primeiro-post/
 categories: misc
 ---
 

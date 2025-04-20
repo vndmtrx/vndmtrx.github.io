@@ -25,7 +25,6 @@ plugins:
 minima:
   skin: classic
 
-  permalink: /posts/:title/
   show_excerpts: true
 
   social_links:
@@ -43,6 +42,5 @@ minima:
 header_pages:
   - about.md
 
-# Set to `true` to show excerpts on the homepage.
-#
+permalink: /posts/:title/
 show_excerpts: true
