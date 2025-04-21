@@ -9,7 +9,7 @@ Neste segundo post da série *Aprendendo Elixir*, vamos explorar como organizar 
 
 Os exemplos desse post estão em [02-umbrella](https://github.com/vndmtrx/estudo_elixir/tree/main/02-umbrella), e os demais estarão organizados no [repositório principal do projeto](https://github.com/vndmtrx/estudo_elixir).
 
-Nosso projeto de exemplo é um **conversor unificado** com três módulos:
+Nosso projeto de exemplo é um **conversor unificado** com três apps:
 
 - `conversor_temperatura` – conversão entre Celsius e Fahrenheit
 - `conversor_distancia` – conversão entre metros e pés
@@ -22,9 +22,9 @@ Projetos Guarda-Chuva são ideais quando queremos:
 - **Modularizar funcionalidades** de forma clara e reaproveitável
 - **Separar domínios** de forma independente (ex: API, banco, workers)
 - Facilitar **testes e manutenção** em projetos maiores
-- Gerenciar **dependências locais** entre módulos sem necessidade de publicar pacotes
+- Gerenciar **dependências locais** entre apps sem necessidade de publicar pacotes
 
-Cada módulo tem seu próprio ciclo de vida e testes, mas todos podem ser carregados e orquestrados a partir do projeto raiz. O Elixir lida muito bem com esse modelo graças à sua estrutura de aplicações OTP, onde cada subprojeto pode ter seu ciclo de vida próprio.
+Cada app tem seu próprio ciclo de vida e testes, mas todos podem ser carregados e orquestrados a partir do projeto raiz. O Elixir lida muito bem com esse modelo graças à sua estrutura de aplicações OTP, onde cada subprojeto pode ter seu ciclo de vida próprio.
 
 ## Criando o projeto guarda-chuva
 
@@ -78,11 +78,11 @@ conversor
 
 O arquivo `mix.exs` da raiz define que o projeto é do tipo umbrella por conta da opção `apps_path: "apps"`, fazendo a centralização da orquestração do projeto.
 
-## Implementando os módulos
+## Implementando os apps
 
 ### `Conversor.Distancia`
 
-Este módulo de exemplo lida com conversões entre metros e pés.
+Este app de exemplo lida com conversões entre metros e pés.
 
 **apps/conversor_distancia/lib/conversor_distancia.ex:**
 
@@ -112,7 +112,7 @@ end
 
 ### `Conversor.Temperatura`
 
-Este módulo de exemplo trata de conversão entre escalas de temperatura:
+Este app de exemplo trata de conversão entre escalas de temperatura:
 
 **apps/conversor_temperatura/lib/conversor_temperatura.ex:**
 
@@ -140,15 +140,15 @@ defmodule Conversor.Temperatura do
 end
 ```
 
-> 💡 Uma coisa interessante sobre módulos no Elixir é que eles costumam usar nomes com pontos (`.`) para formar uma estrutura mais organizada, como `Conversor.Temperatura`. Isso ajuda a deixar o código mais legível e bem dividido, mostrando claramente a que parte do sistema cada módulo pertence. É uma convenção comum na linguagem, que facilita entender a função de cada módulo só pelo nome, além de evitar confusão com outros módulos parecidos.
+> 💡 Uma coisa interessante sobre módulos no Elixir é que eles costumam usar nomes com namespaces para formar uma estrutura mais organizada, como `Conversor.Temperatura`. Isso ajuda a deixar o código mais legível e bem dividido, além de permitir uma organização estrutural, mostrando claramente a que parte do sistema cada módulo pertence. É uma convenção comum na linguagem, que facilita entender a função de cada módulo só pelo nome, além de evitar confusão com outros módulos parecidos.
 
-## Módulo integrador: `Main`
+## App integrador: `Main`
 
-Para usar nossos módulos, iremos implementar um módulo para chamarmos direto do terminal. Pela simplicidade, vamos implementar uma simples aplicação de terminal com captura de input.
+Para usar nossos apps, iremos implementar um app principal para chamarmos direto do terminal. Pela simplicidade, vamos implementar uma simples aplicação de terminal com captura de input.
 
 Não é para ser algo bonito, é só para mostrar como podemos rodar nosso projeto do terminal, mas serve facilmente para entender como funciona o ponto de entrada para nossa aplicação.
 
-No `mix.exs` do `main`, declaramos dependências para os outros dois módulos:
+No `mix.exs` do `main`, declaramos dependências para os outros dois apps:
 
 **apps/main/mix.exs:**
 
@@ -245,7 +245,7 @@ mix run -e 'Main.main'
 
 ### Usando Mix.Tasks
 
-Aqui vamos criar um novo arquivo em `apps/main/lib/mix/tasks/conversor_task.ex` com o seguinte conteúdo:
+Aqui vamos criar um novo arquivo em `apps/main/lib/mix/tasks/conversor_task.ex`, que também cria um alias no mix, com o seguinte conteúdo:
 
 **apps/main/lib/mix/tasks/conversor_task.ex:**
 
@@ -379,24 +379,24 @@ Se quiser ver os testes de forma completa:
 mix test --trace
 ```
 
-Ou testar apenas um subprojeto:
+Ou testar apenas um app:
 
 ```bash
 cd apps/conversor_distancia
 mix test
 ```
 
-A separação por módulos facilita testes unitários isolados e estimula boas práticas.
+A separação por apps facilita testes unitários isolados e estimula boas práticas.
 
 ## Conclusão
 
-Neste post, criamos um projeto guard-chuva com três módulos Elixir. Com ele, aprendemos a:
+Neste post, criamos um projeto guard-chuva com três apps Elixir. Com ele, aprendemos a:
 
 - Organizar um sistema modular e escalável
-- Integrar múltiplos módulos com dependências locais
+- Integrar múltiplos apps com dependências locais
 - Utilizar `iex`, `mix test`, `mix compile` e `mix run` de forma produtiva
 
-Além disso, reforçamos a idéia de que **módulos no Elixir** são unidades organizacionais que permitem estruturar bem o código. Ao usar nomes como `Conversor.Temperatura` e `Conversor.Distancia`, deixamos clara a intenção e responsabilidade de cada parte do sistema.
+Além disso, reforçamos a idéia de que **apps no Elixir** são unidades organizacionais que permitem estruturar bem o código. Ao usar nomes como `Conversor.Temperatura` e `Conversor.Distancia`, deixamos clara a intenção e responsabilidade de cada parte do sistema.
 
 Essa estrutura favorece a clareza, testes isolados e evolução contínua de sistemas mais robustos.
 
