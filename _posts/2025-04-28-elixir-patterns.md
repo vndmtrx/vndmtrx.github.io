@@ -61,7 +61,7 @@ IO.inspect(valor) # "42"
 
 *Aqui, extraímos o segundo elemento da tupla, capturando a string "42" na variável `valor`.*
 
-### Listas: [head | tail]
+### Listas
 
 No algoritmo Shunting Yard, manipulamos pilhas usando essa forma:
 
@@ -80,7 +80,7 @@ Além de `[head | tail]`, também é possível casar listas de outras formas:
 - `[head | tail]` casa com qualquer lista não vazia, separando o primeiro elemento (head) e o restante (tail).
 - `[item1, item2 | tail]` casa com uma lista com pelo menos 2 elementos, retornando eles. E isso vai indo pela quantidade de elementos necessários.
 
-## Convenção Idiomática: {:ok, valor} e {:error, motivo}
+## Convenção Idiomática em Elixir
 
 Ao lidar com resultados de operações que podem falhar, Elixir adota um padrão simples e eficaz: tuplas indicando sucesso ou erro. Esse modelo torna o tratamento de erros previsível e o código mais legível.
 
