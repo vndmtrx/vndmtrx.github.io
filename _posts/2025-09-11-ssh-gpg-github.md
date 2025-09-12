@@ -1,6 +1,6 @@
 ---
 title: Criando chaves SSH e GPG para o Github
-date: 2025-04-28 20:28:00
+date: 2025-09-11 23:13:00
 permalink: /posts/ssh-gpg-github/
 tags: Git, Github, DevOps
 ---
