@@ -1,5 +1,5 @@
 ---
-title: Spring Boot e Kotlin Mega Tutorial, Parte 1: Ambiente de desenvolvimento
+title: "Spring Boot e Kotlin Mega Tutorial, Parte 1: Ambiente de desenvolvimento"
 date: 2026-03-09 11:20:00
 permalink: /posts/spring-boot-kotlin-mega-tutorial-parte-1-ambiente/
 tags: Spring Boot, Kotlin, Backend, API
