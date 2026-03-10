@@ -1,12 +1,12 @@
 ---
-title: "Spring Boot e Kotlin Mega Tutorial, Parte 1: Ambiente de desenvolvimento"
+title: "Spring Boot e Kotlin Tutorial, Parte 1: Ambiente de desenvolvimento"
 date: 2026-03-09 11:20:00
-permalink: /posts/spring-boot-kotlin-mega-tutorial-parte-1-ambiente/
+permalink: /posts/spring-boot-kotlin-tutorial-parte-1-ambiente/
 tags: Spring Boot, Kotlin, Backend, API
-series: Spring Boot e Kotlin Mega Tutorial
+series: Spring Boot e Kotlin Tutorial
 ---
 
-> Este post faz parte da série **“Spring Boot e Kotlin Mega Tutorial”**, onde eu construo, passo a passo, uma API backend moderna usando **Spring Boot** e **Kotlin**.
+> Este post faz parte da série **“Spring Boot e Kotlin Tutorial”**, onde eu construo, passo a passo, uma API backend moderna usando **Spring Boot** e **Kotlin**.
 > Aqui o foco é o backend: modelagem, persistência, resiliência, testes, observabilidade e deploy. O frontend vem depois, quando a API estiver bem cuidada por dentro.
 
 Nos últimos anos eu venho me focando mais na área de segurança, infraestrutura e de DevOps na maior parte dos projetos em que eu participo. Isso inclui migrações para nuvem, deploy de serviços com automação e gerenciamento de esteiras de deploy automatizado, na maioria dos casos diretamente com VMs e mais recentemente com conteiners. Dito isso, desenvolvimento nunca foi um forte na minha vida profissional, mas uma coisa sempre me incomodou nisso, que é a forma como vários projetos eram desenvolvidos.
@@ -28,7 +28,7 @@ Nada do que vou propor aqui é revolucionário. É só uma sugestão minha para 
 
 Dada essa fala inicial, vamos efetivamente ao texto.
 
-## Spring Boot e Kotlin Mega Tutorial: Ambiente de desenvolvimento
+## Spring Boot e Kotlin Tutorial: Ambiente de desenvolvimento
 
 Então, a primeira coisa que vamos pensar: qual sistema operacional? Não vou me alongar aqui, pois cada um têm sua opção. Eu irei focar tudo em Debian trixie, pois é geralmente meu ambiente de trabalho base.
 
@@ -109,7 +109,7 @@ $ sudo apt update && sudo apt install codium
 # Atualiza a lista de pacotes e instala o editor VS Codium
 ```
 
-Feito isso, o VS Codium está instalado. Eu vou inclusive sugerir a instalação de algumas extensões que eu pretendo usar, que serão muito úteis no andamento desse Mega Tutorial:
+Feito isso, o VS Codium está instalado. Eu vou inclusive sugerir a instalação de algumas extensões que eu pretendo usar, que serão muito úteis no andamento desse Tutorial:
 
 ```bash
 $ codium --install-extension MS-CEINTL.vscode-language-pack-pt-BR
