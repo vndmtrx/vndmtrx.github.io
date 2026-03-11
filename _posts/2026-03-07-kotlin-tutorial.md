@@ -121,7 +121,7 @@ $ codium --install-extension vscjava.vscode-java-pack
 $ codium --install-extension VMware.vscode-boot-dev-pack
 # Inclui o Spring Boot Pack, com suporte a inicialização de projetos e depuração
 
-$ codium --install-extension fwcd.kotlin
+$ codium --install-extension mathiasfrohlich.Kotlin
 # Adiciona o linter e suporte à linguagem Kotlin
 ```
 
