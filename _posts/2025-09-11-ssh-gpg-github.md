@@ -1,8 +1,9 @@
 ---
-title: Criando chaves SSH e GPG para o Github
+title: "Criando chaves SSH e GPG para o Github"
+author: "Eduardo N. S. R."
 date: 2025-09-11 23:13:00
 permalink: /posts/ssh-gpg-github/
-tags: Git, Github, DevOps
+tags: [Git, Github, DevOps]
 ---
 
 Não sei se vocês passam por isso, mas frequentemente eu troco minhas chaves SSH e GPG que uso no GitHub. Às vezes por precaução, mas a maioria das vezes é por esquecimento mesmo. E todas as vezes que vou criar novas chaves é o mesmo parto. Em vista disso, resolvi resumir um pouco o trabalho que é fazer toda essa via sacra de criação. Não chega a ser complicado, mas ter esses passos resumidos em um só lugar ajuda.

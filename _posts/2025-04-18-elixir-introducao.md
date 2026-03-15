@@ -1,8 +1,9 @@
 ---
-title: Aprendendo Elixir - Introdução
+title: "Aprendendo Elixir - Introdução"
+author: "Eduardo N. S. R."
 date: 2025-04-18 15:09:00
 permalink: /posts/elixir-introducao/
-tags: Programação, Programação Funcional, Elixir, Mix, ExUnit
+tags: [Programação, Programação Funcional, Elixir, Mix, ExUnit]
 ---
 
 Este post inaugura uma série intitulada *Aprendendo Elixir*, na qual registro minha jornada de aprendizado com essa linguagem. Minha ideia aqui é descrever meu aprendizado — e escrever sobre isso é uma forma de consolidar esse processo. Ao longo dos próximos módulos, iremos construir uma base sólida em Elixir por meio de projetos práticos, cada um introduzindo novos conceitos e boas práticas da programação funcional. Espero que este conteúdo te ajude tanto quanto está me ajudando.

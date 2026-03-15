@@ -1,8 +1,10 @@
 ---
-title: "Spring Boot e Kotlin Tutorial, Parte 1: Ambiente de desenvolvimento"
+title: "Spring Boot e Kotlin Tutorial, Parte 1"
+subtitle: "Construindo o ambiente de desenvolvimento"
+author: "Eduardo N. S. R."
 date: 2026-03-09 11:20:00
 permalink: /posts/spring-boot-kotlin-tutorial-parte-1-ambiente/
-tags: Spring Boot, Kotlin, Backend, API
+tags: [Spring Boot, Kotlin, Backend, API]
 series: Spring Boot e Kotlin Tutorial
 ---
 

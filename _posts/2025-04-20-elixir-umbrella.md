@@ -1,8 +1,9 @@
 ---
-title: Aprendendo Elixir - Estrutura Modular com Umbrella
+title: "Aprendendo Elixir - Estrutura Modular com Umbrella"
+author: "Eduardo N. S. R."
 date: 2025-04-20 15:46:00
 permalink: /posts/elixir-umbrella/
-tags: Programação, Programação Funcional, Elixir, Umbrella, Modularização, Testes
+tags: [Programação, Programação Funcional, Elixir, Umbrella, Modularização, Testes]
 ---
 
 Neste segundo post da série *Aprendendo Elixir*, vamos explorar como organizar projetos maiores usando **arquitetura modular** com uma estrutura de guarda-chuva (chamado *Umbrella* pelo Elixir). A ideia é dividir o sistema em múltiplas aplicações menores e coesas, que podem ser desenvolvidas, testadas e integradas dentro de uma aplicação principal. Esse modelo segue o princípio de separação de responsabilidades, facilitando a manutenção e o crescimento do código. 

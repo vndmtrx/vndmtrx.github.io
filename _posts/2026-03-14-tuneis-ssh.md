@@ -1,8 +1,10 @@
 ---
-title: "Túneis: O poder oculto do SSH (e que vc provavelmente não usa)"
+title: "Túneis SSH"
+subtitle: "O poder oculto do SSH (e que vc provavelmente não usa)"
+author: "Eduardo N. S. R."
 date: 2026-03-14 21:16:00 
 permalink: /posts/tuneis-ssh/
-tags: SSH, DevOps, Infraestrutura, Segurança, Túneis
+tags: [SSH, DevOps, Infraestrutura, Segurança, Túneis]
 ---
 
 SSH é daquelas ferramentas que todo mundo na área de infra tem na ponta da língua: `ssh usuario@servidor`, entra, faz o que tem que fazer, sai. Simples, confiável, onipresente. O problema é que boa parte das pessoas pára exatamente por aí, e o pior é que o SSH possui alguns recursos que ficam completamente invisíveis pra quem nunca foi além do básico. Não porque sejam obscuros ou experimentais. Eles estão inclusive na man page, funcionam desde sempre, e aparecem toda vez que você digita `ssh --help`. Só que ninguém parou pra explicar direito como usar de forma intuitiva.

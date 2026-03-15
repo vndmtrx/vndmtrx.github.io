@@ -1,8 +1,9 @@
 ---
-title: Você não é um Engenheiro de Software
+title: "Você não é um Engenheiro de Software"
+author: "Eduardo N. S. R."
 date: 2023-08-09 10:43:00
 permalink: /posts/jardineiro-software/
-tags: Programação, Análise de Sistemas
+tags: [Programação, Análise de Sistemas]
 ---
 
 Há alguns anos eu estava aqui a pensar sobre o que é desenvolvimento de software na verdade. Há uma quantidade enorme de metáforas à respeito disso:
