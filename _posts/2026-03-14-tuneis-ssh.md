@@ -1,4 +1,5 @@
 ---
+layout: post
 title: "Túneis SSH"
 subtitle: "O poder oculto do SSH (e que vc provavelmente não usa)"
 author: "Eduardo N. S. R."
