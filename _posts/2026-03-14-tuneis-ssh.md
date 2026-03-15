@@ -23,7 +23,7 @@ A fonte de confusão que quase todo mundo tem quando vê túneis SSH pela primei
 
 ## Configurando o cenário
 
-Então, antes de ir para as flags, vamos montar um ambiente concreto — porque túnel SSH sem contexto real é difícil de visualizar.
+Então, antes de ir para as flags, vamos montar um ambiente concreto, porque túnel SSH sem contexto real é difícil de visualizar.
 
 Primeiramente temos:
 - Uma **rede interna**: rede na qual estão os nossos recursos que queremos acessar;
@@ -174,7 +174,7 @@ E o melhor: funciona pra qualquer site/serviço da rede interna, não só pro da
 
 É exatamente pra isso que serve o **ProxyJump** (`-J`).
 
-O `ProxyJump` permite **pular pelo bastion** para abrir uma sessão SSH em outra máquina da rede interna. Ele não cria redirecionamento de porta nenhum — simplesmente usa o `bastion` como relay transparente pra uma nova conexão SSH.
+O `ProxyJump` permite **pular pelo bastion** para abrir uma sessão SSH em outra máquina da rede interna. Ele não cria redirecionamento de porta nenhum, simplesmente usa o `bastion` como relay transparente pra uma nova conexão SSH.
 
 É útil quando o servidor de destino também tem SSH e você só quer um terminal nele. Mas se o objetivo é acessar um serviço (banco, web, etc.), você vai precisar das flags de túnel de verdade.
 
@@ -219,7 +219,7 @@ E tem um outro lado dessa moeda que não dá pra ignorar: essas mesmas técnicas
 
 Por isso a **microsegmentação** é tão crucial hoje. Security Groups (AWS, GCP), Network Policies (Kubernetes), listas de permissão granulares, tudo isso existe exatamente pra garantir que **só quem deve** acessar um recurso consiga. Uma porta SSH no `bastion` não deveria, por princípio de menor privilégio, ter acesso irrestrito pra todo o resto da rede interna.
 
-Em outro post futuro, pretendo falar de outro recurso muito poderoso do SSH, chamado **SSH-Based Virtual Private Networks** (`-w`), que permite criar túneis TAP/TUN de camada 2/3 completos — a **VPN nativa do SSH** que tenho certeza que a maioria das pessoas usuárias de SSH nem sonham que existe.
+Em outro post futuro, pretendo falar de outro recurso muito poderoso do SSH, chamado **SSH-Based Virtual Private Networks** (`-w`), que permite criar túneis TAP/TUN de camada 2/3 completos, a **VPN nativa do SSH** que tenho certeza que a maioria das pessoas usuárias de SSH nem sonham que existe.
 
 **É conhecimento de ops que todo mundo deveria ter. E de segurança que todo mundo deveria temer quando usado errado.**
 
