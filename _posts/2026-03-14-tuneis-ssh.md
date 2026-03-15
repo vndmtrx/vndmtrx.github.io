@@ -132,7 +132,7 @@ POSTGRES ──> BASTION:2222 ──[túnel reverso]──> SEU_PC:22
 
 Vale notar: por padrão, o OpenSSH faz o `-R` escutar apenas em `127.0.0.1` no servidor. Se você quiser que outros hosts da rede interna também usem essa porta, precisa habilitar `GatewayPorts yes` no `/etc/ssh/sshd_config` do `bastion`.
 
-## Terceiro Cenário - Proxy Dinâmico: `-D`
+## Terceiro Cenário - Proxy Dinâmico
 
 Chegamos no mais poderoso dos três: o **proxy SOCKS**. Diferente dos outros dois que lidam com portas específicas, o `-D` transforma todo o seu tráfego de rede num túnel pelo `bastion`. É como se seu PC "emprestasse" o endereço IP do `bastion` pra navegar na rede interna.
 
