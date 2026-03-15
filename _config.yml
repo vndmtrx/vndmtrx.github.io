@@ -1,7 +1,5 @@
 title: Vndmtrx
-author:
-  name: Eduardo N.S.R.
-  email: vndmtrx@duck.com
+author: Eduardo N. S. R.
 
 # The `>` after `description:` means to ignore line-breaks until next key.
 # If you want to omit the line-break after the end of text, use `>-` instead.
@@ -13,34 +11,59 @@ description: >
 
 # Build settings
 #
-remote_theme: jekyll/minima
+remote_theme: daattali/beautiful-jekyll@6.0.1
 
 plugins:
   - jekyll-remote-theme
-  - jekyll-feed
-  - jekyll-seo-tag
+  - jekyll-paginate
+  - jekyll-sitemap
 
-# Theme-specific settings
-#
-minima:
-  skin: classic
+navbar-links:
+  Sobre euzinhe: "about"
 
-  show_excerpts: true
+avatar: "/favicon-vetor.svg"
+round-avatar: true
 
-  social_links:
-    - title: Perfil no Github
-      icon: github
-      url: "https://github.com/vndmtrx"
-    - title: Mastodon
-      icon: mastodon
-      url: "https://tech.lgbt/@vndmtrx"
+social-network-links:
+  email: "vndmtrx@duck.com"
+  rss: true
+  github: "vndmtrx"
+  mastodon: "tech.lgbt/@vndmtrx"
+  ORCID: "0009-0006-5569-1816"
+  linkedin: "eduardorolim"
 
+share-links-active:
+  twitter: false
+  facebook: false
+  linkedin: false
+  vk: false
+  reddit: false
 
-# If you want to link only specific pages in your header, uncomment this and add the path to the pages in
-# order as they should show up.
-#
-header_pages:
-  - about.md
-
+url-pretty: "vndmtrx.github.io"
+title-on-all-pages: true
+excerpt_length: 50
+feed_show_tags: true
+date_format: "%B %-d, %Y"
+timezone: "America/Sao_Paulo"
+markdown: kramdown
+highlighter: rouge
 permalink: /posts/:title/
-show_excerpts: true
+paginate: 5
+
+kramdown:
+  input: GFM
+
+defaults:
+  -
+    scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+      comments: false  # add comments to all blog posts
+      social-share: false # add social media sharing buttons to all blog posts
+  -
+    scope:
+      path: "" # any file that's not a post will be a "page" layout by default
+    values:
+      layout: "page"

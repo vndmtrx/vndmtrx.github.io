@@ -1,6 +1,7 @@
 ---
 layout: page
 title: "💫 Sobre euzinhe"
+subtitle: Vi Veri Veniversum Vivus Vici
 permalink: /about/
 ---
 🐮 *A Spherical Cow in a Vacuum*
