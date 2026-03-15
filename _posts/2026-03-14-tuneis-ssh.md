@@ -47,7 +47,7 @@ Vamos começar pelo caso mais comum: você precisa acessar um serviço que está
 
 É exatamente pra isso que serve o **túnel local** (`-L`).
 
-### "Eu quero acessar algo que só o servidor enxerga"
+#### "Eu quero acessar algo que só o servidor enxerga"
 
 ```bash
 ssh -L [porta_local]:[host_destino]:[porta_destino] usuario@bastion
@@ -59,7 +59,7 @@ O detalhe crucial (e fonte de 90% da confusão com o comando) é que o `host_des
 
 Por que eu falei de `localhost`? Pq as vezes usamos isso diretamente em uma máquina que pode ter acesso SSH exposto mas outra porta filtrada (banco de dados é o melhor exemplo).
 
-### Exemplo: acessar o PostgreSQL interno
+### Exemplo: acessar o servidor Postgres interno
 
 O banco em `10.0.254.25:5432` só aceita conexões da rede interna. Do seu PC, direto, não tem como. Então, com o túnel local fazemos:
 
@@ -75,7 +75,7 @@ Agora, em outro terminal:
 psql -h localhost -p 54322 -U meu_usuario -d meu_banco
 ```
 
-Do ponto de vista do banco de dados, a conexão veio do `bastion` (`10.0.254.10`), que está dentro da rede interna. Sem VPN, sem abrir o PostgreSQL para a internet, sem config especial. O SSH fez o trabalho sujo.
+Do ponto de vista do banco de dados, a conexão veio do `bastion` (`10.0.254.10`), que está dentro da rede interna. Sem VPN, sem abrir o Postgres para a internet, sem config especial. O SSH fez o trabalho sujo.
 
 ```
 SEU_PC:54322 ─[túnel SSH]─> BASTION ─> POSTGRES:10.0.254.25:5432
@@ -87,7 +87,7 @@ Agora vamos inverter completamente a lógica. E se você quiser que o **servidor
 
 É exatamente pra isso que serve o **túnel reverso** (`-R`).
 
-### "Eu quero que o servidor acesse algo que só eu enxergo"
+#### "Eu quero que o servidor acesse algo que só eu enxergo"
 
 ```
 ssh -R [porta_remota]:[host_destino]:[porta_local] usuario@bastion
