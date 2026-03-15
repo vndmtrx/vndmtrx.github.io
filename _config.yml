@@ -21,7 +21,7 @@ plugins:
 navbar-links:
   Sobre euzinhe: "about"
 
-avatar: "/favicon-vetor.svg"
+avatar: "/favicon-thumb.png"
 round-avatar: true
 
 social-network-links:
