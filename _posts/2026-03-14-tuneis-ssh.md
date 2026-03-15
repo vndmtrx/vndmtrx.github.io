@@ -41,7 +41,7 @@ Primeiramente temos:
 
 É o tipo de topologia que aparece o tempo todo em ambientes corporativos, homelabs com um mínimo de segurança, e praticamente qualquer cloud bem configurada. E é exatamente nesses ambientes que os túneis SSH brilham.
 
-## Primeiro Cenário - Túnel Local: `-L`
+## Primeiro Cenário - Túnel Local
 
 Vamos começar pelo caso mais comum: você precisa acessar um serviço que está **na rede interna**, mas que não tem acesso direto da internet. Pode ser um servidor web, um banco de dados, uma API interna, qualquer coisa que só responde para a rede interna.
 
@@ -81,7 +81,7 @@ Do ponto de vista do banco de dados, a conexão veio do `bastion` (`10.0.254.10`
 SEU_PC:54322 ─[túnel SSH]─> BASTION ─> POSTGRES:10.0.254.25:5432
 ```
 
-## Segundo Cenário - Túnel Reverso: `-R`
+## Segundo Cenário - Túnel Reverso
 
 Agora vamos inverter completamente a lógica. E se você quiser que o **servidor te acesse** em vez de você acessar o servidor? Pode ser pra receber um arquivo grande do `bastion`, expor uma ferramenta local que o time precisa usar, ou qualquer situação onde a conexão precisa vir do servidor pra você.
 
@@ -168,7 +168,7 @@ SEU_NAVEGADOR ──> SOCKS:9999 ──[túnel]──> BASTION ──> DASHBOARD
 
 E o melhor: funciona pra qualquer site/serviço da rede interna, não só pro dashboard. Uma configuração, tráfego ilimitado. Inclusive, se o `bastion` têm rota padrão para a internet, é possível inclusive navegar para fora da rede por essa conexão. Por isso inclusive que ela é uma opção **extremamente poderosa** (e usada frequentemente por atacantes para esconder tráfego).
 
-## Caso Especial - ProxyJump: `-J`
+## Caso Especial - ProxyJump
 
 Às vezes você só quer entrar num servidor da rede interna que **também tem SSH**, mas não tem acesso direto. O ProxyJump resolve isso sem precisar de túnel nenhum.
 
