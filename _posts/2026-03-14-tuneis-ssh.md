@@ -10,9 +10,9 @@ tags: [SSH, DevOps, Infraestrutura, Segurança, Túneis]
 
 SSH é daquelas ferramentas que todo mundo na área de infra tem na ponta da língua: `ssh usuario@servidor`, entra, faz o que tem que fazer, sai. Simples, confiável, onipresente. O problema é que boa parte das pessoas pára exatamente por aí, e o pior é que o SSH possui alguns recursos que ficam completamente invisíveis pra quem nunca foi além do básico. Não porque sejam obscuros ou experimentais. Eles estão inclusive na man page, funcionam desde sempre, e aparecem toda vez que você digita `ssh --help`. Só que ninguém parou pra explicar direito como usar de forma intuitiva.
 
-Um desses recursos são os **túneis SSH**. Três flags (`-L`, `-R` e `-D`) que permitem redirecionar tráfego de rede arbitrário por dentro de uma conexão SSH já estabelecida. Sem VPN, sem configuração extra no firewall, sem instalar nada. É o tipo de coisa que, quando você descobre, fica se perguntando por que ninguém nunca te contou antes, e que faz você olhar pro seu histórico de comandos e pensar _"mds, quanto tempo eu perdi sem isso"_.
+Um desses recursos são os **túneis SSH**. Três flags (`-L`, `-R` e `-D`) que permitem redirecionar tráfego de rede arbitrário por dentro de uma conexão SSH já estabelecida. Sem VPN, sem configuração extra no firewall, sem instalar nada. É o tipo de coisa que, quando você descobre, fica se perguntando por que ninguém nunca te contou antes, e que faz você olhar pro seu histórico de comandos e pensar _"mds, quanto tempo eu perdi sem isso"_!
 
-E ainda vou deixar uma pulga atrás da orelha antes de continuar: essas mesmas técnicas que você vai aprender aqui para fazer o seu trabalho com mais eficiência são exatamente as que times de red team e atacantes reais costumam usar para se mover lateralmente dentro de redes comprometidas. O MITRE ATT&CK inclusive cataloga isso como técnica [T1021.004](https://attack.mitre.org/techniques/T1021/004/), e a Red Canary já descreveu o abuso de túneis SSH como um vetor de lateralização "incrivelmente difícil de detectar quando as ferramentas certas não estão no lugar". E em 2025, a Sygnia documentou grupos de ransomware usando exatamente o `-R` pra se mover por ambientes VMware ESXi sem levantar alertas ([ESXi Ransomware Attacks: Stealthy Persistence through SSH Tunneling](https://www.sygnia.co/blog/esxi-ransomware-ssh-tunneling-defense-strategies/)). Conhecer o recurso é a primeira linha de defesa (e também de uso legítimo).
+E ainda vou deixar vocês com uma pulga atrás da orelha antes de continuar: essas mesmas técnicas que você vai aprender aqui são exatamente as que equipes de red team e atacantes reais costumam usar para se mover lateralmente dentro de redes comprometidas. O MITRE ATT&CK inclusive cataloga isso como técnica [T1021.004](https://attack.mitre.org/techniques/T1021/004/), e a Red Canary já descreveu o abuso de túneis SSH como um vetor de lateralização _"incrivelmente difícil de detectar quando as ferramentas certas não estão no lugar"_. E em 2025, a Sygnia documentou grupos de ransomware usando exatamente o `-R` pra se mover por ambientes VMware ESXi sem levantar alertas ([ESXi Ransomware Attacks: Stealthy Persistence through SSH Tunneling](https://www.sygnia.co/blog/esxi-ransomware-ssh-tunneling-defense-strategies/)). Conhecer o recurso é a primeira linha de defesa (e também de uso legítimo).
 
 Dito isso, nesse post vou explicar cada um dos três modos de uso de túneis que existem no SSH (e por tabela no PuTTY, ok?). A idéia é simular um cenário real, e sem pular etapas. No final ainda tem um bônus sobre o `ProxyJump` (`-J`), que muita gente confunde com túnel mas é outra coisa. Vale ficar até lá.
 
@@ -56,7 +56,7 @@ Vamos começar pelo caso mais comum: você precisa acessar um serviço que está
 ssh -L [porta_local]:[host_destino]:[porta_destino] usuario_bastion@ip_publico_bastion
 ```
 
-É só isso. A flag `-L` cria uma **porta de escuta no seu PC**. Quando você conectar nessa porta local, o SSH pega esse tráfego, manda pelo túnel até o `bastion`, e o `bastion` faz a conexão final com `host_destino:porta_destino`.
+A flag `-L` cria uma **porta de escuta no seu PC**. Quando você conectar nessa porta local, o SSH pega esse tráfego, manda pelo túnel até o `bastion`, e o `bastion` faz a conexão final com `host_destino:porta_destino`.
 
 O detalhe crucial (e fonte de 90% da confusão com o comando) é que o `host_destino` é resolvido do **ponto de vista do bastion**, não do seu PC. Então quando você escreve `localhost` ali, você tá falando do `localhost` do `bastion`. Quando você escreve `10.0.254.25`, você tá falando de um host que o `bastion` alcança diretamente, mas que o seu PC nem conhece.
 
@@ -96,7 +96,7 @@ Agora vamos inverter completamente a lógica. E se você quiser que o **servidor
 ssh -R [porta_remota]:[host_destino]:[porta_local] usuario_bastion@ip_publico_bastion
 ```
 
-Da mesma forma que o outro comando, é só isso também. A flag `-R` inverte completamente a lógica. Agora quem **escuta a porta é o bastion**. Quando alguém se conectar nessa porta no `bastion`, o tráfego vem pelo túnel SSH de volta até você, e aí o seu PC faz a conexão final com `host_destino:porta_local`.
+Aqui a flag `-R` inverte completamente a lógica. Agora quem **escuta a porta é o bastion**. Quando alguém se conectar nessa porta no `bastion`, o tráfego vem pelo túnel SSH de volta até você, e aí o seu PC faz a conexão final com `host_destino:porta_local`.
 
 E agora vêm o real pulo do gato (e a maior fonte de confusões com a sintaxe do comando): com a flag `-R` o host destino é resolvido a partir do ponto de vista do **seu PC**, não do `bastion`. Então, quando vc escreve `localhost` ali, você está dizendo que a porta é no **seu PC**.
 
@@ -147,7 +147,7 @@ Chegamos no mais poderoso dos três: o **proxy SOCKS**. Diferente dos outros doi
 ssh -D [porta_local] usuario_bastion@ip_publico_bastion
 ```
 
-Da mesma forma que os outros, é só isso. O `-D` é o mais diferente dos três. Ele não redireciona uma porta específica para um destino fixo. Ele abre um **proxy SOCKS** no seu PC. Você aponta seus aplicativos pra esse proxy, e toda conexão que eles fizerem vai passar pelo `bastion` antes de chegar ao destino final.
+Já o caso do `-D` é o mais diferente dos três. Ele não redireciona uma porta específica para um destino fixo. Ele abre um **proxy SOCKS** no seu PC. Você aponta seus aplicativos pra esse proxy, e toda conexão que eles fizerem vai passar pelo `bastion` antes de chegar ao destino final.
 
 É o comportamento mais próximo de uma VPN que você consegue com SSH puro, sem instalar nada extra.
 
@@ -169,13 +169,11 @@ Agora, configure o seu navegador preferido pra usar SOCKS proxy no endereço loc
 SEU_NAVEGADOR ──> SOCKS:9999 ──[túnel]──> BASTION ──> DASHBOARD:10.0.254.50
 ```
 
-E o melhor: funciona pra qualquer site/serviço da rede interna, não só pro dashboard. Uma configuração, tráfego ilimitado. Inclusive, se o `bastion` têm rota padrão para a internet, é possível inclusive navegar para fora da rede por essa conexão. Por isso inclusive que ela é uma opção **extremamente poderosa** (e usada frequentemente por atacantes para esconder tráfego).
+E o melhor: funciona pra qualquer site/serviço da rede interna, não só pro dashboard. Uma única configuração. Inclusive, se o `bastion` têm rota padrão para a internet, é possível navegar para fora da rede por essa conexão. E é por isso que ela é uma opção **extremamente poderosa** (e usada frequentemente por atacantes para esconder tráfego).
 
 ## Caso Especial - ProxyJump
 
 Às vezes você só quer entrar num servidor da rede interna que **também tem SSH**, mas não tem acesso direto. O ProxyJump resolve isso sem precisar de túnel nenhum.
-
-É exatamente pra isso que serve o **ProxyJump** (`-J`).
 
 O `ProxyJump` permite **pular pelo bastion** para abrir uma sessão SSH em outra máquina da rede interna. Ele não cria redirecionamento de porta nenhum, simplesmente usa o `bastion` como relay transparente pra uma nova conexão SSH.
 
@@ -187,7 +185,7 @@ O `ProxyJump` permite **pular pelo bastion** para abrir uma sessão SSH em outra
 ssh -J usuario_bastion@ip_publico_bastion outro_usuario@outro_servidor
 ```
 
-É só isso. O `-J` usa o `bastion` como **trampolim transparente** pra uma nova conexão SSH. Você digita comandos normalmente, mas por baixo dos panos passa pelo `bastion`.
+O `-J` aqui usa o `bastion` como **trampolim transparente** pra uma nova conexão SSH. Você digita comandos normalmente, mas por baixo dos panos passa pelo `bastion`.
 
 **Diferença crucial para os túneis:** aqui ele não mexe com portas, não redireciona tráfego, não cria proxy. É só SSH ─> SSH.
 
