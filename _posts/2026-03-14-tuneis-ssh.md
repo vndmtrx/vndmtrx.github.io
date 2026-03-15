@@ -202,7 +202,7 @@ Você abre um terminal direto no Postgres. O `bastion` só "repassa" a conexão 
 SEU_PC ──[SSH]──> BASTION ──[SSH]──> POSTGRES:22
 ```
 
-### Superpoder secreto do -J: vários bastions em série
+### Superpoder secreto do -J: várias conexões em série
 
 Até aqui usei só um `bastion` no meio do caminho, mas o `-J` aceita **vários hosts em cadeia**, separados por vírgula. O SSH vai pulando por cada servidor na ordem até chegar no servidor final, sempre mantendo uma sessão cifrada de ponta a ponta entre você e o destino.
 
@@ -213,7 +213,7 @@ ssh -J usuario1@servidor1,usuario2@servidor2 usuario_final@servidor_final
 Por baixo fica assim:
 
 ```text
-SEU_PC ──[SSH]──> SERVIDOR1 ──[SSH]──> SERVIDOR2 ──[SSH]──> SERVDIDOR_FINAL
+SEU_PC ──[SSH]──> SERVIDOR1 ──[SSH]──> SERVIDOR2 ──[SSH]──> SERVIDOR_FINAL
 ```
 
 Do seu ponto de vista é **um único comando ssh**, mas na prática você encadeia vários servidores SSH intermediários e cai direto no servidor lá no fundo da rede. Cada servidor intermediário só vê tráfego SSH cifrado passando por ele, o que é ótimo pra privacidade… e também é exatamente o que torna isso uma faca de dois gumes.
