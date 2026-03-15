@@ -9,7 +9,7 @@ SSH é daquelas ferramentas que todo mundo na área de infra tem na ponta da lí
 
 Um desses recursos são os **túneis SSH**. Três flags (`-L`, `-R` e `-D`) que permitem redirecionar tráfego de rede arbitrário por dentro de uma conexão SSH já estabelecida. Sem VPN, sem configuração extra no firewall, sem instalar nada. É o tipo de coisa que, quando você descobre, fica se perguntando por que ninguém nunca te contou antes, e que faz você olhar pro seu histórico de comandos e pensar _"mds, quanto tempo eu perdi sem isso"_.
 
-E ainda vou deixar uma pulga atrás da orelha antes de continuar: essas mesmas técnicas que você vai aprender aqui para fazer o seu trabalho com mais eficiência são exatamente as que times de red team e atacantes reais costumam usar para se mover lateralmente dentro de redes comprometidas. O MITRE ATT&CK inclusive cataloga isso como técnica [T1021.004](https://attack.mitre.org/techniques/T1021/004/), e a Red Canary já descreveu o abuso de túneis SSH como um vetor de lateralização "incrivelmente difícil de detectar quando as ferramentas certas não estão no lugar". E em 2025, a Sygnia documentou grupos de ransomware usando exatamente o `-D` pra se mover por ambientes VMware ESXi sem levantar alertas ([ESXi Ransomware Attacks: Stealthy Persistence through SSH Tunneling](https://www.sygnia.co/blog/esxi-ransomware-ssh-tunneling-defense-strategies/)). Conhecer o recurso é a primeira linha de defesa (e também de uso legítimo).
+E ainda vou deixar uma pulga atrás da orelha antes de continuar: essas mesmas técnicas que você vai aprender aqui para fazer o seu trabalho com mais eficiência são exatamente as que times de red team e atacantes reais costumam usar para se mover lateralmente dentro de redes comprometidas. O MITRE ATT&CK inclusive cataloga isso como técnica [T1021.004](https://attack.mitre.org/techniques/T1021/004/), e a Red Canary já descreveu o abuso de túneis SSH como um vetor de lateralização "incrivelmente difícil de detectar quando as ferramentas certas não estão no lugar". E em 2025, a Sygnia documentou grupos de ransomware usando exatamente o `-R` pra se mover por ambientes VMware ESXi sem levantar alertas ([ESXi Ransomware Attacks: Stealthy Persistence through SSH Tunneling](https://www.sygnia.co/blog/esxi-ransomware-ssh-tunneling-defense-strategies/)). Conhecer o recurso é a primeira linha de defesa (e também de uso legítimo).
 
 Dito isso, nesse post vou explicar cada um dos três modos de uso de túneis que existem no SSH (e por tabela no PuTTY, ok?). A idéia é simular um cenário real, e sem pular etapas. No final ainda tem um bônus sobre o `ProxyJump` (`-J`), que muita gente confunde com túnel mas é outra coisa — vale ficar até lá.
 
@@ -138,7 +138,7 @@ Chegamos no mais poderoso dos três: o **proxy SOCKS**. Diferente dos outros doi
 
 É exatamente pra isso que serve o **proxy dinâmico** (`-D`).
 
-### "Eu quero que meu tráfego todo saia como se fosse o servidor"
+#### "Eu quero que meu tráfego todo saia como se fosse o servidor"
 
 ```bash
 ssh -D [porta_local] usuario@ip_publico_bastion
@@ -178,7 +178,7 @@ O `ProxyJump` permite **pular pelo bastion** para abrir uma sessão SSH em outra
 
 É útil quando o servidor de destino também tem SSH e você só quer um terminal nele. Mas se o objetivo é acessar um serviço (banco, web, etc.), você vai precisar das flags de túnel de verdade.
 
-### "Eu só quero um terminal no servidor interno"
+#### "Eu só quero um terminal no servidor interno"
 
 ```bash
 ssh -J usuario@bastion usuario@postgres
