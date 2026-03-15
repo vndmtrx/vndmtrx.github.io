@@ -216,13 +216,13 @@ Por baixo fica assim:
 SEU_PC ──[SSH]──> SERVIDOR1 ──[SSH]──> SERVIDOR2 ──[SSH]──> SERVIDOR_FINAL
 ```
 
-Do seu ponto de vista é **um único comando ssh**, mas na prática você encadeia vários servidores SSH intermediários e cai direto no servidor lá no fundo da rede. Cada servidor intermediário só vê tráfego SSH cifrado passando por ele, o que é ótimo pra privacidade… e também é exatamente o que torna isso uma faca de dois gumes.
+Do seu ponto de vista é **um único comando ssh**, mas na prática você encadeia vários servidores SSH intermediários e cai direto no servidor lá no fundo da rede. Cada servidor intermediário só vê tráfego SSH cifrado passando por ele, o que é ótimo pra privacidade... e também é exatamente o que torna isso uma faca de dois gumes.
 
 #### Por que isso é tão poderoso (e tão perigoso)
 
 Esse "superpoder" é incrível pra admin: com um comando você atravessa DMZ, rede de gestão, subnet de banco e cai exatamente onde precisa, sem abrir VPN, sem ficar montando túnel na mão, sem ficar dando SSH dentro de SSH. Em ambientes grandes, isso vira uma "auto‑estrada" interna: seu `~/.ssh/config` descreve o mapa de servidores intermediários e o `ssh` faz o caminho sozinho.
 
-Mas o mesmo mecanismo é perfeito para **movimento lateral** silencioso se alguém rouba suas credenciais ou chave SSH de acesso.
+Mas o mesmo mecanismo é perfeito para movimento lateral silencioso, se alguém obtiver suas credenciais ou chaves SSH de acesso.
 
 - O tráfego é todo SSH legítimo, sem payload esquisito, então muitos sistemas de detecção só veem "alguém usando ssh normalmente".
 - Se o atacante compromete uma máquina que já tem chaves configuradas e acesso via bastion, ele pode seguir o mesmo caminho que você usa no dia a dia para ir pulando de servidor em servidor, mudando de subnet sem chamar tanta atenção.
