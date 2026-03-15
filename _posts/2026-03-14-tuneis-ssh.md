@@ -50,7 +50,7 @@ Vamos começar pelo caso mais comum: você precisa acessar um serviço que está
 #### "Eu quero acessar algo que só o servidor enxerga"
 
 ```bash
-ssh -L [porta_local]:[host_destino]:[porta_destino] usuario@bastion
+ssh -L [porta_local]:[host_destino]:[porta_destino] usuario_bastion@ip_publico_bastion
 ```
 
 É só isso. A flag `-L` cria uma **porta de escuta no seu PC**. Quando você conectar nessa porta local, o SSH pega esse tráfego, manda pelo túnel até o `bastion`, e o `bastion` faz a conexão final com `host_destino:porta_destino`.
@@ -64,7 +64,7 @@ Por que eu falei de `localhost`? Pq as vezes usamos isso diretamente em uma máq
 O banco em `10.0.254.25:5432` só aceita conexões da rede interna. Do seu PC, direto, não tem como. Então, com o túnel local fazemos:
 
 ```bash
-ssh -L 54322:10.0.254.25:5432 usuario@ip_publico_bastion
+ssh -L 54322:10.0.254.25:5432 usuario_bastion@ip_publico_bastion
 ```
 
 Isso abriu a porta 54322 na minha máquina local, e essa porta é ligada a um túnel via SSH que passa pelo `bastion` e o `bastion` então redireciona para a porta 5432 da máquina `10.0.254.25`, que no nosso diagrama lá em cima é o Postgres.
@@ -72,7 +72,7 @@ Isso abriu a porta 54322 na minha máquina local, e essa porta é ligada a um t�
 Agora, em outro terminal:
 
 ```bash
-psql -h localhost -p 54322 -U meu_usuario -d meu_banco
+psql -h localhost -p 54322 -U usuario_banco -d meu_banco
 ```
 
 Do ponto de vista do banco de dados, a conexão veio do `bastion` (`10.0.254.10`), que está dentro da rede interna. Sem VPN, sem abrir o Postgres para a internet, sem config especial. O SSH fez o trabalho sujo.
@@ -90,7 +90,7 @@ Agora vamos inverter completamente a lógica. E se você quiser que o **servidor
 #### "Eu quero que o servidor acesse algo que só eu enxergo"
 
 ```
-ssh -R [porta_remota]:[host_destino]:[porta_local] usuario@bastion
+ssh -R [porta_remota]:[host_destino]:[porta_local] usuario_bastion@ip_publico_bastion
 ```
 
 Da mesma forma que o outro comando, é só isso também. A flag `-R` inverte completamente a lógica. Agora quem **escuta a porta é o bastion**. Quando alguém se conectar nessa porta no `bastion`, o tráfego vem pelo túnel SSH de volta até você, e aí o seu PC faz a conexão final com `host_destino:porta_local`.
@@ -106,7 +106,7 @@ Um dump de banco de dados foi gerado no **Postgres** (`10.0.254.25`) e você pre
 No **seu PC**, execute primeiro:
 
 ```bash
-ssh -R 2222:localhost:22 usuario@ip_publico_bastion
+ssh -R 2222:localhost:22 usuario_bastion@ip_publico_bastion
 ```
 
 Isso abre a porta **2222 no bastion**, que aponta pro SSH do **seu PC** via túnel reverso.
@@ -114,7 +114,7 @@ Isso abre a porta **2222 no bastion**, que aponta pro SSH do **seu PC** via tún
 Agora, **no terminal do Postgres** (`10.0.254.25`):
 
 ```bash
-scp -P 2222 dump_banco.sql.gz usuario@10.0.254.10:/home/usuario/
+scp -P 2222 dump_banco.sql.gz meu_usuario@10.0.254.10:/home/usuario/
 ```
 
 Fluxo:
@@ -141,7 +141,7 @@ Chegamos no mais poderoso dos três: o **proxy SOCKS**. Diferente dos outros doi
 #### "Eu quero que meu tráfego todo saia como se fosse o servidor"
 
 ```bash
-ssh -D [porta_local] usuario@ip_publico_bastion
+ssh -D [porta_local] usuario_bastion@ip_publico_bastion
 ```
 
 Da mesma forma que os outros, é só isso. O `-D` é o mais diferente dos três. Ele não redireciona uma porta específica para um destino fixo. Ele abre um **proxy SOCKS** no seu PC. Você aponta seus aplicativos pra esse proxy, e toda conexão que eles fizerem vai passar pelo `bastion` antes de chegar ao destino final.
@@ -157,7 +157,7 @@ O `dashboard` em `10.0.254.50/admin` tem um firewall que bloqueia qualquer IP fo
 No seu PC:
 
 ```bash
-ssh -D 9999 usuario@ip_publico_bastion
+ssh -D 9999 usuario_bastion@ip_publico_bastion
 ```
 
 Agora, configure o seu navegador preferido pra usar SOCKS proxy no endereço localhost:9999.
@@ -181,7 +181,7 @@ O `ProxyJump` permite **pular pelo bastion** para abrir uma sessão SSH em outra
 #### "Eu só quero um terminal no servidor interno"
 
 ```bash
-ssh -J usuario@bastion usuario@postgres
+ssh -J usuario_bastion@ip_publico_bastion outro_usuario@outro_servidor
 ```
 
 É só isso. O `-J` usa o `bastion` como **trampolim transparente** pra uma nova conexão SSH. Você digita comandos normalmente, mas por baixo dos panos passa pelo `bastion`.
@@ -193,7 +193,7 @@ ssh -J usuario@bastion usuario@postgres
 O Postgres (`10.0.254.25`) tem SSH na porta 22, mas só acessível da rede interna.
 
 ```bash
-ssh -J usuario@ip_publico_bastion usuario@10.0.254.25
+ssh -J usuario_bastion@ip_publico_bastion usuario_banco@10.0.254.25
 ```
 
 Você abre um terminal direto no Postgres. O `bastion` só "repassa" a conexão SSH, sem abrir portas extras ou criar túneis.
@@ -201,6 +201,34 @@ Você abre um terminal direto no Postgres. O `bastion` só "repassa" a conexão 
 ```
 SEU_PC ──[SSH]──> BASTION ──[SSH]──> POSTGRES:22
 ```
+
+### Superpoder secreto do -J: vários bastions em série
+
+Até aqui usei só um `bastion` no meio do caminho, mas o `-J` aceita **vários hosts em cadeia**, separados por vírgula. O SSH vai pulando por cada servidor na ordem até chegar no servidor final, sempre mantendo uma sessão cifrada de ponta a ponta entre você e o destino.
+
+```bash
+ssh -J usuario1@servidor1,usuario2@servidor2 usuario_final@servidor_final
+```
+
+Por baixo fica assim:
+
+```text
+SEU_PC ──[SSH]──> SERVIDOR1 ──[SSH]──> SERVIDOR2 ──[SSH]──> SERVDIDOR_FINAL
+```
+
+Do seu ponto de vista é **um único comando ssh**, mas na prática você encadeia vários servidores SSH intermediários e cai direto no servidor lá no fundo da rede. Cada servidor intermediário só vê tráfego SSH cifrado passando por ele, o que é ótimo pra privacidade… e também é exatamente o que torna isso uma faca de dois gumes.
+
+#### Por que isso é tão poderoso (e tão perigoso)
+
+Esse "superpoder" é incrível pra admin: com um comando você atravessa DMZ, rede de gestão, subnet de banco e cai exatamente onde precisa, sem abrir VPN, sem ficar montando túnel na mão, sem ficar dando SSH dentro de SSH. Em ambientes grandes, isso vira uma "auto‑estrada" interna: seu `~/.ssh/config` descreve o mapa de servidores intermediários e o `ssh` faz o caminho sozinho.
+
+Mas o mesmo mecanismo é perfeito para **movimento lateral** silencioso se alguém rouba suas credenciais ou chave SSH de acesso.
+
+- O tráfego é todo SSH legítimo, sem payload esquisito, então muitos sistemas de detecção só veem "alguém usando ssh normalmente".
+- Se o atacante compromete uma máquina que já tem chaves configuradas e acesso via bastion, ele pode seguir o mesmo caminho que você usa no dia a dia para ir pulando de servidor em servidor, mudando de subnet sem chamar tanta atenção.
+- Como os bastions só repassam fluxo SSH cifrado, fica mais difícil inspecionar o que está acontecendo no meio; a detecção depende muito de **logs de autenticação**, correlação de horários e análise de padrões de uso (quem acessou o quê, de onde e quando).
+
+Por isso essa feature é tão forte: ela te dá um canivete suíço de acesso interno, mas também aumenta o estrago caso alguém consiga se passar por você. Em termos de operação segura, o recado que vale encaixar depois no post é algo como: use `ProxyJump` com parcimônia, bastions bem endurecidos, MFA obrigatório e logging sério, porque a mesma facilidade que você ganha pra administrar a rede é a facilidade que um invasor ganha pra **navegar lateralmente** quase sem ser notado.
 
 ## Resumo definitivo
 
@@ -225,7 +253,7 @@ Em outro post futuro, pretendo falar de outro recurso muito poderoso do SSH, cha
 
 ## Bibliografia
 
-1. **[man ssh](https://man7.org/linux/man-pages/man1/ssh.1.html)** - A Fonte. Procure por "Local port forwarding", "Remote port forwarding" e "Dynamic forwarding";
+1. **[ssh(1) — Linux manual page](https://man7.org/linux/man-pages/man1/ssh.1.html)** - A Fonte;
 1. **[SSH.com: Complete Guide to SSH Tunneling](https://www.ssh.com/academy/ssh/tunneling-example)** - Exemplos práticos + casos avançados (inclusive com port forwarding múltiplo);
 1. **[MITRE ATT&CK T1021.004](https://attack.mitre.org/techniques/T1021/004/)** - SSH tunneling como técnica de navegação lateral oficializada;
 1. **[Sygnia: ESXi Ransomware via SSH Tunneling](https://www.sygnia.co/blog/esxi-ransomware-ssh-tunneling-defense-strategies/)** - Caso real de ransomware usando `-R` para se manter oculto no VMware;
