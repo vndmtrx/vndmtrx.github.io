@@ -97,7 +97,7 @@ Da mesma forma que o outro comando, é só isso também. A flag `-R` inverte com
 
 E agora vêm o real pulo do gato (e a maior fonte de confusões com a sintaxe do comando): com a flag `-R` o host destino é resolvido a partir do ponto de vista do **seu PC**, não do `bastion`. Então, quando vc escreve `localhost` ali, você está dizendo que a porta é no **seu PC**.
 
-Por que isso importa? Porque é comum usar `-R xx:localhost:22` (sendo `xx` um valor aleatório) pra expor o SSH do seu PC pro `bastion` (ou rede interna toda).
+Por que isso importa? Porque é comum usar `-R xx:localhost:22` (sendo `xx` um valor aleatório) pra expor o SSH do **seu PC** para o `bastion` (ou para rede interna toda).
 
 ### Exemplo: receber um arquivo pelo bastion no seu PC
 
