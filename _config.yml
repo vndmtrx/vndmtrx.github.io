@@ -1,16 +1,11 @@
 title: Vndmtrx
 author: Eduardo N. S. R.
 
-# The `>` after `description:` means to ignore line-breaks until next key.
-# If you want to omit the line-break after the end of text, use `>-` instead.
-#
-description: >
+rss-description: >
   Um blog com a proposta de falar sobre vários assuntos, desde desenvolvimento,
   passando por infra, devops, hacktivismo e até sobre conspirações alienígenas e
   portais circulares que permitem viagem a outros planetas.
 
-# Build settings
-#
 remote_theme: daattali/beautiful-jekyll@6.0.1
 
 plugins:
