@@ -11,7 +11,7 @@ Um desses recursos são os **túneis SSH**. Três flags (`-L`, `-R` e `-D`) que 
 
 E ainda vou deixar uma pulga atrás da orelha antes de continuar: essas mesmas técnicas que você vai aprender aqui para fazer o seu trabalho com mais eficiência são exatamente as que times de red team e atacantes reais costumam usar para se mover lateralmente dentro de redes comprometidas. O MITRE ATT&CK inclusive cataloga isso como técnica [T1021.004](https://attack.mitre.org/techniques/T1021/004/), e a Red Canary já descreveu o abuso de túneis SSH como um vetor de lateralização "incrivelmente difícil de detectar quando as ferramentas certas não estão no lugar". E em 2025, a Sygnia documentou grupos de ransomware usando exatamente o `-R` pra se mover por ambientes VMware ESXi sem levantar alertas ([ESXi Ransomware Attacks: Stealthy Persistence through SSH Tunneling](https://www.sygnia.co/blog/esxi-ransomware-ssh-tunneling-defense-strategies/)). Conhecer o recurso é a primeira linha de defesa (e também de uso legítimo).
 
-Dito isso, nesse post vou explicar cada um dos três modos de uso de túneis que existem no SSH (e por tabela no PuTTY, ok?). A idéia é simular um cenário real, e sem pular etapas. No final ainda tem um bônus sobre o `ProxyJump` (`-J`), que muita gente confunde com túnel mas é outra coisa — vale ficar até lá.
+Dito isso, nesse post vou explicar cada um dos três modos de uso de túneis que existem no SSH (e por tabela no PuTTY, ok?). A idéia é simular um cenário real, e sem pular etapas. No final ainda tem um bônus sobre o `ProxyJump` (`-J`), que muita gente confunde com túnel mas é outra coisa. Vale ficar até lá.
 
 ## Mas antes: o que diabos é um túnel SSH, Dudu?
 
