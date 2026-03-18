@@ -1,4 +1,5 @@
 ---
+layout: post
 title: "Aprendendo Elixir - Pattern Matching"
 author: "Eduardo N. S. R."
 date: 2025-04-28 20:28:00

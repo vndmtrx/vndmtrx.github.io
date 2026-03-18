@@ -1,4 +1,5 @@
 ---
+layout: post
 title: "Aprendendo Elixir - Introdução"
 author: "Eduardo N. S. R."
 date: 2025-04-18 15:09:00
