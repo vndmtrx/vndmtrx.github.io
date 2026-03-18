@@ -1,8 +1,8 @@
 ---
-layout: post
 title: "Túneis SSH"
 subtitle: "O poder oculto do SSH (e que vc provavelmente não usa)"
-author: "Eduardo N. S. R."
+author:
+- "Eduardo N. S. R."
 date: 2026-03-14 21:16:00 
 permalink: /posts/tuneis-ssh/
 tags: [SSH, DevOps, Infraestrutura, Segurança, Túneis]

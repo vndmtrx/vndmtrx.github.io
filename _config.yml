@@ -1,64 +1,52 @@
 title: Vndmtrx
-author: Eduardo N. S. R.
+author:
+  name: Eduardo N.S.R.
+  email: vndmtrx@duck.com
 
-rss-description: >
+# The `>` after `description:` means to ignore line-breaks until next key.
+# If you want to omit the line-break after the end of text, use `>-` instead.
+#
+description: >
   Um blog com a proposta de falar sobre vários assuntos, desde desenvolvimento,
   passando por infra, devops, hacktivismo e até sobre conspirações alienígenas e
   portais circulares que permitem viagem a outros planetas.
 
-remote_theme: daattali/beautiful-jekyll@6.0.1
+# Build settings
+#
+remote_theme: jekyll/minima
 
 plugins:
   - jekyll-remote-theme
-  - jekyll-paginate
-  - jekyll-sitemap
+  - jekyll-feed
+  - jekyll-seo-tag
 
-navbar-links:
-  Sobre euzinhe: "about"
+# Theme-specific settings
+#
+minima:
+  skin: auto
 
-avatar: "/favicon-thumb.png"
-round-avatar: true
+  show_excerpts: true
 
-social-network-links:
-  email: "vndmtrx@duck.com"
-  rss: true
-  github: "vndmtrx"
-  mastodon: "tech.lgbt/@vndmtrx"
-  ORCID: "0009-0006-5569-1816"
-  linkedin: "eduardorolim"
+  social_links:
+    - title: Github
+      icon: github
+      url: "https://github.com/vndmtrx"
+    - title: Mastodon
+      icon: mastodon
+      url: "https://tech.lgbt/@vndmtrx"
+    - title: Linkedin
+      icon: linkedin
+      url: "https://www.linkedin.com/in/eduardorolim/"
+    - title: ORCID
+      icon: orcid
+      url: "https://orcid.org/0009-0006-5569-1816"
 
-share-links-active:
-  twitter: false
-  facebook: false
-  linkedin: false
-  vk: false
-  reddit: false
 
-url-pretty: "vndmtrx.github.io"
-title-on-all-pages: true
-excerpt_length: 50
-feed_show_tags: true
-date_format: "%B %-d, %Y"
-timezone: "America/Sao_Paulo"
-markdown: kramdown
-highlighter: rouge
+# If you want to link only specific pages in your header, uncomment this and add the path to the pages in
+# order as they should show up.
+#
+header_pages:
+  - about.md
+
 permalink: /posts/:title/
-paginate: 5
-
-kramdown:
-  input: GFM
-
-defaults:
-  -
-    scope:
-      path: ""
-      type: "posts"
-    values:
-      layout: "post"
-      comments: false  # add comments to all blog posts
-      social-share: false # add social media sharing buttons to all blog posts
-  -
-    scope:
-      path: "" # any file that's not a post will be a "page" layout by default
-    values:
-      layout: "page"
+show_excerpts: true
