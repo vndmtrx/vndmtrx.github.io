@@ -31,6 +31,7 @@ theme: minima
 plugins:
  - jekyll-feed
  - jekyll-seo-tag
+ - jekyll-paginate
 #
 # Uncomment the following setting if you wish to disable deprecation warnings
 #   from newer versions of sass converter. Adapt as required.
@@ -38,6 +39,8 @@ plugins:
 #   quiet_deps: true
 #   silence_deprecations: [import]
 
+paginate: 3
+paginate_path: "/page/:num/"
 
 # Minima-specific settings (applicable to Minima v3 and above only)
 # -----------------------------------------------------------------
