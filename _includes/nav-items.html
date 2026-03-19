@@ -5,4 +5,8 @@
   <a class="nav-item" href="{{ hyperpage.url | relative_url }}">{{ hyperpage.title | escape }}</a>
   {%- endif -%}
   {%- endfor %}
+
+  <a class="nav-item theme-toggle" href="#" id="theme-toggle" title="Toggle theme">
+    <span id="theme-icon">🌛</span>
+  </a>
 </div>
