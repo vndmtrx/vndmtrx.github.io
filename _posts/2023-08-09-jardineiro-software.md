@@ -1,4 +1,5 @@
 ---
+layout: post
 title: "Você não é um Engenheiro de Software"
 author: "Eduardo N. S. R."
 date: 2023-08-09 10:43:00

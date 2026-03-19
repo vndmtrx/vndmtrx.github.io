@@ -1,6 +1,6 @@
 ---
-title: "Túneis SSH"
-subtitle: "O poder oculto do SSH (e que vc provavelmente não usa)"
+layout: post
+title: "Túneis - O poder oculto do SSH (e que vc provavelmente não usa)"
 author:
 - "Eduardo N. S. R."
 date: 2026-03-14 21:16:00 

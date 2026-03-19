@@ -1,5 +1,6 @@
 ---
-title: "Spring Boot e Kotlin Tutorial, Parte 1"
+layout: post
+title: "Spring Boot e Kotlin Tutorial, Parte 1 - Ambiente"
 subtitle: "Construindo o ambiente de desenvolvimento"
 author:
 - "Eduardo N. S. R."

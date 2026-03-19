@@ -1,4 +1,5 @@
 ---
+layout: post
 title: "Recomeçando tudo de novo de algum lugar"
 author: "Eduardo N. S. R."
 date: 2023-04-30 11:17:00

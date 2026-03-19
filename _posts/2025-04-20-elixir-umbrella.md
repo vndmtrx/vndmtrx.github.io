@@ -1,4 +1,5 @@
 ---
+layout: post
 title: "Aprendendo Elixir - Estrutura Modular com Umbrella"
 author: "Eduardo N. S. R."
 date: 2025-04-20 15:46:00
