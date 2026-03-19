@@ -1,17 +1,16 @@
 ---
 layout: page
 title: "💫 Sobre euzinhe"
-subtitle: Vi Veri Veniversum Vivus Vici
 permalink: /about/
 ---
-🐮 *A Spherical Cow in a Vacuum*
+🎭 *Vi Veri Vniversum Vivvs Vici*
 
 - 🖥️ Devops hardcore e militante open-source, fechado com hacktivismo.
 - 🐕 *Infra as Code (IaC)*: Infra as Canines também, mas essa config tá em private repo.
 - 🧠 *Setup mental*: 80% devops, 20% vídeos de doguinhos pra recarregar.
 - ☕ *System deps*: Café, bad habits de criar projeto e caos.
 - 🤖 *Hardware specs*: Super poder reverso que transforma som e luz em critical hit (autismo issue #1).
-- 🎭 *Software runtime*: Debuff permanente com lugares novos/pessoas desconhecidas (autismo issue #2).
+- 👀 *Software runtime*: Debuff permanente com lugares novos/pessoas desconhecidas (autismo issue #2).
 - 📡 *Social API*: 418 I'm a teapot - Esse humano não foi projetado pra interpretar situações sociais (autismo issue #3).
 - 🔍 *Life TODO list*: Corrigir sintaxe, igualdade social e meus óculos, ninguém sai!
 - 🗣️ *I18n status*: pt_BR (native build), en (72.56% coverage), others (cloud L10n fallback).
