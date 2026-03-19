@@ -4,7 +4,7 @@ title: "💫 Sobre euzinhe"
 subtitle: Vi Veri Veniversum Vivus Vici
 permalink: /about/
 ---
-🐮 *A Spherical Cow in a Vacuum*
+🎭 *Vi Veri Vniversum Vivus Vici*
 
 - 🖥️ Devops hardcore e militante open-source, fechado com hacktivismo.
 - 🐕 *Infra as Code (IaC)*: Infra as Canines também, mas essa config tá em private repo.
