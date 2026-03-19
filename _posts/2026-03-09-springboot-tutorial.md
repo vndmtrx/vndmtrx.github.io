@@ -1,27 +1,27 @@
 ---
 layout: post
-title: "Spring Boot e Kotlin Tutorial, Parte 1 - Ambiente"
+title: "Spring Boot Tutorial, Parte 1 - Ambiente"
 subtitle: "Construindo o ambiente de desenvolvimento"
 author:
 - "Eduardo N. S. R."
 date: 2026-03-09 11:20:00
-permalink: /posts/spring-boot-kotlin-tutorial-parte-1-ambiente/
-tags: [Spring Boot, Kotlin, Backend, API]
-series: Spring Boot e Kotlin Tutorial
+permalink: /posts/spring-boot-tutorial-parte-1-ambiente/
+tags: [Spring Boot, Java, Kotlin]
+series: Spring Boot Tutorial
 ---
-
-> Este post faz parte da série **“Spring Boot e Kotlin Tutorial”**, onde eu construo, passo a passo, uma API backend moderna usando **Spring Boot** e **Kotlin**.
-> Aqui o foco é o backend: modelagem, persistência, resiliência, testes, observabilidade e deploy. O frontend vem depois, quando a API estiver bem cuidada por dentro.
 
 Nos últimos anos eu venho me focando mais na área de segurança, infraestrutura e de DevOps na maior parte dos projetos em que eu participo. Isso inclui migrações para nuvem, deploy de serviços com automação e gerenciamento de esteiras de deploy automatizado, na maioria dos casos diretamente com VMs e mais recentemente com conteiners. Dito isso, desenvolvimento nunca foi um forte na minha vida profissional, mas uma coisa sempre me incomodou nisso, que é a forma como vários projetos eram desenvolvidos.
 
-A inspiração pra este projeto veio da série de posts [Flask Mega Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world), do Miguel Grinberg, uma série que sempre admirei pela forma progressiva e prática com que ensina. A ideia aqui é trazer esse mesmo espírito “aprenda fazendo”, mas no universo do Spring Boot com Kotlin, enfatizando boas práticas de backend moderno, observabilidade e automação.
+> Este post faz parte da série **“Spring Boot Tutorial”**, onde eu construo, passo a passo, uma API backend moderna usando **Spring Boot**.
+> Aqui o foco é o backend: modelagem, persistência, resiliência, testes, observabilidade e deploy. A linguagem é tanto Java quanto Kotlin. O frontend vem depois, quando a API estiver bem cuidada por dentro.
+
+A inspiração pra este projeto veio da série de posts [Flask Mega Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world), do Miguel Grinberg, uma série que sempre admirei pela forma progressiva e prática com que ensina. A ideia aqui é trazer esse mesmo espírito “aprenda fazendo”, mas no universo do Spring Boot, enfatizando boas práticas de backend moderno, observabilidade e automação.
 
 Eu sei que vcs vão dizer que eu por ser de infra vou sempre ter uma visão diferente do dev, e vcs não estão errados. E é por isso que estou me propondo a fazer essa série de posts. Minha idéia é aprender ao mesmo tempo que vou documentando as várias coisas que eu aprendi nas minhas áreas de trabalho com esse estudo de uma nova linguagem, um novo framework, para começar.
 
 A ideia aqui, com essa série, é que você consiga acompanhar desde o ambiente de desenvolvimento, passando por banco, segurança, cache, testes, observabilidade, até chegar em Docker e Kubernetes, vendo os trade-offs e as pequenas decisões que normalmente ficam escondidas nos tutoriais bonitinhos, e para isso eu decidi criar uma aplicação clássica do tipo TODO, onde a parte da complexidade da solução é deixada de lado para focarmos efetivamente no uso das tecnologias na melhoria do projeto.
 
-Eu queria começar essa série de posts pela parte “menos glamourosa” do projeto: o ambiente de desenvolvimento. Não é banco, não é Redis, não é Kubernetes. É só... deixar o editor e o Java prontos. E mesmo assim, quase todo projeto que vejo tropeça exatamente nessa etapa (ou intui que o usuário já têm um ambiente bem definido).
+Eu queria começar essa série de posts pela parte “menos glamourosa” do projeto: o ambiente de desenvolvimento. Não é banco, não é Redis, não é Kubernetes. É só... deixar o editor e os runtimes do Java e Kotlin prontos. E mesmo assim, quase todo projeto que vejo tropeça exatamente nessa etapa (ou intui que o usuário já têm um ambiente bem definido).
 
 E por que disso? Porque na maioria das vezes a gente perde um monte de tempo com coisas como:
 - O clássico *“Na minha máquina funciona”* porque alguém tava fazendo tudo com Java 17 e o ambiente em si rodando com com Java 11;
@@ -32,11 +32,11 @@ Nada do que vou propor aqui é revolucionário. É só uma sugestão minha para 
 
 Dada essa fala inicial, vamos efetivamente ao texto.
 
-## Spring Boot e Kotlin Tutorial: Ambiente de desenvolvimento
+## Spring Boot Tutorial: Ambiente de desenvolvimento
 
-Então, a primeira coisa que vamos pensar: qual sistema operacional? Não vou me alongar aqui, pois cada um têm sua opção. Eu irei focar tudo em Debian trixie, pois é geralmente meu ambiente de trabalho base.
+Então, a primeira coisa que vamos pensar: qual sistema operacional? Não vou me alongar aqui, pois cada um têm sua opção. Eu irei focar tudo em **Debian Trixie**, pois é geralmente meu ambiente de trabalho base.
 
-A primeira coisa que eu faço aqui é instalar o [SDKMAN](https://sdkman.io/). Ele é um gerenciador de SDKs do Java que permite, entre outras coisas, vc ter várias versões diferentes do mesmo software. A instalação é simples de boba:
+A primeira coisa que eu faço aqui é instalar o **[SDKMAN](https://sdkman.io/)**. Ele é um gerenciador de SDKs do ambiente do Java que permite, entre outras coisas, vc ter várias versões diferentes do mesmo software. A instalação é simples de boba:
 
 ```bash
 $ curl -s "https://get.sdkman.io" | bash
@@ -97,13 +97,15 @@ java=24-tem
 
 Isso permite que os comandos de shell rodados no escopo do projeto sempre usem a versão Java correta e inclusive a instalação das dependências com o comando `sdk env install`.
 
+É importante citar também que não precisa ser só o Java. Ele têm vários runtimes para instalar, como o Kotlin, o SpringBoot, o Gradle, o Maven, entre outros. Você pode ver usando o comando `sdk list`, que irá mostrar todos os runtimes disponíveis.
+
 Feito isso, e após a configuração do ambiente base pelo script de instalação, estamos prontos para a próxima etapa.
 
 ### Instalação do VS Codium
 
 Agora que temos o JDK sob controle, a próxima opção nossa é o Editor de Código. Aqui eu vou sugerir o uso do VS Codium, só pq ele é Open Source e livre das telemetrias da Micro$oft. Além de tudo ele é leve e fácil de mexer.
 
-No Debian Trixie, a instalação é super fácil:
+No **Debian Trixie**, a instalação é super fácil:
 
 ```bash
 $ sudo extrepo enable vscodium
@@ -120,10 +122,10 @@ $ codium --install-extension MS-CEINTL.vscode-language-pack-pt-BR
 # Adiciona o pacote de idioma em português (tradução da interface)
 
 $ codium --install-extension vscjava.vscode-java-pack
-# Instala o pacote oficial de ferramentas Java para desenvolvimento JVM
+# Instala o pacote oficial de ferramentas Java para desenvolvimento
 
 $ codium --install-extension VMware.vscode-boot-dev-pack
-# Inclui o Spring Boot Pack, com suporte a inicialização de projetos e depuração
+# Instala o Spring Boot Pack, com suporte a inicialização de projetos e depuração
 
 $ codium --install-extension mathiasfrohlich.Kotlin
 # Adiciona o linter e suporte à linguagem Kotlin
@@ -135,6 +137,6 @@ Com essas extensões instaladas, o Codium já traz autocompletar, debug e suport
 
 Aqui chegamos ao final desse primeiro post, que é curto mas é para falar um pouco sobre a criação de ambientes iniciais.
 
-Olhando o que montamos, vejo algo simples mas que resolve o essencial: reprodutibilidade. Não é sobre ter o editor mais caro ou a distro perfeita, mas criar um espaço onde o foco vai pro código: O Java sempre o esperado, a navegação fluida no Spring. É o tipo de base que, na prática, evita horas perdidas com "na minha máquina roda", deixando energia pra decisões que realmente importam, que é o estudo do Spring Boot, do Kotlin e de como criar uma aplicação resiliente com esses dois.
+Olhando o que montamos, vejo algo simples mas que resolve o essencial: reprodutibilidade. Não é sobre ter o editor mais caro ou a distro perfeita, mas criar um espaço onde o foco vai pro código: O Java sempre o esperado, a navegação fluida no Spring. É o tipo de base que, na prática, evita horas perdidas com "na minha máquina roda", deixando energia pra decisões que realmente importam, que é o estudo do Spring Boot, seja com Java ou Kotlin, e de como criar uma aplicação resiliente com esses dois.
 
 A internet tá cheia de tutoriais sobre Spring Boot (e LLMs que geram código inteiro num piscar de olhos). Então por que isso aqui? Pra mim, é forma de estudar: escrevendo pra outros, organizo ideias, testo na prática e descubro os bugs que não aparecem no `^C` / `^V`. Se ajudar alguém a pular uma armadilha ou repensar o setup, já valeu. Na Parte 2, iremos tratar do setup inicial do projeto no Spring Initializr e nosso primeiro endpoint.
