@@ -5,6 +5,7 @@ subtitle: "Construindo o ambiente de desenvolvimento"
 author:
 - "Eduardo N. S. R."
 date: 2026-03-09 11:20:00
+modified_date: 2026-03-19 21:11:00 
 permalink: /posts/spring-boot-tutorial-parte-1-ambiente/
 tags: [Spring Boot, Java, Kotlin]
 series: Spring Boot Tutorial
