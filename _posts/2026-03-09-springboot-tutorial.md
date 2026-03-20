@@ -10,10 +10,12 @@ tags: [Spring Boot, Java, Kotlin]
 series: Spring Boot Tutorial
 ---
 
-Nos últimos anos eu venho me focando mais na área de segurança, infraestrutura e de DevOps na maior parte dos projetos em que eu participo. Isso inclui migrações para nuvem, deploy de serviços com automação e gerenciamento de esteiras de deploy automatizado, na maioria dos casos diretamente com VMs e mais recentemente com conteiners. Dito isso, desenvolvimento nunca foi um forte na minha vida profissional, mas uma coisa sempre me incomodou nisso, que é a forma como vários projetos eram desenvolvidos.
+E se de repente a gente decidisse escrever um tutorial de Spring Boot? Pois é, eu decidi começar essa seara de estudo do framework pela parte que ninguém liga, mas que geralmente é a que quebra tudo quando não é feito do jeito certo: o ambiente de desenvolvimento. Parece bobo, mas sem ele sólido desde o começo, o resto vira dor de cabeça infinita.
 
 > Este post faz parte da série **“Spring Boot Tutorial”**, onde eu construo, passo a passo, uma API backend moderna usando **Spring Boot**.
 > Aqui o foco é o backend: modelagem, persistência, resiliência, testes, observabilidade e deploy. A linguagem é tanto Java quanto Kotlin. O frontend vem depois, quando a API estiver bem cuidada por dentro.
+
+Nos últimos anos eu venho me focando mais na área de segurança, infraestrutura e de DevOps na maior parte dos projetos em que eu participo. Isso inclui migrações para nuvem, deploy de serviços com automação e gerenciamento de esteiras de deploy automatizado, na maioria dos casos diretamente com VMs e mais recentemente com conteiners. Dito isso, desenvolvimento nunca foi um forte na minha vida profissional, mas uma coisa sempre me incomodou nisso, que é a forma como vários projetos eram desenvolvidos.
 
 A inspiração pra este projeto veio da série de posts [Flask Mega Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world), do Miguel Grinberg, uma série que sempre admirei pela forma progressiva e prática com que ensina. A ideia aqui é trazer esse mesmo espírito “aprenda fazendo”, mas no universo do Spring Boot, enfatizando boas práticas de backend moderno, observabilidade e automação.
 
