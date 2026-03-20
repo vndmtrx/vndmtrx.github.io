@@ -14,7 +14,7 @@ permalink: /about/
 - 📡 *Social API*: 418 I'm a teapot. Humano não feito para entender situações sociais (autismo issue #3).
 - 🔍 *Life TODO list*: Corrigir sintaxe, igualdade social e meus óculos, ninguém sai!
 - 🗣️ *I18n status*: pt_BR (native build), en (72.56% coverage), others (cloud L10n fallback).
-- 🌈 *Espalhando*: Amor, inclusão, bandeirinhas LGBT e uns bug no prod às vezes.
+- 🌈 *Espalhando*: Amor, inclusão, comunismo, bandeirinhas LGBT e uns bug no prod às vezes.
 - 🎯 *Defendendo*: Software Livre! Porque código, igual meios de produção, tem que ser do proletariado.
 - ♍ *Signo*: Sol em Ateísmo com ascendente em Cinismo (source: trust me bro).
 - 🇻🇳 *Gosto de*: Sushi. E de pequi. E de pamonha com jiló. E um drink de *Karl Marx* on the Rocks.
