@@ -358,7 +358,7 @@ Muito dessa informação você pode encontrar em sites como a Wikipédia [^18] c
 
 [^7]: **SPDY Whitepaper** (*Chromium/Google*) ([https://www.chromium.org/spdy/spdy-whitepaper/](https://www.chromium.org/spdy/spdy-whitepaper/))
 
-[^8]: **RFC 7540: HTTP/2** (*IETF, 2015*) (https://datatracker.ietf.org/doc/rfc7540)
+[^8]: **RFC 7540: HTTP/2** (*IETF, 2015*) ([https://datatracker.ietf.org/doc/rfc7540](https://datatracker.ietf.org/doc/rfc7540))
 
 [^9]: **Uso de HTTP/2** (*estatísticas W3Techs*) ([https://w3techs.com/technologies/details/ce-http2](https://w3techs.com/technologies/details/ce-http2))
 
@@ -379,4 +379,3 @@ Muito dessa informação você pode encontrar em sites como a Wikipédia [^18] c
 [^17]: **Suporte a HTTP/3** (*CanIUse*) ([https://caniuse.com/http3](https://caniuse.com/http3))
 
 [^18]: **HTTP** (*Wikipedia, visão geral*) ([https://en.wikipedia.org/wiki/HTTP](https://en.wikipedia.org/wiki/HTTP))
-
