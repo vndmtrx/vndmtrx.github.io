@@ -67,7 +67,7 @@ A recepção do HTTP/Web foi extremamente positiva. O ano de 1994 ficou conhecid
 
 Entre 1991 e 1995, vários recursos começaram a serem testados, em uma abordagem do tipo trial-and-error, onde os recursos eram implementados nos servidores e clientes e a comunidade testava para ver quais desses recursos tinham maior aceitação. Problemas de interoperabilidade eram bastante comuns nessa época.
 
-Em um esforço da W3C juntamente com a Internet Engineering Task Force (IETF), em novembro de 1996 foi criado um documento que descrevia as práticas mais comuns em relação ao HTTP. Esse documento foi conhecido como a RFC 1945 e definiu o protocolo **HTTP/1.0**
+Em um esforço da W3C juntamente com a Internet Engineering Task Force (IETF), em novembro de 1996 foi criado um documento que descrevia as práticas mais comuns em relação ao HTTP. Esse documento foi conhecido como a RFC 1945 [^4] e definiu o protocolo **HTTP/1.0**
 
 Nessa versão do protocolo, vários novos recursos foram adicionados:
 
