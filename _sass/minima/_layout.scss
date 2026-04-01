@@ -122,7 +122,21 @@
   }
 }
 
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  line-height: 1;
+  padding: 0;
+}
 
+.theme-toggle svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+}
 
 /**
  * Site footer
