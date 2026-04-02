@@ -1,6 +1,20 @@
 // Placeholder to allow defining custom styles that override everything else.
 // (Use `_sass/minima/custom-variables.scss` to override variable defaults)
 
+.text-center {
+  text-align: center;
+}
+
+.jp-float {
+  float: right;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-size: clamp(2rem, 8vw, 5rem) !important;
+  margin: 0 0 1rem 1.5rem;
+  line-height: 1.1;
+  shape-margin: 0.75rem;
+}
+
 .theme-toggle {
   display: inline-flex;
   align-items: center;
