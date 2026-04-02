@@ -7,6 +7,8 @@ lang: pt-BR
 author:
   name: "Eduardo N. S. R."
   email: "vndmtrx@duck.com"
+  tagline: "Vi Veri Vniversum Vivvs Vici"
+
 #
 # The `>` after `description:` means to ignore line-breaks until next key. If
 #   you wish to omit the line-break after the end of text, use `>-` instead.
@@ -14,6 +16,7 @@ description: >
   Um blog com a proposta de falar sobre vários assuntos, desde desenvolvimento,
   passando por infra, devops, hacktivismo e até sobre conspirações alienígenas e
   portais circulares que permitem viagem a outros planetas.
+  <br/><br/>Inclusive, se a criptografia fosse proibida, <em>fbzragr bf sbenf qn yrv grevnz cevinpvqnqr</em>...
 
 # Build settings
 # --------------
