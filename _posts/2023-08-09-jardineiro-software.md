@@ -2,7 +2,7 @@
 layout: post
 title: "Você não é um Engenheiro de Software"
 author: "Eduardo N. S. R."
-date: 2023-08-09 10:43:00
+date: 2023-08-09 10:43:00 GMT-3
 permalink: /posts/jardineiro-software/
 tags: [Programação, Análise de Sistemas]
 ---

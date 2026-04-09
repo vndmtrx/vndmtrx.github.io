@@ -3,8 +3,8 @@ layout: post
 title: "Evolução do Protocolo HTTP e da World Wide Web"
 author:
 - "Eduardo N. S. R."
-date: 2026-03-21 21:16:00 
-modified_date: 2026-03-25 14:11:00 
+date: 2026-03-21 20:16:00 GMT-3
+modified_date: 2026-03-25 14:11:00 GMT-3
 permalink: /posts/evolucao-http/
 tags: [HTTP, Web, Internet]
 ---

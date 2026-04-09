@@ -2,7 +2,7 @@
 layout: post
 title: "Aprendendo Elixir - Estrutura Modular com Umbrella"
 author: "Eduardo N. S. R."
-date: 2025-04-20 15:46:00
+date: 2025-04-20 15:46:00 GMT-3
 permalink: /posts/elixir-umbrella/
 tags: [Programação, Programação Funcional, Elixir, Umbrella, Modularização, Testes]
 ---

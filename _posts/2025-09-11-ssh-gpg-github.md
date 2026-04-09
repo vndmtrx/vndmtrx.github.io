@@ -2,7 +2,7 @@
 layout: post
 title: "Criando chaves SSH e GPG para o Github"
 author: "Eduardo N. S. R."
-date: 2025-09-11 23:13:00
+date: 2025-09-11 23:13:00 GMT-3
 permalink: /posts/ssh-gpg-github/
 tags: [Git, Github, DevOps]
 ---

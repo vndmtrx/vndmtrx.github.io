@@ -2,7 +2,7 @@
 layout: post
 title: "Aprendendo Elixir - Introdução"
 author: "Eduardo N. S. R."
-date: 2025-04-18 15:09:00
+date: 2025-04-18 15:09:00 GMT-3
 permalink: /posts/elixir-introducao/
 tags: [Programação, Programação Funcional, Elixir, Mix, ExUnit]
 ---
