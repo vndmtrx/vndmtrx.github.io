@@ -13,5 +13,5 @@ source ~/.bashrc
 gem install bundler jekyll
 bundle config set --local path 'vendor/bundle'
 bundle install
-bundle exec jekyll serve --livereload --baseurl ''
+bundle exec jekyll serve --host 0.0.0.0 --livereload --baseurl ''
 ```
