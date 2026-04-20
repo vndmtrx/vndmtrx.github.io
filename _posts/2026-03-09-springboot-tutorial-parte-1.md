@@ -5,16 +5,16 @@ subtitle: "Construindo o ambiente de desenvolvimento"
 author:
 - "Eduardo N. S. R."
 date: 2026-03-09 11:20:00 GMT-3
-modified_date: 2026-03-19 21:11:00 GMT-3
+modified_date: 2026-04-20 14:27:00 GMT-3
 permalink: /posts/spring-boot-tutorial-parte-1-ambiente/
-tags: [Spring Boot, Java, Kotlin]
+tags: [Spring Boot, Java]
 series: Spring Boot Tutorial
 ---
 
 E se de repente a gente decidisse escrever um tutorial de Spring Boot? Pois é, eu decidi começar essa seara de estudo do framework pela parte que ninguém liga, mas que geralmente é a que quebra tudo quando não é feito do jeito certo: o ambiente de desenvolvimento. Parece bobo, mas sem ele sólido desde o começo, o resto vira dor de cabeça infinita.
 
-> Este post faz parte da série **“Spring Boot Tutorial”**, onde eu construo, passo a passo, uma API backend moderna usando **Spring Boot**.
-> Aqui o foco é o backend: modelagem, persistência, resiliência, testes, observabilidade e deploy. A linguagem é tanto Java quanto Kotlin. O frontend vem depois, quando a API estiver bem cuidada por dentro.
+> *🔔* Este post faz parte da série **"Spring Boot Tutorial"**, onde eu construo, passo a passo, uma API backend moderna usando **Spring Boot**.
+> Aqui o foco é o backend: modelagem, persistência, resiliência, testes, observabilidade e deploy. A linguagem usada no projeto será Java, versão 25+. O frontend vem depois, quando a API estiver bem cuidada por dentro.
 
 Nos últimos anos eu venho me focando mais na área de segurança, infraestrutura e de DevOps na maior parte dos projetos em que eu participo. Isso inclui migrações para nuvem, deploy de serviços com automação e gerenciamento de esteiras de deploy automatizado, na maioria dos casos diretamente com VMs e mais recentemente com conteiners. Dito isso, desenvolvimento nunca foi um forte na minha vida profissional, mas uma coisa sempre me incomodou nisso, que é a forma como vários projetos eram desenvolvidos.
 
@@ -24,10 +24,10 @@ Eu sei que vcs vão dizer que eu por ser de infra vou sempre ter uma visão dife
 
 A ideia aqui, com essa série, é que você consiga acompanhar desde o ambiente de desenvolvimento, passando por banco, segurança, cache, testes, observabilidade, até chegar em Docker e Kubernetes, vendo os trade-offs e as pequenas decisões que normalmente ficam escondidas nos tutoriais bonitinhos, e para isso eu decidi criar uma aplicação clássica do tipo TODO, onde a parte da complexidade da solução é deixada de lado para focarmos efetivamente no uso das tecnologias na melhoria do projeto.
 
-Eu queria começar essa série de posts pela parte “menos glamourosa” do projeto: o ambiente de desenvolvimento. Não é banco, não é Redis, não é Kubernetes. É só... deixar o editor e os runtimes do Java e Kotlin prontos. E mesmo assim, quase todo projeto que vejo tropeça exatamente nessa etapa (ou intui que o usuário já têm um ambiente bem definido).
+Eu queria começar essa série de posts pela parte "menos glamourosa" do projeto: o ambiente de desenvolvimento. Não é banco, não é Redis, não é Kubernetes. É só... deixar o editor e o runtime do Java pronto. E mesmo assim, quase todo projeto que vejo tropeça exatamente nessa etapa (ou intui que o usuário já têm um ambiente bem definido).
 
 E por que disso? Porque na maioria das vezes a gente perde um monte de tempo com coisas como:
-- O clássico *“Na minha máquina funciona”* porque alguém tava fazendo tudo com Java 17 e o ambiente em si rodando com com Java 11;
+- O clássico *"Na minha máquina funciona"* porque alguém tava fazendo tudo com Java 17 e o ambiente em si rodando com com Java 11;
 - Falta de reprodutibilidade das builds dos softwares desenvolvidos, principalmente no CI;
 - Ambientes de desenvolvimentos mistos. Pois sempre têm um usando um IntelliJ e outro usando um VS Code.
 
@@ -52,11 +52,11 @@ $ source "$HOME/.sdkman/bin/sdkman-init.sh"
 A instalação das versões do Java seguem uma dinâmica super simples:
 
 ```bash
-$ sdk install java 24-tem
-# Baixa e instala a versão Temurin 24 do Java
+$ sdk install java 26-tem
+# Baixa e instala a versão Temurin 26 do Java
 
-$ sdk default java 24-tem
-# Define o Java 24 como versão padrão global do usuário
+$ sdk default java 26-tem
+# Define o Java 26 (Temurin) como versão padrão global para todos os shells
 
 $ java --version
 # Confirma se a versão configurada é a esperada
@@ -65,14 +65,11 @@ $ java --version
 Você pode instalar outras versões concomitantes e usar elas de forma bem simples, conforme o shell abaixo:
 
 ```bash
-$ sdk default java 24-tem
-# Define o Java 24 (Temurin) como versão padrão global para todos os shells
-
 $ java --version
 # Exibe a versão Java atualmente configurada
-openjdk 24 2025-03-18
-OpenJDK Runtime Environment Temurin-24+36 (build 24+36)
-OpenJDK 64-Bit Server VM Temurin-24+36 (build 24+36, mixed mode, sharing)
+openjdk 26 2026-03-17
+OpenJDK Runtime Environment Temurin-26+35 (build 26+35)
+OpenJDK 64-Bit Server VM Temurin-26+35 (build 26+35, mixed mode, sharing)
 
 $ sdk use java 25-tem
 # Troca temporariamente para a versão 25 apenas nesta sessão
@@ -84,7 +81,7 @@ OpenJDK Runtime Environment Temurin-25+36 (build 25+36-LTS)
 OpenJDK 64-Bit Server VM Temurin-25+36 (build 25+36-LTS, mixed mode, sharing)
 ```
 
-No primeiro caso, foi definido o Java 24 como versão padrão para todo o usuário, e no segundo caso o Java 25 foi definido somente para aquela sessão de shell, voltando ao 24 após fechar e abrir novamente.
+No primeiro caso, foi definido o Java 26 como versão padrão para todo o usuário, e no segundo caso o Java 25 foi definido somente para aquela sessão de shell, voltando ao 26 após fechar e abrir novamente.
 
 No fim do dia, apesar de simples, não é muito prático ficar trocando o SDK toda vez que mudar de projeto, e para isso o SDKMAN possui uma funcionalidade de configuração de ambiente:
 
@@ -95,12 +92,12 @@ $ sdk env init
 $ cat .sdkmanrc 
 # Enable auto-env through the sdkman_auto_env config
 # Add key=value pairs of SDKs to use below
-java=24-tem
+java=26-tem
 ```
 
 Isso permite que os comandos de shell rodados no escopo do projeto sempre usem a versão Java correta e inclusive a instalação das dependências com o comando `sdk env install`.
 
-É importante citar também que não precisa ser só o Java. Ele têm vários runtimes para instalar, como o Kotlin, o SpringBoot, o Gradle, o Maven, entre outros. Você pode ver usando o comando `sdk list`, que irá mostrar todos os runtimes disponíveis.
+É importante citar também que não precisa ser só o Java. O Sdkman têm vários runtimes para instalar, como o Kotlin, o SpringBoot, o Gradle, o Maven, entre outros. Você pode ver usando o comando `sdk list`, que irá mostrar todos os runtimes disponíveis.
 
 Feito isso, e após a configuração do ambiente base pelo script de instalação, estamos prontos para a próxima etapa.
 
@@ -129,9 +126,6 @@ $ codium --install-extension vscjava.vscode-java-pack
 
 $ codium --install-extension VMware.vscode-boot-dev-pack
 # Instala o Spring Boot Pack, com suporte a inicialização de projetos e depuração
-
-$ codium --install-extension mathiasfrohlich.Kotlin
-# Adiciona o linter e suporte à linguagem Kotlin
 ```
 
 Com essas extensões instaladas, o Codium já traz autocompletar, debug e suporte ao Spring Boot prontos para uso.
@@ -140,6 +134,6 @@ Com essas extensões instaladas, o Codium já traz autocompletar, debug e suport
 
 Aqui chegamos ao final desse primeiro post, que é curto mas é para falar um pouco sobre a criação de ambientes iniciais.
 
-Olhando o que montamos, vejo algo simples mas que resolve o essencial: reprodutibilidade. Não é sobre ter o editor mais caro ou a distro perfeita, mas criar um espaço onde o foco vai pro código: O Java sempre o esperado, a navegação fluida no Spring. É o tipo de base que, na prática, evita horas perdidas com "na minha máquina roda", deixando energia pra decisões que realmente importam, que é o estudo do Spring Boot, seja com Java ou Kotlin, e de como criar uma aplicação resiliente com esses dois.
+Olhando o que montamos, vejo algo simples mas que resolve o essencial: reprodutibilidade. Não é sobre ter o editor mais caro ou a distro perfeita, mas criar um espaço onde o foco vai pro código: O Java sempre o esperado, a navegação fluida no Spring. É o tipo de base que, na prática, evita horas perdidas com *"na minha máquina roda"*, deixando energia pra decisões que realmente importam, que é o estudo do Spring Boot, e de como criar uma aplicação resiliente.
 
-A internet tá cheia de tutoriais sobre Spring Boot (e LLMs que geram código inteiro num piscar de olhos). Então por que isso aqui? Pra mim, é forma de estudar: escrevendo pra outros, organizo ideias, testo na prática e descubro os bugs que não aparecem no `^C` / `^V`. Se ajudar alguém a pular uma armadilha ou repensar o setup, já valeu. Na Parte 2, iremos tratar do setup inicial do projeto no Spring Initializr e nosso primeiro endpoint.
+A internet já está cheia de tutoriais sobre Spring Boot (e LLMs que geram código inteiro num piscar de olhos). Então por que isso aqui? Pra mim, é forma de estudar: escrevendo pra outros, organizo ideias, testo na prática e descubro os bugs que não aparecem no `^C` / `^V`. Se ajudar alguém a pular uma armadilha ou repensar o setup, já valeu. Na Parte 2, iremos tratar do setup inicial do projeto no Spring Initializr e nosso primeiro endpoint.
