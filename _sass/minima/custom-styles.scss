@@ -42,3 +42,20 @@
 code, pre {
   font-variation-settings: "MONO" 1, "CASL" 0;
 }
+
+// Padronização semântica: reduz o tamanho visual dos headers para que possamos
+// usar h2 (##) como título principal das seções sem explodir a tela.
+.post-content {
+  h2 {
+    font-size: 1.6rem;
+    margin-top: 2rem;
+  }
+  h3 {
+    font-size: 1.3rem;
+    margin-top: 1.5rem;
+  }
+  h4 {
+    font-size: 1.1rem;
+    margin-top: 1.2rem;
+  }
+}

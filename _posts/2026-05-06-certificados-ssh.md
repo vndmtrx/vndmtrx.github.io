@@ -31,7 +31,7 @@ O problema é múltiplo:
 
 A solução elegante, nativa e absurdamente poderosa do OpenSSH para tudo isso se chama **Certificados SSH** [^2] [^3].
 
-### O que são Certificados SSH?
+## O que são Certificados SSH?
 
 Ao ouvir a palavra "Certificado", é normal ter calafrios lembrando do padrão X.509 usado em sites HTTPS (com toda aquela sopa de letrinhas: ASN.1, CSR, PEM, DER, Cadeias de Confiança). Mas respire fundo, pois como a própria documentação oficial deixa claro [^4]: **Certificados SSH não são certificados X.509**. O OpenSSH usa um formato próprio, que é deliciosamente simples.
 
@@ -43,7 +43,7 @@ A lógica do jogo vira de cabeça para baixo:
 
 Isso é feito através de duas vias independentes: **Host Certificates** e **User Certificates**. Vamos dissecá-los.
 
-### Um parênteses importante: Qual tipo de chave usar para a CA?
+## Um parênteses importante: Qual tipo de chave usar para a CA?
 
 Antes de criar a CA, precisamos decidir qual algoritmo criptográfico ela vai usar. Historicamente, nós criávamos CAs com RSA (`ssh-keygen -t rsa -b 4096`). Mas os tempos mudaram. 
 
@@ -55,7 +55,7 @@ A recomendação padrão ouro hoje em dia, e o que eu pessoalmente uso para tudo
 
 Para uma CA (que vai viver por anos e ser a raiz da confiança da sua infraestrutura) use `ed25519`.
 
-### Host CA: O fim do *"Are you sure you want to continue connecting?"*
+## Host CA: O fim do *"Are you sure you want to continue connecting?"*
 
 A primeira CA que vamos criar é a de Host. O objetivo dela é acabar com o prompt do TOFU, permitindo que a sua máquina local tenha certeza absoluta de que aquele IP/DNS pertence ao servidor correto.
 
@@ -123,7 +123,7 @@ O comando cospe arquivos com o sufixo `-cert.pub`. Você devolve o certificado r
 HostCertificate /etc/ssh/ssh_host_ed25519_key-cert.pub
 ```
 
-#### Inspecionando os Certificados
+### Inspecionando os Certificados
 
 Diferente de um certificado X.509 onde você precisa do `openssl x509 -text...`, no SSH você só precisa usar a flag `-L` no `ssh-keygen` para ler os metadados de um certificado em plain text. Vamos ver como ficaram nossos dois servidores:
 
@@ -156,7 +156,7 @@ db-01_key-cert.pub:
 
 Olha que estrutura limpa. Ele mostra o formato `v01@openssh.com` (o padrão de certificado), quem assinou, a validade e, principalmente, os diferentes **Principals** de cada servidor. É essa lista de *principals* exclusiva em cada certificado que impede que o servidor PHP (mesmo possuindo um certificado de host válido assinado pela CA da empresa) responda por conexões destinadas ao banco de dados e intercepte o tráfego da Maria, por exemplo.
 
-#### O Lado do Cliente
+### O Lado do Cliente
 
 O servidor agora apresenta um certificado no *handshake* SSH em vez da chave pública comum. Mas como o seu PC sabe que deve confiar nele? Você só precisa adicionar **uma única linha** no seu `~/.ssh/known_hosts` local:
 
@@ -166,7 +166,7 @@ O servidor agora apresenta um certificado no *handshake* SSH em vez da chave pú
 
 Pronto. Você acabou de dizer: *"Confie cegamente em qualquer máquina que responda por `.example.com` SE ela apresentar um certificado assinado por esta CA"*. Adeus prompt do TOFU. Zero cliques. Total segurança contra MITM.
 
-### User CA: O expurgo do arquivo *authorized_keys*
+## User CA: O expurgo do arquivo *authorized_keys*
 
 Se o Host CA facilita a vida de quem conecta, a User CA salva a alma de quem administra o servidor. Vamos criar uma segunda CA, exclusiva para assinar chaves de usuários:
 
@@ -237,7 +237,7 @@ $ ssh-keygen -s ca_user -I "antonio_qa" \
 
 Isso gera os arquivos `-cert.pub`. Cada um baixa o seu respectivo certificado e o coloca na mesma pasta `~/.ssh/` onde está a chave privada. 
 
-#### A mágica no cliente (ssh-agent)
+### A mágica no cliente (ssh-agent)
 
 O mais legal é que o cliente SSH e o `ssh-agent` são incrivelmente inteligentes na hora de gerenciar essas chaves. O **ssh-agent** é um programa que roda em background na sua máquina e guarda suas chaves privadas na memória, evitando que você digite a passphrase toda vez que for conectar.
 
@@ -263,7 +263,7 @@ Esse mesmo ciclo de subir o agent e rodar o `ssh-add` é feito pela Maria, pelo 
 
 E a grande vantagem do campo de validade: se a empresa contratar o **Carlos** (um consultor terceirizado) para atuar na infraestrutura por apenas uma semana, a equipe de Ops pode emitir o certificado dele com `-V +1w` (válido por 1 semana) ou até mesmo `-V +1d` para um acesso de apenas um dia. Quando o prazo acabar, o acesso do Carlos some automaticamente de toda a rede. Ninguém precisa criar um ticket lembrando de entrar nos servidores para limpar chaves. O certificado simplesmente "vence" e o SSH recusa novas conexões.
 
-#### E se um notebook for roubado? A Lista de Revogação (KRL)
+### E se um notebook for roubado? A Lista de Revogação (KRL)
 
 "Mas Dudu, o certificado do João vale por 12 semanas, e ele teve o notebook roubado hoje. Como eu bloqueio o acesso dele se não tem `authorized_keys` pra apagar?"
 
@@ -287,7 +287,7 @@ A parte chata aqui é manter esse arquivo sempre atualizado em todas as máquina
 0 0,12 * * * root curl -s https://pki.example.com/revs.krl -o /etc/ssh/rev_keys.krl
 ```
 
-### O Segredo do Sucesso: Principals e Identities
+## O Segredo do Sucesso: Principals e Identities
 
 Você percebeu o parâmetro `-n` recebendo uma lista separada por vírgulas (como `joao,dev_php,dev_db`) quando assinamos as chaves? Isso define os **Principals** (identidades) [^6], e é a parte mais poderosa da autorização via certificado. É o que permite agrupar múltiplos acessos em um único certificado válido para a rede inteira.
 
@@ -333,7 +333,7 @@ Por último, o arquivo `/etc/ssh/auth_principals/db_readonly` exige apenas o pri
 dev_db
 ```
 
-#### O Desfecho dos Testes de Acesso
+### O Desfecho dos Testes de Acesso
 
 Vamos ver o que acontece na prática com o nosso time:
 
@@ -360,7 +360,7 @@ Ele tenta `ssh deploy@php-01`. O certificado do Antônio tem apenas o principal 
 
 Para empresas muito grandes, o OpenSSH oferece até a diretiva `AuthorizedPrincipalsCommand`, que permite que o SSH execute um script ou binário (passando o certificado do usuário) que pode bater num LDAP ou API interna para retornar "quais principals são válidos para esse login", removendo totalmente a necessidade de distribuir arquivos de configuração de principals localmente em cada servidor.
 
-### O perigo mora nos detalhes: A falha CVE-2026-35414
+## O perigo mora nos detalhes: A falha CVE-2026-35414
 
 Claro que nem tudo é perfeito. Toda feature complexa carrega suas armadilhas, e o subsistema de Principals teve uma prova de fogo recente com a **CVE-2026-35414** [^7] (afetando OpenSSH em versões anteriores à 10.3).
 
@@ -388,7 +388,7 @@ A implicação disso em produção causa tanto DoS quanto Bypass:
 
 A correção definitiva requer atualizar para a versão 10.3+. Mas há uma regra de design universal para levar pra vida: **Nunca use vírgulas, espaços ou caracteres especiais nos nomes dos seus Principals**. Trate Principals como variáveis limpas e restritas (ex: `admin`, `db_read`, `squad_frontend`). Deixe as vírgulas apenas para separar os argumentos do `ssh-keygen`.
 
-### Conclusão
+## Conclusão
 
 Implementar Certificados SSH muda drasticamente a maturidade técnica de um time de operações. Você elimina de vez a dor de cabeça com gerenciamento de estado (as chaves espalhadas e esquecidas por dezenas de servidores), ganha controle por expiração automática, consegue revogar acesso de ex-funcionários de forma centralizada (com KRL) e garante a identidade criptográfica dos servidores sem treinar seus desenvolvedores a ignorarem alertas de segurança no terminal.
 
@@ -398,12 +398,18 @@ Vale lembrar, no entanto, que os certificados SSH resolvem brilhantemente o prob
 
 Até a próxima!
 
-### Bibliografia e Referências
+## Bibliografia e Referências
 
 [^1]: **SSH certificates: the better SSH experience** {*jpmens.net, Abril/2026*} ([Link](https://jpmens.net/2026/04/03/ssh-certificates-the-better-ssh-experience/))
+
 [^2]: **Using OpenSSH Certificate Authentication** {*Red Hat Documentation, RHEL 6 Deployment Guide*} ([Link](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/6/html/deployment_guide/sec-using_openssh_certificate_authentication))
+
 [^3]: **If you're not using SSH certificates you're doing SSH wrong** {*Smallstep Blog, Maio/2024*} ([Link](https://smallstep.com/blog/use-ssh-certificates/))
+
 [^4]: **OpenSSH Manual Pages: ssh-keygen(1) - CERTIFICATES** {*OpenBSD manual*} ([Link](https://man.openbsd.org/ssh-keygen.1#CERTIFICATES))
+
 [^5]: **SSH CA host and user certificates** {*liw.fi*} ([Link](https://liw.fi/sshca/))
+
 [^6]: **Como configurar autenticação baseada em certificados SSH** {*Tempest SideChannel Blog*} ([Link](https://www.sidechannel.blog/como-configurar-autenticacao-baseada-em-certificados-ssh/))
+
 [^7]: **CVE-2026-35414: Exploiting OpenSSH’s authorized_keys Principals Mishandling** {*CVE.news, Abril/2026*} ([Link](https://www.cve.news/cve-2026-35414/))
