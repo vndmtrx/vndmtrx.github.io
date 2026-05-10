@@ -3,11 +3,13 @@ layout: post
 title: "Aprendendo Elixir - Introdução"
 author: "Eduardo N. S. R."
 date: 2025-04-18 15:09:00 GMT-3
+modified_date: 2026-05-10 10:26:00 GMT-3
 permalink: /posts/elixir-introducao/
-tags: [Programação, Programação Funcional, Elixir, Mix, ExUnit]
+tags: [Programação, Programação Funcional, Elixir]
+series: Aprendendo Elixir
 ---
 
-Este post inaugura uma série intitulada *Aprendendo Elixir*, na qual registro minha jornada de aprendizado com essa linguagem. Minha ideia aqui é descrever meu aprendizado — e escrever sobre isso é uma forma de consolidar esse processo. Ao longo dos próximos módulos, iremos construir uma base sólida em Elixir por meio de projetos práticos, cada um introduzindo novos conceitos e boas práticas da programação funcional. Espero que este conteúdo te ajude tanto quanto está me ajudando.
+Este post inaugura uma série intitulada *Aprendendo Elixir*, na qual registro minha jornada de aprendizado com essa linguagem. Minha ideia aqui é descrever meu aprendizado (e escrever sobre isso é uma forma de consolidar esse processo). Ao longo dos próximos módulos, iremos construir uma base sólida em Elixir por meio de projetos práticos, cada um introduzindo novos conceitos e boas práticas da programação funcional. Espero que este conteúdo te ajude tanto quanto está me ajudando.
 
 Sempre tive afinidade com linguagens funcionais. Meu primeiro contato foi ainda nos anos 90, em que usava AutoLisp, no AutoCAD R14. O AutoLisp me criou o interesse para o paradigma funcional de forma inesperada. Mais tarde, usei Python extensivamente, não apenas por sua clareza sintática, mas principalmente pelos recursos funcionais que ele mescla com programação imperativa e orientação a objetos. Também sempre tive bastante apreço por Java: mesmo não sendo funcional, sua estrutura e clareza sempre me pareceram convidativas à manutenção e organização do código.
 
@@ -19,7 +21,7 @@ Agora, com Elixir, sinto um misto desses mundos: a elegância da sintaxe, combin
 
 Por ser funcional, Elixir adota conceitos como imutabilidade de dados e funções puras. Isso favorece a previsibilidade do código e simplifica testes e paralelismo. Além disso, Elixir possui uma sintaxe moderna e acessível, e integra ferramentas como o `mix` (para gerenciamento de projetos) e o `ExUnit` (para testes automatizados), o que torna o ecossistema produtivo e acolhedor para desenvolvedores iniciantes e experientes.
 
-Neste primeiro módulo, configurei meu ambiente com ASDF, criei um projeto simples com `mix` e implementei uma função básica acompanhada de testes automatizados com `ExUnit`. Tudo isso dentro de uma estrutura clara e replicável — e todos os exemplos deste módulo estão disponíveis no item [01-saudacao](https://github.com/vndmtrx/estudo_elixir/tree/main/01-saudacao), e os demais estarão organizados no [repositório principal do projeto](https://github.com/vndmtrx/estudo_elixir) 🧰
+Neste primeiro módulo, configurei meu ambiente com ASDF, criei um projeto simples com `mix` e implementei uma função básica acompanhada de testes automatizados com `ExUnit`. Tudo isso dentro de uma estrutura clara e replicável, e todos os exemplos deste módulo estão disponíveis no item [01-saudacao](https://github.com/vndmtrx/estudo_elixir/tree/main/01-saudacao), e os demais estarão organizados no [repositório principal do projeto](https://github.com/vndmtrx/estudo_elixir) 🧰
 
 ## Instalação do ASDF e das dependências
 
@@ -183,11 +185,14 @@ mix test
 
 Este primeiro módulo dá uma base mínima, mas essencial, para começar com Elixir. Dá para ter uma noção do poder da modularização, como a linguagem valoriza a clareza das funções, e como o sistema de testes é integrado desde o início. Nos próximos posts, vou expandir esse projeto e explorar novos conceitos, mantendo sempre o foco na prática.
 
-### Referências 🔗
+## Referências
 
-- [Wikipedia — Elixir (linguagem de programação)](https://pt.wikipedia.org/wiki/Elixir_(linguagem_de_programa%C3%A7%C3%A3o))
-- [Documentação oficial do Elixir](https://elixir-lang.org/)
-- [Guia do Mix (oficial)](https://hexdocs.pm/mix/Mix.html)
-- [Guia do ExUnit (oficial)](https://hexdocs.pm/ex_unit/ExUnit.html)
-- [Documentação do ASDF](https://asdf-vm.com/)
+[^1]: **Elixir (linguagem de programação)** {*Wikipedia*} ([Link](https://pt.wikipedia.org/wiki/Elixir_(linguagem_de_programa%C3%A7%C3%A3o)))
 
+[^2]: **Documentação oficial do Elixir** {*Elixir Lang*} ([Link](https://elixir-lang.org/))
+
+[^3]: **Guia do Mix** {*HexDocs*} ([Link](https://hexdocs.pm/mix/Mix.html))
+
+[^4]: **Guia do ExUnit** {*HexDocs*} ([Link](https://hexdocs.pm/ex_unit/ExUnit.html))
+
+[^5]: **Documentação do ASDF** {*ASDF VM*} ([Link](https://asdf-vm.com/))

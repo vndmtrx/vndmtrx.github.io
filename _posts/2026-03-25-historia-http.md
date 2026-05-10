@@ -344,38 +344,38 @@ Muito dessa informação você pode encontrar em sites como a Wikipédia [^18] c
 
 ## Referências
 
-[^1]: **Primeiro site da Web** (*CERN*) ([https://info.cern.ch/](https://info.cern.ch/)))
+[^1]: **Primeiro site da Web** {*CERN*} ([Link](https://info.cern.ch/))
 
-[^2]: **Anúncio público da WWW** (*Tim Berners-Lee, 1991*) ([https://www.w3.org/People/Berners-Lee/1991/08/art-6484.txt](https://www.w3.org/People/Berners-Lee/1991/08/art-6484.txt))
+[^2]: **Anúncio público da WWW** {*Tim Berners-Lee - 1991*} ([Link](https://www.w3.org/People/Berners-Lee/1991/08/art-6484.txt))
 
-[^3]: **NCSA Mosaic** (*história do primeiro browser popular*) ([https://web.archive.org/web/20070702183017/http://www.livinginternet.com/w/wi_mosaic.htm](https://web.archive.org/web/20070702183017/http://www.livinginternet.com/w/wi_mosaic.htm))
+[^3]: **NCSA Mosaic** {*Living Internet*} ([Link](https://web.archive.org/web/20070702183017/http://www.livinginternet.com/w/wi_mosaic.htm))
 
-[^4]: **RFC 1945: HTTP/1.0** (*IETF, 1996*) ([https://datatracker.ietf.org/doc/rfc1945](https://datatracker.ietf.org/doc/rfc1945))
+[^4]: **RFC 1945: HTTP/1.0** {*IETF - 1996*} ([Link](https://datatracker.ietf.org/doc/rfc1945))
 
-[^5]: **RFC 2068: HTTP/1.1** (*IETF, 1997*) ([https://datatracker.ietf.org/doc/rfc2068](https://datatracker.ietf.org/doc/rfc2068))
+[^5]: **RFC 2068: HTTP/1.1** {*IETF - 1997*} ([Link](https://datatracker.ietf.org/doc/rfc2068))
 
-[^6]: **Head-of-line blocking** (*Mozilla Developer Network*) ([https://developer.mozilla.org/en-US/docs/Glossary/Head_of_line_blocking](https://developer.mozilla.org/en-US/docs/Glossary/Head_of_line_blocking))
+[^6]: **Head-of-line blocking** {*Mozilla Developer Network*} ([Link](https://developer.mozilla.org/en-US/docs/Glossary/Head_of_line_blocking))
 
-[^7]: **SPDY Whitepaper** (*Chromium/Google*) ([https://www.chromium.org/spdy/spdy-whitepaper/](https://www.chromium.org/spdy/spdy-whitepaper/))
+[^7]: **SPDY Whitepaper** {*Chromium/Google*} ([Link](https://www.chromium.org/spdy/spdy-whitepaper/))
 
-[^8]: **RFC 7540: HTTP/2** (*IETF, 2015*) ([https://datatracker.ietf.org/doc/rfc7540](https://datatracker.ietf.org/doc/rfc7540))
+[^8]: **RFC 7540: HTTP/2** {*IETF - 2015*} ([Link](https://datatracker.ietf.org/doc/rfc7540))
 
-[^9]: **Uso de HTTP/2** (*estatísticas W3Techs*) ([https://w3techs.com/technologies/details/ce-http2](https://w3techs.com/technologies/details/ce-http2))
+[^9]: **Uso de HTTP/2** {*W3Techs*} ([Link](https://w3techs.com/technologies/details/ce-http2))
 
-[^10]: **Suporte a HTTP/2** (*CanIUse*) ([https://caniuse.com/http2](https://caniuse.com/http2))
+[^10]: **Suporte a HTTP/2** {*CanIUse*} ([Link](https://caniuse.com/http2))
 
-[^11]: **Evolution of HTTP** (*Mozilla Developer Network*) ([https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Evolution_of_HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Evolution_of_HTTP))
+[^11]: **Evolution of HTTP** {*Mozilla Developer Network*} ([Link](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Evolution_of_HTTP))
 
-[^12]: **Short history of the Web** (*CERN*) ([https://home.cern/science/computing/birth-web/short-history-web](https://home.cern/science/computing/birth-web/short-history-web))
+[^12]: **Short history of the Web** {*CERN*} ([Link](https://home.cern/science/computing/birth-web/short-history-web))
 
-[^13]: **Draft QUIC-HTTP2 mapping** (*IETF*) ([https://datatracker.ietf.org/doc/html/draft-shade-quic-http2-mapping](https://datatracker.ietf.org/doc/html/draft-shade-quic-http2-mapping))
+[^13]: **Draft QUIC-HTTP2 mapping** {*IETF*} ([Link](https://datatracker.ietf.org/doc/html/draft-shade-quic-http2-mapping))
 
-[^14]: **RFC 9000: QUIC** (*IETF, 2021*) ([https://datatracker.ietf.org/doc/rfc9000](https://datatracker.ietf.org/doc/rfc9000))
+[^14]: **RFC 9000: QUIC** {*IETF - 2021*} ([Link](https://datatracker.ietf.org/doc/rfc9000))
 
-[^15]: **RFC 9114: HTTP/3** (*IETF, 2022*) ([https://datatracker.ietf.org/doc/rfc9114](https://datatracker.ietf.org/doc/rfc9114))
+[^15]: **RFC 9114: HTTP/3** {*IETF - 2022*} ([Link](https://datatracker.ietf.org/doc/rfc9114))
 
-[^16]: **Uso de HTTP/3** (*W3Techs*) ([https://w3techs.com/technologies/details/ce-http3](https://w3techs.com/technologies/details/ce-http3))
+[^16]: **Uso de HTTP/3** {*W3Techs*} ([Link](https://w3techs.com/technologies/details/ce-http3))
 
-[^17]: **Suporte a HTTP/3** (*CanIUse*) ([https://caniuse.com/http3](https://caniuse.com/http3))
+[^17]: **Suporte a HTTP/3** {*CanIUse*} ([Link](https://caniuse.com/http3))
 
-[^18]: **HTTP** (*Wikipedia, visão geral*) ([https://en.wikipedia.org/wiki/HTTP](https://en.wikipedia.org/wiki/HTTP))
+[^18]: **HTTP** {*Wikipedia*} ([Link](https://en.wikipedia.org/wiki/HTTP))

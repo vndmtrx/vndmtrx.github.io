@@ -4,7 +4,7 @@ title: '🏷️ Tags'
 permalink: /tags/
 ---
 
-{% assign date_format = site.date_format | default: "%d/%m/%Y às %H:%M" %}
+{%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
 
 {%- capture site_tags -%}
     {%- for tag in site.tags -%}
@@ -23,15 +23,15 @@ permalink: /tags/
         <i class="fas fa-tag" aria-hidden="true"></i>
         &nbsp;{{- tag -}}&nbsp;({{site.tags[tag].size}})
     </h2>
-    <div class="post-list">
+    <ul class="post-list">
         {%- for post in site.tags[tag] -%}
-            <div class="tag-entry">
-                <a href="{{ post.url | relative_url }}">{{- post.title | strip_html -}}</a>
-                <div class="entry-date">
-                    <time datetime="{{- post.date | date_to_xmlschema -}}">{{- post.date | date: date_format -}}</time>
+            <li style="margin-bottom: 15px;">
+                <span class="post-meta">{{ post.date | date: date_format }}</span>
+                <div style="margin-top: 2px;">
+                    <a href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
                 </div>
-            </div>
+            </li>
         {%- endfor -%}
-    </div>
+    </ul>
 {%- endfor -%}
 </div>

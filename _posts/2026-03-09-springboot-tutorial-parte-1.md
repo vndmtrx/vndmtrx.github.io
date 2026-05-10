@@ -5,7 +5,7 @@ subtitle: "Construindo o ambiente de desenvolvimento"
 author:
 - "Eduardo N. S. R."
 date: 2026-03-09 11:20:00 GMT-3
-modified_date: 2026-04-20 14:27:00 GMT-3
+modified_date: 2026-05-10 09:49:00 GMT-3
 permalink: /posts/spring-boot-tutorial-parte-1-ambiente/
 tags: [Spring Boot, Java]
 series: Spring Boot Tutorial
@@ -39,7 +39,7 @@ Dada essa fala inicial, vamos efetivamente ao texto.
 
 Então, a primeira coisa que vamos pensar: qual sistema operacional? Não vou me alongar aqui, pois cada um têm sua opção. Eu irei focar tudo em **Debian Trixie**, pois é geralmente meu ambiente de trabalho base.
 
-A primeira coisa que eu faço aqui é instalar o **[SDKMAN](https://sdkman.io/)**. Ele é um gerenciador de SDKs do ambiente do Java que permite, entre outras coisas, vc ter várias versões diferentes do mesmo software. A instalação é simples de boba:
+A primeira coisa que eu faço aqui é instalar o **SDKMAN** [^1]. Ele é um gerenciador de SDKs do ambiente do Java que permite, entre outras coisas, vc ter várias versões diferentes do mesmo software. A instalação é simples de boba:
 
 ```bash
 $ curl -s "https://get.sdkman.io" | bash
@@ -97,7 +97,7 @@ java=26-tem
 
 Isso permite que os comandos de shell rodados no escopo do projeto sempre usem a versão Java correta e inclusive a instalação das dependências com o comando `sdk env install`.
 
-É importante citar também que não precisa ser só o Java. O Sdkman têm vários runtimes para instalar, como o Kotlin, o SpringBoot, o Gradle, o Maven, entre outros. Você pode ver usando o comando `sdk list`, que irá mostrar todos os runtimes disponíveis.
+É importante citar também que não precisa ser só o Java. O Sdkman têm vários runtimes para instalar, como o SpringBoot, o Gradle, o Maven, entre outros. Você pode ver usando o comando `sdk list`, que irá mostrar todos os runtimes disponíveis.
 
 Feito isso, e após a configuração do ambiente base pelo script de instalação, estamos prontos para a próxima etapa.
 
@@ -130,6 +130,63 @@ $ codium --install-extension VMware.vscode-boot-dev-pack
 
 Com essas extensões instaladas, o Codium já traz autocompletar, debug e suporte ao Spring Boot prontos para uso.
 
+### Um test-drive rápido com o JShell
+
+Antes de encerrarmos, como já instalamos o Java, que tal um teste rápido? A partir do Java 9 a linguagem passou a contar com o **JShell** [^2], um REPL (Read-Eval-Print Loop) que permite executar código Java de forma interativa sem a necessidade de criar classes ou compilar arquivos.
+
+Isso é extremamente útil para explorar APIs, testar pequenos algoritmos ou validar comportamentos da linguagem antes de colocá-los no projeto de fato. Para brincar um pouco, abra seu terminal e digite `jshell`:
+
+```bash
+$ jshell
+|  Welcome to JShell -- Version 26
+|  For an introduction type: /help intro
+
+jshell> var saudacao = "Olá, Spring Boot e JShell!"
+saudacao ==> "Olá, Spring Boot e JShell!"
+
+jshell> System.out.println(saudacao.toUpperCase())
+OLÁ, SPRING BOOT E JSHELL!
+```
+
+Um outro exemplo é o uso de `records`, que entraram no Java 16 e são estruturas imutáveis muito úteis para DTOs. Aqui podemos declarar e testar um diretamente no console:
+
+```bash
+jshell> record Todo(int id, String titulo, boolean concluido) {}
+|  created record Todo
+
+jshell> var tarefa = new Todo(1, "Aprender Spring Boot", false)
+tarefa ==> Todo[id=1, titulo="Aprender Spring Boot", concluido=false]
+
+jshell> tarefa.titulo()
+$5 ==> "Aprender Spring Boot"
+```
+
+E para fechar, o JShell permite carregar bibliotecas externas (JARs) ou o diretório de classes do seu próprio projeto para dentro da sessão. Isso será fundamental lá na frente, quando quisermos interagir com os serviços e os *Beans* do Spring Boot diretamente no console.
+
+Para carregar libs externas, usamos o comando `/env -class-path`. Como ainda não geramos a estrutura do nosso projeto Spring Boot, se tentarmos passar uma pasta de `build` agora, o JShell retornará um erro. Para fins de demonstração, vamos adicionar apenas o diretório atual (`.`) ao *classpath* da nossa sessão e, em seguida, importar a API de datas do Java para trabalhar:
+
+```bash
+jshell> /env -class-path .
+|  Setting new options and restoring state.
+
+jshell> import java.time.format.DateTimeFormatter
+
+jshell> var formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+formatador ==> Value(DayOfMonth,2)'/'Value(MonthOfYear,2)'/'Value(YearOfEra,4,19,EXCEEDS_PAD)
+
+jshell> System.out.println("Projeto iniciado em: " + java.time.LocalDate.now().format(formatador))
+Projeto iniciado em: 10/05/2026
+
+jshell> /exit
+|  Goodbye
+```
+
+Esse modelo de testar código interativamente reflete uma cultura muito forte em outras linguagens (como Python, Ruby ou Lisp) conhecida como **REPL-Driven Development** ou, mais informalmente, um desenvolvimento orientado a *tinkering* (experimentação contínua). 
+
+Em vez de escrevermos um bloco enorme de código, recompilar o projeto inteiro, subir um servidor pesado e torcer para funcionar, nós testamos pequenas hipóteses em tempo real. Saber "brincar" com a linguagem no terminal nos dá um ciclo de feedback absurdamente rápido. Conseguimos validar se uma API nativa funciona de um jeito específico, ou como um método se comporta, em questão de segundos.
+
+Durante o andamento dessa série, expandiremos essa ideia além do console puro. Veremos como interagir de forma semelhante usando o **Spring Boot DevTools** [^3], ganhando agilidade parecida no ecossistema da nossa aplicação.
+
 ## Conclusão
 
 Aqui chegamos ao final desse primeiro post, que é curto mas é para falar um pouco sobre a criação de ambientes iniciais.
@@ -137,3 +194,11 @@ Aqui chegamos ao final desse primeiro post, que é curto mas é para falar um po
 Olhando o que montamos, vejo algo simples mas que resolve o essencial: reprodutibilidade. Não é sobre ter o editor mais caro ou a distro perfeita, mas criar um espaço onde o foco vai pro código: O Java sempre o esperado, a navegação fluida no Spring. É o tipo de base que, na prática, evita horas perdidas com *"na minha máquina roda"*, deixando energia pra decisões que realmente importam, que é o estudo do Spring Boot, e de como criar uma aplicação resiliente.
 
 A internet já está cheia de tutoriais sobre Spring Boot (e LLMs que geram código inteiro num piscar de olhos). Então por que isso aqui? Pra mim, é forma de estudar: escrevendo pra outros, organizo ideias, testo na prática e descubro os bugs que não aparecem no `^C` / `^V`. Se ajudar alguém a pular uma armadilha ou repensar o setup, já valeu. Na Parte 2, iremos tratar do setup inicial do projeto no Spring Initializr e nosso primeiro endpoint.
+
+## Referências
+
+[^1]: **SDKMAN! Usage** {*SDKMAN!*} ([Link](https://sdkman.io/usage))
+
+[^2]: **JShell User's Guide** {*Oracle*} ([Link](https://docs.oracle.com/en/java/javase/21/jshell/introduction-jshell.html))
+
+[^3]: **Developer Tools** {*Spring Boot Reference*} ([Link](https://docs.spring.io/spring-boot/reference/using/devtools.html))

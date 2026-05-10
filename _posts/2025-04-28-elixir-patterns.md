@@ -5,6 +5,7 @@ author: "Eduardo N. S. R."
 date: 2025-04-28 20:28:00 GMT-3
 permalink: /posts/elixir-patterns/
 tags: [Programação, Programação Funcional, Elixir, Patterns]
+series: Aprendendo Elixir
 ---
 
 Se tívessemos que apontar uma única característica que define como é programar em Elixir, seria o **pattern matching**. Esse recurso da linguagem vai muito além do que atribuição tradicional que conhecemos em outras linguagens: ela molda a forma como estruturamos o código.
@@ -273,10 +274,14 @@ Neste artigo, exploramos diversas aplicações do pattern matching, desde opera�
 
 Compreender bem o pattern matching é essencial para escrever código Elixir de maneira idiomática e aproveitar ao máximo a expressividade que a linguagem oferece.
 
-## Referências 🔗
+## Referências
 
-- [Documentação oficial do Elixir](https://elixir-lang.org/)
-- [Pattern Matching no Elixir School](https://elixirschool.com/en/lessons/basics/pattern_matching)
-- [Pattern Matching na Documentação do Elixir](https://hexdocs.pm/elixir/pattern-matching.html)
-- [Estruturas de Controle na Documentação do Elixir](https://hexdocs.pm/elixir/case-cond-and-if.html)
-- [Patterns Binários na Documentação do Elixir](https://hexdocs.pm/elixir/main/patterns-and-guards.html#binaries)
+[^1]: **Documentação oficial do Elixir** {*Elixir Lang*} ([Link](https://elixir-lang.org/))
+
+[^2]: **Pattern Matching** {*Elixir School*} ([Link](https://elixirschool.com/en/lessons/basics/pattern_matching))
+
+[^3]: **Pattern Matching** {*HexDocs*} ([Link](https://hexdocs.pm/elixir/pattern-matching.html))
+
+[^4]: **Estruturas de Controle** {*HexDocs*} ([Link](https://hexdocs.pm/elixir/case-cond-and-if.html))
+
+[^5]: **Patterns Binários** {*HexDocs*} ([Link](https://hexdocs.pm/elixir/main/patterns-and-guards.html#binaries))

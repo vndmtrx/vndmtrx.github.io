@@ -6,6 +6,7 @@ author:
 date: 2026-03-14 21:16:00 GMT-3
 permalink: /posts/tuneis-ssh/
 tags: [SSH, Túneis]
+series: OpenSSH na Prática
 ---
 
 SSH é daquelas ferramentas que todo mundo na área de infra tem na ponta da língua: `ssh usuario@servidor`, entra, faz o que tem que fazer, sai. Simples, confiável, onipresente. O problema é que boa parte das pessoas pára exatamente por aí, e o pior é que o SSH possui alguns recursos que ficam completamente invisíveis pra quem nunca foi além do básico. Não porque sejam obscuros ou experimentais. Eles estão inclusive na man page, funcionam desde sempre, e aparecem toda vez que você digita `ssh --help`. Só que ninguém parou pra explicar direito como usar de forma intuitiva.
@@ -254,9 +255,14 @@ Em outro post futuro, pretendo falar de outro recurso muito poderoso do SSH, cha
 
 ## Bibliografia
 
-1. **[ssh(1) — Linux manual page](https://man7.org/linux/man-pages/man1/ssh.1.html)** - A Fonte;
-1. **[SSH.com: Complete Guide to SSH Tunneling](https://www.ssh.com/academy/ssh/tunneling-example)** - Exemplos práticos + casos avançados (inclusive com port forwarding múltiplo);
-1. **[MITRE ATT&CK T1021.004](https://attack.mitre.org/techniques/T1021/004/)** - SSH tunneling como técnica de navegação lateral oficializada;
-1. **[Sygnia: ESXi Ransomware via SSH Tunneling](https://www.sygnia.co/blog/esxi-ransomware-ssh-tunneling-defense-strategies/)** - Caso real de ransomware usando `-R` para se manter oculto no VMware;
-1. **[Red Canary: Lateral Movement with SSH](https://redcanary.com/blog/threat-detection/lateral-movement-with-secure-shell/)** - Detecção de abuso de SSH tunneling em produção;
-1. **[Kubernetes Network Policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/)** - Conceitos de microsegmentação para Kubernetes.
+[^1]: **ssh(1): Linux manual page** {*man7.org*} ([Link](https://man7.org/linux/man-pages/man1/ssh.1.html))
+
+[^2]: **Complete Guide to SSH Tunneling** {*SSH.com Academy*} ([Link](https://www.ssh.com/academy/ssh/tunneling-example))
+
+[^3]: **MITRE ATT&CK T1021.004** {*MITRE*} ([Link](https://attack.mitre.org/techniques/T1021/004/))
+
+[^4]: **ESXi Ransomware via SSH Tunneling** {*Sygnia Blog*} ([Link](https://www.sygnia.co/blog/esxi-ransomware-ssh-tunneling-defense-strategies/))
+
+[^5]: **Lateral Movement with SSH** {*Red Canary Blog*} ([Link](https://redcanary.com/blog/threat-detection/lateral-movement-with-secure-shell/))
+
+[^6]: **Kubernetes Network Policies** {*Kubernetes Documentation*} ([Link](https://kubernetes.io/docs/concepts/services-networking/network-policies/))

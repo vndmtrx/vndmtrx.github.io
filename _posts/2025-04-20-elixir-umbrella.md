@@ -3,8 +3,10 @@ layout: post
 title: "Aprendendo Elixir - Estrutura Modular com Umbrella"
 author: "Eduardo N. S. R."
 date: 2025-04-20 15:46:00 GMT-3
+modified_date: 2026-05-10 10:26:00 GMT-3
 permalink: /posts/elixir-umbrella/
-tags: [Programação, Programação Funcional, Elixir, Umbrella, Modularização, Testes]
+tags: [Programação, Programação Funcional, Elixir]
+series: Aprendendo Elixir
 ---
 
 Neste segundo post da série *Aprendendo Elixir*, vamos explorar como organizar projetos maiores usando **arquitetura modular** com uma estrutura de guarda-chuva (chamado *Umbrella* pelo Elixir). A ideia é dividir o sistema em múltiplas aplicações menores e coesas, que podem ser desenvolvidas, testadas e integradas dentro de uma aplicação principal. Esse modelo segue o princípio de separação de responsabilidades, facilitando a manutenção e o crescimento do código. 
@@ -13,9 +15,9 @@ Os exemplos desse post estão em [02-umbrella](https://github.com/vndmtrx/estudo
 
 Nosso projeto de exemplo é um **conversor unificado** com três apps:
 
-- `conversor_temperatura` – conversão entre Celsius e Fahrenheit
-- `conversor_distancia` – conversão entre metros e pés
-- `main` – aplicação principal que orquestra as conversões com interação do usuário
+- `conversor_temperatura`: conversão entre Celsius e Fahrenheit
+- `conversor_distancia`: conversão entre metros e pés
+- `main`: aplicação principal que orquestra as conversões com interação do usuário
 
 ## Por que usar um projeto Guarda-Chuva?
 
@@ -402,11 +404,14 @@ Além disso, reforçamos a idéia de que **apps no Elixir** são unidades organi
 
 Essa estrutura favorece a clareza, testes isolados e evolução contínua de sistemas mais robustos.
 
-## Referências 🔗
+## Referências
 
-- [Documentação oficial do Elixir](https://elixir-lang.org/)
-- [Guia oficial do Mix](https://hexdocs.pm/mix/Mix.html)
-- [Umbrella Projects no Elixir School](https://elixirschool.com/en/lessons/advanced/umbrella_projects/)
-- [Testing no Elixir School](https://elixirschool.com/en/lessons/testing/basics)
-- [Custom Mix Tasks no Elixir School](https://elixirschool.com/en/lessons/intermediate/mix_tasks)
+[^1]: **Documentação oficial do Elixir** {*Elixir Lang*} ([Link](https://elixir-lang.org/))
 
+[^2]: **Guia oficial do Mix** {*HexDocs*} ([Link](https://hexdocs.pm/mix/Mix.html))
+
+[^3]: **Umbrella Projects** {*Elixir School*} ([Link](https://elixirschool.com/en/lessons/advanced/umbrella_projects/))
+
+[^4]: **Testing** {*Elixir School*} ([Link](https://elixirschool.com/en/lessons/testing/basics/))
+
+[^5]: **Custom Mix Tasks** {*Elixir School*} ([Link](https://elixirschool.com/en/lessons/intermediate/mix_tasks/))

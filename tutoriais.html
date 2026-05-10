@@ -1,0 +1,40 @@
+---
+layout: page
+title: '📚 Tutoriais'
+permalink: /tutoriais/
+---
+
+{%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+
+{%- assign series_list = "" -%}
+{%- for post in site.posts -%}
+  {%- if post.series -%}
+    {%- assign check_item = "|" | append: post.series | append: "|" -%}
+    {%- assign current_list = "|" | append: series_list -%}
+    {%- unless current_list contains check_item -%}
+      {%- assign series_list = series_list | append: post.series | append: "|" -%}
+    {%- endunless -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- assign unique_series = series_list | split: "|" -%}
+
+<div id="full-series-list">
+  {%- for serie in unique_series -%}
+  <h2 id="{{ serie | slugify }}" class="linked-section">
+    <i class="fas fa-book" aria-hidden="true"></i>
+    &nbsp;{{ serie }}
+  </h2>
+  <ul class="post-list">
+    {%- assign serie_posts = site.posts | where: "series", serie -%}
+    {%- for post in serie_posts -%}
+    <li style="margin-bottom: 15px;">
+      <span class="post-meta">{{ post.date | date: date_format }}</span>
+      <div style="margin-top: 2px;">
+        <a href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+      </div>
+    </li>
+    {%- endfor -%}
+  </ul>
+  {%- endfor -%}
+</div>

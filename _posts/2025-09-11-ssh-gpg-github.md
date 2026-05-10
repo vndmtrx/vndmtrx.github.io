@@ -3,8 +3,10 @@ layout: post
 title: "Criando chaves SSH e GPG para o Github"
 author: "Eduardo N. S. R."
 date: 2025-09-11 23:13:00 GMT-3
+modified_date: 2026-05-10 10:26:00 GMT-3
 permalink: /posts/ssh-gpg-github/
 tags: [SSH, GPG, Git, Github]
+series: OpenSSH na Prática
 ---
 
 Não sei se vocês passam por isso, mas frequentemente eu troco minhas chaves SSH e GPG que uso no GitHub. Às vezes por precaução, mas a maioria das vezes é por esquecimento mesmo. E todas as vezes que vou criar novas chaves é o mesmo parto. Em vista disso, resolvi resumir um pouco o trabalho que é fazer toda essa via sacra de criação. Não chega a ser complicado, mas ter esses passos resumidos em um só lugar ajuda.
@@ -40,7 +42,7 @@ cat ~/.ssh/id_ed25519.pub
 
 Não sei vocês, mas eu gosto de assinar todos os commits que faço. Não que isso mude algo na minha vida ou na vida de alguém, mas quando você pega esse costume, é difícil depois você parar. Em vista disso, vamos mostrar como criar sua chave GPG, que na verdade é bem simples:
 
-```
+```bash
 gpg --full-generate-key
 ```
 
@@ -48,13 +50,13 @@ Serão feitas algumas perguntas: tipo e tamanho da chave (pode manter RSA 4096 s
 
 Para listar as chaves e pegar o Key ID:
 
-```
+```bash
 gpg --list-keys --keyid-format LONG
 ```
 
 Para exportar a pública e colar no GitHub (em *Settings → SSH and GPG keys → New GPG key*):
 
-```
+```bash
 gpg --armor --export XXXXXXXX
 ```
 
@@ -62,7 +64,7 @@ Onde XXXXXXXX é o identificador da chave pública da sua chave GPG (indicado pe
 
 Agora, para assinar seus commits, você precisará setar sua chave pública como chave de assinatura:
 
-```
+```bash
 git config --global user.signingkey XXXXXXXX
 git config --global commit.gpgsign true
 ```
@@ -89,7 +91,7 @@ Importante citar que esse recurso requer Git 2.34+.
 
 Feito isso, seja por GPG ou por SSH, para assinar seu commit, é simples. É só adicionar o parâmetro `-S` no seu comando de commit, como abaixo:
 
-```
+```bash
 git commit -S -m "Mensagem de commit bonitinha"
 ```
 
