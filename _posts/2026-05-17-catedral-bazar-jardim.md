@@ -20,7 +20,7 @@ Para pegar a visão, a gente precisa dar um passo atrás e lembrar do clássico 
 
 Mas aí veio o Desenvolvimento Guiado por IA e deu uma bela balançada nas regras do jogo.
 
-Hoje em dia, a IA está mudando tanto a economia quanto a ergonomia por trás daquele modelo. Escrever código ficou muito barato, mas coordenar pessoas continua sendo caro. Um único jardineiro, equipado com boas ferramentas de IA, consegue agora desenvolver sistemas inteiros que antes exigiam um time enorme.
+Hoje em dia, a IA está mudando tanto a economia quanto a ergonomia por trás daquele modelo. Escrever código ficou muito barato, mas coordenar pessoas continua sendo caro. Um único desenvolvedor, equipado com boas ferramentas de IA, consegue agora desenvolver sistemas inteiros que antes exigiam um time enorme.
 
 Ao mesmo tempo, o software está ficando incrivelmente pessoal: feito sob medida para o fluxo de trabalho, o "clima" da infraestrutura e os hábitos de uma única pessoa. Em vez de construir ferramentas genéricas para o maior público possível, os desenvolvedores criam cada vez mais coisas que enraízam perfeitamente nos seus próprios problemas. Outros ainda podem ler o código, forkear o projeto, mas a modificação local muitas vezes se torna muito mais barata do que tentar coordenar o desenvolvimento com um repositório central.
 
