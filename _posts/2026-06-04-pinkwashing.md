@@ -51,7 +51,7 @@ Se a sua empresa quer de fato celebrar o Orgulho, o caminho é olhar para dentro
 
 Nossa existência e nossa dignidade não têm prazo de validade nem data de expiração. Que o orgulho (e, principalmente, o compromisso real com a nossa integridade) continue vivo em julho, agosto, e em todos os outros meses do ano.
 
-Diversidade real não é uma campanha temporária com data de validade. É um compromisso diário e contínuo. E se a sua marca não está disposta a sustentar essa postura no dia a dia, talvez seja melhor nem tentar pintar o logotipo de colorido em junho.
+Diversidade real não é uma campanha temporária com data de validade; é um compromisso diário. E se a sua marca não está disposta a sustentar essa postura na prática, o resultado é óbvio: continuaremos apontando as contradições, fazendo memes e debochando de cada comercial forçado. E, nessas horas, a Juju do Teclados sempre será nossa rainha absoluta, servindo a trilha sonora perfeita para as nossas risadas. Sem atitude real, o deboche é o mínimo que vocês vão receber em troca.
 
 ## Referências
 
