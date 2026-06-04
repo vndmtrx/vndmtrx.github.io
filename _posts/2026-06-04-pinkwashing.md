@@ -45,7 +45,7 @@ Se a sua empresa quer de fato celebrar o Orgulho, o caminho é olhar para dentro
 1. **Processos seletivos acolhedores**: garanta etapas de contratação realmente inclusivas e transparentes, blindados contra o preconceito velado de recrutadores e gestores.
 2. **Treinamento contínuo de liderança**: treine gestores contra a homofobia e a transfobia diárias, que frequentemente se escondem sob a máscara de "brincadeiras de escritório".
 3. **Respeito absoluto à identidade**: garanta que o nome social seja respeitado em todos os sistemas, crachás e comunicações da empresa, sem exigir fluxos burocráticos humilhantes.
-4. **Apoio sustentável de verdade**: financie, apoie e faça parcerias com casas de acolhimento e instituições que salvam lives LGBTQIAPN+ o ano inteiro, e não apenas no dia 28 de junho.
+4. **Apoio sustentável de verdade**: financie, apoie e faça parcerias com casas de acolhimento e instituições que salvam lives LGBTQIAPN+ o ano inteiro, e não apenas no mês de junho.
 
 ## Conclusão: Orgulho não é campanha sazonal
 
