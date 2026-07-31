@@ -4,6 +4,7 @@ title: "Uma Breve História da Internet"
 author:
 - "Eduardo N. S. R."
 date: 2026-07-31 12:40:00 GMT-3
+modified_date: 2026-07-31 13:50:00 GMT-3
 permalink: /posts/historia-internet/
 tags: [Internet, Web, História, Redes]
 ---
@@ -20,7 +21,7 @@ Para ajudar a guiar a leitura por essa jornada mais longa, organizei os principa
 
 | Seção | Período / Década |
 | :--- | :--- |
-| [As Raízes da Internet: Comutação de Pacotes e a Guerra Fria](#as-raízes-da-internet) | Anos 60 |
+| [As Raízes da Internet: Comutação de Pacotes e a Guerra Fria](#as-raízes-da-internet-comutação-de-pacotes-e-a-guerra-fria) | Anos 60 |
 | [ARPANET: A Primeira Rede](#arpanet-a-primeira-rede) | 1969 - Anos 70 |
 | [O Surgimento do TCP/IP](#o-surgimento-do-tcpip) | 1974 - 1983 |
 | [A Internet Chega ao Brasil](#a-internet-chega-ao-brasil) | 1988 - 1995 |
@@ -28,7 +29,7 @@ Para ajudar a guiar a leitura por essa jornada mais longa, organizei os principa
 | [Os Primeiros Buscadores](#os-primeiros-buscadores) | 1990 - 1998 |
 | [A Guerra dos Navegadores](#a-guerra-dos-navegadores) | 1994 - Anos 2000 |
 | [A Bolha Pontocom (e o seu estouro)](#a-bolha-pontocom-e-o-seu-estouro) | 1995 - 2002 |
-| [A Era da Web 2.0](#a-era-da-web-20) | Anos 2000 |
+| [A Web 2.0 e o Conteúdo Gerado pelo Usuário](#a-web-20-e-o-conteúdo-gerado-pelo-usuário) | Anos 2000 |
 | [O Fenômeno das Redes Sociais](#o-fenômeno-das-redes-sociais) | 1997 - Presente |
 | [Smartphones e a Revolução Mobile](#smartphones-e-a-revolução-mobile) | 2007 - Presente |
 | [A Computação em Nuvem](#a-computação-em-nuvem) | 2003 - Presente |
@@ -38,13 +39,13 @@ Para ajudar a guiar a leitura por essa jornada mais longa, organizei os principa
 
 ## As Raízes da Internet: Comutação de Pacotes e a Guerra Fria
 
-Antes de qualquer coisa, a gente precisa voltar ao início dos anos 1960, em plena Guerra Fria. Nessa época, uma das preocupações dos militares americanos era bastante prática: como manter uma rede de comunicação funcionando caso parte dela fosse destruída por um ataque nuclear? As redes de telecomunicação existentes eram baseadas em comutação de circuitos, ou seja, quando duas pontas se comunicavam, existia um circuito dedicado entre elas. Se alguém cortasse aquele circuito, a comunicação morria.
+Antes de qualquer coisa, a gente precisa voltar ao início dos anos 1960, em plena Guerra Fria. Nessa época, uma das preocupações dos militares estadunidenses era bastante prática: como manter uma rede de comunicação funcionando caso parte dela fosse destruída por um ataque nuclear? As redes de telecomunicação existentes eram baseadas em comutação de circuitos, ou seja, quando duas pontas se comunicavam, existia um circuito dedicado entre elas. Se alguém cortasse aquele circuito, a comunicação morria.
 
 É nesse cenário que Paul Baran, um engenheiro da RAND Corporation, começou a pensar em uma alternativa. Ele publicou uma série de relatórios entre 1960 e 1964 chamada *"On Distributed Communications"* [^1], onde propôs um modelo de rede distribuída. A ideia era que a mensagem fosse quebrada em pedaços menores (que ele chamou de "message blocks") e que esses pedaços pudessem trafegar por caminhos diferentes dentro de uma rede em formato de malha, se reorganizando dinamicamente ao redor de pontos danificados ou sobrecarregados.
 
 Do outro lado do Atlântico, de forma totalmente independente, o cientista da computação Donald Davies chegava a conclusões parecidas no National Physical Laboratory (NPL), na Inglaterra, em 1965 [^2]. Em vez de motivações militares, seu objetivo era otimizar a troca de dados entre computadores de tempo compartilhado. Foi ele, inclusive, quem cunhou os termos **"packet"** (pacote) e **"packet switching"** (comutação de pacotes), terminologia que usamos até hoje [^3].
 
-Os dois pesquisadores trabalharam de forma independente, mas quando suas pesquisas se cruzaram, a comunidade percebeu que tinha em mãos um conceito poderoso. Lawrence Roberts, que viria a ser uma figura central no projeto da ARPANET, incorporou a terminologia e os conceitos de Davies no projeto americano [^2].
+Os dois pesquisadores trabalharam de forma independente, mas quando suas pesquisas se cruzaram, a comunidade percebeu que tinha em mãos um conceito poderoso. Lawrence Roberts, que viria a ser uma figura central no projeto da ARPANET, incorporou a terminologia e os conceitos de Davies no projeto estadunidense [^2].
 
 ## ARPANET: A Primeira Rede
 
@@ -199,7 +200,7 @@ A internet não mudou só a forma como acessamos informação. Ela mudou a forma
 
 Em 1999, Shawn Fanning lançou o **Napster** [^45]. O Napster permitia que usuários compartilhassem arquivos MP3 diretamente entre si, em um modelo peer-to-peer. Ele não hospedava nenhuma música; apenas mantinha um índice centralizado dos arquivos que cada usuário estava compartilhando. Chegou a 80 milhões de usuários registrados [^45] e provocou um caos na indústria da música.
 
-A RIAA (*Recording Industry Association of America*) processou o Napster por violação de direitos autorais, e o serviço foi fechado em julho de 2001 [^45]. Mas o estrago (do ponto de vista da indústria) já estava feito. O Napster provou que as pessoas queriam acesso instantâneo à música digital. A indústria poderia ter se adaptado mais cedo, mas preferiu brigar na justiça. Isso abriu espaço para serviços sucessores como Gnutella, LimeWire e BitTorrent.
+A RIAA (*Recording Industry Association of America*) processou o Napster por violação de direitos autorais, e o serviço foi fechado em julho de 2001 [^45]. Mas o estrago (do ponto de vista da indústria estadunidense) já estava feito. O Napster provou que as pessoas queriam acesso instantâneo à música digital. A indústria poderia ter se adaptado mais cedo, mas preferiu brigar na justiça. Isso abriu espaço para serviços sucessores como Gnutella, LimeWire e BitTorrent.
 
 A primeira resposta efetiva mesmo veio com a **iTunes Store** da Apple em 2003, que oferecia músicas individuais por US$0,99. E a resposta definitiva veio com o **Spotify**, fundado em 2006 [^46] e lançado em 2008. O Spotify oferecia um modelo freemium: acesso gratuito com anúncios ou assinatura mensal sem anúncios. A ideia era ser uma alternativa legal e conveniente à pirataria. E funcionou.
 
@@ -207,19 +208,19 @@ No campo do vídeo, existem duas histórias que se entrelaçam. O **YouTube**, q
 
 E tem a **Netflix**, que tem uma trajetória diferente. Fundada em 1997 [^48], ela começou como um serviço de aluguel de DVDs pelo correio. Em 2007, deu o salto para streaming de vídeo online. E em 2013, com o lançamento da série *House of Cards*, a Netflix fez algo que ninguém esperava: passou a produzir conteúdo original, competindo diretamente com os estúdios de Hollywood. Essa mudança forçou empresas de mídia tradicionais a lançar suas próprias plataformas de streaming (como Disney+, HBO Max, Apple TV+), o que gerou a "guerra do streaming" que vivemos até hoje.
 
-A Netflix chegou ao Brasil em **setembro de 2011** [^48], com uma assinatura inicial de R$15 por mês. O Brasil foi um dos primeiros mercados da expansão latino-americana da empresa. Em 2016, a Netflix produziu *3%*, sua primeira série original brasileira. Do lado nacional, a TV Globo respondeu com o **Globoplay** em 2015 [^49], digitalizando seu enorme acervo de novelas e jornalismo e apostando na identidade cultural brasileira como diferencial frente às plataformas estrangeiras.
+A Netflix chegou ao Brasil em **setembro de 2011**, com uma assinatura inicial de R$15 por mês. O Brasil foi um dos primeiros mercados da expansão latino-americana da empresa. Em 2016, a Netflix produziu *3%*, sua primeira série original brasileira. Do lado nacional, a TV Globo respondeu com o **Globoplay** em 2015 [^49], digitalizando seu enorme acervo de novelas e jornalismo e apostando na identidade cultural brasileira como diferencial frente às plataformas estrangeiras.
 
 ## A Internet das Coisas
 
 Claro que a internet não se limitou a computadores e celulares. Progressivamente, ela foi entrando em objetos que antes não tinham nenhuma conexão com a rede.
 
-O termo **"Internet of Things"** (Internet das Coisas, ou IoT) foi cunhado por Kevin Ashton em 1999 [^49], enquanto trabalhava no MIT. Mas exemplos de dispositivos conectados existem desde antes. Nos anos 80, um grupo de programadores da Carnegie Mellon University modificou uma máquina de Coca-Cola para reportar pela internet se ela ainda tinha latas e se elas estavam geladas [^49]. Era uma solução prática para evitar a frustração de andar até a máquina e descobrir que ela estava vazia.
+O termo **"Internet of Things"** (Internet das Coisas, ou IoT) foi cunhado por Kevin Ashton em 1999 [^50], enquanto trabalhava no MIT. Mas exemplos de dispositivos conectados existem desde antes. Nos anos 80, um grupo de programadores da Carnegie Mellon University modificou uma máquina de Coca-Cola para reportar pela internet se ela ainda tinha latas e se elas estavam geladas [^51]. Era uma solução prática para evitar a frustração de andar até a máquina e descobrir que ela estava vazia.
 
-O conceito ganhou tração de verdade na segunda metade dos anos 2000, quando o número de dispositivos conectados à internet ultrapassou o número de pessoas no planeta [^50]. Termostatos inteligentes como o Nest, pulseiras de atividade como o Fitbit, assistentes de voz como Alexa e Google Home, câmeras de segurança, lâmpadas, geladeiras... a lista de objetos que hoje se conectam à internet é enorme.
+O conceito ganhou tração de verdade na segunda metade dos anos 2000, quando o número de dispositivos conectados à internet ultrapassou o número de pessoas no planeta [^52]. Termostatos inteligentes como o Nest, pulseiras de atividade como o Fitbit, assistentes de voz como Alexa e Google Home, câmeras de segurança, lâmpadas, geladeiras... a lista de objetos que hoje se conectam à internet é enorme.
 
 A computação em nuvem foi o que viabilizou a IoT em escala. Esses dispositivos geralmente têm capacidade computacional limitada e dependem de serviços na nuvem para processar dados, armazenar informações e tomar decisões.
 
-Mais recentemente, o conceito de *edge computing* (computação na borda) vem ganhando espaço, permitindo que parte do processamento aconteça próximo ao dispositivo, sem precisar enviar tudo para a nuvem, utilizando servidores instalados em centrais regionais de telecomunicações, por exemplo. Isso reduz a latência e aumenta a segurança dos dados. Um exemplo são os veículos autônomos, que precisam tomar decisões em milissegundos e não podem depender de uma conexão de internet para isso.
+Mais recentemente, o conceito de *edge computing* (computação na borda) [^53] vem ganhando espaço, permitindo que parte do processamento aconteça próximo ao dispositivo, sem precisar enviar tudo para a nuvem, utilizando servidores instalados em centrais regionais de telecomunicações, por exemplo. Isso reduz a latência e aumenta a segurança dos dados. Um exemplo são os veículos autônomos, que precisam tomar decisões em milissegundos e não podem depender de uma conexão de internet para isso.
 
 ## Conclusão
 
@@ -321,16 +322,22 @@ Para quem lê essa história hoje: tudo isso foi construído em menos de uma vid
 
 [^43]: **Timeline of Amazon Web Services** {*Wikipedia*} ([Link](https://en.wikipedia.org/wiki/Timeline_of_Amazon_Web_Services))
 
-[^44]: **Napster** {*Wikipedia*} ([Link](https://en.wikipedia.org/wiki/Napster))
+[^44]: **"There is no cloud, it's just someone else's computer"** {*Chris Watterston / Free Software Foundation*} ([Link](https://www.fsf.org/blogs/community/there-is-no-cloud-just-other-peoples-computers))
 
-[^45]: **About Spotify** {*Spotify*} ([Link](https://newsroom.spotify.com/company-info/))
+[^45]: **Napster** {*Wikipedia*} ([Link](https://en.wikipedia.org/wiki/Napster))
 
-[^46]: **YouTube** {*Wikipedia*} ([Link](https://en.wikipedia.org/wiki/YouTube))
+[^46]: **About Spotify** {*Spotify*} ([Link](https://newsroom.spotify.com/company-info/))
 
-[^47]: **Netflix** {*Wikipedia*} ([Link](https://en.wikipedia.org/wiki/Netflix))
+[^47]: **YouTube** {*Wikipedia*} ([Link](https://en.wikipedia.org/wiki/YouTube))
 
-[^48]: **Globoplay** {*Wikipedia*} ([Link](https://pt.wikipedia.org/wiki/Globoplay))
+[^48]: **Netflix** {*Wikipedia*} ([Link](https://en.wikipedia.org/wiki/Netflix))
 
-[^49]: **A Brief History of the Internet of Things** {*Dataversity*} ([Link](https://www.dataversity.net/brief-history-internet-things/))
+[^49]: **Globoplay** {*Wikipedia*} ([Link](https://pt.wikipedia.org/wiki/Globoplay))
 
-[^50]: **The history of IoT: From concept to reality** {*Thales Group*} ([Link](https://www.thalesgroup.com/en/news-centre/insights/enterprise/mobile-communications/history-iot-concept-reality))
+[^50]: **A Brief History of the Internet of Things** {*Dataversity*} ([Link](https://www.dataversity.net/brief-history-internet-things/))
+
+[^51]: **Decoding the Internet of Things** {*Carnegie Mellon University, School of Computer Science*} ([Link](https://csd.cmu.edu/news/decoding-the-internet-of-things))
+
+[^52]: **The history of IoT: From concept to reality** {*Thales Group*} ([Link](https://www.thalesgroup.com/en/news-centre/insights/enterprise/mobile-communications/history-iot-concept-reality))
+
+[^53]: **History of edge computing** {*TechRepublic*} ([Link](https://www.techrepublic.com/article/edge-computing-history/))
