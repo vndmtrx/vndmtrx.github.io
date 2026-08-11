@@ -8,9 +8,9 @@ tags: [Programação, Programação Funcional, Elixir, Patterns]
 series: Aprendendo Elixir
 ---
 
-Se tívessemos que apontar uma única característica que define como é programar em Elixir, seria o **pattern matching**. Esse recurso da linguagem vai muito além do que atribuição tradicional que conhecemos em outras linguagens: ela molda a forma como estruturamos o código.
+Se tívessemos que apontar uma única característica que define como é programar em Elixir [^1], seria o **pattern matching**. Esse recurso da linguagem vai muito além do que atribuição tradicional que conhecemos em outras linguagens: ela molda a forma como estruturamos o código.
 
-O pattern matching é uma ferramenta poderosa que permite comparar estruturas de dados, extrair valores e guiar o fluxo de execução de forma clara e expressiva. Em Elixir, essa técnica não é apenas uma opção útil: ela é uma expectativa idiomática em praticamente todo o código escrito.
+O pattern matching [^2] é uma ferramenta poderosa que permite comparar estruturas de dados, extrair valores e guiar o fluxo de execução de forma clara e expressiva. Em Elixir, essa técnica não é apenas uma opção útil: ela é uma expectativa idiomática em praticamente todo o código escrito.
 
 Ao longo deste artigo, vamos explorar a semântica do pattern matching em Elixir, desde sua interpretação básica com o operador `=`, passando pela desconstrução de tuplas e listas, até o uso intensivo em fluxos de controle e definição de funções.
 
@@ -20,7 +20,7 @@ O código está organizado no diretório [03-patterns](https://github.com/vndmtr
 
 ## O Significado do `=`: Atribuir e Casar ao Mesmo Tempo
 
-Antes de nos aprofundarmos nas estruturas complexas, é essencial entender como Elixir interpreta o operador `=`. Em muitas linguagens, `=` é simplesmente atribuição. Em Elixir, ele representa uma tentativa de correspondência: "o lado esquerdo deve se parecer com o lado direito".
+Antes de nos aprofundarmos nas estruturas complexas, é essencial entender como Elixir interpreta o operador `=` [^3]. Em muitas linguagens, `=` é simplesmente atribuição. Em Elixir, ele representa uma tentativa de correspondência: "o lado esquerdo deve se parecer com o lado direito".
 
 Por exemplo:
 
@@ -102,7 +102,7 @@ Com a habilidade de desconstruir dados de forma tão natural, Elixir permite con
 
 ### Controle de Fluxo com `case`
 
-O `case` em Elixir é uma estrutura que utiliza pattern matching para escolher entre diferentes caminhos de execução, dependendo do valor analisado. Ele permite aplicar padrões diretamente sobre o resultado de expressões.
+O `case` em Elixir é uma estrutura que utiliza pattern matching para escolher entre diferentes caminhos de execução [^4], dependendo do valor analisado. Ele permite aplicar padrões diretamente sobre o resultado de expressões.
 
 ```elixir
 case parse(tokens, [], []) do
@@ -223,7 +223,7 @@ defp valida_ast(_), do: {:error, :ast_invalido}
 
 ## Pattern Matching em Binários (Strings e Bytes)
 
-Elixir também permite aplicar pattern matching diretamente sobre dados binários, como strings e buffers de bytes. Essa funcionalidade é amplamente utilizada, especialmente para parsing de texto e manipulação de fluxos binários.
+Elixir também permite aplicar pattern matching diretamente sobre dados binários [^5], como strings e buffers de bytes. Essa funcionalidade é amplamente utilizada, especialmente para parsing de texto e manipulação de fluxos binários.
 
 No nosso projeto, usamos bastante no módulo Tokenize, onde exploramos esse recurso para decompor strings em seus caracteres.
 

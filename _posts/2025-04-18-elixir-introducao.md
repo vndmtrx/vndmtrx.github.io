@@ -17,9 +17,9 @@ Agora, com Elixir, sinto um misto desses mundos: a elegância da sintaxe, combin
 
 ## Entendendo o Elixir e sua proposta
 
-💡 Antes de começarmos a codificar, vale uma breve introdução à linguagem Elixir. Elixir é uma linguagem de programação funcional, concorrente e tolerante a falhas, construída sobre a máquina virtual do Erlang (BEAM). Essa base permite que aplicações Elixir herdem características como escalabilidade massiva, alta disponibilidade e comunicação entre processos leves, o que torna a linguagem uma escolha excelente para sistemas distribuídos, aplicações em tempo real e arquiteturas resilientes.
+💡 Antes de começarmos a codificar, vale uma breve introdução à linguagem Elixir. Elixir [^1] é uma linguagem de programação funcional [^2], concorrente e tolerante a falhas, construída sobre a máquina virtual do Erlang (BEAM). Essa base permite que aplicações Elixir herdem características como escalabilidade massiva, alta disponibilidade e comunicação entre processos leves, o que torna a linguagem uma escolha excelente para sistemas distribuídos, aplicações em tempo real e arquiteturas resilientes.
 
-Por ser funcional, Elixir adota conceitos como imutabilidade de dados e funções puras. Isso favorece a previsibilidade do código e simplifica testes e paralelismo. Além disso, Elixir possui uma sintaxe moderna e acessível, e integra ferramentas como o `mix` (para gerenciamento de projetos) e o `ExUnit` (para testes automatizados), o que torna o ecossistema produtivo e acolhedor para desenvolvedores iniciantes e experientes.
+Por ser funcional, Elixir adota conceitos como imutabilidade de dados e funções puras. Isso favorece a previsibilidade do código e simplifica testes e paralelismo. Além disso, Elixir possui uma sintaxe moderna e acessível, e integra ferramentas como o `mix` [^3] (para gerenciamento de projetos) e o `ExUnit` [^4] (para testes automatizados), o que torna o ecossistema produtivo e acolhedor para desenvolvedores iniciantes e experientes.
 
 Neste primeiro módulo, configurei meu ambiente com ASDF, criei um projeto simples com `mix` e implementei uma função básica acompanhada de testes automatizados com `ExUnit`. Tudo isso dentro de uma estrutura clara e replicável, e todos os exemplos deste módulo estão disponíveis no item [01-saudacao](https://github.com/vndmtrx/estudo_elixir/tree/main/01-saudacao), e os demais estarão organizados no [repositório principal do projeto](https://github.com/vndmtrx/estudo_elixir) 🧰
 
@@ -38,7 +38,7 @@ sudo apt update && sudo apt install -y git curl autoconf \
 Esses pacotes incluem compiladores, bibliotecas de SSL e ferramentas necessárias para o ASDF e as linguagens que serão instaladas.
 
 ### Clonagem do ASDF e configuração de ambiente
-O ASDF é um gerenciador de versões universal. Ele permite manter múltiplas versões de linguagens em paralelo, o que é especialmente útil para desenvolvimento em ambientes diversos.
+O ASDF [^5] é um gerenciador de versões universal. Ele permite manter múltiplas versões de linguagens em paralelo, o que é especialmente útil para desenvolvimento em ambientes diversos.
 
 ```bash
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.16.7

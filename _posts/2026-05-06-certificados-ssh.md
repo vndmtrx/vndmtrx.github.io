@@ -35,7 +35,7 @@ A solução elegante, nativa e absurdamente poderosa do OpenSSH para tudo isso s
 
 ## O que são Certificados SSH?
 
-Ao ouvir a palavra "Certificado", é normal ter calafrios lembrando do padrão X.509 usado em sites HTTPS (com toda aquela sopa de letrinhas: ASN.1, CSR, PEM, DER, Cadeias de Confiança). Mas respire fundo, pois como a própria documentação oficial deixa claro [^4]: **Certificados SSH não são certificados X.509**. O OpenSSH usa um formato próprio, que é deliciosamente simples.
+Ao ouvir a palavra "Certificado", é normal ter calafrios lembrando do padrão X.509 usado em sites HTTPS (com toda aquela sopa de letrinhas: ASN.1, CSR, PEM, DER, Cadeias de Confiança). Mas respire fundo, pois como a própria documentação oficial deixa claro [^4], **Certificados SSH não são certificados X.509**. O OpenSSH usa um formato próprio, que é deliciosamente simples.
 
 Em termos práticos, um certificado SSH é apenas uma chave pública normal que recebeu um "carimbo" (uma assinatura criptográfica) de uma outra chave. Essa chave carimbadora é a nossa Certificate Authority (CA).
 

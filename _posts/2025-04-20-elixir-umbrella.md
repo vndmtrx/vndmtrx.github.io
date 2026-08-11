@@ -9,7 +9,7 @@ tags: [Programação, Programação Funcional, Elixir]
 series: Aprendendo Elixir
 ---
 
-Neste segundo post da série *Aprendendo Elixir*, vamos explorar como organizar projetos maiores usando **arquitetura modular** com uma estrutura de guarda-chuva (chamado *Umbrella* pelo Elixir). A ideia é dividir o sistema em múltiplas aplicações menores e coesas, que podem ser desenvolvidas, testadas e integradas dentro de uma aplicação principal. Esse modelo segue o princípio de separação de responsabilidades, facilitando a manutenção e o crescimento do código. 
+Neste segundo post da série *Aprendendo Elixir* [^1], vamos explorar como organizar projetos maiores usando **arquitetura modular** com uma estrutura de guarda-chuva (chamado *Umbrella* pelo Elixir). A ideia é dividir o sistema em múltiplas aplicações menores e coesas, que podem ser desenvolvidas, testadas e integradas dentro de uma aplicação principal. Esse modelo segue o princípio de separação de responsabilidades, facilitando a manutenção e o crescimento do código. 
 
 Os exemplos desse post estão em [02-umbrella](https://github.com/vndmtrx/estudo_elixir/tree/main/02-umbrella), e os demais estarão organizados no [repositório principal do projeto](https://github.com/vndmtrx/estudo_elixir).
 
@@ -28,7 +28,7 @@ Projetos Guarda-Chuva são ideais quando queremos:
 - Facilitar **testes e manutenção** em projetos maiores
 - Gerenciar **dependências locais** entre apps sem necessidade de publicar pacotes
 
-Cada app tem seu próprio ciclo de vida e testes, mas todos podem ser carregados e orquestrados a partir do projeto raiz. O Elixir lida muito bem com esse modelo graças à sua estrutura de aplicações OTP, onde cada subprojeto pode ter seu ciclo de vida próprio.
+Cada app tem seu próprio ciclo de vida e testes, mas todos podem ser carregados e orquestrados a partir do projeto raiz. O Elixir lida muito bem com esse modelo graças à sua estrutura de aplicações OTP, onde cada subprojeto pode ter seu ciclo de vida próprio. Para mais detalhes sobre projetos Umbrella, veja a documentação oficial [^3].
 
 ## Criando o projeto guarda-chuva
 
@@ -80,7 +80,7 @@ conversor
 
 > ⚠️ **Aviso**: Esta não é a estrutura completa gerada pelos comandos, mas somente os arquivos que iremos nos preocupar neste momento.
 
-O arquivo `mix.exs` da raiz define que o projeto é do tipo umbrella por conta da opção `apps_path: "apps"`, fazendo a centralização da orquestração do projeto.
+O arquivo `mix.exs` [^2] da raiz define que o projeto é do tipo umbrella por conta da opção `apps_path: "apps"`, fazendo a centralização da orquestração do projeto.
 
 ## Implementando os apps
 
@@ -249,7 +249,7 @@ mix run -e 'Main.main'
 
 ### Usando Mix.Tasks
 
-Aqui vamos criar um novo arquivo em `apps/main/lib/mix/tasks/conversor_task.ex`, que também cria um alias no mix, com o seguinte conteúdo:
+Aqui vamos criar um novo arquivo em `apps/main/lib/mix/tasks/conversor_task.ex`, que também cria um alias no mix [^5], com o seguinte conteúdo:
 
 **apps/main/lib/mix/tasks/conversor_task.ex:**
 
@@ -295,7 +295,7 @@ iex> Conversor.Distancia.m_para_ft(10)
 
 ## Testes
 
-Vamos adicionar testes automatizados para os nossos módulos. Cada módulo possui seus testes, organizados em arquivos separados com `ExUnit`. Usaremos valores aleatórios gerados pela seed do ExUnit, garantindo reprodutibilidade com o comando `mix test --seed <valor>`. Isso é útil para capturar inconsistências sutis em cálculos com ponto flutuante.
+Vamos adicionar testes automatizados para os nossos módulos [^4]. Cada módulo possui seus testes, organizados em arquivos separados com `ExUnit`. Usaremos valores aleatórios gerados pela seed do ExUnit, garantindo reprodutibilidade com o comando `mix test --seed <valor>`. Isso é útil para capturar inconsistências sutis em cálculos com ponto flutuante.
 
 ### Testes para `Conversor.Distancia`
 
