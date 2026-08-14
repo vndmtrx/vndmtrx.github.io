@@ -63,7 +63,7 @@ gpg --list-keys --keyid-format LONG
 
 *Lista todas as chaves públicas cadastradas exibindo os identificadores em formato longo de 16 caracteres hexadecimais.*
 
-Para exportar a chave pública em formato ASCII e colar no GitHub (em *Settings → SSH and GPG keys → New GPG key*):
+Para exportar a chave pública em formato ASCII e colar no GitHub (em *Settings -> SSH and GPG keys -> New GPG key*):
 
 ```bash
 gpg --armor --export XXXXXXXX

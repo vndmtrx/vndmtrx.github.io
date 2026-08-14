@@ -291,7 +291,7 @@ Para resolver esse problema em específico, não havia opção a não ser sair d
 
 ```
 ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
-│ Stream CSS   │ │ Stream JS    │ │ Stream IMG   │ ← multiplexado
+│ Stream CSS   │ │ Stream JS    │ │ Stream IMG   │ <- multiplexado
 ├──────────────┤ ├──────────────┤ ├──────────────┤
 │                  [TCP ÚNICO]                   │
 └────────────────────────────────────────────────┘
@@ -304,7 +304,7 @@ Para resolver esse problema em específico, não havia opção a não ser sair d
 ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
 │ Stream CSS   │ │ Stream JS    │ │ Stream IMG   │
 ├──────────────┤ ├──────────────┤ ├──────────────┤
-│  UDP Stream  │ │  UDP Stream  │ │  UDP Stream  │ ← independentes!
+│  UDP Stream  │ │  UDP Stream  │ │  UDP Stream  │ <- independentes!
 └──────────────┘ └──────────────┘ └──────────────┘
 ```
 *Pacote perdido = só uma stream para*
@@ -332,7 +332,7 @@ Falamos de HTTP o tempo todo mas não mencionamos **HTTPS** ou criptografia. Por
 ### O Modelo do HTTPS: HTTP Envelopado em TLS
 
 ```
-Navegador → [Criptografia TLS] → HTTP → Servidor
+Navegador -> [Criptografia TLS] -> HTTP -> Servidor
 ```
 
 *O tráfego HTTP convencional é totalmente cifrado dentro de uma sessão TLS antes de trafegar pelo TCP.*

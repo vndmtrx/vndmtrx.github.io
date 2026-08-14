@@ -275,27 +275,25 @@ múltiplas linhas:
 
 Usar quando o conceito é abstrato ou contra-intuitivo. Preferir o mundo físico
 e cotidiano. Exemplos reais dos posts:
-- Túnel SSH → cano de água com cabo elétrico dentro.
-- Certificado SSH → "carimbo" de uma autoridade certificadora.
-- CA privada vazada → "joia da coroa" da operação.
-- Page cache → memória compartilhada como sala de estar.
-- SSSD → "porteiro biométrico" / "leão de chácara".
-- `sudoers NOPASSWD: ALL` → chave mestra do prédio para o entregador de pizza.
+- Túnel SSH -> cano de água com cabo elétrico dentro.
+- Certificado SSH -> "carimbo" de uma autoridade certificadora.
+- CA privada vazada -> "joia da coroa" da operação.
+- Page cache -> memória compartilhada como sala de estar.
+- SSSD -> "porteiro biométrico" / "leão de chácara".
+- `sudoers NOPASSWD: ALL` -> chave mestra do prédio para o entregador de pizza.
 
 Não forçar analogia onde o código já é autoexplicativo.
 
 ### Diagramas ASCII
 
-Usados para topologias, fluxos de rede e arquitetura:
+Usados para topologias, fluxos de rede e arquitetura. Sempre usar setas e caracteres ASCII (`->`, `<-`, `+`, `-`, `|`):
 
 ```
-[SEU PC] ─> [BASTION: IP Público / IP local: 10.0.254.10]
-                └─> [REDE INTERNA: 10.0.254.0/24]
-                        ├─> POSTGRES: 10.0.254.25 (PostgreSQL :5432)
-                        └─> DASHBOARD: 10.0.254.50 (HTTPS :443)
+[SEU PC] -> [BASTION: IP Público / IP local: 10.0.254.10]
+              +-> [REDE INTERNA: 10.0.254.0/24]
+                    +-> POSTGRES: 10.0.254.25 (PostgreSQL :5432)
+                    +-> DASHBOARD: 10.0.254.50 (HTTPS :443)
 ```
-
-Usar setas Unicode (─, →, ├, └) para maior legibilidade.
 
 ### Tabelas
 
@@ -330,22 +328,24 @@ A seção de referências SEMPRE se chama `## Referências`.
 
 No final do post, antes da seção de conclusão, apresentar desafios para o
 leitor baseados no que foi aprendido. Os exercícios devem ser breves e diretos,
-com as respostas em tags `<details>`:
+com as respostas em tags `<details markdown="1">`:
 
 ```markdown
 **1. Descrição do exercício**
 
-<details>
+<details markdown="1">
 <summary>Ver resposta</summary>
 
 \```elixir
 # código da resposta
 \```
 
-Explicação da resposta.
+*Explicação da resposta em itálico logo abaixo do código.*
 
 </details>
 ```
+
+> ⚠️ **Atenção ao Kramdown**: Em Markdown processado pelo Jekyll (Kramdown), tags HTML em bloco como `<details>` exigem obrigatoriamente o atributo `markdown="1"` para que blocos de código e formatações internas sejam renderizados corretamente.
 
 Nunca inventar exercícios que o leitor não conseguirá fazer com base no que
 foi ensinado no post.
@@ -364,6 +364,10 @@ formato com negrito e data:
 - **Sem travessões longos** (—) no texto. Eduardo naturalmente não usa e não
   quer que IA use. Substituir por vírgula, ponto, dois-pontos ou reestruturar
   a frase.
+- **Sem setas Unicode** (`→`, `←`, `↔`, `⇒`, etc.) no texto corrido, diagramas
+  ou exemplos. Use sempre a versão ASCII (`->`, `<-`, `<->`, `=>`), a não ser
+  que seja explicitamente solicitado (como em exemplos formais de lógica ou
+  matemática).
 - **Sem linguagem passiva** onde o ativo é possível.
 - **Sem "simplesmente" ou "apenas"** para minimizar complexidade.
 - **Sem opinião neutra** onde Eduardo teria posição.
@@ -450,6 +454,7 @@ Antes de finalizar qualquer post, verificar:
 - [ ] Todas as referências externas têm footnote no formato correto?
 - [ ] A conclusão agrega algo além de repetir o post?
 - [ ] Nenhum travessão longo (—) no texto?
+- [ ] Nenhuma seta Unicode (→, ←) no texto ou diagramas (apenas versões ASCII -> ou <-)?
 - [ ] Nenhum `---` entre seções?
 - [ ] Nenhum emoji no texto corrido (fora de callouts)?
 - [ ] Nenhum H1 no corpo do post?
