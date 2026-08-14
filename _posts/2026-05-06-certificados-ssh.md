@@ -2,7 +2,7 @@
 layout: post
 title: "OpenSSH - A mágica dos Certificados (e o fim do TOFU)"
 author:
-- "Eduardo N. S. R."
+  - "Eduardo N. S. R."
 date: 2026-05-09 19:24:00 GMT-3
 modified_date: 2026-05-10 10:26:00 GMT-3
 permalink: /posts/certificados-ssh/
@@ -23,6 +23,8 @@ The authenticity of host '10.0.254.10 (10.0.254.10)' can't be established.
 ED25519 key fingerprint is SHA256:+++++++++++++++++++++++++++++++++++++++++++.
 Are you sure you want to continue connecting (yes/no/[fingerprint])?
 ```
+
+*O prompt clássico de aviso no primeiro acesso a um servidor desconhecido.*
 
 Todo mundo digita `yes` no automático, não é? Isso se chama **TOFU (Trust On First Use)** [^1]. Nós confiamos cegamente que aquele servidor é realmente quem diz ser no primeiro acesso, e a partir daí a chave do host fica salva no arquivo `~/.ssh/known_hosts` da máquina do dev. 
 
@@ -53,11 +55,11 @@ O RSA com chaves menores (como 1024 e 2048 bits) já não oferece margem de segu
 
 A recomendação padrão ouro hoje em dia, e o que eu pessoalmente uso para tudo, é o **ED25519** [^5]. Baseado na Curve25519 de Daniel J. Bernstein (o mesmo cara por trás do ChaCha20/Poly1305 usado no WireGuard). Chaves ED25519 são absurdamente menores (68 caracteres de chave pública), mais rápidas de verificar, resistentes a ataques de temporização (side-channel timing attacks) e não dependem das curvas do NIST.
 
-> *🚨 Aviso Crítico de Segurança:* A chave privada da sua CA é a "joia da coroa" de toda a operação. Se ela for vazada, um atacante poderá forjar certificados válidos para se passar por qualquer usuário ou servidor, tendo acesso irrestrito e silencioso à sua infraestrutura. Por design, essa chave **NUNCA** deve residir em um servidor acessível via internet ou na máquina de trabalho diário. O padrão ouro é mantê-la em uma máquina *air-gapped* (desconectada da rede), armazenada em dispositivos de hardware (como YubiKeys ou HSMs) ou delegar a custódia para soluções de cofre corporativo (como o HashiCorp Vault).
+> 🚨 **Aviso Crítico de Segurança**: A chave privada da sua CA é a "joia da coroa" de toda a operação. Se ela for vazada, um atacante poderá forjar certificados válidos para se passar por qualquer usuário ou servidor, tendo acesso irrestrito e silencioso à sua infraestrutura. Por design, essa chave **NUNCA** deve residir em um servidor acessível via internet ou na máquina de trabalho diário. O padrão ouro é mantê-la em uma máquina *air-gapped* (desconectada da rede), armazenada em dispositivos de hardware (como YubiKeys ou HSMs) ou delegar a custódia para soluções de cofre corporativo (como o HashiCorp Vault).
 
 Para uma CA (que vai viver por anos e ser a raiz da confiança da sua infraestrutura) use `ed25519`.
 
-## Host CA: O fim do *"Are you sure you want to continue connecting?"*
+## Host CA: O fim do "Are you sure you want to continue connecting?"
 
 A primeira CA que vamos criar é a de Host. O objetivo dela é acabar com o prompt do TOFU, permitindo que a sua máquina local tenha certeza absoluta de que aquele IP/DNS pertence ao servidor correto.
 
@@ -86,7 +88,9 @@ The key's randomart image is:
 +----[SHA256]-----+
 ```
 
-> *💡 Curiosidade:* aquele quadro `randomart image` gerado pelo comando não é só decoração de terminal. Ele é uma representação visual do fingerprint da chave. O cérebro humano é péssimo em memorizar strings SHA256 gigantes, mas é excelente em reconhecer formas e padrões visuais. A ideia do randomart é permitir que você perceba rapidamente, num "bater de olhos", se a chave foi alterada, pois o desenho será completamente diferente).
+*Gera o par de chaves da CA de Host em ED25519 com fingerprint e representação gráfica de randomart.*
+
+> 💡 **Curiosidade**: Aquele quadro `randomart image` gerado pelo comando não é só decoração de terminal. Ele é uma representação visual do fingerprint da chave. O cérebro humano é péssimo em memorizar strings SHA256 gigantes, mas é excelente em reconhecer formas e padrões visuais. A ideia do randomart é permitir que você perceba rapidamente, num "bater de olhos", se a chave foi alterada, pois o desenho será completamente diferente.
 
 Como no nosso exemplo de equipe teremos dois servidores alvo (`php-01` e `db-01`), vamos provisionar os certificados de host para ambos. Primeiro, geramos o par de chaves interno de cada servidor. Muitas vezes isso é feito automaticamente na instalação do SO, mas vamos gerar explicitamente:
 
@@ -97,6 +101,8 @@ $ ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key -N "" -C "Chave Host ph
 # No servidor db-01
 $ ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key -N "" -C "Chave Host db-01"
 ```
+
+*Gera os pares de chaves de host em cada um dos servidores destino.*
 
 Você pega apenas as chaves públicas que eles geraram, leva até a máquina segura onde está a sua `ca_host`, e assina, gerando finalmente os certificados de host para cada um:
 
@@ -112,6 +118,8 @@ $ ssh-keygen -s ca_host -I "servidor-db-01" -h \
   -n "db-01.example.com,10.0.254.10" -V +52w db-01_key.pub
 ```
 
+*Assina as chaves públicas de cada servidor associando FQDNs e IPs aos Principals com validade de 52 semanas.*
+
 Dissecando essa sopa de letrinhas do comando de assinatura:
 - `-s ca_host`: Indica a chave privada da nossa CA que vai realizar a assinatura.
 - `-I "servidor-..."`: É a identidade ("Key ID"). Serve para registrar nos logs da CA qual certificado foi emitido.
@@ -124,6 +132,8 @@ O comando cospe arquivos com o sufixo `-cert.pub`. Você devolve o certificado r
 ```text
 HostCertificate /etc/ssh/ssh_host_ed25519_key-cert.pub
 ```
+
+*Declara no sshd_config qual certificado de host assinado o daemon deve apresentar nos handshakes.*
 
 ### Inspecionando os Certificados
 
@@ -156,6 +166,8 @@ db-01_key-cert.pub:
         ...
 ```
 
+*Inspeciona os metadados do certificado confirmando tipo host, validade e a lista de Principals autorizados.*
+
 Olha que estrutura limpa. Ele mostra o formato `v01@openssh.com` (o padrão de certificado), quem assinou, a validade e, principalmente, os diferentes **Principals** de cada servidor. É essa lista de *principals* exclusiva em cada certificado que impede que o servidor PHP (mesmo possuindo um certificado de host válido assinado pela CA da empresa) responda por conexões destinadas ao banco de dados e intercepte o tráfego da Maria, por exemplo.
 
 ### O Lado do Cliente
@@ -166,9 +178,11 @@ O servidor agora apresenta um certificado no *handshake* SSH em vez da chave pú
 @cert-authority *.example.com ssh-ed25519 AAAAC3NzaC1... (conteúdo do ca_host.pub)
 ```
 
+*Instrui o cliente SSH a confiar em qualquer máquina do domínio *.example.com autenticada pela CA de Host.*
+
 Pronto. Você acabou de dizer: *"Confie cegamente em qualquer máquina que responda por `.example.com` SE ela apresentar um certificado assinado por esta CA"*. Adeus prompt do TOFU. Zero cliques. Total segurança contra MITM.
 
-## User CA: O expurgo do arquivo *authorized_keys*
+## User CA: O expurgo do arquivo authorized_keys
 
 Se o Host CA facilita a vida de quem conecta, a User CA salva a alma de quem administra o servidor. Vamos criar uma segunda CA, exclusiva para assinar chaves de usuários:
 
@@ -195,11 +209,15 @@ The key's randomart image is:
 +----[SHA256]-----+
 ```
 
+*Gera a CA exclusiva para emissão de certificados para desenvolvedores e operadores.*
+
 No `sshd_config` de **todos os seus servidores**, você pode apagar ou simplesmente parar de manter arquivos `authorized_keys`. Basta colocar isso:
 
 ```text
 TrustedUserCAKeys /etc/ssh/ca_user.pub
 ```
+
+*Aponta a chave pública da CA de usuários como autoridade confiável para logins.*
 
 Reinicie o `sshd`. Agora o servidor não confia mais na chave pública do João ou da Maria de forma isolada. Ele confia estritamente na assinatura da `ca_user`. 
 
@@ -221,6 +239,8 @@ $ ssh-keygen -t ed25519 -f ~/.ssh/id_maria -C "maria@example.com"
 $ ssh-keygen -t ed25519 -f ~/.ssh/id_antonio -C "antonio@example.com"
 ```
 
+*Gera as chaves ED25519 locais de cada desenvolvedor nas suas respectivas estações de trabalho.*
+
 Uma vez geradas as chaves, eles mandam apenas as chaves públicas (`id_joao.pub`, `id_maria.pub` e `id_antonio.pub`) para a equipe de Ops. A equipe assina essas chaves atribuindo as identidades (Principals) corretas para o perfil de cada um:
 
 ```bash
@@ -236,6 +256,8 @@ $ ssh-keygen -s ca_user -I "maria_dba" \
 $ ssh-keygen -s ca_user -I "antonio_qa" \
   -n "antonio,qa_team" -V +12w id_antonio.pub
 ```
+
+*Emite os certificados de usuário com os Principals de função e tempo de validade de 12 semanas.*
 
 Isso gera os arquivos `-cert.pub`. Cada um baixa o seu respectivo certificado e o coloca na mesma pasta `~/.ssh/` onde está a chave privada. 
 
@@ -257,6 +279,8 @@ Identity added: /home/joao/.ssh/id_joao (joao@example.com)
 Certificate added: /home/joao/.ssh/id_joao-cert.pub (joao_dev)
 ```
 
+*Carrega a chave privada no agente SSH, que detecta e vincula automaticamente o arquivo de certificado vizinho.*
+
 Observe que o João apontou apenas para a chave privada (`id_joao`). O mais legal acontece aqui: o agent nota que existe um arquivo com o sufixo `-cert.pub` vizinho na mesma pasta e **automaticamente carrega o certificado na memória** junto com a chave! 
 
 E como o cliente SSH sabe qual chave usar quando você tem várias? Ele é esperto: durante o *handshake* da conexão, o cliente negocia com o servidor quais métodos de autenticação são suportados. Se o servidor informar que aceita certificados, o agent prioriza apresentar o certificado antes de tentar usar chaves públicas nuas. O João só precisa digitar `ssh deploy@php-01` e **ele entra direto**. 
@@ -276,10 +300,15 @@ Excelente pergunta. É pra isso que serve a **KRL (Key Revocation List)**. O Ope
 ssh-keygen -k -f /etc/ssh/rev_keys.krl id_joao.pub
 ```
 
+*Cria ou atualiza o arquivo binário de revogação inserindo a chave comprometida na lista negra.*
+
 Você precisa distribuir esse arquivo `.krl` pelos servidores e adicionar a seguinte linha no `sshd_config`:
+
 ```text
 RevokedKeys /etc/ssh/rev_keys.krl
 ```
+
+*Configura o sshd para validar se a chave ou certificado apresentado consta na lista de revogações ativas.*
 
 Agora, mesmo que o certificado esteja matematicamente válido, o servidor consulta o arquivo KRL na hora do handshake e derruba a conexão.
 
@@ -289,11 +318,13 @@ A parte chata aqui é manter esse arquivo sempre atualizado em todas as máquina
 0 0,12 * * * root curl -s https://pki.example.com/revs.krl -o /etc/ssh/rev_keys.krl
 ```
 
+*Agenda a atualização periódica da lista KRL duas vezes ao dia via cron.*
+
 ## O Segredo do Sucesso: Principals e Identities
 
 Você percebeu o parâmetro `-n` recebendo uma lista separada por vírgulas (como `joao,dev_php,dev_db`) quando assinamos as chaves? Isso define os **Principals** (identidades) [^6], e é a parte mais poderosa da autorização via certificado. É o que permite agrupar múltiplos acessos em um único certificado válido para a rede inteira.
 
-> *💡 Uma dúvida muito comum:* Como os *Principals* de usuário (`dev_php`, `dev_db`, `dba`) se mapeiam no certificado do Host? **A resposta é: eles não mapeiam!** Os certificados de Host e de Usuário não se misturam. O certificado do Host só carrega o seu FQDN/IP para provar quem ele é para o cliente. O mapeamento que define "quem tem o principal dev_php pode entrar no servidor php-01" acontece inteiramente na configuração local do Sistema Operacional de destino.
+> 💡 **Nota**: Como os *Principals* de usuário (`dev_php`, `dev_db`, `dba`) se mapeiam no certificado do Host? **A resposta é: eles não mapeiam!** Os certificados de Host e de Usuário não se misturam. O certificado do Host só carrega o seu FQDN/IP para provar quem ele é para o cliente. O mapeamento que define "quem tem o principal dev_php pode entrar no servidor php-01" acontece inteiramente na configuração local do Sistema Operacional de destino.
 
 A autenticação de certificados no SSH não é um simples *"a assinatura bate com a CA que eu confio, então pode entrar"*. O OpenSSH executa uma camada adicional de autorização (uma espécie de RBAC nativo): ele verifica se os Principals que estão "carimbados" no seu certificado possuem permissão para acessar a conta destino no sistema operacional.
 
@@ -306,7 +337,9 @@ Criar essas contas locais, garantir que não tenham senhas (`usermod -L`) e amar
 deploy ALL=(root) NOPASSWD: /usr/bin/systemctl restart php-fpm
 ```
 
-> *⚠️ Importante:* Essa gerência do ciclo de vida dos usuários e de suas permissões granulares de elevação de privilégio é um assunto tão extenso e vital que com certeza faremos um post dedicado só para isso no futuro.
+*Regra granular no sudoers permitindo reinício controlado do serviço php-fpm sem necessidade de senha de root.*
+
+> ⚠️ **Importante**: Essa gerência do ciclo de vida dos usuários e de suas permissões granulares de elevação de privilégio é um assunto tão extenso e vital que com certeza faremos um post dedicado só para isso no futuro.
 
 Voltando ao SSH: se nós fôssemos amadores, colocaríamos diretamente o principal `db_admin` no certificado da Maria. O problema? A Maria conseguiria logar com o usuário `db_admin` em **qualquer** máquina da empresa! O movimento lateral ficaria livre.
 
@@ -316,24 +349,35 @@ A solução elegante é desacoplar o Principal do usuário local usando a direti
 AuthorizedPrincipalsFile /etc/ssh/auth_principals/%u
 ```
 
-> *💡 Nota:* A variável `%u` é parseada como o nome do usuário de destino durante o login.
+*Define que os Principals válidos para cada conta residem no arquivo nomeado após o usuário em `/etc/ssh/auth_principals/`.*
+
+> 💡 **Nota**: A variável `%u` é parseada como o nome do usuário de destino durante o login.
 
 E então configuramos o que cada conta permite. No servidor **PHP** (`php-01`), criamos o arquivo `/etc/ssh/auth_principals/deploy` com o conteúdo:
+
 ```text
 dev_php
 ```
 
+*Exige o Principal dev_php para conceder acesso à conta deploy.*
+
 No servidor de **Banco de Dados** (`db-01`), vamos ter **duas contas** diferentes. O arquivo `/etc/ssh/auth_principals/db_admin` exige o principal de DBA:
+
 ```text
 dba
 ```
 
-> *💡 Nota:* Esse usuário `db_admin` não é o dono do banco. Ele loga via SSH e depois usa privilégios no `/etc/sudoers` para rodar um `sudo -u postgres psql` ou `sudo systemctl restart postgresql`, mantendo a trilha de auditoria limpa.
+*Exige o Principal dba para autorizar o login administrativo no banco.*
+
+> 💡 **Nota**: Esse usuário `db_admin` não é o dono do banco. Ele loga via SSH e depois usa privilégios no `/etc/sudoers` para rodar um `sudo -u postgres psql` ou `sudo systemctl restart postgresql`, mantendo a trilha de auditoria limpa.
 
 Por último, o arquivo `/etc/ssh/auth_principals/db_readonly` exige apenas o principal de dev:
+
 ```text
 dev_db
 ```
+
+*Exige o Principal dev_db para autorizar o login de leitura.*
 
 ### O Desfecho dos Testes de Acesso
 
@@ -371,6 +415,9 @@ Em cenários reais de transição (quando a empresa ainda não apagou todos os `
 ```text
 cert-authority,principals="bob,admin" ssh-rsa AAAAB3... (chave publica da CA)
 ```
+
+*Sintaxe híbrida legada em authorized_keys restringindo o login por CA aos principals especificados.*
+
 Essa linha diz ao servidor: *"Aceite o acesso SE a chave pública apresentada for um certificado assinado por esta CA e se esse certificado tiver o principal 'bob' OU o principal 'admin'"*.
 
 A vulnerabilidade residia especificamente no *parser* de opções (a função interna do OpenSSH em C que faz o *split* da string). O OpenSSH antigo falhava miseravelmente em lidar com vírgulas usadas dentro da declaração `principals="..."` acoplada ao `cert-authority`. Em vez de quebrar a string em dois tokens (`bob` e `admin`), o parser engasgava, não separava nada, e registrava em memória que a linha exigia **um único principal longo** chamado literalmente `"bob,admin"`.
@@ -386,6 +433,8 @@ A implicação disso em produção causa tanto DoS quanto Bypass:
    ssh-keygen -s ca_user -I "hacker_id" -n "bob,admin" id_ed25519.pub
    ```
 
+   *Gera um certificado propositalmente forjado contendo uma vírgula literal no campo do principal.*
+
    Quando o atacante usa esse certificado com o principal exato `"bob,admin"`, o parser quebrado do servidor examina a string, faz o `strcmp()`, e como as strings batem exatamente com a interpretação errônea dele, **o servidor concede acesso imediato**, contornando a intenção de controle de acesso de "apenas bob ou admin separadamente".
 
 A correção definitiva requer atualizar para a versão 10.3+. Mas há uma regra de design universal para levar pra vida: **Nunca use vírgulas, espaços ou caracteres especiais nos nomes dos seus Principals**. Trate Principals como variáveis limpas e restritas (ex: `admin`, `db_read`, `squad_frontend`). Deixe as vírgulas apenas para separar os argumentos do `ssh-keygen`.
@@ -400,7 +449,7 @@ Vale lembrar, no entanto, que os certificados SSH resolvem brilhantemente o prob
 
 Até a próxima!
 
-## Bibliografia e Referências
+## Referências
 
 [^1]: **SSH certificates: the better SSH experience** {*jpmens.net, Abril/2026*} ([Link](https://jpmens.net/2026/04/03/ssh-certificates-the-better-ssh-experience/))
 

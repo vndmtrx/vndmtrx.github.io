@@ -1,14 +1,15 @@
 ---
 layout: post
 title: "Aprendendo Elixir - Pattern Matching"
-author: "Eduardo N. S. R."
+author:
+  - "Eduardo N. S. R."
 date: 2025-04-28 20:28:00 GMT-3
 permalink: /posts/elixir-patterns/
 tags: [Programação, Programação Funcional, Elixir, Patterns]
 series: Aprendendo Elixir
 ---
 
-Se tívessemos que apontar uma única característica que define como é programar em Elixir [^1], seria o **pattern matching**. Esse recurso da linguagem vai muito além do que atribuição tradicional que conhecemos em outras linguagens: ela molda a forma como estruturamos o código.
+Se tivéssemos que apontar uma única característica que define como é programar em Elixir [^1], seria o **pattern matching**. Esse recurso da linguagem vai muito além da atribuição tradicional que conhecemos em outras linguagens: ele molda a forma como pensamos e estruturamos o código.
 
 O pattern matching [^2] é uma ferramenta poderosa que permite comparar estruturas de dados, extrair valores e guiar o fluxo de execução de forma clara e expressiva. Em Elixir, essa técnica não é apenas uma opção útil: ela é uma expectativa idiomática em praticamente todo o código escrito.
 
@@ -18,7 +19,7 @@ Todos os exemplos práticos apresentados foram extraídos do projeto em desenvol
 
 O código está organizado no diretório [03-patterns](https://github.com/vndmtrx/estudo_elixir/tree/main/03-patterns) e os demais estarão organizados no [repositório principal do projeto](https://github.com/vndmtrx/estudo_elixir).
 
-## O Significado do `=`: Atribuir e Casar ao Mesmo Tempo
+## O Significado do Igual: Atribuir e Casar ao Mesmo Tempo
 
 Antes de nos aprofundarmos nas estruturas complexas, é essencial entender como Elixir interpreta o operador `=` [^3]. Em muitas linguagens, `=` é simplesmente atribuição. Em Elixir, ele representa uma tentativa de correspondência: "o lado esquerdo deve se parecer com o lado direito".
 
@@ -28,7 +29,7 @@ Por exemplo:
 x = 10
 ```
 
-*Aqui, a variável `x` é setada com o valor `10`, pois ela está vazia e, para garantir a igualdade, é ajustada.*
+*Aqui, a variável `x` recebe o valor `10` para satisfazer a igualdade com o lado direito.*
 
 Em um cenário mais elaborado:
 
@@ -36,18 +37,16 @@ Em um cenário mais elaborado:
 {:ok, resultado} = {:ok, "teste"}
 ```
 
-*Aqui, o padrão `{:ok, resultado}` casa com a tupla `{:ok, "teste"}` e atribui o valor `"teste"` à variável `resultado`.*
+*Aqui, o padrão `{:ok, resultado}` casa com a tupla `{:ok, "teste"}` e vincula `"teste"` à variável `resultado`.*
 
-Quando os padrões não combinam, ocorre erro:
+Quando os padrões não combinam, ocorre erro de casamento:
 
 ```elixir
 {:ok, valor} = {:error, "falha"}
 # ** (MatchError) no match of right hand side value: {:error, "falha"}
 ```
 
-*Neste caso, como `:ok` e `:error` são diferentes, ocorre uma falha de correspondência.*
-
----
+*Como os átomos `:ok` e `:error` são distintos, o Elixir lança um MatchError impedindo a execução.*
 
 ## Desconstruindo Tuplas e Listas
 
@@ -62,11 +61,11 @@ Exemplo direto do projeto:
 IO.inspect(valor) # "42"
 ```
 
-*Aqui, extraímos o segundo elemento da tupla, capturando a string "42" na variável `valor`.*
+*Extrai o segundo elemento da tupla, capturando a string "42" diretamente na variável `valor`.*
 
 ### Listas
 
-No algoritmo Shunting Yard, manipulamos pilhas usando essa forma:
+No algoritmo Shunting Yard, manipulamos pilhas separando cabeça e cauda:
 
 ```elixir
 [token | resto] = [{:num, "1"}, {:op, "+"}]
@@ -74,14 +73,14 @@ IO.inspect(token) # {:num, "1"}
 IO.inspect(resto) # [{:op, "+"}]
 ```
 
-*Esse trecho separa o primeiro elemento da lista (`token`) e o restante da lista (`resto`), uma prática comum para percorrer ou modificar listas.*
+*Separa o primeiro elemento da lista (`token`) e mantém o restante dos itens na lista `resto`.*
 
 Além de `[head | tail]`, também é possível casar listas de outras formas:
 
 - `[]` casa apenas com uma lista vazia.
 - `[variavel]` casa apenas com uma lista que contém exatamente um elemento.
 - `[head | tail]` casa com qualquer lista não vazia, separando o primeiro elemento (head) e o restante (tail).
-- `[item1, item2 | tail]` casa com uma lista com pelo menos 2 elementos, retornando eles. E isso vai indo pela quantidade de elementos necessários.
+- `[item1, item2 | tail]` casa com uma lista com pelo menos 2 elementos, retornando-os. E isso pode ser estendido conforme a necessidade.
 
 ## Convenção Idiomática em Elixir
 
@@ -94,13 +93,13 @@ def parse([]), do: {:error, :entrada_vazia}
 def parse(tokens), do: {:ok, processa(tokens)}
 ```
 
-*Aqui, caso a entrada seja vazia, retornamos `{:error, :entrada_vazia}`. Caso contrário, processamos os tokens e retornamos `{:ok, resultado}`.*
+*Retorna tuplas tagged `{:error, motivo}` ou `{:ok, resultado}` conforme o padrão da lista recebida.*
 
 ## Controle de Fluxo com Pattern Matching
 
 Com a habilidade de desconstruir dados de forma tão natural, Elixir permite construir fluxos de decisão que se adaptam diretamente à estrutura dos dados. Vejamos como isso se aplica em diferentes construções de controle.
 
-### Controle de Fluxo com `case`
+### Controle de Fluxo com case
 
 O `case` em Elixir é uma estrutura que utiliza pattern matching para escolher entre diferentes caminhos de execução [^4], dependendo do valor analisado. Ele permite aplicar padrões diretamente sobre o resultado de expressões.
 
@@ -111,9 +110,9 @@ case parse(tokens, [], []) do
 end
 ```
 
-*Nesse exemplo, o resultado da função parse/3 é analisado. Se for `{:ok, ast}`, a AST é validada. Se for `{:error, motivo}`, o erro é propagado.*
+*Avalia o retorno de `parse/3`: se for `{:ok, ast}` avança para a validação, caso contrário propaga o erro.*
 
-### Controle de Fluxo com `with`
+### Controle de Fluxo com with
 
 O `with` é utilizado para encadear múltiplas operações que podem falhar. Cada etapa precisa casar corretamente para o fluxo continuar; caso contrário, o controle é transferido imediatamente para o bloco `else`.
 
@@ -127,7 +126,7 @@ else
 end
 ```
 
-*Nesse trecho, três etapas são executadas em sequência: parsing da esquerda, parsing da direita e montagem da AST. Se qualquer uma delas falhar, o erro é tratado no `else`. Caso tudo corra bem, retornamos o AST montado e o restante da entrada.*
+*Executa três etapas de parsing em pipeline: qualquer falha de casamento desvia imediatamente para o bloco `else`.*
 
 ## Pattern Matching em Assinaturas de Função
 
@@ -140,9 +139,9 @@ defp empilha({:num, valor}, pilha), do: [valor | pilha]
 defp empilha({:op, operador}, pilha), do: [operador | pilha]
 ```
 
-*Aqui, dependendo se o elemento é um número ou um operador, escolhemos como empilhar corretamente.*
+*Define cláusulas distintas para a mesma função dependendo da tag da tupla (`:num` ou `:op`).*
 
-Essa combinação de pattern matching + múltiplas cláusulas torna o código altamente modular, limpo e fácil de estender, simulando o conceito de overload de funções encontrado em outras linguagens.
+Essa combinação de pattern matching com múltiplas cláusulas torna o código altamente modular, limpo e fácil de estender, substituindo com elegância estruturas de `if`/`switch` ou sobrecarga de métodos.
 
 ## Outros Usos Poderosos de Pattern Matching
 
@@ -157,7 +156,7 @@ Podemos casar valores de chaves específicas diretamente:
 IO.puts(nome) # "Ana"
 ```
 
-*Aqui extraímos apenas a chave `:nome`, ignorando o restante.*
+*Extrai o valor da chave `:nome` ignorando as demais propriedades presentes no map.*
 
 ### Pattern Matching em Structs
 
@@ -172,7 +171,7 @@ end
 IO.puts(nome) # "João"
 ```
 
-*Este exemplo garante que estamos lidando com uma struct `Pessoa` antes de extrair o nome.*
+*Garante que o dado seja estritamente uma instância da struct `Pessoa` antes de extrair o campo `:nome`.*
 
 ### Guards vs Padrões Diretos
 
@@ -183,6 +182,8 @@ def trata_lista([]), do: :vazia
 def trata_lista([_ | _]), do: :com_elementos
 ```
 
+*Usa casamento estrutural direto para diferenciar lista vazia de lista com elementos.*
+
 Ou usar `when`:
 
 ```elixir
@@ -190,9 +191,11 @@ def trata_lista(lista) when length(lista) == 0, do: :vazia
 def trata_lista(lista), do: :com_elementos
 ```
 
+*Aplica a guard clause `when length(lista) == 0` para validar o tamanho da coleção.*
+
 Embora os dois funcionem, casar diretamente padrões é mais performático e idiomático.
 
-### Ignorar Valores com `_`
+### Ignorar Valores com Underscore
 
 Inclusive, como visto no exemplo anterior, podemos ignorar partes do padrão que não nos interessam:
 
@@ -200,7 +203,7 @@ Inclusive, como visto no exemplo anterior, podemos ignorar partes do padrão que
 {:ok, _} = {:ok, "qualquer coisa"}
 ```
 
-*Aqui aceitamos a estrutura, mas onde está o `_`, desconsideramos o conteúdo.*
+*Valida que o retorno é uma tupla iniciada com `:ok`, descartando o segundo elemento com `_`.*
 
 Adicionalmente, podemos ainda nomear ignorados para fins de clareza:
 
@@ -208,7 +211,7 @@ Adicionalmente, podemos ainda nomear ignorados para fins de clareza:
 {:ok, _qualquer} = {:ok, "teste"}
 ```
 
-Mesmo que não usemos o valor, nomeá-lo pode ajudar na documentação implícita do código.
+*Nomeia o valor ignorado com prefixo `_` para documentar a intenção do código sem gerar warnings do compilador.*
 
 ### Padrões para Parâmetros Opcionais
 
@@ -219,7 +222,7 @@ defp valida_ast([arvore]), do: {:ok, arvore}
 defp valida_ast(_), do: {:error, :ast_invalido}
 ```
 
-*Aqui aceitamos tanto uma lista na primeira função quanto qualquer outra coisa na segunda, usando pattern matching nas entradas da função.*
+*Aceita uma lista com um único elemento na primeira cláusula e trata qualquer outro formato como erro.*
 
 ## Pattern Matching em Binários (Strings e Bytes)
 
@@ -231,11 +234,11 @@ No nosso projeto, usamos bastante no módulo Tokenize, onde exploramos esse recu
 
 ```elixir
 <<c, resto::binary>> = "abc"
-IO.inspect(c)    # 97
-IO.inspect(rest) # "bc"
+IO.inspect(c)     # 97
+IO.inspect(resto) # "bc"
 ```
 
-*Aqui, `c` captura o primeiro byte (o código ASCII de "a"), e `resto` captura o restante da string.*
+*Captura o primeiro byte ASCII na variável `c` e o restante da string no binário `resto`.*
 
 ### Validando dígitos
 
@@ -247,7 +250,7 @@ defp tokenize(<<c, resto::binary>>, acc, numero) when c in ?0..?9 do
 end
 ```
 
-*Nessa função, capturamos o primeiro caractere e verificamos se ele é um número entre 0 e 9 usando guards, então concatenamos ele com a string na variável `numero`.*
+*Extrai o caractere `c`, valida se é um dígito numérico via guard e o concatena ao acumulador.*
 
 ### Casando prefixos específicos
 
@@ -258,7 +261,7 @@ Também podemos casar prefixos específicos de forma explícita:
 IO.inspect(resto) # "(30)"
 ```
 
-*Aqui, reconhecemos o prefixo "sin" diretamente e extraímos o restante da expressão.*
+*Reconhece o prefixo literal "sin" no início da string e extrai o restante dos caracteres.*
 
 ### Vantagens do Pattern Matching em Binários
 
@@ -270,9 +273,7 @@ IO.inspect(resto) # "(30)"
 
 O pattern matching em Elixir é um recurso central que influencia diretamente a maneira como funções são escritas, como fluxos de dados são controlados e como estruturas são desconstruídas. Mais do que uma facilidade de linguagem, ele é uma ferramenta prática para organizar o código de forma legível, segura e concisa.
 
-Neste artigo, exploramos diversas aplicações do pattern matching, desde operações básicas com tuplas e listas até usos mais avançados em maps, structs e binários.
-
-Compreender bem o pattern matching é essencial para escrever código Elixir de maneira idiomática e aproveitar ao máximo a expressividade que a linguagem oferece.
+Neste artigo, exploramos diversas aplicações do pattern matching, desde operações básicas com tuplas e listas até usos mais avançados em maps, structs e binários. Compreender bem o pattern matching é essencial para escrever código Elixir de maneira idiomática e aproveitar ao máximo a expressividade que a linguagem oferece.
 
 ## Referências
 

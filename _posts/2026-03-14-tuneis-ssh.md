@@ -2,20 +2,20 @@
 layout: post
 title: "OpenSSH - O poder oculto do túneis (e que vc provavelmente não usa)"
 author:
-- "Eduardo N. S. R."
+  - "Eduardo N. S. R."
 date: 2026-03-14 21:16:00 GMT-3
 permalink: /posts/tuneis-ssh/
 tags: [SSH, Túneis]
 series: OpenSSH na Prática
 ---
 
-SSH é daquelas ferramentas que todo mundo na área de infra tem na ponta da língua: `ssh usuario@servidor` [^1], entra, faz o que tem que fazer, sai. Simples, confiável, onipresente. O problema é que boa parte das pessoas pára exatamente por aí, e o pior é que o SSH possui alguns recursos que ficam completamente invisíveis pra quem nunca foi além do básico. Não porque sejam obscuros ou experimentais. Eles estão inclusive na man page, funcionam desde sempre, e aparecem toda vez que você digita `ssh --help`. Só que ninguém parou pra explicar direito como usar de forma intuitiva.
+SSH é daquelas ferramentas que todo mundo na área de infra tem na ponta da língua: `ssh usuario@servidor` [^1], entra, faz o que tem que fazer, sai. Simples, confiável, onipresente. O problema é que boa parte das pessoas para exatamente por aí, e o pior é que o SSH possui alguns recursos que ficam completamente invisíveis pra quem nunca foi além do básico. Não porque sejam obscuros ou experimentais. Eles estão inclusive na man page, funcionam desde sempre, e aparecem toda vez que você digita `ssh --help`. Só que ninguém parou pra explicar direito como usar de forma intuitiva.
 
 Um desses recursos são os **túneis SSH** [^2]. Três flags (`-L`, `-R` e `-D`) que permitem redirecionar tráfego de rede arbitrário por dentro de uma conexão SSH já estabelecida. Sem VPN, sem configuração extra no firewall, sem instalar nada. É o tipo de coisa que, quando você descobre, fica se perguntando por que ninguém nunca te contou antes, e que faz você olhar pro seu histórico de comandos e pensar _"mds, quanto tempo eu perdi sem isso"_!
 
 E ainda vou deixar vocês com uma pulga atrás da orelha antes de continuar: essas mesmas técnicas que você vai aprender aqui são exatamente as que equipes de red team e atacantes reais costumam usar para se mover lateralmente dentro de redes comprometidas. O MITRE ATT&CK inclusive cataloga isso como técnica [T1021.004](https://attack.mitre.org/techniques/T1021/004/) [^3], e a Red Canary já descreveu o abuso de túneis SSH como um vetor de lateralização _"incrivelmente difícil de detectar quando as ferramentas certas não estão no lugar"_ [^5]. E em 2025, a Sygnia documentou grupos de ransomware usando exatamente o `-R` pra se mover por ambientes VMware ESXi sem levantar alertas [^4] ([ESXi Ransomware Attacks: Stealthy Persistence through SSH Tunneling](https://www.sygnia.co/blog/esxi-ransomware-ssh-tunneling-defense-strategies/)). Conhecer o recurso é a primeira linha de defesa (e também de uso legítimo).
 
-Dito isso, nesse post vou explicar cada um dos três modos de uso de túneis que existem no SSH (e por tabela no PuTTY, ok?). A idéia é simular um cenário real, e sem pular etapas. No final ainda tem um bônus sobre o `ProxyJump` (`-J`), que muita gente confunde com túnel mas é outra coisa. Vale ficar até lá.
+Dito isso, nesse post vou explicar cada um dos três modos de uso de túneis que existem no SSH (e por tabela no PuTTY, ok?). A ideia é simular um cenário real, e sem pular etapas. No final ainda tem um bônus sobre o `ProxyJump` (`-J`), que muita gente confunde com túnel mas é outra coisa. Vale ficar até lá.
 
 ## Mas antes: o que diabos é um túnel SSH, Dudu?
 
@@ -23,7 +23,7 @@ Ok, vamos do começo então. Imagina que você tem um cano de água entre dois p
 
 Um túnel SSH funciona assim. Você já tem uma conexão SSH estabelecida entre dois pontos. O que o túnel faz é pegar outro tráfego de rede (banco de dados, HTTP, o que for) e mandar junto, empacotado dentro dessa conexão SSH. Criptografado, sem abrir novas portas no firewall, sem VPN.
 
-A fonte de confusão que quase todo mundo tem quando vê túneis SSH pela primeira vez é: **de quem é o ponto de vista?**? Quando o comando diz `localhost`, a qual máquina ele está se referindo? Quando diz _"escutar uma porta"_, é no seu PC ou no servidor? Essa é exatamente a pergunta de um mihão de reais, e vamos respondê-la para cada cenário de tunelamento que temos no SSH.
+A fonte de confusão que quase todo mundo tem quando vê túneis SSH pela primeira vez é: **de quem é o ponto de vista?** Quando o comando diz `localhost`, a qual máquina ele está se referindo? Quando diz _"escutar uma porta"_, é no seu PC ou no servidor? Essa é exatamente a pergunta de um milhão de reais, e vamos respondê-la para cada cenário de tunelamento que temos no SSH.
 
 ## Configurando o cenário
 
@@ -57,11 +57,13 @@ Vamos começar pelo caso mais comum: você precisa acessar um serviço que está
 ssh -L [porta_local]:[host_destino]:[porta_destino] usuario_bastion@ip_publico_bastion
 ```
 
+*Sintaxe genérica do túnel local vinculando uma porta do PC local ao destino alcançável pelo bastion.*
+
 A flag `-L` cria uma **porta de escuta no seu PC**. Quando você conectar nessa porta local, o SSH pega esse tráfego, manda pelo túnel até o `bastion`, e o `bastion` faz a conexão final com `host_destino:porta_destino`.
 
 O detalhe crucial (e fonte de 90% da confusão com o comando) é que o `host_destino` é resolvido do **ponto de vista do bastion**, não do seu PC. Então quando você escreve `localhost` ali, você tá falando do `localhost` do `bastion`. Quando você escreve `10.0.254.25`, você tá falando de um host que o `bastion` alcança diretamente, mas que o seu PC nem conhece.
 
-Por que eu falei de `localhost`? Pq as vezes usamos isso diretamente em uma máquina que pode ter acesso SSH exposto mas outra porta filtrada (banco de dados é o melhor exemplo).
+Por que eu falei de `localhost`? Porque às vezes usamos isso diretamente em uma máquina que pode ter acesso SSH exposto mas outra porta filtrada (banco de dados é o melhor exemplo).
 
 ### Exemplo: acessar o servidor Postgres interno
 
@@ -71,6 +73,8 @@ O banco em `10.0.254.25:5432` só aceita conexões da rede interna. Do seu PC, d
 ssh -L 54322:10.0.254.25:5432 usuario_bastion@ip_publico_bastion
 ```
 
+*Abre a porta 54322 no seu PC e encaminha todo o tráfego recebido para o Postgres interno na porta 5432 via bastion.*
+
 Isso abriu a porta 54322 na minha máquina local, e essa porta é ligada a um túnel via SSH que passa pelo `bastion` e o `bastion` então redireciona para a porta 5432 da máquina `10.0.254.25`, que no nosso diagrama lá em cima é o Postgres.
 
 Agora, em outro terminal:
@@ -78,6 +82,8 @@ Agora, em outro terminal:
 ```bash
 psql -h localhost -p 54322 -U usuario_banco -d meu_banco
 ```
+
+*Conecta o cliente local de Postgres à porta 54322 tunelada com sucesso.*
 
 Do ponto de vista do banco de dados, a conexão veio do `bastion` (`10.0.254.10`), que está dentro da rede interna. Sem VPN, sem abrir o Postgres para a internet, sem config especial. O SSH fez o trabalho sujo.
 
@@ -93,13 +99,15 @@ Agora vamos inverter completamente a lógica. E se você quiser que o **servidor
 
 #### "Eu quero que o servidor acesse algo que só eu enxergo"
 
-```
+```bash
 ssh -R [porta_remota]:[host_destino]:[porta_local] usuario_bastion@ip_publico_bastion
 ```
 
+*Sintaxe genérica do túnel reverso abrindo porta de escuta remota no bastion.*
+
 Aqui a flag `-R` inverte completamente a lógica. Agora quem **escuta a porta é o bastion**. Quando alguém se conectar nessa porta no `bastion`, o tráfego vem pelo túnel SSH de volta até você, e aí o seu PC faz a conexão final com `host_destino:porta_local`.
 
-E agora vêm o real pulo do gato (e a maior fonte de confusões com a sintaxe do comando): com a flag `-R` o host destino é resolvido a partir do ponto de vista do **seu PC**, não do `bastion`. Então, quando vc escreve `localhost` ali, você está dizendo que a porta é no **seu PC**.
+E agora vem o real pulo do gato (e a maior fonte de confusões com a sintaxe do comando): com a flag `-R` o host destino é resolvido a partir do ponto de vista do **seu PC**, não do `bastion`. Então, quando vc escreve `localhost` ali, você está dizendo que a porta é no **seu PC**.
 
 Por que isso importa? Porque é comum usar `-R xx:localhost:22` (sendo `xx` um valor aleatório) pra expor o SSH do **seu PC** para o `bastion` (ou para rede interna toda).
 
@@ -113,6 +121,8 @@ No **seu PC**, execute primeiro:
 ssh -R 2222:localhost:22 usuario_bastion@ip_publico_bastion
 ```
 
+*Abre a porta remota 2222 no bastion que redireciona conexões para o SSH na porta 22 do seu PC.*
+
 Isso abre a porta **2222 no bastion**, que aponta pro SSH do **seu PC** via túnel reverso.
 
 Agora, **no terminal do Postgres** (`10.0.254.25`):
@@ -120,6 +130,8 @@ Agora, **no terminal do Postgres** (`10.0.254.25`):
 ```bash
 scp -P 2222 dump_banco.sql.gz meu_usuario@10.0.254.10:/home/usuario/
 ```
+
+*Envia o arquivo para a porta 2222 do bastion, entregando o dump diretamente na sua estação de trabalho.*
 
 Fluxo:
 - Usuário no Postgres conecta em `10.0.254.10:2222`
@@ -148,6 +160,8 @@ Chegamos no mais poderoso dos três: o **proxy SOCKS**. Diferente dos outros doi
 ssh -D [porta_local] usuario_bastion@ip_publico_bastion
 ```
 
+*Sintaxe genérica do proxy dinâmico criando um servidor proxy SOCKS local na sua estação.*
+
 Já o caso do `-D` é o mais diferente dos três. Ele não redireciona uma porta específica para um destino fixo. Ele abre um **proxy SOCKS** no seu PC. Você aponta seus aplicativos pra esse proxy, e toda conexão que eles fizerem vai passar pelo `bastion` antes de chegar ao destino final.
 
 É o comportamento mais próximo de uma VPN que você consegue com SSH puro, sem instalar nada extra.
@@ -164,13 +178,15 @@ No seu PC:
 ssh -D 9999 usuario_bastion@ip_publico_bastion
 ```
 
-Agora, configure o seu navegador preferido pra usar SOCKS proxy no endereço localhost:9999.
+*Inicia o proxy SOCKS local na porta 9999 passando todas as conexões pelo túnel seguro do bastion.*
+
+Agora, configure o seu navegador preferido pra usar SOCKS proxy no endereço `localhost:9999`.
 
 ```
 SEU_NAVEGADOR ──> SOCKS:9999 ──[túnel]──> BASTION ──> DASHBOARD:10.0.254.50
 ```
 
-E o melhor: funciona pra qualquer site/serviço da rede interna, não só pro dashboard. Uma única configuração. Inclusive, se o `bastion` têm rota padrão para a internet, é possível navegar para fora da rede por essa conexão. E é por isso que ela é uma opção **extremamente poderosa** (e usada frequentemente por atacantes para esconder tráfego).
+E o melhor: funciona pra qualquer site/serviço da rede interna, não só pro dashboard. Uma única configuração. Inclusive, se o `bastion` tem rota padrão para a internet, é possível navegar para fora da rede por essa conexão. E é por isso que ela é uma opção **extremamente poderosa** (e usada frequentemente por atacantes para esconder tráfego).
 
 ## Caso Especial - ProxyJump
 
@@ -186,6 +202,8 @@ O `ProxyJump` permite **pular pelo bastion** para abrir uma sessão SSH em outra
 ssh -J usuario_bastion@ip_publico_bastion outro_usuario@outro_servidor
 ```
 
+*Encaminha a sessão SSH interativa diretamente ao servidor interno usando o bastion como trampolim transparente.*
+
 O `-J` aqui usa o `bastion` como **trampolim transparente** pra uma nova conexão SSH. Você digita comandos normalmente, mas por baixo dos panos passa pelo `bastion`.
 
 **Diferença crucial para os túneis:** aqui ele não mexe com portas, não redireciona tráfego, não cria proxy. É só SSH ─> SSH.
@@ -198,19 +216,23 @@ O Postgres (`10.0.254.25`) tem SSH na porta 22, mas só acessível da rede inter
 ssh -J usuario_bastion@ip_publico_bastion usuario_banco@10.0.254.25
 ```
 
+*Abre o terminal interativo no Postgres através do bastion sem necessidade de expor portas na internet.*
+
 Você abre um terminal direto no Postgres. O `bastion` só "repassa" a conexão SSH, sem abrir portas extras ou criar túneis.
 
 ```
 SEU_PC ──[SSH]──> BASTION ──[SSH]──> POSTGRES:22
 ```
 
-### Superpoder secreto do -J: várias conexões em série
+### O superpoder do ProxyJump: várias conexões em série
 
 Até aqui usei só um `bastion` no meio do caminho, mas o `-J` aceita **vários hosts em cadeia**, separados por vírgula. O SSH vai pulando por cada servidor na ordem até chegar no servidor final, sempre mantendo uma sessão cifrada de ponta a ponta entre você e o destino.
 
 ```bash
 ssh -J usuario1@servidor1,usuario2@servidor2 usuario_final@servidor_final
 ```
+
+*Conecta ao servidor final saltando sucessivamente por múltiplos bastions intermediários.*
 
 Por baixo fica assim:
 
@@ -253,7 +275,7 @@ Em outro post futuro, pretendo falar de outro recurso muito poderoso do SSH, cha
 
 **É conhecimento de ops que todo mundo deveria ter. E de segurança que todo mundo deveria temer quando usado errado.**
 
-## Bibliografia
+## Referências
 
 [^1]: **ssh(1): Linux manual page** {*man7.org*} ([Link](https://man7.org/linux/man-pages/man1/ssh.1.html))
 

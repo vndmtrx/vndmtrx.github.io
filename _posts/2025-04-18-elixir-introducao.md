@@ -1,7 +1,8 @@
 ---
 layout: post
 title: "Aprendendo Elixir - Introdução"
-author: "Eduardo N. S. R."
+author:
+  - "Eduardo N. S. R."
 date: 2025-04-18 15:09:00 GMT-3
 modified_date: 2026-05-10 10:26:00 GMT-3
 permalink: /posts/elixir-introducao/
@@ -13,21 +14,22 @@ Este post inaugura uma série intitulada *Aprendendo Elixir*, na qual registro m
 
 Sempre tive afinidade com linguagens funcionais. Meu primeiro contato foi ainda nos anos 90, em que usava AutoLisp, no AutoCAD R14. O AutoLisp me criou o interesse para o paradigma funcional de forma inesperada. Mais tarde, usei Python extensivamente, não apenas por sua clareza sintática, mas principalmente pelos recursos funcionais que ele mescla com programação imperativa e orientação a objetos. Também sempre tive bastante apreço por Java: mesmo não sendo funcional, sua estrutura e clareza sempre me pareceram convidativas à manutenção e organização do código.
 
-Agora, com Elixir, sinto um misto desses mundos: a elegância da sintaxe, combinada com o poder do paradigma funcional. Recursos como o operador `|>` (pipe) e o pattern matching são conceitos que eu nunca havia usado diretamente em outras linguagens, e vou abordar cada um deles com calma nos próximos posts 🙂
+Agora, com Elixir, sinto um misto desses mundos: a elegância da sintaxe, combinada com o poder do paradigma funcional. Recursos como o operador `|>` (pipe) e o pattern matching são conceitos que eu nunca havia usado diretamente em outras linguagens, e vou abordar cada um deles com calma nos próximos posts.
 
 ## Entendendo o Elixir e sua proposta
 
-💡 Antes de começarmos a codificar, vale uma breve introdução à linguagem Elixir. Elixir [^1] é uma linguagem de programação funcional [^2], concorrente e tolerante a falhas, construída sobre a máquina virtual do Erlang (BEAM). Essa base permite que aplicações Elixir herdem características como escalabilidade massiva, alta disponibilidade e comunicação entre processos leves, o que torna a linguagem uma escolha excelente para sistemas distribuídos, aplicações em tempo real e arquiteturas resilientes.
+> 💡 **Nota**: Antes de começarmos a codificar, vale uma breve contextualização. O Elixir [^1] é uma linguagem de programação funcional [^2], concorrente e tolerante a falhas, construída sobre a máquina virtual do Erlang (BEAM). Essa base permite que aplicações Elixir herdem características como escalabilidade massiva, alta disponibilidade e comunicação entre processos leves, o que torna a linguagem uma escolha excelente para sistemas distribuídos, aplicações em tempo real e arquiteturas resilientes.
 
 Por ser funcional, Elixir adota conceitos como imutabilidade de dados e funções puras. Isso favorece a previsibilidade do código e simplifica testes e paralelismo. Além disso, Elixir possui uma sintaxe moderna e acessível, e integra ferramentas como o `mix` [^3] (para gerenciamento de projetos) e o `ExUnit` [^4] (para testes automatizados), o que torna o ecossistema produtivo e acolhedor para desenvolvedores iniciantes e experientes.
 
-Neste primeiro módulo, configurei meu ambiente com ASDF, criei um projeto simples com `mix` e implementei uma função básica acompanhada de testes automatizados com `ExUnit`. Tudo isso dentro de uma estrutura clara e replicável, e todos os exemplos deste módulo estão disponíveis no item [01-saudacao](https://github.com/vndmtrx/estudo_elixir/tree/main/01-saudacao), e os demais estarão organizados no [repositório principal do projeto](https://github.com/vndmtrx/estudo_elixir) 🧰
+Neste primeiro módulo, configurei meu ambiente com ASDF, criei um projeto simples com `mix` e implementei uma função básica acompanhada de testes automatizados com `ExUnit`. Tudo isso dentro de uma estrutura clara e replicável, e todos os exemplos deste módulo estão disponíveis no item [01-saudacao](https://github.com/vndmtrx/estudo_elixir/tree/main/01-saudacao), e os demais estarão organizados no [repositório principal do projeto](https://github.com/vndmtrx/estudo_elixir).
 
 ## Instalação do ASDF e das dependências
 
-> ⚠️ **Aviso**: este guia de instalação foi testado no Debian 12 (Bookworm). Os comandos e pacotes listados podem variar ligeiramente dependendo da sua distribuição Linux ou sistema operacional. Usuários de Arch, Fedora, macOS ou Windows podem precisar adaptar os comandos conforme seus respectivos gerenciadores de pacotes ou ambientes. A documentação oficial do ASDF fornece instruções específicas para cada sistema.
+> ⚠️ **Aviso**: Este guia de instalação foi testado no Debian 12 (Bookworm). Os comandos e pacotes listados podem variar ligeiramente dependendo da sua distribuição Linux ou sistema operacional. Usuários de Arch, Fedora, macOS ou Windows podem precisar adaptar os comandos conforme seus respectivos gerenciadores de pacotes ou ambientes. A documentação oficial do ASDF fornece instruções específicas para cada sistema.
 
 ### Requisitos de sistema
+
 Antes de iniciar, é necessário instalar bibliotecas de desenvolvimento que permitirão compilar e utilizar tanto Erlang quanto Elixir. Se estiver usando um sistema baseado em Debian (como Ubuntu), execute:
 
 ```bash
@@ -35,9 +37,10 @@ sudo apt update && sudo apt install -y git curl autoconf \
   build-essential libssl-dev libncurses-dev unzip
 ```
 
-Esses pacotes incluem compiladores, bibliotecas de SSL e ferramentas necessárias para o ASDF e as linguagens que serão instaladas.
+*Instala compiladores, bibliotecas de SSL e ferramentas essenciais para compilar Erlang e Elixir.*
 
 ### Clonagem do ASDF e configuração de ambiente
+
 O ASDF [^5] é um gerenciador de versões universal. Ele permite manter múltiplas versões de linguagens em paralelo, o que é especialmente útil para desenvolvimento em ambientes diversos.
 
 ```bash
@@ -47,7 +50,7 @@ echo '. "$HOME/.asdf/asdf.sh"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
-Esses comandos instalam o ASDF no diretório pessoal e o tornam acessível no terminal ao iniciar novas sessões de shell.
+*Clona o ASDF para o diretório local e inicializa seu script no `.bashrc`.*
 
 ### Instalação dos plugins Erlang e Elixir
 
@@ -64,12 +67,16 @@ asdf global erlang 27.3.2
 asdf global elixir 1.18.3-otp-27
 ```
 
-💡 Você também pode definir versões específicas para um projeto, o que é muito útil em ambientes com múltiplas aplicações ou para garantir reprodutibilidade. No meu caso, usei os seguintes comandos dentro da pasta do projeto, o que criou um arquivo `.tool-versions` com as versões desejadas:
+*Adiciona os plugins oficiais, compila as versões desejadas e as define como padrão global.*
+
+> 💡 **Dica**: Você também pode definir versões específicas para um projeto, o que é muito útil em ambientes com múltiplas aplicações ou para garantir reprodutibilidade. No meu caso, usei os seguintes comandos dentro da pasta do projeto, o que criou um arquivo `.tool-versions` com as versões desejadas:
 
 ```bash
 asdf set erlang 27.3.2
 asdf set elixir 1.18.3-otp-27
 ```
+
+*Gera o arquivo `.tool-versions` no diretório atual fixando as versões exatas para o projeto.*
 
 Isso garante que, ao entrar no diretório do projeto, o ASDF carregue automaticamente as versões corretas.
 
@@ -80,7 +87,9 @@ mix new saudacao
 cd saudacao
 ```
 
-> ⚠️ **Aviso**: O nome da pasta no repositório que estou apresentando pode divergir do apresentado aqui. No repositório usei `01-saudacao` unicamente para fins de organização visual, mas a idéia é a mesma.
+*Cria a estrutura padrão do projeto Elixir com o Mix e acessa a pasta recém-criada.*
+
+> ⚠️ **Aviso**: O nome da pasta no repositório que estou apresentando pode divergir do apresentado aqui. No repositório usei `01-saudacao` unicamente para fins de organização visual, mas a ideia é a mesma.
 
 O comando `mix new` cria a estrutura básica de um projeto Elixir. A pasta gerada conterá:
 
@@ -112,8 +121,9 @@ defmodule Saudacao do
     "Olá, #{nome}!"
   end
 end
-
 ```
+
+*Define o módulo `Saudacao` contendo documentação com doctests e guard clause para garantir parâmetro textual.*
 
 Neste trecho, utilizamos dois blocos de documentação:
 
@@ -132,11 +142,15 @@ Para testar essa função de forma interativa, você pode carregar seu projeto n
 iex -S mix
 ```
 
+*Inicia a sessão interativa do IEx carregando todas as dependências e módulos do projeto Mix.*
+
 Ao fazer isso a partir da raiz do projeto, o `iex` irá carregar todos os módulos e dependências definidos. Assim, você pode executar:
 
 ```elixir
 Saudacao.ola("Dudu")
 ```
+
+*Invoca a função `ola/1` no REPL, retornando a string formatada.*
 
 Isso é excelente para explorar a linguagem, testar funções rapidamente e experimentar variações sem recompilar tudo a cada alteração.
 
@@ -167,19 +181,23 @@ defmodule SaudacaoTest do
 end
 ```
 
+*Implementa testes unitários assíncronos com ExUnit, doctests automáticos e validação de exceção com `assert_raise`.*
+
 O bloco `use ExUnit.Case, async: true` habilita a execução paralela dos testes, útil em projetos com muitos arquivos.
 
-A linha `doctest Saudacao` é responsável por transformar os exemplos presentes na anotação `@doc` do módulo `Saudacao` em testes automatizados. Isso significa que se o exemplo `Saudacao.ola("Dudu")` presente na documentação não funcionar, o teste irá falhar — garantindo que a documentação reflita sempre o comportamento real do código.
+A linha `doctest Saudacao` é responsável por transformar os exemplos presentes na anotação `@doc` do módulo `Saudacao` em testes automatizados. Isso significa que se o exemplo `Saudacao.ola("Dudu")` presente na documentação não funcionar, o teste irá falhar: garantindo que a documentação reflita sempre o comportamento real do código.
 
 A macro `describe` permite agrupar os testes logicamente por função ou comportamento, facilitando a leitura da saída dos testes e sua manutenção. Cada `test` representa um cenário, e usamos `assert` para garantir que o valor retornado pela função seja o esperado.
 
-Além de testes para comportamentos esperados, vamos também testar comportamentos não esperados na nossa implementação. Por exemplo, a função `ola/1` só aceita strings — isso é garantido pelo *guard* `when is_binary(nome)`. Se tentarmos passar um inteiro, a função irá falhar com um `FunctionClauseError`. Podemos testar esse comportamento usando `assert_raise`:
+Além de testes para comportamentos esperados, vamos também testar comportamentos não esperados na nossa implementação. Por exemplo, a função `ola/1` só aceita strings: isso é garantido pelo *guard* `when is_binary(nome)`. Se tentarmos passar um inteiro, a função irá falhar com um `FunctionClauseError`. Podemos testar esse comportamento usando `assert_raise`:
 
 Para executar os testes, basta rodar:
 
 ```bash
 mix test
 ```
+
+*Executa todos os testes do projeto e reporta o status de aprovação de cada asserção.*
 
 ## Considerações Finais
 

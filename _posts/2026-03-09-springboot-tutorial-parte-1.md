@@ -13,31 +13,27 @@ series: Spring Boot Tutorial
 
 E se de repente a gente decidisse escrever um tutorial de Spring Boot? Pois é, eu decidi começar essa seara de estudo do framework pela parte que ninguém liga, mas que geralmente é a que quebra tudo quando não é feito do jeito certo: o ambiente de desenvolvimento. Parece bobo, mas sem ele sólido desde o começo, o resto vira dor de cabeça infinita.
 
-> *🔔* Este post faz parte da série **"Spring Boot Tutorial"**, onde eu construo, passo a passo, uma API backend moderna usando **Spring Boot**.
-> Aqui o foco é o backend: modelagem, persistência, resiliência, testes, observabilidade e deploy. A linguagem usada no projeto será Java, versão 25+. O frontend vem depois, quando a API estiver bem cuidada por dentro.
+> 🔔 **Nota da Série**: Este post faz parte da série **"Spring Boot Tutorial"**, onde eu construo, passo a passo, uma API backend moderna usando **Spring Boot**. Aqui o foco é o backend: modelagem, persistência, resiliência, testes, observabilidade e deploy. A linguagem usada no projeto será Java, versão 25+. O frontend vem depois, quando a API estiver bem cuidada por dentro.
 
-Nos últimos anos eu venho me focando mais na área de segurança, infraestrutura e de DevOps na maior parte dos projetos em que eu participo. Isso inclui migrações para nuvem, deploy de serviços com automação e gerenciamento de esteiras de deploy automatizado, na maioria dos casos diretamente com VMs e mais recentemente com conteiners. Dito isso, desenvolvimento nunca foi um forte na minha vida profissional, mas uma coisa sempre me incomodou nisso, que é a forma como vários projetos eram desenvolvidos.
+Nos últimos anos eu venho me focando mais na área de segurança, infraestrutura e de DevOps na maior parte dos projetos em que eu participo. Isso inclui migrações para nuvem, deploy de serviços com automação e gerenciamento de esteiras de deploy automatizado, na maioria dos casos diretamente com VMs e mais recentemente com contêineres. Dito isso, desenvolvimento nunca foi um forte na minha vida profissional, mas uma coisa sempre me incomodou nisso, que é a forma como vários projetos eram desenvolvidos.
 
-A inspiração pra este projeto veio da série de posts [Flask Mega Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world), do Miguel Grinberg, uma série que sempre admirei pela forma progressiva e prática com que ensina. A ideia aqui é trazer esse mesmo espírito “aprenda fazendo”, mas no universo do Spring Boot, enfatizando boas práticas de backend moderno, observabilidade e automação.
+A inspiração pra este projeto veio da série de posts [Flask Mega Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world), do Miguel Grinberg, uma série que sempre admirei pela forma progressiva e prática com que ensina. A ideia aqui é trazer esse mesmo espírito “aprenda fazendo”, mas no universo do Spring Boot, enfatizando boas práticas de backend moderno, observabilidade e automação.
 
-Eu sei que vcs vão dizer que eu por ser de infra vou sempre ter uma visão diferente do dev, e vcs não estão errados. E é por isso que estou me propondo a fazer essa série de posts. Minha idéia é aprender ao mesmo tempo que vou documentando as várias coisas que eu aprendi nas minhas áreas de trabalho com esse estudo de uma nova linguagem, um novo framework, para começar.
+Eu sei que vcs vão dizer que eu por ser de infra vou sempre ter uma visão diferente do dev, e vcs não estão errados. E é por isso que estou me propondo a fazer essa série de posts. Minha ideia é aprender ao mesmo tempo que vou documentando as várias coisas que eu aprendi nas minhas áreas de trabalho com esse estudo de uma nova linguagem, um novo framework, para começar.
 
 A ideia aqui, com essa série, é que você consiga acompanhar desde o ambiente de desenvolvimento, passando por banco, segurança, cache, testes, observabilidade, até chegar em Docker e Kubernetes, vendo os trade-offs e as pequenas decisões que normalmente ficam escondidas nos tutoriais bonitinhos, e para isso eu decidi criar uma aplicação clássica do tipo TODO, onde a parte da complexidade da solução é deixada de lado para focarmos efetivamente no uso das tecnologias na melhoria do projeto.
 
-Eu queria começar essa série de posts pela parte "menos glamourosa" do projeto: o ambiente de desenvolvimento. Não é banco, não é Redis, não é Kubernetes. É só... deixar o editor e o runtime do Java pronto. E mesmo assim, quase todo projeto que vejo tropeça exatamente nessa etapa (ou intui que o usuário já têm um ambiente bem definido).
+Eu queria começar essa série de posts pela parte "menos glamourosa" do projeto: o ambiente de desenvolvimento. Não é banco, não é Redis, não é Kubernetes. É só... deixar o editor e o runtime do Java pronto. E mesmo assim, quase todo projeto que vejo tropeça exatamente nessa etapa (ou intui que o usuário já tem um ambiente bem definido).
 
-E por que disso? Porque na maioria das vezes a gente perde um monte de tempo com coisas como:
-- O clássico *"Na minha máquina funciona"* porque alguém tava fazendo tudo com Java 17 e o ambiente em si rodando com com Java 11;
-- Falta de reprodutibilidade das builds dos softwares desenvolvidos, principalmente no CI;
-- Ambientes de desenvolvimentos mistos. Pois sempre têm um usando um IntelliJ e outro usando um VS Code.
+E por que disso? Porque na maioria das vezes a gente perde tempo com o clássico *"Na minha máquina funciona"* (quando alguém desenvolve em Java 17 enquanto o servidor roda Java 11), com a falta de reprodutibilidade das builds no CI, ou com conflitos gerados por configurações díspares entre quem usa IntelliJ e quem usa VS Code.
 
 Nada do que vou propor aqui é revolucionário. É só uma sugestão minha para começar algo de forma padronizada. Todos vcs são livres para fazer como quiserem (ou mesmo não fazer), mas não vão poder reclamar depois.
 
 Dada essa fala inicial, vamos efetivamente ao texto.
 
-## Spring Boot Tutorial: Ambiente de desenvolvimento
+## Preparando o Ambiente Base: Debian e SDKMAN
 
-Então, a primeira coisa que vamos pensar: qual sistema operacional? Não vou me alongar aqui, pois cada um têm sua opção. Eu irei focar tudo em **Debian Trixie**, pois é geralmente meu ambiente de trabalho base.
+Então, a primeira coisa que vamos pensar: qual sistema operacional? Não vou me alongar aqui, pois cada um tem sua opção. Eu irei focar tudo em **Debian Trixie**, pois é geralmente meu ambiente de trabalho base.
 
 A primeira coisa que eu faço aqui é instalar o **SDKMAN** [^1]. Ele é um gerenciador de SDKs do ambiente do Java que permite, entre outras coisas, vc ter várias versões diferentes do mesmo software. A instalação é simples de boba:
 
@@ -97,7 +93,7 @@ java=26-tem
 
 Isso permite que os comandos de shell rodados no escopo do projeto sempre usem a versão Java correta e inclusive a instalação das dependências com o comando `sdk env install`.
 
-É importante citar também que não precisa ser só o Java. O Sdkman têm vários runtimes para instalar, como o SpringBoot, o Gradle, o Maven, entre outros. Você pode ver usando o comando `sdk list`, que irá mostrar todos os runtimes disponíveis.
+É importante citar também que não precisa ser só o Java. O Sdkman tem vários runtimes para instalar, como o SpringBoot, o Gradle, o Maven, entre outros. Você pode ver usando o comando `sdk list`, que irá mostrar todos os runtimes disponíveis.
 
 Feito isso, e após a configuração do ambiente base pelo script de instalação, estamos prontos para a próxima etapa.
 

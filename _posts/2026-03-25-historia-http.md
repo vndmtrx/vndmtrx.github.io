@@ -11,7 +11,7 @@ tags: [HTTP, Web, Internet]
 
 A história do protocolo HTTP e da World Wide Web está intimamente ligada, desde a sua fundação. Originalmente desenvolvido pelos cientistas do CERN, o HTTP vem passando por várias mudanças que mantiveram sua simplicidade ao passo que melhoraram sua flexibilidade para lidar com os cenários cada vez mais completos e modernos da Web com o passar dos anos. Pensado originalmente para troca de informações automatizadas entre cientistas entre universidades, tornou-se hoje em uma estrutura capaz de carregar imagens e vídeos de alta resolução, além de ser a base de praticamente todos os protocolos de troca de dados dos Web Services, seja em REST, seja RPC ou SOAP, para citar apenas estes.
 
-A idéia básica do WWW e do HTTP era juntar tecnologias emergentes dos computadores, redes de comunicação e hipertexto em algo poderoso e fácil de usar como sistema de troca de informações, como uma grande teia de páginas, artigos, relatórios, ligados entre si. Daí o nome World Wide Web, ou em bom português: Grande Teia Global.
+A ideia básica do WWW e do HTTP era juntar tecnologias emergentes dos computadores, redes de comunicação e hipertexto em algo poderoso e fácil de usar como sistema de troca de informações, como uma grande teia de páginas, artigos, relatórios, ligados entre si. Daí o nome World Wide Web, ou em bom português: Grande Teia Global.
 
 ## Como tudo começou?
 
@@ -28,15 +28,19 @@ Com esses quatro blocos, a equipe do CERN liderada pelo Tim Berners-Lee desenvol
 
 A primeira "versão" do HTTP, lançada em 1991, não tinha versionamento. Ela foi chamada de 0.9 para diferenciar das outras versões que viriam depois. O **HTTP/0.9** era extremamente simples: requisições consistiam de uma única linha:
 
-```
+```http
 GET /minha-pagina.html
 ```
+
+*Em HTTP/0.9, a requisição continha apenas o método GET e o caminho do arquivo solicitado, sem versão e sem cabeçalhos.*
 
 Onde o recurso minha página poderia ser qualquer coisa disponibilizada. A resposta também era extremamente simples, e consistia em simplesmente retornar o conteúdo do arquivo:
 
 ```html
 <html>Uma página de texto</html>
 ```
+
+*A resposta retornava puramente o corpo do documento HTML, sem linha de status e sem nenhum metadado adicional.*
 
 Em termos do protocolo TCP, que foi o protocolo de transporte escolhido para servir o HTTP, basicamente o que acontecia era 
 
@@ -84,6 +88,8 @@ GET /minha-pagina.html HTTP/1.0
 User-Agent: NCSA_Mosaic/2.0 (Windows 3.1)
 ```
 
+*A requisição passa a declarar a versão do protocolo e identifica o cliente através do cabeçalho User-Agent.*
+
 E o servidor responderia com uma resposta da seguinte forma:
 
 ```http
@@ -95,12 +101,16 @@ Content-Type: text/html
 <HTML>Uma pagina com uma imagem <IMG SRC="/minha-imagem.gif"></HTML>
 ```
 
+*O servidor responde com status 200 OK, data, versão do software e o tipo de mídia no Content-Type.*
+
 O cliente, após processar o arquivo HTML, iria abrir uma nova conexão e fazer o mesmo procedimento para baixar a imagem:
 
 ```http
 GET /minha-imagem.gif HTTP/1.0
 User-Agent: NCSA_Mosaic/2.0 (Windows 3.1)
 ```
+
+*O navegador abre uma segunda conexão TCP independente para solicitar a imagem referenciada no HTML.*
 
 E o servidor responderia com uma resposta da seguinte forma:
 
@@ -112,6 +122,8 @@ Content-Type: image/gif
 
 [conteúdo binário da imagem]
 ```
+
+*O servidor retorna o payload binário da imagem com seu Content-Type específico.*
 
 Basicamente o que o protocolo **HTTP/1.0** trouxe de melhorias foi:
 
@@ -148,6 +160,8 @@ Accept-Encoding: gzip, deflate, br, zstd
 Connection: keep-alive
 ```
 
+*A requisição HTTP/1.1 exige o cabeçalho Host para permitir múltiplos domínios no mesmo IP e negocia compressão e persistência.*
+
 E o servidor responderia da seguinte forma:
 
 ```http
@@ -166,6 +180,8 @@ content-length: 26178
 
 [26178 bytes de conteúdo HTML]
 ```
+
+*A resposta traz controle avançado de cache por tempo e validação de hash (ETag), além do corpo comprimido em Brotli.*
 
 Como é possível ver nos exemplos acima, temos várias novas funcionalidades disponíveis no protocolo, com o advento da nova versão. O **HTTP/1.1** resolveu algumas das ambiguidades existentes à época do **HTTP/1.0** e também introduziu várias melhorias:
 
@@ -210,7 +226,7 @@ Com esses casos se tornando mais comuns, a IETF definiu um novo Task Group para 
 
 ## HTTP/2 - Um novo protocolo, agora binário
 
-Entre 1997 e 2015 (as datas do lançamento das versões 1.1 e 2 do protocolo HTTP) a Web evoliu bastante, trazendo várias mudanças massivas no ecossistema. Estamos falando de páginas web que deixaram de ser só HTML/CSS para conter scripts javascript, frameworks de layout como JQuery, páginas dinâmicas como PHP, sem contar o início do surgimento dos web services RPC, com SOAP e JSON sendo distribuídos em cima do protocolo HTTP.
+Entre 1997 e 2015 (as datas do lançamento das versões 1.1 e 2 do protocolo HTTP) a Web evoluiu bastante, trazendo várias mudanças massivas no ecossistema. Estamos falando de páginas web que deixaram de ser só HTML/CSS para conter scripts javascript, frameworks de layout como JQuery, páginas dinâmicas como PHP, sem contar o início do surgimento dos web services RPC, com SOAP e JSON sendo distribuídos em cima do protocolo HTTP.
 
 Facilmente páginas começaram a possuir dezenas a centenas de recursos a serem carregados, e isso só tornou ainda mais evidente as limitações do **HTTP/1.1** para atender essas demandas sem exaurir os recursos computacionais disponíveis para esses serviços.
 
@@ -257,7 +273,7 @@ Curiosamente, o protocolo **HTTP/2** ainda não era totalmente livre de problema
 
 O problema é que a despeito do fato de que as transferências de dados entre cliente e servidor já encontravam-se multiplexadas, com possibilidade de transferência simultânea de vários recursos ao mesmo tempo, o canal de transmissão era único.
 
-Por isso, quando ocorria uma interrupção do fluxo do TCP (ou retransmissões e ordenações de datagramas, necessários pelo protocolo), essa interrupção podia causar a pausa de todas as transmissões paralelas, já que aqui ao contrário do caso anterior em que uma pausa na transferência de um recurso travava a transferência de outros recursos, uma pausa na tranferência de um frame pausava a transferência dos outros frames enfileirados no TCP para transmissão, ou seja, o problema apesar de mais raro de acontecer, ainda acontecia.
+Por isso, quando ocorria uma interrupção do fluxo do TCP (ou retransmissões e ordenações de datagramas, necessários pelo protocolo), essa interrupção podia causar a pausa de todas as transmissões paralelas, já que aqui ao contrário do caso anterior em que uma pausa na transferência de um recurso travava a transferência de outros recursos, uma pausa na transferência de um frame pausava a transferência dos outros frames enfileirados no TCP para transmissão, ou seja, o problema apesar de mais raro de acontecer, ainda acontecia.
 
 ## HTTP/3 - A revolução do QUIC
 
@@ -271,7 +287,8 @@ Para resolver esse problema em específico, não havia opção a não ser sair d
 
 **Como funciona:**
 
-#### HTTP/2 sobre TCP (ANTES):
+#### HTTP/2 sobre TCP: O Bloqueio em Nível de Transporte
+
 ```
 ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
 │ Stream CSS   │ │ Stream JS    │ │ Stream IMG   │ ← multiplexado
@@ -281,7 +298,8 @@ Para resolver esse problema em específico, não havia opção a não ser sair d
 ```
 *pacote perdido = TUDO para*
 
-#### **HTTP/3** sobre QUIC (AGORA):
+#### HTTP/3 sobre QUIC: Streams Independentes em UDP
+
 ```
 ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
 │ Stream CSS   │ │ Stream JS    │ │ Stream IMG   │
@@ -305,23 +323,28 @@ O **HTTP/3** trouxe avanços fundamentais em relação aos protocolos anteriores
 
 Hoje o **HTTP/3** é o principal protocolo da World Wide Web, e atende a todas as exigências para funcionamento tanto de páginas web estáticas quanto dinâmicas e ainda coisas como Web Services, hoje usando tecnologias como RESTful e HATEOAS.
 
-Além das vantagens técnicas, o protocolo hoje têm um alcance bastante alto e suporte pela grande maioria dos navegadores modernos [^16] e [^17].
+Além das vantagens técnicas, o protocolo hoje tem um alcance bastante alto e suporte pela grande maioria dos navegadores modernos [^16] e [^17].
 
 ## HTTPS: A Camada Invisível de Criptografia
 
 Falamos de HTTP o tempo todo mas não mencionamos **HTTPS** ou criptografia. Por quê? Simples: o HTTPS era só uma camada extra de proteção sobre o HTTP. No fundo, o HTTP ainda funcionava exatamente igual por trás do fluxo criptografado.
 
-### **HTTPS = HTTP + TLS (camada externa)**
+### O Modelo do HTTPS: HTTP Envelopado em TLS
 
 ```
 Navegador → [Criptografia TLS] → HTTP → Servidor
 ```
 
+*O tráfego HTTP convencional é totalmente cifrado dentro de uma sessão TLS antes de trafegar pelo TCP.*
+
 Mesmo em HTTPS, você ainda enviava:
-```
+
+```http
 GET / HTTP/1.1
 Host: vndmtrx.github.io
 ```
+
+*A semântica dos métodos, caminhos e cabeçalhos permaneceu idêntica por trás da camada criptografada.*
 
 **Não abordamos HTTPS** porque:
 - HTTP evoluiu independente do TLS
@@ -340,7 +363,7 @@ No futuro devo fazer um post só sobre TLS, para complementar esse post.
 
 A evolução do HTTP reflete a maturidade da Web: de um protocolo simples para troca de documentos científicos em 1991, para uma infraestrutura multiplexada e resiliente sobre QUIC no HTTP/3, capaz de suportar apps dinâmicos, streaming e APIs em escala. Cada versão resolveu gargalos anteriores (de conexões persistentes no 1.1 a multiplexação no 2 e independência de streams no 3), mas manteve a compatibilidade semântica, garantindo transição suave.
 
-Muito dessa informação você pode encontrar em sites como a Wikipédia [^18] como no Mozila MDN [^11] e em todas as referências espalhadas ao longo desse post.
+Muito dessa informação você pode encontrar em sites como a Wikipédia [^18] como no Mozilla MDN [^11] e em todas as referências espalhadas ao longo desse post.
 
 ## Referências
 

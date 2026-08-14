@@ -1,7 +1,8 @@
 ---
 layout: post
 title: "Aprendendo Elixir - Estrutura Modular com Umbrella"
-author: "Eduardo N. S. R."
+author:
+  - "Eduardo N. S. R."
 date: 2025-04-20 15:46:00 GMT-3
 modified_date: 2026-05-10 10:26:00 GMT-3
 permalink: /posts/elixir-umbrella/
@@ -9,41 +10,32 @@ tags: [Programação, Programação Funcional, Elixir]
 series: Aprendendo Elixir
 ---
 
-Neste segundo post da série *Aprendendo Elixir* [^1], vamos explorar como organizar projetos maiores usando **arquitetura modular** com uma estrutura de guarda-chuva (chamado *Umbrella* pelo Elixir). A ideia é dividir o sistema em múltiplas aplicações menores e coesas, que podem ser desenvolvidas, testadas e integradas dentro de uma aplicação principal. Esse modelo segue o princípio de separação de responsabilidades, facilitando a manutenção e o crescimento do código. 
+Neste segundo post da série *Aprendendo Elixir* [^1], vamos explorar como organizar projetos maiores usando arquitetura modular com uma estrutura guarda-chuva (chamada *Umbrella* pelo ecossistema Elixir). A proposta é dividir o sistema em múltiplas aplicações menores, focadas e coesas, que podem ser desenvolvidas, testadas e integradas dentro de um mesmo repositório sob o comando do Mix. Esse modelo segue o princípio de separação de responsabilidades, facilitando a manutenção e a escalabilidade do código.
 
-Os exemplos desse post estão em [02-umbrella](https://github.com/vndmtrx/estudo_elixir/tree/main/02-umbrella), e os demais estarão organizados no [repositório principal do projeto](https://github.com/vndmtrx/estudo_elixir).
-
-Nosso projeto de exemplo é um **conversor unificado** com três apps:
-
-- `conversor_temperatura`: conversão entre Celsius e Fahrenheit
-- `conversor_distancia`: conversão entre metros e pés
-- `main`: aplicação principal que orquestra as conversões com interação do usuário
+Os exemplos deste post estão disponíveis na pasta [02-umbrella](https://github.com/vndmtrx/estudo_elixir/tree/main/02-umbrella) do [repositório de estudos](https://github.com/vndmtrx/estudo_elixir). Para demonstrar o conceito na prática, construímos um conversor unificado composto por três aplicações internas: o `conversor_temperatura` (cálculos entre Celsius e Fahrenheit), o `conversor_distancia` (conversões entre metros e pés) e o app integrador `main`, responsável por orquestrar as entradas do usuário no terminal.
 
 ## Por que usar um projeto Guarda-Chuva?
 
-Projetos Guarda-Chuva são ideais quando queremos:
+Projetos Guarda-Chuva são ideais quando queremos modularizar funcionalidades de forma clara e reaproveitável, separar domínios de negócio independentes (como APIs, persistência e workers em background) e gerenciar dependências locais entre subprojetos sem a necessidade de publicar pacotes no Hex.
 
-- **Modularizar funcionalidades** de forma clara e reaproveitável
-- **Separar domínios** de forma independente (ex: API, banco, workers)
-- Facilitar **testes e manutenção** em projetos maiores
-- Gerenciar **dependências locais** entre apps sem necessidade de publicar pacotes
-
-Cada app tem seu próprio ciclo de vida e testes, mas todos podem ser carregados e orquestrados a partir do projeto raiz. O Elixir lida muito bem com esse modelo graças à sua estrutura de aplicações OTP, onde cada subprojeto pode ter seu ciclo de vida próprio. Para mais detalhes sobre projetos Umbrella, veja a documentação oficial [^3].
+Cada subaplicação mantém seu próprio ciclo de vida, arquivos de configuração e suíte de testes unitários isolados, ao mesmo tempo em que podem ser carregadas e executadas conjuntamente a partir da raiz. O Elixir lida com essa organização com muita naturalidade graças à arquitetura de aplicações OTP da BEAM [^3].
 
 ## Criando o projeto guarda-chuva
 
-Crie o projeto principal com:
+Para criar o projeto guarda-chuva principal no terminal, execute:
 
 ```bash
 mix new conversor --umbrella
 cd conversor
 ```
 
-O comando `--umbrella` cria uma estrutura inicial com a pasta `apps/` onde viverão as subaplicações.
+*Cria a estrutura base do projeto umbrella e entra no diretório raiz da aplicação.*
 
-> ⚠️ **Aviso**: A partir daqui, sempre que falarmos da **raiz** do projeto, estamos considerando esta pasta inicial criada com o comando acima.
+A flag `--umbrella` inicializa a estrutura com a pasta `apps/`, onde viverão todas as nossas subaplicações.
 
-Agora dentro do diretório `apps`, criamos os três subprojetos:
+> ⚠️ **Aviso**: A partir daqui, sempre que falarmos da **raiz** do projeto, estamos nos referindo a esta pasta inicial criada com o comando acima.
+
+Agora, dentro do diretório `apps`, criamos os três subprojetos independentes:
 
 ```bash
 cd apps
@@ -52,9 +44,11 @@ mix new conversor_temperatura
 mix new main
 ```
 
+*Inicializa cada uma das três subaplicações dentro da pasta apps.*
+
 ## Estrutura do projeto
 
-A estrutura do projeto após esses comandos será:
+A árvore de diretórios resultante para os arquivos que iremos trabalhar fica assim:
 
 ```
 conversor
@@ -78,17 +72,17 @@ conversor
 └── mix.exs
 ```
 
-> ⚠️ **Aviso**: Esta não é a estrutura completa gerada pelos comandos, mas somente os arquivos que iremos nos preocupar neste momento.
+> ⚠️ **Aviso**: Esta listagem resume apenas os arquivos principais de lógica e teste para mantermos o foco didático.
 
-O arquivo `mix.exs` [^2] da raiz define que o projeto é do tipo umbrella por conta da opção `apps_path: "apps"`, fazendo a centralização da orquestração do projeto.
+O arquivo `mix.exs` [^2] da raiz define que o projeto é do tipo umbrella através da opção `apps_path: "apps"`, centralizando a compilação e a execução dos testes.
 
 ## Implementando os apps
 
-### `Conversor.Distancia`
+### Módulo Conversor.Distancia
 
-Este app de exemplo lida com conversões entre metros e pés.
+Este app lida exclusivamente com conversões métricas entre metros e pés.
 
-**apps/conversor_distancia/lib/conversor_distancia.ex:**
+**Arquivo:** `apps/conversor_distancia/lib/conversor_distancia.ex`
 
 ```elixir
 defmodule Conversor.Distancia do
@@ -114,11 +108,13 @@ defmodule Conversor.Distancia do
 end
 ```
 
-### `Conversor.Temperatura`
+*Implementa funções de conversão métrica com guards numéricos e doctests de precisão.*
 
-Este app de exemplo trata de conversão entre escalas de temperatura:
+### Módulo Conversor.Temperatura
 
-**apps/conversor_temperatura/lib/conversor_temperatura.ex:**
+Este app implementa as fórmulas de conversão entre escalas termométricas:
+
+**Arquivo:** `apps/conversor_temperatura/lib/conversor_temperatura.ex`
 
 ```elixir
 defmodule Conversor.Temperatura do
@@ -144,17 +140,17 @@ defmodule Conversor.Temperatura do
 end
 ```
 
-> 💡 Uma coisa interessante sobre módulos no Elixir é que eles costumam usar nomes com namespaces para formar uma estrutura mais organizada, como `Conversor.Temperatura`. Isso ajuda a deixar o código mais legível e bem dividido, além de permitir uma organização estrutural, mostrando claramente a que parte do sistema cada módulo pertence. É uma convenção comum na linguagem, que facilita entender a função de cada módulo só pelo nome, além de evitar confusão com outros módulos parecidos.
+*Implementa conversões de temperatura entre escalas Celsius e Fahrenheit.*
 
-## App integrador: `Main`
+> 💡 **Nota**: Uma convenção comum e elegante no Elixir é usar nomes com namespaces modulares, como `Conversor.Temperatura` e `Conversor.Distancia`. Isso organiza a estrutura de pacotes, evita conflitos de identificadores e esclarece imediatamente o domínio de cada função.
 
-Para usar nossos apps, iremos implementar um app principal para chamarmos direto do terminal. Pela simplicidade, vamos implementar uma simples aplicação de terminal com captura de input.
+## App Integrador: Main
 
-Não é para ser algo bonito, é só para mostrar como podemos rodar nosso projeto do terminal, mas serve facilmente para entender como funciona o ponto de entrada para nossa aplicação.
+Para consumir nossos módulos, implementamos um app principal chamado `main` para rodar diretamente no terminal com captura de input interativo.
 
-No `mix.exs` do `main`, declaramos dependências para os outros dois apps:
+No `mix.exs` do app `main`, declaramos a dependência local para os outros dois subprojetos via `in_umbrella: true`:
 
-**apps/main/mix.exs:**
+**Arquivo:** `apps/main/mix.exs`
 
 ```elixir
 defp deps do
@@ -165,11 +161,13 @@ defp deps do
 end
 ```
 
-> 💡 Em projetos do tipo *umbrella*, cada app é isolado em sua própria pasta, mas todos compartilham o mesmo ambiente de execução, o que permite que módulos definidos em um app sejam utilizados em outro. Para isso, basta declarar a dependência no `mix.exs` do app que irá consumir (com `{:nome_do_app, in_umbrella: true}`), como fizemos em `main`, e os módulos ficam disponíveis automaticamente para uso, sem necessidade de configuração adicional. Isso torna a comunicação entre os apps simples e direta, mantendo a modularização do projeto.
+*Declara dependências internas do projeto guarda-chuva utilizando a opção in_umbrella.*
 
-O código interativo:
+> 💡 **Nota**: Em projetos umbrella, cada app vive isolado em sua própria pasta, mas todos compartilham o mesmo ambiente de execução na compilação. Ao adicionar `in_umbrella: true`, os módulos dos apps dependentes ficam imediatamente disponíveis no namespace sem necessidade de configurações adicionais.
 
-**apps/main/lib/main.ex:**
+O módulo interativo de terminal:
+
+**Arquivo:** `apps/main/lib/main.ex`
 
 ```elixir
 defmodule Main do
@@ -197,35 +195,37 @@ defmodule Main do
 end
 ```
 
-> ⚠️ **Aviso**: Em projetos futuros não iremos usar esse modo de rodar o projeto, ele serve só de exemplo para podermos interagir com o projeto de forma *standalone*.
+*Orquestra as chamadas aos conversores recebendo entradas do usuário e tratando parsing inválido recursivamente.*
+
+> ⚠️ **Aviso**: Em aplicações corporativas dificilmente usaremos loop de console interativo dessa forma; trata-se apenas de um exemplo simples para demonstrar a orquestração e execução de múltiplos módulos locais.
 
 ## Compilação e execução standalone
 
-Para compilar todo o projeto não têm muito segredo:
+Para compilar todos os subprojetos da árvore ao mesmo tempo, execute na raiz:
 
 ```bash
 mix compile
 ```
 
-Isso irá criar uma pasta `_build` na raiz do nosso projeto. Essa pasta é sempre gerada automaticamente, então pode ser descartada do gerenciador de versões em uso.
+*Compila todo o projeto umbrella gerando os binários unificados dentro do diretório `_build`.*
 
-Para rodar nosso projeto de forma *standalone*, temos três formas diferentes de rodar. Vamos passar por cada uma abaixo:
+Para executar o ponto de entrada da aplicação, temos três abordagens práticas:
 
 ### Usando mix run
 
-Não têm muito o que falar, só mostrar:
+A forma mais direta de rodar uma função específica a partir da linha de comando:
 
 ```bash
 mix run -e 'Main.main'
 ```
 
-> ⚠️ **Aviso**: Apesar de existir a opção de fazermos a execução usando `mix run` sem parâmetros, isso pode causar problemas inesperados com outras partes da execução do projeto (como testes, compilação ou Servers), pois o `mix run` por padrão executa um script, ou, quando você define uma application com `mod: {Main, []}`, em que ele chama `start/2` e se a função `start/2` não estiver bem configurada, podemos gerar problemas de difícil depuração, por isso não iremos abordar esse método aqui. Mas se quiser verificar, você pode checar na documentação do [start/2 no módulo Application](https://hexdocs.pm/elixir/Application.html#c:start/2), na documentação do Elixir.
+*Executa a função `Main.main/0` carregando todo o contexto do projeto umbrella.*
 
-### Usando Aliases
+### Usando Aliases no Mix
 
-Para fazermos a execução usando alias no comando `mix`, vamos criar um novo alias no projeto. Para isso, configure o `mix.exs` da raiz:
+Podemos definir atalhos customizados no arquivo `mix.exs` da raiz:
 
-**mix.exs:**
+**Arquivo:** `mix.exs`
 
 ```elixir
 defp aliases do
@@ -235,23 +235,21 @@ defp aliases do
 end
 ```
 
-Será necessário colocar também a linha `aliases: aliases()` no `project` do `mix.exs` da raiz. Feito isso, é só rodar o comando que o código interativo de Main será executado.
+*Configura um alias customizado no Mix apontando para o comando de execução.*
+
+Adicione também a opção `aliases: aliases()` na função `project` do `mix.exs`. Feito isso, basta rodar:
 
 ```bash
 mix conversor_main
 ```
 
-Esse comando é o equivalente a rodarmos, no terminal:
-
-```bash
-mix run -e 'Main.main'
-```
+*Executa o alias definido no Mix chamando a função principal do console.*
 
 ### Usando Mix.Tasks
 
-Aqui vamos criar um novo arquivo em `apps/main/lib/mix/tasks/conversor_task.ex`, que também cria um alias no mix [^5], com o seguinte conteúdo:
+Outra abordagem flexível é criar uma Mix Task dedicada em `apps/main/lib/mix/tasks/conversor_task.ex` [^5]:
 
-**apps/main/lib/mix/tasks/conversor_task.ex:**
+**Arquivo:** `apps/main/lib/mix/tasks/conversor_task.ex`
 
 ```elixir
 defmodule Mix.Tasks.ConversorTask do
@@ -268,23 +266,29 @@ defmodule Mix.Tasks.ConversorTask do
 end
 ```
 
-Criada a task, conseguiremos rodar nossa aplicação com a task nova criada.
+*Define uma tarefa Mix oficial para inicializar a aplicação e disparar a rotina interativa.*
+
+Com a task declarada, você pode invocá-la normalmente pelo Mix:
 
 ```bash
 mix conversor_task
 ```
 
-> 💡 Para simplificar um pouco, usamos uma nomenclatura que nos permite ver quais os comandos que criamos, caso haja dúvidas. Ao rodar `mix help | grep conversor` iremos ver só os comandos que nós criamos.
+*Roda a Mix Task recém-criada a partir de qualquer nível do projeto.*
+
+> 💡 **Dica**: Ao rodar `mix help | grep conversor`, o Mix listará automaticamente a sua task com o resumo que você definiu no `@shortdoc`.
 
 ## Usando IEx com projetos umbrella
 
-Com o projeto estruturado, você pode iniciar um console interativo a partir da raiz do projeto umbrella com:
+Você pode carregar todas as aplicações no console interativo a partir da raiz com:
 
 ```bash
 iex -S mix
 ```
 
-Isso compila e carrega todas as aplicações definidas em `apps/`. Feito isso, você pode interagir com qualquer módulo dentro do projeto:
+*Abre o shell IEx com todos os subprojetos e dependências compilados e disponíveis.*
+
+Com isso, podemos testar os módulos diretamente no terminal:
 
 ```elixir
 iex> Conversor.Temperatura.f_para_c(212)
@@ -293,13 +297,15 @@ iex> Conversor.Distancia.m_para_ft(10)
 32.8084
 ```
 
-## Testes
+*Testa interativamente chamadas aos módulos de temperatura e distância no IEx.*
 
-Vamos adicionar testes automatizados para os nossos módulos [^4]. Cada módulo possui seus testes, organizados em arquivos separados com `ExUnit`. Usaremos valores aleatórios gerados pela seed do ExUnit, garantindo reprodutibilidade com o comando `mix test --seed <valor>`. Isso é útil para capturar inconsistências sutis em cálculos com ponto flutuante.
+## Testes Automatizados
 
-### Testes para `Conversor.Distancia`
+Vamos adicionar testes com `ExUnit` [^4] para cada aplicação. Usaremos geradores aleatórios controlados pela seed do ExUnit para testar intervalos numéricos com precisão flutuante.
 
-**apps/conversor_distancia/test/conversor_distancia_test.exs:**
+### Testes para Conversor.Distancia
+
+**Arquivo:** `apps/conversor_distancia/test/conversor_distancia_test.exs`
 
 ```elixir
 defmodule Conversor.DistanciaTest do
@@ -322,9 +328,11 @@ defmodule Conversor.DistanciaTest do
 end
 ```
 
-### Testes para `Conversor.Temperatura`
+*Valida conversões de distância com delta de precisão em ponto flutuante sobre entradas aleatórias.*
 
-**apps/conversor_temperatura/test/conversor_temperatura_test.exs:**
+### Testes para Conversor.Temperatura
+
+**Arquivo:** `apps/conversor_temperatura/test/conversor_temperatura_test.exs`
 
 ```elixir
 defmodule Conversor.TemperaturaTest do
@@ -345,12 +353,13 @@ defmodule Conversor.TemperaturaTest do
     end
   end
 end
-
 ```
 
-### Teste para a chamada interativa de `Main`
+*Testa as fórmulas de conversão termométrica cobrindo números positivos e negativos.*
 
-**apps/main/test/main_test.exs:**
+### Teste para a Chamada Interativa de Main
+
+**Arquivo:** `apps/main/test/main_test.exs`
 
 ```elixir
 defmodule MainTest do
@@ -371,38 +380,38 @@ defmodule MainTest do
 end
 ```
 
-Para executar todos os testes, é só rodar na raiz:
+*Utiliza `CaptureIO` para simular entrada de usuário no terminal e validar as saídas geradas pelo app.*
+
+Para rodar todos os testes de todas as subaplicações em paralelo:
 
 ```bash
 mix test
 ```
 
-Se quiser ver os testes de forma completa:
+*Executa os testes de todos os subprojetos a partir da raiz do umbrella.*
+
+Se quiser inspecionar cada teste individualmente:
 
 ```bash
 mix test --trace
 ```
 
-Ou testar apenas um app:
+*Executa a suíte detalhando cada caso de teste executado no terminal.*
+
+Ou executar os testes de apenas um dos subapps:
 
 ```bash
 cd apps/conversor_distancia
 mix test
 ```
 
-A separação por apps facilita testes unitários isolados e estimula boas práticas.
+*Executa os testes isoladamente dentro da pasta do subprojeto específico.*
 
 ## Conclusão
 
-Neste post, criamos um projeto guard-chuva com três apps Elixir. Com ele, aprendemos a:
+Neste post, criamos um projeto guarda-chuva completo com três apps Elixir. Vimos como modularizar funcionalidades com responsabilidades bem divididas, integrar subprojetos por meio de dependências locais `in_umbrella` e operar ferramentas essenciais como `iex`, `mix test`, `mix compile` e criação de tasks customizadas.
 
-- Organizar um sistema modular e escalável
-- Integrar múltiplos apps com dependências locais
-- Utilizar `iex`, `mix test`, `mix compile` e `mix run` de forma produtiva
-
-Além disso, reforçamos a idéia de que **apps no Elixir** são unidades organizacionais que permitem estruturar bem o código. Ao usar nomes como `Conversor.Temperatura` e `Conversor.Distancia`, deixamos clara a intenção e responsabilidade de cada parte do sistema.
-
-Essa estrutura favorece a clareza, testes isolados e evolução contínua de sistemas mais robustos.
+A estrutura de projetos guarda-chuva reforça a clareza e a manutenibilidade do código, permitindo que cada parte do sistema evolua com sua própria suíte de testes sem perder a coesão do ecossistema geral.
 
 ## Referências
 
