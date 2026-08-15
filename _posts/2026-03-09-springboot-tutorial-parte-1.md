@@ -13,7 +13,7 @@ series: Spring Boot Tutorial
 
 E se de repente a gente decidisse escrever um tutorial de Spring Boot? Pois é, eu decidi começar essa seara de estudo do framework pela parte que ninguém liga, mas que geralmente é a que quebra tudo quando não é feito do jeito certo: o ambiente de desenvolvimento. Parece bobo, mas sem ele sólido desde o começo, o resto vira dor de cabeça infinita.
 
-> 🔔 **Nota da Série**: Este post faz parte da série **"Spring Boot Tutorial"**, onde eu construo, passo a passo, uma API backend moderna usando **Spring Boot**. Aqui o foco é o backend: modelagem, persistência, resiliência, testes, observabilidade e deploy. A linguagem usada no projeto será Java, versão 25+. O frontend vem depois, quando a API estiver bem cuidada por dentro.
+> 🔔 *Nota da Série*: Este post faz parte da série **"Spring Boot Tutorial"**, onde eu construo, passo a passo, uma API backend moderna usando **Spring Boot**. Aqui o foco é o backend: modelagem, persistência, resiliência, testes, observabilidade e deploy. A linguagem usada no projeto será Java, versão 25+. O frontend vem depois, quando a API estiver bem cuidada por dentro.
 
 Nos últimos anos eu venho me focando mais na área de segurança, infraestrutura e de DevOps na maior parte dos projetos em que eu participo. Isso inclui migrações para nuvem, deploy de serviços com automação e gerenciamento de esteiras de deploy automatizado, na maioria dos casos diretamente com VMs e mais recentemente com contêineres. Dito isso, desenvolvimento nunca foi um forte na minha vida profissional, mas uma coisa sempre me incomodou nisso, que é a forma como vários projetos eram desenvolvidos.
 

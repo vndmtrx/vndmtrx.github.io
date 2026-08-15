@@ -43,7 +43,7 @@ O SSSD não é apenas "mais um cliente LDAP". Ele é um **daemon de sistema** [^
 
 O SSSD faz tudo isso com **cache local** inteligente: se o servidor LDAP cair (porque servidores LDAP adoram cair na sexta-feira às 18h), os usuários que já logaram recentemente continuam acessando normalmente, graças a credenciais cacheadas localmente no banco de dados do SSSD (`/var/lib/sss/db/`).
 
-> 💡 **Curiosidade**: O SSSD nasceu como um projeto da Red Hat/Fedora, mas hoje é mantido como projeto upstream independente [^3] e está presente nos repositórios de praticamente todas as distribuições Linux relevantes. No Debian 13 (Trixie), o metapacote `sssd` puxa automaticamente os módulos para NSS (`sssd-common`), PAM (`libpam-sss`) e o provedor LDAP (`sssd-ldap`).
+> 💡 *Curiosidade*: O SSSD nasceu como um projeto da Red Hat/Fedora, mas hoje é mantido como projeto upstream independente [^3] e está presente nos repositórios de praticamente todas as distribuições Linux relevantes. No Debian 13 (Trixie), o metapacote `sssd` puxa automaticamente os módulos para NSS (`sssd-common`), PAM (`libpam-sss`) e o provedor LDAP (`sssd-ldap`).
 
 Mas a cereja no topo do bolo para o nosso contexto é uma feature que pouca gente conhece: o SSSD pode **armazenar e servir chaves públicas SSH diretamente do LDAP** para o OpenSSH, usando um utilitário chamado `sss_ssh_authorizedkeys` [^4]. É isso que vamos explorar a fundo.
 
@@ -76,7 +76,7 @@ olcObjectClasses: ( 1.3.6.1.4.1.24552.500.1.1.2.0
 
 *Esquema LDIF que define o atributo `sshPublicKey` e a classe auxiliar `ldapPublicKey` para o OpenLDAP.*
 
-> 💡 **Nota**: Se você está usando FreeIPA ou 389 Directory Server em vez de OpenLDAP, o suporte a chaves SSH já vem embutido nativamente. O FreeIPA, na verdade, é tão gentil que até oferece uma interface web para colar a chave pública do usuário. Luxo.
+> 💡 *Nota*: Se você está usando FreeIPA ou 389 Directory Server em vez de OpenLDAP, o suporte a chaves SSH já vem embutido nativamente. O FreeIPA, na verdade, é tão gentil que até oferece uma interface web para colar a chave pública do usuário. Luxo.
 
 Com o esquema carregado, uma entrada de usuário no LDAP ficaria assim:
 
@@ -116,7 +116,7 @@ Dissecando os pacotes:
 - `libpam-sss`: O módulo PAM que conecta o subsistema de autenticação do Linux ao SSSD.
 - `libnss-sss`: A biblioteca NSS que faz o `getent passwd` e amigos enxergarem os usuários do LDAP.
 
-> ⚠️ **Importante**: Não confunda `libnss-sss` com o antigo `libnss-ldapd` (e seu daemon `nslcd`). O `libnss-ldapd` consulta o LDAP diretamente, sem cache inteligente, sem failover automático, sem integração com PAM. É a abordagem "à moda antiga". O SSSD substitui tudo isso com um daemon unificado, cache local, e gerenciamento de credenciais offline. Se você ainda está usando `nslcd` em 2026, eu respeitosamente sugiro que reconsidere suas escolhas de vida.
+> ⚠️ *Importante*: Não confunda `libnss-sss` com o antigo `libnss-ldapd` (e seu daemon `nslcd`). O `libnss-ldapd` consulta o LDAP diretamente, sem cache inteligente, sem failover automático, sem integração com PAM. É a abordagem "à moda antiga". O SSSD substitui tudo isso com um daemon unificado, cache local, e gerenciamento de credenciais offline. Se você ainda está usando `nslcd` em 2026, eu respeitosamente sugiro que reconsidere suas escolhas de vida.
 
 ## Configurando o `/etc/sssd/sssd.conf`
 
@@ -214,7 +214,7 @@ Isso diz ao SSSD: *"Nunca tente resolver esses usuários/grupos no LDAP"*. Parec
 
 **`cache_credentials = true`**: Com isso, o SSSD armazena o hash das senhas localmente em `/var/lib/sss/db/`. Se o servidor LDAP cair, os usuários que já logaram continuam entrando. O cache expira conforme o `entry_cache_timeout` (300 segundos no nosso exemplo, ou 5 minutos). Encontrar o equilíbrio certo aqui é uma arte: tempo curto demais causa muitas consultas ao LDAP; tempo longo demais significa que uma senha recém-alterada ou um usuário recém-desabilitado no LDAP vai demorar para refletir nos servidores.
 
-> 🚨 **Aviso Crítico de Segurança**: A senha de bind (`ldap_default_authtok`) fica em *plain text* dentro do `sssd.conf`. É por isso que a permissão `0600` é inegociável. A conta de bind deve ser uma conta **read-only** no LDAP, com o mínimo de privilégios possível. Ela só precisa ler atributos de usuário (`uid`, `uidNumber`, `gidNumber`, `sshPublicKey`, etc.). Nunca use a conta `cn=admin` para bind do SSSD. Se alguém comprometer o servidor e ler esse arquivo, o estrago com uma conta read-only é infinitamente menor.
+> 🚨 *Aviso Crítico de Segurança*: A senha de bind (`ldap_default_authtok`) fica em *plain text* dentro do `sssd.conf`. É por isso que a permissão `0600` é inegociável. A conta de bind deve ser uma conta **read-only** no LDAP, com o mínimo de privilégios possível. Ela só precisa ler atributos de usuário (`uid`, `uidNumber`, `gidNumber`, `sshPublicKey`, etc.). Nunca use a conta `cn=admin` para bind do SSSD. Se alguém comprometer o servidor e ler esse arquivo, o estrago com uma conta read-only é infinitamente menor.
 
 ## O truque elegante: `override_homedir = /tmp/%u`
 
@@ -234,7 +234,7 @@ override_homedir = /tmp/%u
 
 Isso faz o SSSD **ignorar** o atributo `homeDirectory` do LDAP (que provavelmente está apontando para `/home/joao`) e substituir por `/tmp/joao` em todos os servidores. O diretório `/tmp` já existe, é limpo automaticamente pelo sistema, e ninguém deveria guardar nada importante lá.
 
-> 💡 **Nota**: O `%u` é um token que o SSSD expande para o nome do usuário. Existem outros tokens úteis: `%d` (nome do domínio), `%f` (FQDN do usuário), `%U` (UID numérico). A documentação completa está no `sssd.conf(5)` [^7].
+> 💡 *Nota*: O `%u` é um token que o SSSD expande para o nome do usuário. Existem outros tokens úteis: `%d` (nome do domínio), `%f` (FQDN do usuário), `%U` (UID numérico). A documentação completa está no `sssd.conf(5)` [^7].
 
 "Mas Dudu, se o home directory do usuário é `/tmp/joao`, o SSH não vai procurar o `authorized_keys` nesse diretório?"
 
@@ -258,7 +258,7 @@ shadow:         files sss
 
 A **ordem importa** [^8]. `files` vem primeiro: o sistema sempre consulta `/etc/passwd`, `/etc/group` e `/etc/shadow` antes de ir ao SSSD. Isso garante que contas locais de sistema (`root`, `www-data`, `postgres`, `nobody`) sejam resolvidas instantaneamente, sem depender do LDAP. O `sss` só é consultado se o `files` não encontrar o usuário.
 
-> ⚠️ **Importante**: A linha `shadow: files sss` é um pouco enganosa. O SSSD **não** expõe hashes de senha via NSS por segurança. O `getent shadow joao` provavelmente retornará um asterisco (`*`) ou nada para usuários LDAP. A autenticação real é feita pelo módulo PAM (`pam_sss.so`), não pelo NSS. A presença do `sss` na linha `shadow` serve mais para consistência e para que utilitários como `chage` não reclamem de "usuário inexistente".
+> ⚠️ *Importante*: A linha `shadow: files sss` é um pouco enganosa. O SSSD **não** expõe hashes de senha via NSS por segurança. O `getent shadow joao` provavelmente retornará um asterisco (`*`) ou nada para usuários LDAP. A autenticação real é feita pelo módulo PAM (`pam_sss.so`), não pelo NSS. A presença do `sss` na linha `shadow` serve mais para consistência e para que utilitários como `chage` não reclamem de "usuário inexistente".
 
 Vamos verificar se está funcionando:
 

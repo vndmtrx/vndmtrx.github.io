@@ -248,28 +248,27 @@ o bloco mostra uma sessão real de terminal.
 
 ### Callouts (Avisos, Dicas, Notas)
 
-Sempre em blockquote com emoji e label em **negrito** (sem itálico na label).
-Máximo um por seção:
+Sempre em blockquote com emoji e label em *itálico simples* `*Label*:` (isso inverte o itálico nativo do CSS em blockquotes do Jekyll/Chirpy, garantindo que o título da nota fique reto/romano enquanto o texto da nota fica em itálico). Máximo um por seção:
 
-> 💡 **Dica**: Para inspecionar processos ao vivo, use `:observer.start()` no IEx.
+> 💡 *Dica*: Para inspecionar processos ao vivo, use `:observer.start()` no IEx.
 
-> ⚠️ **Aviso**: Nunca exponha `/metrics` sem autenticação em produção.
+> ⚠️ *Aviso*: Nunca exponha `/metrics` sem autenticação em produção.
 
-> 🚨 **Aviso Crítico de Segurança**: Use apenas para alertas de segurança ou perda de dados.
+> 🚨 *Aviso Crítico de Segurança*: Use apenas para alertas de segurança ou perda de dados.
 
-> 💡 **Curiosidade**: O randomart não é só decoração de terminal.
+> 💡 *Curiosidade*: O randomart não é só decoração de terminal.
 
-> 💡 **Nota**: A variável `%u` é expandida pelo SSSD para o nome do usuário.
+> 💡 *Nota*: A variável `%u` é expandida pelo SSSD para o nome do usuário.
 
-> ⚠️ **Importante**: Essa gerência do ciclo de vida dos usuários é um assunto extenso.
+> ⚠️ *Importante*: Essa gerência do ciclo de vida dos usuários é um assunto extenso.
 
-Para disclaimers autorais ou notas de série (texto mais longo, tom pessoal),
-usar o formato com emoji e label em negrito e o texto pode se estender por
-múltiplas linhas:
+Para disclaimers autorais ou notas de série (texto mais longo, tom pessoal), usar o mesmo formato com emoji e label em itálico simples:
 
-> 🔔 **Disclaimer**: Este post reflete exclusivamente a minha opinião pessoal.
+> 🔔 *Disclaimer*: Este post reflete exclusivamente a minha opinião pessoal.
 
-> 💡 **Nota**: Este post faz parte de uma versão anterior da série.
+> 🔔 *Nota da Série*: Este post faz parte da série...
+
+> 💡 *Nota*: Este post faz parte de uma versão anterior da série.
 
 ### Analogias
 

@@ -55,7 +55,7 @@ O RSA com chaves menores (como 1024 e 2048 bits) já não oferece margem de segu
 
 A recomendação padrão ouro hoje em dia, e o que eu pessoalmente uso para tudo, é o **ED25519** [^5]. Baseado na Curve25519 de Daniel J. Bernstein (o mesmo cara por trás do ChaCha20/Poly1305 usado no WireGuard). Chaves ED25519 são absurdamente menores (68 caracteres de chave pública), mais rápidas de verificar, resistentes a ataques de temporização (side-channel timing attacks) e não dependem das curvas do NIST.
 
-> 🚨 **Aviso Crítico de Segurança**: A chave privada da sua CA é a "joia da coroa" de toda a operação. Se ela for vazada, um atacante poderá forjar certificados válidos para se passar por qualquer usuário ou servidor, tendo acesso irrestrito e silencioso à sua infraestrutura. Por design, essa chave **NUNCA** deve residir em um servidor acessível via internet ou na máquina de trabalho diário. O padrão ouro é mantê-la em uma máquina *air-gapped* (desconectada da rede), armazenada em dispositivos de hardware (como YubiKeys ou HSMs) ou delegar a custódia para soluções de cofre corporativo (como o HashiCorp Vault).
+> 🚨 *Aviso Crítico de Segurança*: A chave privada da sua CA é a "joia da coroa" de toda a operação. Se ela for vazada, um atacante poderá forjar certificados válidos para se passar por qualquer usuário ou servidor, tendo acesso irrestrito e silencioso à sua infraestrutura. Por design, essa chave **NUNCA** deve residir em um servidor acessível via internet ou na máquina de trabalho diário. O padrão ouro é mantê-la em uma máquina *air-gapped* (desconectada da rede), armazenada em dispositivos de hardware (como YubiKeys ou HSMs) ou delegar a custódia para soluções de cofre corporativo (como o HashiCorp Vault).
 
 Para uma CA (que vai viver por anos e ser a raiz da confiança da sua infraestrutura) use `ed25519`.
 
@@ -90,7 +90,7 @@ The key's randomart image is:
 
 *Gera o par de chaves da CA de Host em ED25519 com fingerprint e representação gráfica de randomart.*
 
-> 💡 **Curiosidade**: Aquele quadro `randomart image` gerado pelo comando não é só decoração de terminal. Ele é uma representação visual do fingerprint da chave. O cérebro humano é péssimo em memorizar strings SHA256 gigantes, mas é excelente em reconhecer formas e padrões visuais. A ideia do randomart é permitir que você perceba rapidamente, num "bater de olhos", se a chave foi alterada, pois o desenho será completamente diferente.
+> 💡 *Curiosidade*: Aquele quadro `randomart image` gerado pelo comando não é só decoração de terminal. Ele é uma representação visual do fingerprint da chave. O cérebro humano é péssimo em memorizar strings SHA256 gigantes, mas é excelente em reconhecer formas e padrões visuais. A ideia do randomart é permitir que você perceba rapidamente, num "bater de olhos", se a chave foi alterada, pois o desenho será completamente diferente.
 
 Como no nosso exemplo de equipe teremos dois servidores alvo (`php-01` e `db-01`), vamos provisionar os certificados de host para ambos. Primeiro, geramos o par de chaves interno de cada servidor. Muitas vezes isso é feito automaticamente na instalação do SO, mas vamos gerar explicitamente:
 
@@ -324,7 +324,7 @@ A parte chata aqui é manter esse arquivo sempre atualizado em todas as máquina
 
 Você percebeu o parâmetro `-n` recebendo uma lista separada por vírgulas (como `joao,dev_php,dev_db`) quando assinamos as chaves? Isso define os **Principals** (identidades) [^6], e é a parte mais poderosa da autorização via certificado. É o que permite agrupar múltiplos acessos em um único certificado válido para a rede inteira.
 
-> 💡 **Nota**: Como os *Principals* de usuário (`dev_php`, `dev_db`, `dba`) se mapeiam no certificado do Host? **A resposta é: eles não mapeiam!** Os certificados de Host e de Usuário não se misturam. O certificado do Host só carrega o seu FQDN/IP para provar quem ele é para o cliente. O mapeamento que define "quem tem o principal dev_php pode entrar no servidor php-01" acontece inteiramente na configuração local do Sistema Operacional de destino.
+> 💡 *Nota*: Como os *Principals* de usuário (`dev_php`, `dev_db`, `dba`) se mapeiam no certificado do Host? **A resposta é: eles não mapeiam!** Os certificados de Host e de Usuário não se misturam. O certificado do Host só carrega o seu FQDN/IP para provar quem ele é para o cliente. O mapeamento que define "quem tem o principal dev_php pode entrar no servidor php-01" acontece inteiramente na configuração local do Sistema Operacional de destino.
 
 A autenticação de certificados no SSH não é um simples *"a assinatura bate com a CA que eu confio, então pode entrar"*. O OpenSSH executa uma camada adicional de autorização (uma espécie de RBAC nativo): ele verifica se os Principals que estão "carimbados" no seu certificado possuem permissão para acessar a conta destino no sistema operacional.
 
@@ -339,7 +339,7 @@ deploy ALL=(root) NOPASSWD: /usr/bin/systemctl restart php-fpm
 
 *Regra granular no sudoers permitindo reinício controlado do serviço php-fpm sem necessidade de senha de root.*
 
-> ⚠️ **Importante**: Essa gerência do ciclo de vida dos usuários e de suas permissões granulares de elevação de privilégio é um assunto tão extenso e vital que com certeza faremos um post dedicado só para isso no futuro.
+> ⚠️ *Importante*: Essa gerência do ciclo de vida dos usuários e de suas permissões granulares de elevação de privilégio é um assunto tão extenso e vital que com certeza faremos um post dedicado só para isso no futuro.
 
 Voltando ao SSH: se nós fôssemos amadores, colocaríamos diretamente o principal `db_admin` no certificado da Maria. O problema? A Maria conseguiria logar com o usuário `db_admin` em **qualquer** máquina da empresa! O movimento lateral ficaria livre.
 
@@ -351,7 +351,7 @@ AuthorizedPrincipalsFile /etc/ssh/auth_principals/%u
 
 *Define que os Principals válidos para cada conta residem no arquivo nomeado após o usuário em `/etc/ssh/auth_principals/`.*
 
-> 💡 **Nota**: A variável `%u` é parseada como o nome do usuário de destino durante o login.
+> 💡 *Nota*: A variável `%u` é parseada como o nome do usuário de destino durante o login.
 
 E então configuramos o que cada conta permite. No servidor **PHP** (`php-01`), criamos o arquivo `/etc/ssh/auth_principals/deploy` com o conteúdo:
 
@@ -369,7 +369,7 @@ dba
 
 *Exige o Principal dba para autorizar o login administrativo no banco.*
 
-> 💡 **Nota**: Esse usuário `db_admin` não é o dono do banco. Ele loga via SSH e depois usa privilégios no `/etc/sudoers` para rodar um `sudo -u postgres psql` ou `sudo systemctl restart postgresql`, mantendo a trilha de auditoria limpa.
+> 💡 *Nota*: Esse usuário `db_admin` não é o dono do banco. Ele loga via SSH e depois usa privilégios no `/etc/sudoers` para rodar um `sudo -u postgres psql` ou `sudo systemctl restart postgresql`, mantendo a trilha de auditoria limpa.
 
 Por último, o arquivo `/etc/ssh/auth_principals/db_readonly` exige apenas o principal de dev:
 

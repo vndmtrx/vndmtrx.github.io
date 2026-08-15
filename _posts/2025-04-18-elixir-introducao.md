@@ -30,13 +30,13 @@ Neste primeiro módulo, vamos configurar o ambiente do zero com o ASDF, entender
 
 ## Antes de instalar: uma nota sobre versões
 
-> ⚠️ **Atenção**: Erlang e Elixir têm ciclos de vida independentes e versões que chegam ao fim do suporte com regularidade. Antes de seguir com a instalação, recomendo verificar as versões ativas no [endoflife.date/erlang](https://endoflife.date/erlang) [^5] e no [endoflife.date/elixir](https://endoflife.date/elixir) [^6]. Neste guia, usamos o **Erlang 27.3.2** e o **Elixir 1.18.3-otp-27**, que formam uma combinação estável e suportada.
+> ⚠️ *Atenção*: Erlang e Elixir têm ciclos de vida independentes e versões que chegam ao fim do suporte com regularidade. Antes de seguir com a instalação, recomendo verificar as versões ativas no [endoflife.date/erlang](https://endoflife.date/erlang) [^5] e no [endoflife.date/elixir](https://endoflife.date/elixir) [^6]. Neste guia, usamos o **Erlang 27.3.2** e o **Elixir 1.18.3-otp-27**, que formam uma combinação estável e suportada.
 
 Um ponto importante sobre a nomenclatura das versões: quando você instala o Elixir via ASDF, o sufixo `-otp-XX` indica com qual versão principal do Erlang/OTP aquele *build* do Elixir foi compilado. Usar `1.18.3-otp-27` significa que temos o Elixir 1.18.3 compilado contra o OTP 27, casando exatamente com o Erlang 27 instalado. Misturar versões incompatíveis resulta em erros crípticos de inicialização na BEAM, então sempre preste atenção a esse sufixo.
 
 ## Instalação do ASDF e das dependências
 
-> ⚠️ **Aviso**: Este guia de instalação foi testado no Debian 12 (Bookworm) e Debian 13 (Trixie). Os comandos e pacotes listados podem variar ligeiramente dependendo da sua distribuição Linux ou sistema operacional. A documentação oficial do ASDF [^7] fornece instruções específicas para cada ambiente.
+> ⚠️ *Aviso*: Este guia de instalação foi testado no Debian 12 (Bookworm) e Debian 13 (Trixie). Os comandos e pacotes listados podem variar ligeiramente dependendo da sua distribuição Linux ou sistema operacional. A documentação oficial do ASDF [^7] fornece instruções específicas para cada ambiente.
 
 ### Dependências para compilação do Erlang
 
@@ -115,7 +115,7 @@ asdf install elixir 1.18.3-otp-27
 
 *Compila o Erlang 27.3.2 a partir do código-fonte e instala a versão compatível do Elixir.*
 
-> 💡 **Dica**: A compilação do Erlang leva alguns minutos porque o ASDF compila o código-fonte diretamente na sua máquina.
+> 💡 *Dica*: A compilação do Erlang leva alguns minutos porque o ASDF compila o código-fonte diretamente na sua máquina.
 
 Para definir essas versões como padrão global para o seu usuário:
 
@@ -177,7 +177,7 @@ cd saudacao
 
 *Gera a estrutura inicial do projeto Elixir com o Mix e entra no diretório criado.*
 
-> ⚠️ **Aviso**: O nome da pasta no repositório de exemplos é `01-saudacao` para manter a organização sequencial dos posts, mas a estrutura e o código são rigorosamente os mesmos.
+> ⚠️ *Aviso*: O nome da pasta no repositório de exemplos é `01-saudacao` para manter a organização sequencial dos posts, mas a estrutura e o código são rigorosamente os mesmos.
 
 A árvore de arquivos gerada pelo `mix new` segue a organização padrão do ecossistema:
 
