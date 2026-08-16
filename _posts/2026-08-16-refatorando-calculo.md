@@ -4,7 +4,7 @@ title: "E se a gente refatorasse o Cálculo?"
 author:
 - "Eduardo N. S. R."
 date: 2026-08-16 14:18:00 GMT-3
-modified_date: 2026-08-16 19:46:00 GMT-3
+modified_date: 2026-08-16 20:09:00 GMT-3
 permalink: /posts/refatorando-calculo/
 tags: [Matemática, Cálculo, Educação, Opinião]
 ---
@@ -80,15 +80,15 @@ A integral, nessa visão, é uma máquina de somar. O que está do lado direito 
 
 ## Um parêntese sobre infinitos e infinitesimais
 
-O artigo também toca em um ponto que sempre me fascinou nos fundamentos da matemática: a nossa relação com o infinito e com os *infinitesimais*.
+O artigo também toca em um ponto sobre o qual eu só tinha uma noção muito abstrata e teórica: a nossa relação com o infinito e com os *infinitesimais*.
 
-De forma bem simples: um infinitesimal é um número infinitamente pequeno, mas que não é zero. Quando o cálculo foi criado lá atrás por Leibniz e Newton, eles usavam essa intuição o tempo todo. Você pegava uma curva, dava um passinho infinitamente pequeno para o lado e via o que acontecia. Era prático, direto e visual.
+O pouco que eu conhecia sobre o infinito vinha do meu hiperfoco em conceitos matemáticos absurdos que não têm a menor utilidade prática na vida real: ZFC, os cortes de Dedekind, a cardinalidade de Cantor e o paradoxo de Banach-Tarski (a contradição ambulante: adoro perder o sono vendo uma esfera abstrata virar duas, mas fico puto com a área sob a parábola da prova porque "não tem aplicação no mundo real"). Mas tirando essa loucura teórica, no cálculo real da faculdade eu não fazia a menor ideia de como aplicar ou enxergar um "infinitesimal" na prática.
 
-O problema é que, durante muito tempo, os matemáticos tinham um pavor danado de trabalhar com infinitesimais sem uma base formal à prova de balas. Havia uma desconfiança quase filosófica sobre se o infinito (e o infinitamente pequeno) existia de verdade ou se era apenas um "truque perigoso" que levaria a contradições lógicas, algo que mais tarde ecoaria nos trabalhos de Cantor sobre diferentes tamanhos de infinito e nas limitações formais provadas por Gödel.
+E foi aí que o artigo de Bartlett me deu outro clique. Ele explica que, no início do cálculo com Leibniz e Newton, o infinitesimal não era esse bicho de sete cabeças: era simplesmente a intuição de pegar uma curva, dar um passinho infinitamente pequeno para o lado e ver como a equação reagia. Era algo direto, quase geométrico.
 
-Para fugir desse incômodo, a matemática do século XIX inventou uma blindagem pesada: a definição formal de limites com provas cheias de épsilons e deltas. O problema é que, ao fazer isso para se proteger do infinito, o ensino de cálculo jogou fora a intuição mais elegante e acolhedora para quem está começando.
+Segundo o artigo, foi no século XIX que a matemática resolveu se blindar contra qualquer risco de contradição e inventou a pesada definição formal de limites. A intenção de dar rigor era nobre, mas o efeito colateral para quem aprende foi péssimo: jogaram no lixo a intuição visual e direta de Leibniz que tornava o cálculo compreensível.
 
-O artigo de Bartlett defende que resgatar essa noção de infinitesimais (que a lógica moderna já provou ser perfeitamente válida e rigorosa) torna tudo mais palpável. Em vez de decorar malabarismos abstratos de limite logo no primeiro dia, o estudante pode simplesmente pensar: "vou somar um valor infinitamente pequeno aqui, simplificar a equação e ver o resultado". A intuição vem primeiro; a burocracia das provas formais fica para quando você já domina o terreno.
+O que o paper defende é que resgatar essa noção prática de infinitesimais (que a lógica matemática moderna já provou ser perfeitamente rigorosa) torna tudo mais palpável. Em vez de decorar malabarismos de limite no primeiro dia de aula, você apenas pensa: "vou somar uma variação infinitamente pequena aqui, simplificar a álgebra e ver o resultado". A intuição vem primeiro; a burocracia das provas formais fica para quando você já domina o terreno.
 
 ## Refatorar é uma atitude, não uma técnica
 
