@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Ensaio da Banca de 20 Minutos: Agentes, Busca e a Primeira Banca de IA"
+title: "Ensaio da Banca de 20 Minutos: Agentes e Busca em IA"
 author:
   - "Eduardo N. S. R."
 date: 2026-08-17 07:19:00 GMT-3
