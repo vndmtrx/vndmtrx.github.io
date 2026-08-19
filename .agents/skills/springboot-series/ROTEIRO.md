@@ -28,23 +28,24 @@ Série de posts para o blog `vndmtrx.github.io` abordando o ecossistema Spring B
 - **Entregável**: Terminal operacional com JDK 26 via SDKMAN e VS Codium pronto com ciclo de feedback via JShell validado.
 
 ### Parte 2: Projeto Base e a Filosofia 12-Factor
-- **Conceito Teórico**: Introdução aos **12-Factor App** (foco em Config, Backing Services e Paridade Dev/Prod)
+- **Conceito Teórico**: Introdução aos **12-Factor App** (foco em Config e Paridade Dev/Prod), a mecânica de variáveis de ambiente no Spring Boot e o uso de **Profiles** (`dev`, `prod`, `application-{profile}.yaml`) e perfis de build no Maven.
 - **Ferramentas**: Inicialização via Spring Initializr (selecionando Maven)
 - **Dependências**: `spring-boot-starter-web`, `spring-boot-devtools`
-- **Prática**: Hello endpoint (que evoluirá para health check) e configuração externa via ENV VARS no `application.yaml` (`DB_URL`, `DB_USER`, `DB_PASS`, `DDL_AUTO`, `JWT_SECRET`)
-- **Testes**: Teste unitário inicial do Controller e garantia de 100% de sucesso para avançar.
+- **Prática**: Endpoint inicial de saudação/saúde e demonstração do funcionamento de profiles e variáveis de ambiente no `application.yaml` com propriedades simples da aplicação (ex: `app.mensagem`).
+- **Testes**: Teste unitário inicial do Controller com `MockMvc` e garantia de 100% de sucesso para avançar.
 - **Interação**: Uso do **JShell (Java REPL)** integrado ao contexto do Spring Boot para exploração em tempo real e o papel do **DevTools** no ciclo de feedback rápido.
-- **Objetivo**: Estruturar a base da aplicação seguindo boas práticas de isolamento de ambiente e configuração externa.
-- **Entregável**: Projeto Spring Boot funcional, inicializado via Maven, com endpoint básico e propriedades de infraestrutura parametrizadas por variáveis de ambiente.
+- **Objetivo**: Estruturar a base da aplicação seguindo boas práticas de isolamento de ambiente, profiles e configuração externa.
+- **Entregável**: Projeto Spring Boot funcional, inicializado via Maven, com endpoint básico e gerenciamento de perfis e variáveis de ambiente validado.
 
 ### Parte 3: Core API (Model/Repo/Service/Controller)
 - **Dependências**: `spring-boot-starter-data-jpa`, `com.h2database:h2`
-- **Domínio**: Entidade `Todo` (id, título, conteúdo, concluído)
+- **Configuração de Infra**: Parametrização das variáveis de banco no `application.yaml` (`DB_URL`, `DB_USER`, `DB_PASS`, `DDL_AUTO`) usando a mecânica explicada na Parte 2.
+- **Domínio**: Entidade `Tarefa` (id, título, descrição, concluído)
 - **Persistência**: `JpaRepository` com H2 + `findByConcluido` + custom queries básicas
 - **Camadas**: Service e Controller REST manuais (temporários, preparando o terreno para o desacoplamento)
 - **Interação**: Usando o REPL/JShell para interagir com o `@Service`
 - **Testes**: Implementação de testes unitários de Service (com mocks) e persistência (`@DataJpaTest`). Sucesso total como critério de saída.
-- **Objetivo**: Implementar o fluxo básico de persistência e regras de negócio usando a arquitetura tradicional em camadas.
+- **Objetivo**: Implementar o fluxo básico de persistência e regras de negócio usando a arquitetura tradicional em camadas com banco parametrizado.
 - **Entregável**: CRUD de transações de persistência isolado na camada de serviço e exposto em endpoints REST rudimentares com cobertura de testes.
 
 ### Parte 4: Refinamento e Contratos (O fim do "JPA no Controller")
@@ -114,12 +115,13 @@ Série de posts para o blog `vndmtrx.github.io` abordando o ecossistema Spring B
 
 ### Parte 11: Usuários, Security e Auditoria Completa
 - **Dependências**: `spring-boot-starter-security`, `io.jsonwebtoken:jjwt`, `org.hibernate.orm:hibernate-envers`
-- **Security**: Entidade `User` e autenticação Stateless via JWT (segredo via `JWT_SECRET`). Proteção de APIs de escrita (login required). Liberação explícita das rotas estáticas `/docs/**` e `/webjars/**` no `SecurityFilterChain`.
+- **Configurações Tipadas**: Uso de `@ConfigurationProperties` com Java Records para mapear e validar tipadamente as propriedades de segurança e JWT (`app.jwt.secret`, `app.jwt.expiracao-horas`).
+- **Security**: Entidade `Usuario` e autenticação Stateless via JWT (segredo via `JWT_SECRET`). Proteção de APIs de escrita (login required). Liberação explícita das rotas estáticas `/docs/**` e `/webjars/**` no `SecurityFilterChain`.
 - **Auditoria**: Uso de `MappedSuperclass` para campos de controle (`@CreatedBy`, `@LastModifiedBy`) e histórico via Hibernate Envers (tabelas `*_AUD` no schema)
 - **Contexto**: Implementação de `AuditorAware<String>` integrado ao `SecurityContext` para capturar o usuário logado automaticamente
 - **Testes**: Testes de segurança (MockMvc) e validação dos logs de auditoria. Sucesso total de 100%.
 - **Objetivo**: Estabelecer controle de acesso seguro e trilha de auditoria automatizada para monitoramento de alterações de estado.
-- **Entregável**: Fluxo de emissão e validação de tokens JWT ativo com rotas de documentação liberadas e versionamento automático de alterações via tabelas Envers.
+- **Entregável**: Fluxo de emissão e validação de tokens JWT ativo com rotas de documentação liberadas, propriedades de segurança tipadas via `@ConfigurationProperties` e versionamento automático de alterações via tabelas Envers.
 
 ### Parte 12: Observabilidade (O que acontece em produção?)
 - **Dependências**: `spring-boot-starter-actuator`, `io.micrometer:micrometer-registry-prometheus`
