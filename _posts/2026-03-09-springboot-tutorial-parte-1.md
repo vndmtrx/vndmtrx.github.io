@@ -1,136 +1,135 @@
 ---
 layout: post
-title: "Spring Boot Tutorial, Parte 1 - Ambiente"
-subtitle: "Construindo o ambiente de desenvolvimento"
+title: "Spring Boot Tutorial, Parte 1 - Ambiente de Desenvolvimento"
+subtitle: "Configurando o ambiente base com Debian Trixie, SDKMAN, VS Codium e JShell"
 author:
-- "Eduardo N. S. R."
+  - "Eduardo N. S. R."
 date: 2026-03-09 11:20:00 GMT-3
-modified_date: 2026-05-10 09:49:00 GMT-3
+modified_date: 2026-08-19 09:30:00 GMT-3
 permalink: /posts/spring-boot-tutorial-parte-1-ambiente/
-tags: [Spring Boot, Java]
+tags: [Spring Boot, Java, DevOps, Linux]
 series: Spring Boot Tutorial
 ---
 
 E se de repente a gente decidisse escrever um tutorial de Spring Boot? Pois é, eu decidi começar essa seara de estudo do framework pela parte que ninguém liga, mas que geralmente é a que quebra tudo quando não é feito do jeito certo: o ambiente de desenvolvimento. Parece bobo, mas sem ele sólido desde o começo, o resto vira dor de cabeça infinita.
 
-> 🔔 *Nota da Série*: Este post faz parte da série **"Spring Boot Tutorial"**, onde eu construo, passo a passo, uma API backend moderna usando **Spring Boot**. Aqui o foco é o backend: modelagem, persistência, resiliência, testes, observabilidade e deploy. A linguagem usada no projeto será Java, versão 25+. O frontend vem depois, quando a API estiver bem cuidada por dentro.
+> 🔔 *Nota da Série*: Este post inaugura a série **"Spring Boot Tutorial"**, onde construímos do zero uma API backend de produção com **Spring Boot**, explorando boas práticas de arquitetura, contratos, persistência, resiliência, observabilidade e nuvem.
 
-Nos últimos anos eu venho me focando mais na área de segurança, infraestrutura e de DevOps na maior parte dos projetos em que eu participo. Isso inclui migrações para nuvem, deploy de serviços com automação e gerenciamento de esteiras de deploy automatizado, na maioria dos casos diretamente com VMs e mais recentemente com contêineres. Dito isso, desenvolvimento nunca foi um forte na minha vida profissional, mas uma coisa sempre me incomodou nisso, que é a forma como vários projetos eram desenvolvidos.
+Nos últimos anos, minha rotina profissional tem sido focada quase que inteiramente em segurança, infraestrutura e DevOps. Isso envolve migrações complexas para a nuvem, automação de esteiras de CI/CD e governança de clusters de VMs e contêineres. Olhando o desenvolvimento sob essa lente operacional, uma coisa sempre salta aos olhos: a negligência com o setup local de quem programa cobra juros altíssimos em produção. O clássico "na minha máquina funciona" quase sempre nasce aqui.
 
-A inspiração pra este projeto veio da série de posts [Flask Mega Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world), do Miguel Grinberg, uma série que sempre admirei pela forma progressiva e prática com que ensina. A ideia aqui é trazer esse mesmo espírito “aprenda fazendo”, mas no universo do Spring Boot, enfatizando boas práticas de backend moderno, observabilidade e automação.
+A inspiração para esta série vem do clássico [Flask Mega Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world), do Miguel Grinberg [^1]. A proposta aqui é resgatar essa jornada progressiva de "aprender fazendo", mas no universo do Spring Boot e Java moderno. Em vez de criarmos apenas um CRUD descartável, vamos usar uma aplicação de gerenciamento de tarefas (*TODO*) como pretexto para dissecar decisões arquiteturais reais: desacoplamento de contratos, resiliência sob estresse, migrações com Flyway no Postgres 18, telemetria unificada e empacotamento para Kubernetes.
 
-Eu sei que vcs vão dizer que eu por ser de infra vou sempre ter uma visão diferente do dev, e vcs não estão errados. E é por isso que estou me propondo a fazer essa série de posts. Minha ideia é aprender ao mesmo tempo que vou documentando as várias coisas que eu aprendi nas minhas áreas de trabalho com esse estudo de uma nova linguagem, um novo framework, para começar.
+E para construir uma catedral que fique de pé, precisamos cavar fundações sólidas. Por isso, começaremos pelo terminal.
 
-A ideia aqui, com essa série, é que você consiga acompanhar desde o ambiente de desenvolvimento, passando por banco, segurança, cache, testes, observabilidade, até chegar em Docker e Kubernetes, vendo os trade-offs e as pequenas decisões que normalmente ficam escondidas nos tutoriais bonitinhos, e para isso eu decidi criar uma aplicação clássica do tipo TODO, onde a parte da complexidade da solução é deixada de lado para focarmos efetivamente no uso das tecnologias na melhoria do projeto.
+## O alicerce do host: Debian Trixie e SDKMAN
 
-Eu queria começar essa série de posts pela parte "menos glamourosa" do projeto: o ambiente de desenvolvimento. Não é banco, não é Redis, não é Kubernetes. É só... deixar o editor e o runtime do Java pronto. E mesmo assim, quase todo projeto que vejo tropeça exatamente nessa etapa (ou intui que o usuário já tem um ambiente bem definido).
+A escolha do sistema operacional de trabalho não precisa ser um dogma, mas precisa ser consistente. Por aqui, utilizo o **Debian GNU/Linux 13 (Trixie)** como distribuição padrão para infraestrutura e desenvolvimento. Ele entrega uma base estável, enxuta e previsível.
 
-E por que disso? Porque na maioria das vezes a gente perde tempo com o clássico *"Na minha máquina funciona"* (quando alguém desenvolve em Java 17 enquanto o servidor roda Java 11), com a falta de reprodutibilidade das builds no CI, ou com conflitos gerados por configurações díspares entre quem usa IntelliJ e quem usa VS Code.
+O primeiro grande erro em ambientes Java é instalar o JDK via gerenciador de pacotes da distribuição (`apt install default-jdk`). Fazer isso amarra o seu sistema a uma versão engessada, polui diretórios globais como `/usr/lib/jvm` e transforma a troca de versão entre projetos diferentes em um pesadelo manual.
 
-Nada do que vou propor aqui é revolucionário. É só uma sugestão minha para começar algo de forma padronizada. Todos vcs são livres para fazer como quiserem (ou mesmo não fazer), mas não vão poder reclamar depois.
+A solução definitiva para esse problema é o **SDKMAN** [^2]. Ele gerencia múltiplos kits de desenvolvimento de forma isolada dentro da sua *home*, sem exigir privilégios de superusuário para alternar entre versões de JDK, Gradle ou Maven.
 
-Dada essa fala inicial, vamos efetivamente ao texto.
-
-## Preparando o Ambiente Base: Debian e SDKMAN
-
-Então, a primeira coisa que vamos pensar: qual sistema operacional? Não vou me alongar aqui, pois cada um tem sua opção. Eu irei focar tudo em **Debian Trixie**, pois é geralmente meu ambiente de trabalho base.
-
-A primeira coisa que eu faço aqui é instalar o **SDKMAN** [^1]. Ele é um gerenciador de SDKs do ambiente do Java que permite, entre outras coisas, vc ter várias versões diferentes do mesmo software. A instalação é simples de boba:
+A instalação é direta e roda inteiramente no espaço de usuário:
 
 ```bash
 $ curl -s "https://get.sdkman.io" | bash
-# Instala o sdkman usando o formato recomendado pelo projeto
+# Baixa e executa o instalador oficial do SDKMAN
 
 $ source "$HOME/.sdkman/bin/sdkman-init.sh"
-# Ajusta o ENV para já poder usar o sdkman após a instalação (sem precisar reiniciar o perfil de usuário)
+# Carrega as funções e variáveis de ambiente do SDKMAN na sessão atual do terminal
 ```
 
-A instalação das versões do Java seguem uma dinâmica super simples:
+Com o SDKMAN operacional, instalamos a distribuição **Eclipse Temurin** do OpenJDK na versão 26. O Temurin é mantido pela Eclipse Foundation e pela iniciativa Adoptium, sendo hoje um dos padrões da indústria em termos de confiabilidade e conformidade com a especificação Java SE:
 
 ```bash
 $ sdk install java 26-tem
-# Baixa e instala a versão Temurin 26 do Java
+# Faz o download e a compilação/instalação do Temurin JDK 26
 
 $ sdk default java 26-tem
-# Define o Java 26 (Temurin) como versão padrão global para todos os shells
-
-$ java --version
-# Confirma se a versão configurada é a esperada
+# Define o Java 26 Temurin como o runtime padrão global para o seu usuário
 ```
 
-Você pode instalar outras versões concomitantes e usar elas de forma bem simples, conforme o shell abaixo:
+Podemos validar imediatamente se o binário correto está respondendo no `$PATH`:
 
 ```bash
 $ java --version
-# Exibe a versão Java atualmente configurada
+# Valida a versão do JDK ativa globalmente
 openjdk 26 2026-03-17
 OpenJDK Runtime Environment Temurin-26+35 (build 26+35)
 OpenJDK 64-Bit Server VM Temurin-26+35 (build 26+35, mixed mode, sharing)
+```
 
+Ter múltiplos JDKs na máquina é trivial. Caso você precise rodar um projeto legado em Java 25 em uma aba isolada do terminal, basta invocar `sdk use`:
+
+```bash
 $ sdk use java 25-tem
-# Troca temporariamente para a versão 25 apenas nesta sessão
+# Altera temporariamente a versão do Java apenas para a sessão atual do shell
 
 $ java --version
-# Mostra a nova versão ativa na sessão atual
+# Confirma a alteração pontual
 openjdk 25 2025-09-16 LTS
 OpenJDK Runtime Environment Temurin-25+36 (build 25+36-LTS)
 OpenJDK 64-Bit Server VM Temurin-25+36 (build 25+36-LTS, mixed mode, sharing)
 ```
 
-No primeiro caso, foi definido o Java 26 como versão padrão para todo o usuário, e no segundo caso o Java 25 foi definido somente para aquela sessão de shell, voltando ao 26 após fechar e abrir novamente.
+No entanto, confiar na memória para trocar de versão sempre que trocar de repositório é receita para erro humano. Para garantir paridade absoluta entre todas as pessoas do time e esteiras de integração contínua, o SDKMAN oferece o arquivo de configuração `.sdkmanrc`.
 
-No fim do dia, apesar de simples, não é muito prático ficar trocando o SDK toda vez que mudar de projeto, e para isso o SDKMAN possui uma funcionalidade de configuração de ambiente:
+Basta inicializar o arquivo na raiz do seu repositório:
 
 ```bash
 $ sdk env init
-# Cria um arquivo .sdkmanrc no diretório atual para definir versões específicas por projeto
+# Gera o arquivo .sdkmanrc no diretório atual com a versão ativa do Java
 
-$ cat .sdkmanrc 
+$ cat .sdkmanrc
 # Enable auto-env through the sdkman_auto_env config
 # Add key=value pairs of SDKs to use below
 java=26-tem
 ```
 
-Isso permite que os comandos de shell rodados no escopo do projeto sempre usem a versão Java correta e inclusive a instalação das dependências com o comando `sdk env install`.
+A partir desse momento, qualquer pessoa que clonar o projeto pode simplesmente rodar `sdk env install` para baixar e travar exatamente a mesma versão de compilador e runtime. O mito do "na minha máquina roda diferente" morre aqui.
 
-É importante citar também que não precisa ser só o Java. O Sdkman tem vários runtimes para instalar, como o SpringBoot, o Gradle, o Maven, entre outros. Você pode ver usando o comando `sdk list`, que irá mostrar todos os runtimes disponíveis.
+## O editor leve e sem telemetria: VS Codium
 
-Feito isso, e após a configuração do ambiente base pelo script de instalação, estamos prontos para a próxima etapa.
+Com o runtime sob controle, a próxima peça do quebra-cabeça é onde vamos escrever código. E aqui entramos no terreno sagrado das guerras santas de IDEs.
 
-### Instalação do VS Codium
+Eu sei que a comunidade Java adora o IntelliJ IDEA. Não tiro a razão de quem usa, é uma ferramenta muito madura. O meu problema com essa abordagem é o modelo da dita IDE "open source" onde as funcionalidades realmente úteis e legais (como o suporte de primeira classe ao ecossistema Spring) ficam trancadas atrás de um *paywall* salgado na versão Ultimate. Do outro lado da história temos os clássicos: o Eclipse com seus *workspaces* enigmáticos e o NetBeans (deus me livre e guarde de voltar a mexer com NetBeans nesta vida).
 
-Agora que temos o JDK sob controle, a próxima opção nossa é o Editor de Código. Aqui eu vou sugerir o uso do VS Codium, só pq ele é Open Source e livre das telemetrias da Micro$oft. Além de tudo ele é leve e fácil de mexer.
+Para quem, como eu, sempre teve um carinho especial por editores modulares (saudades eternas do saudoso Atom Editor), o **VS Codium** [^3] é o ponto de equilíbrio perfeito.
 
-No **Debian Trixie**, a instalação é super fácil:
+O VS Codium é o binário limpo do Visual Studio Code, compilado diretamente a partir do código-fonte livre sob licença MIT. A grande sacada em relação ao executável da Microsoft é que ele vem completamente livre de rastreadores, telemetria invasiva e chamadas de rede em segundo plano. É leve, consome uma fração da memória de uma IDE tradicional e não fica tentando adivinhar a sua vida.
+
+No Debian Trixie, a instalação é muito simples através do `extrepo` (caso seu sistema seja uma instalação mínima, certifique-se de ter o `curl` e o `extrepo` instalados com `sudo apt install curl extrepo`):
 
 ```bash
 $ sudo extrepo enable vscodium
-# Habilita o repositório externo do VS Codium no Debian
+# Habilita o repositório oficial e seguro do VS Codium nas fontes do apt
 
 $ sudo apt update && sudo apt install codium
-# Atualiza a lista de pacotes e instala o editor VS Codium
+# Sincroniza a lista de pacotes e instala o editor no sistema
 ```
 
-Feito isso, o VS Codium está instalado. Eu vou inclusive sugerir a instalação de algumas extensões que eu pretendo usar, que serão muito úteis no andamento desse Tutorial:
+Com o editor no sistema, o segredo da produtividade está em três extensões essenciais. O suporte a Java no ecossistema do VS Code amadureceu absurdamente nos últimos anos através do pacote oficial da Microsoft/Red Hat (`vscjava`) e as ferramentas de Spring mantidas pela própria VMware. Instalamos tudo direto pelo terminal:
 
 ```bash
 $ codium --install-extension MS-CEINTL.vscode-language-pack-pt-BR
-# Adiciona o pacote de idioma em português (tradução da interface)
+# Instala o pacote de localização em português para a interface
 
 $ codium --install-extension vscjava.vscode-java-pack
-# Instala o pacote oficial de ferramentas Java para desenvolvimento
+# Adiciona suporte completo ao Java (LSP, depuração, Maven/Gradle e testes integrados)
 
 $ codium --install-extension VMware.vscode-boot-dev-pack
-# Instala o Spring Boot Pack, com suporte a inicialização de projetos e depuração
+# Instala o pacote oficial de suporte ao ecossistema Spring Boot
 ```
 
-Com essas extensões instaladas, o Codium já traz autocompletar, debug e suporte ao Spring Boot prontos para uso.
+Esses três entregam tudo o que precisamos para o dia a dia: autocompletar inteligente via Language Server Protocol (LSP), navegação profunda em símbolos do Spring, atalhos de execução de testes e depuração integrada. Mais para frente falaremos com calma sobre como tirar melhor proveito dessas ferramentas. Por enquanto, temos um editor rápido (dentro do que o Electron permite ser), moderno e funcional sem pagar assinatura de software ou fritar a memória da máquina (não culpem o VS Codium por isso, culpem o Electron e as extensões pesadas).
 
-### Um test-drive rápido com o JShell
+## O ciclo de feedback rápido: REPL-Driven Development com JShell
 
-Antes de encerrarmos, como já instalamos o Java, que tal um teste rápido? A partir do Java 9 a linguagem passou a contar com o **JShell** [^2], um REPL (Read-Eval-Print Loop) que permite executar código Java de forma interativa sem a necessidade de criar classes ou compilar arquivos.
+Existe um preconceito histórico que pinta o ecossistema Java como burocrático e lento para experimentação. Desenvolvedores de linguagens dinâmicas (como Python, Ruby ou Elixir) frequentemente apontam a necessidade de compilar arquivos e criar classes inteiras apenas para testar uma única função.
 
-Isso é extremamente útil para explorar APIs, testar pequenos algoritmos ou validar comportamentos da linguagem antes de colocá-los no projeto de fato. Para brincar um pouco, abra seu terminal e digite `jshell`:
+Desde o Java 9, essa barreira foi demolida com a chegada do **JShell** [^4]. O JShell é um REPL (*Read-Eval-Print Loop*) oficial que permite executar trechos de código Java de forma interativa e instantânea direto no terminal.
+
+Para iniciar uma sessão de experimentação, digite `jshell`:
 
 ```bash
 $ jshell
@@ -144,57 +143,152 @@ jshell> System.out.println(saudacao.toUpperCase())
 OLÁ, SPRING BOOT E JSHELL!
 ```
 
-Um outro exemplo é o uso de `records`, que entraram no Java 16 e são estruturas imutáveis muito úteis para DTOs. Aqui podemos declarar e testar um diretamente no console:
+O valor do JShell vai muito além de imprimir textos simples. Ele permite prototipar estruturas de dados e testar regras de negócio antes de commitar qualquer arquivo no projeto.
+
+Por exemplo, podemos experimentar a sintaxe de **Java Records** (introduzidos de forma definitiva no Java 16), que serão as peças fundamentais para a criação dos nossos DTOs desacoplados:
 
 ```bash
-jshell> record Todo(int id, String titulo, boolean concluido) {}
-|  created record Todo
+jshell> record Tarefa(int id, String titulo, boolean concluido) {}
+|  created record Tarefa
 
-jshell> var tarefa = new Todo(1, "Aprender Spring Boot", false)
-tarefa ==> Todo[id=1, titulo="Aprender Spring Boot", concluido=false]
+jshell> var tarefa = new Tarefa(1, "Configurar ambiente com SDKMAN", true)
+tarefa ==> Tarefa[id=1, titulo="Configurar ambiente com SDKMAN", concluido=true]
 
 jshell> tarefa.titulo()
-$5 ==> "Aprender Spring Boot"
+$3 ==> "Configurar ambiente com SDKMAN"
+
+jshell> tarefa.concluido()
+$4 ==> true
 ```
 
-E para fechar, o JShell permite carregar bibliotecas externas (JARs) ou o diretório de classes do seu próprio projeto para dentro da sessão. Isso será fundamental lá na frente, quando quisermos interagir com os serviços e os *Beans* do Spring Boot diretamente no console.
-
-Para carregar libs externas, usamos o comando `/env -class-path`. Como ainda não geramos a estrutura do nosso projeto Spring Boot, se tentarmos passar uma pasta de `build` agora, o JShell retornará um erro. Para fins de demonstração, vamos adicionar apenas o diretório atual (`.`) ao *classpath* da nossa sessão e, em seguida, importar a API de datas do Java para trabalhar:
+Outro cenário clássico do dia a dia é testar formatações de datas e manipulações de tipos complexos sem precisar rodar uma suite inteira de testes unitários. Podemos manipular o *classpath* da sessão e carregar as bibliotecas nativas:
 
 ```bash
 jshell> /env -class-path .
 |  Setting new options and restoring state.
 
 jshell> import java.time.format.DateTimeFormatter
+jshell> import java.time.LocalDate
 
 jshell> var formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 formatador ==> Value(DayOfMonth,2)'/'Value(MonthOfYear,2)'/'Value(YearOfEra,4,19,EXCEEDS_PAD)
 
-jshell> System.out.println("Projeto iniciado em: " + java.time.LocalDate.now().format(formatador))
-Projeto iniciado em: 10/05/2026
+jshell> var hoje = LocalDate.now().format(formatador)
+hoje ==> "19/08/2026"
+
+jshell> System.out.println("Sessao iniciada em: " + hoje)
+Sessao iniciada em: 19/08/2026
 
 jshell> /exit
 |  Goodbye
 ```
 
-Esse modelo de testar código interativamente reflete uma cultura muito forte em outras linguagens (como Python, Ruby ou Lisp) conhecida como **REPL-Driven Development** ou, mais informalmente, um desenvolvimento orientado a *tinkering* (experimentação contínua). 
+Essa abordagem incorpora a filosofia de **REPL-Driven Development** e a cultura de *tinkering* (experimentação contínua). Em vez de esperar pelo ciclo lento de escrever código, compilar o projeto inteiro e subir a aplicação para descobrir uma inconsistência em um formatador ou num cálculo, validamos hipóteses no terminal em frações de segundo.
 
-Em vez de escrevermos um bloco enorme de código, recompilar o projeto inteiro, subir um servidor pesado e torcer para funcionar, nós testamos pequenas hipóteses em tempo real. Saber "brincar" com a linguagem no terminal nos dá um ciclo de feedback absurdamente rápido. Conseguimos validar se uma API nativa funciona de um jeito específico, ou como um método se comporta, em questão de segundos.
+Mais adiante na série, levaremos essa mentalidade de feedback instantâneo para dentro da nossa aplicação viva com o **Spring Boot DevTools** [^5], permitindo recargas a quente e reinicializações automáticas durante o desenvolvimento.
 
-Durante o andamento dessa série, expandiremos essa ideia além do console puro. Veremos como interagir de forma semelhante usando o **Spring Boot DevTools** [^3], ganhando agilidade parecida no ecossistema da nossa aplicação.
+## Exercícios
 
-## Conclusão
+Para fixar a dinâmica do JShell e experimentar recursos modernos do Java no terminal, teste estes três desafios diretamente na sua sessão interativa.
 
-Aqui chegamos ao final desse primeiro post, que é curto mas é para falar um pouco sobre a criação de ambientes iniciais.
+**1. Cálculo de prazos e manipulação de datas com java.time**
 
-Olhando o que montamos, vejo algo simples mas que resolve o essencial: reprodutibilidade. Não é sobre ter o editor mais caro ou a distro perfeita, mas criar um espaço onde o foco vai pro código: O Java sempre o esperado, a navegação fluida no Spring. É o tipo de base que, na prática, evita horas perdidas com *"na minha máquina roda"*, deixando energia pra decisões que realmente importam, que é o estudo do Spring Boot, e de como criar uma aplicação resiliente.
+A API moderna de datas do Java (`java.time`) é expressiva e imutável. No JShell, importe as classes de data e crie uma data representando o prazo de entrega de uma tarefa para daqui a 5 dias a partir de hoje (`LocalDate.now().plusDays(5)`). Em seguida, formate a data no padrão brasileiro (`dd/MM/yyyy`) e calcule quantos dias restam até o prazo final utilizando `ChronoUnit.DAYS.between()`.
 
-A internet já está cheia de tutoriais sobre Spring Boot (e LLMs que geram código inteiro num piscar de olhos). Então por que isso aqui? Pra mim, é forma de estudar: escrevendo pra outros, organizo ideias, testo na prática e descubro os bugs que não aparecem no `^C` / `^V`. Se ajudar alguém a pular uma armadilha ou repensar o setup, já valeu. Na Parte 2, iremos tratar do setup inicial do projeto no Spring Initializr e nosso primeiro endpoint.
+<details markdown="1">
+<summary>Ver resposta</summary>
+
+```java
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+
+var hoje = LocalDate.now();
+var prazo = hoje.plusDays(5);
+var formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+System.out.println("Hoje: " + hoje.format(formatador));
+System.out.println("Prazo limite: " + prazo.format(formatador));
+
+long diasRestantes = ChronoUnit.DAYS.between(hoje, prazo);
+System.out.println("Dias restantes: " + diasRestantes);
+```
+
+</details>
+
+**2. Filtragem de tarefas com Streams**
+
+Aproveitando o record `Tarefa` que declaramos na sessão interativa do JShell, crie uma lista imutável com múltiplas tarefas (algumas concluídas e outras pendentes). Em seguida, use a Stream API para filtrar apenas as tarefas pendentes (`!tarefa.concluido()`), extrair seus títulos com `map(Tarefa::titulo)` e exibi-los no terminal.
+
+<details markdown="1">
+<summary>Ver resposta</summary>
+
+```java
+record Tarefa(int id, String titulo, boolean concluido) {}
+
+var tarefas = List.of(
+    new Tarefa(1, "Instalar SDKMAN", true),
+    new Tarefa(2, "Configurar VS Codium", true),
+    new Tarefa(3, "Escrever primeiro endpoint", false),
+    new Tarefa(4, "Configurar banco de dados", false)
+);
+
+// Filtrando tarefas pendentes e extraindo titulos no JShell
+var pendentes = tarefas.stream().filter(t -> !t.concluido()).map(Tarefa::titulo).toList();
+
+System.out.println("Tarefas pendentes: " + pendentes);
+```
+
+*A Stream API combinada com method references (Tarefa::titulo) e records torna a transformação e filtragem de coleções concisa e legível.*
+
+</details>
+
+**3. Blindagem de dados com construtor compacto de Records**
+
+Crie no JShell um record `ItemTarefa(int id, String descricao, int prioridade)` que valide suas invariantes no momento da criação: a `descricao` não pode ser nula nem em branco (`isBlank()`), e a `prioridade` deve ser um valor inteiro entre 1 e 5. Caso alguma regra seja violada, lance uma `IllegalArgumentException`. Teste uma criação com sucesso e force um erro passando valores inválidos.
+
+<details markdown="1">
+<summary>Ver resposta</summary>
+
+```java
+record ItemTarefa(int id, String descricao, int prioridade) {
+    public ItemTarefa {
+        if (descricao == null || descricao.isBlank()) {
+            throw new IllegalArgumentException("A descricao nao pode ser vazia.");
+        }
+        if (prioridade < 1 || prioridade > 5) {
+            throw new IllegalArgumentException("A prioridade deve estar entre 1 e 5.");
+        }
+    }
+}
+
+// Teste de sucesso
+var tarefaOk = new ItemTarefa(1, "Configurar SDKMAN", 5);
+
+// Teste de falha (deve estourar IllegalArgumentException)
+var tarefaInvalida = new ItemTarefa(2, "", 10);
+```
+
+*No JShell, definições de nível superior assumem visibilidade pública por padrão. Por isso, o construtor compacto precisa do modificador public explícito para não violar a visibilidade do record. Ele roda exatamente antes dos campos serem inicializados, sendo o lugar ideal para validações de integridade sem boilerplate.*
+
+</details>
+
+## O ponto de partida
+
+Montar um ambiente de desenvolvimento limpo não é sobre preciosismo técnico ou exibicionismo de ferramentas. É sobre disciplina de engenharia e respeito pelo próprio tempo.
+
+Ao estabelecermos o Debian Trixie como host, o SDKMAN com `.sdkmanrc` para travar o JDK 26 Temurin, o VS Codium sem telemetria e o JShell para experimentação ágil, eliminamos ruídos desnecessários. O foco passa a ser unicamente a arquitetura e a qualidade do código que vamos escrever.
+
+No próximo post, daremos o pontapé inicial na nossa aplicação: vamos criar o projeto base com Maven, explorar a filosofia do **12-Factor App** para desacoplamento de configurações e escrever nosso primeiro endpoint com testes automatizados.
 
 ## Referências
 
-[^1]: **SDKMAN! Usage** {*SDKMAN!*} ([Link](https://sdkman.io/usage))
+[^1]: **The Flask Mega-Tutorial** {*Miguel Grinberg*} ([Link](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world))
 
-[^2]: **JShell User's Guide** {*Oracle*} ([Link](https://docs.oracle.com/en/java/javase/21/jshell/introduction-jshell.html))
+[^2]: **SDKMAN! Usage and Documentation** {*SDKMAN!*} ([Link](https://sdkman.io/usage))
 
-[^3]: **Developer Tools** {*Spring Boot Reference*} ([Link](https://docs.spring.io/spring-boot/reference/using/devtools.html))
+[^3]: **VSCodium: Free/Libre Open Source Software Binaries of VS Code** {*VSCodium*} ([Link](https://vscodium.com/))
+
+[^4]: **JShell User's Guide (Java SE 21+)** {*Oracle Documentation*} ([Link](https://docs.oracle.com/en/java/javase/21/jshell/introduction-jshell.html))
+
+[^5]: **Spring Boot Developer Tools Reference** {*Spring Boot Reference Guide*} ([Link](https://docs.spring.io/spring-boot/reference/using/devtools.html))
