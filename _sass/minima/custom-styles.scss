@@ -59,3 +59,47 @@ code, pre {
     margin-top: 1.2rem;
   }
 }
+
+// Estilização moderna e acessível para detalhes/exercícios (<details> e <summary>)
+details {
+  margin: 1.25rem 0 1.75rem 0;
+  padding: 0.6rem 1rem;
+  border: 1px solid rgba(128, 128, 128, 0.22);
+  border-radius: 8px;
+  background-color: rgba(128, 128, 128, 0.04);
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+
+  summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: $link-base-color;
+    user-select: none;
+    outline: none;
+    padding: 0.25rem 0;
+    transition: color 0.15s ease;
+
+    &:hover {
+      color: $link-hover-color;
+    }
+  }
+
+  &[open] {
+    background-color: rgba(128, 128, 128, 0.07);
+    border-color: rgba(128, 128, 128, 0.35);
+
+    summary {
+      margin-bottom: 0.75rem;
+      border-bottom: 1px dashed rgba(128, 128, 128, 0.25);
+      padding-bottom: 0.5rem;
+    }
+  }
+
+  .highlight, pre {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  p:last-child {
+    margin-bottom: 0.25rem;
+  }
+}
