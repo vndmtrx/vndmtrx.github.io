@@ -13,11 +13,11 @@ series: Spring Boot Tutorial
 
 E se de repente a gente decidisse escrever um tutorial de Spring Boot? Pois é, eu decidi começar essa seara de estudo do framework pela parte que ninguém liga, mas que geralmente é a que quebra tudo quando não é feito do jeito certo: o ambiente de desenvolvimento. Parece bobo, mas sem ele sólido desde o começo, o resto vira dor de cabeça infinita.
 
-> 🔔 *Nota da Série*: Este post inaugura a série **"Spring Boot Tutorial"**, onde construímos do zero uma API backend de produção com **Spring Boot**, explorando boas práticas de arquitetura, contratos, persistência, resiliência, observabilidade e nuvem.
+> 🔔 *Nota da Série*: Este post inaugura a série **"Spring Boot Tutorial"**, onde construímos do zero uma API backend de produção com **Spring Boot**, explorando boas práticas de arquitetura, contratos, persistência, resiliência, observabilidade e nuvem. O código-fonte de apoio e os projetos dos capítulos práticos estão disponíveis no repositório parceiro [vndmtrx/estudos_springboot](https://github.com/vndmtrx/estudos_springboot).
 
 Nos últimos anos, minha rotina profissional tem sido focada quase que inteiramente em segurança, infraestrutura e DevOps. Isso envolve migrações complexas para a nuvem, automação de esteiras de CI/CD e governança de clusters de VMs e contêineres. Olhando o desenvolvimento sob essa lente operacional, uma coisa sempre salta aos olhos: a negligência com o setup local de quem programa cobra juros altíssimos em produção. O clássico "na minha máquina funciona" quase sempre nasce aqui.
 
-A inspiração para esta série vem do clássico [Flask Mega Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world), do Miguel Grinberg [^1]. A proposta aqui é resgatar essa jornada progressiva de "aprender fazendo", mas no universo do Spring Boot e Java moderno. Em vez de criarmos apenas um CRUD descartável, vamos usar uma aplicação de gerenciamento de tarefas (*TODO*) como pretexto para dissecar decisões arquiteturais reais: desacoplamento de contratos, resiliência sob estresse, migrações com Flyway no Postgres 18, telemetria unificada e empacotamento para Kubernetes.
+A inspiração para esta série vem do clássico [Flask Mega Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world), do Miguel Grinberg [^1]. A proposta aqui é resgatar essa jornada progressiva de "aprender fazendo", mas no universo do Spring Boot e Java moderno. Em vez de criarmos apenas um CRUD descartável, vamos usar uma API de gerenciamento de tarefas (a nossa `tarefas-api`) como pretexto para dissecar decisões arquiteturais reais: desacoplamento de contratos, resiliência sob estresse, migrações com Flyway no Postgres 18, telemetria unificada e empacotamento para Kubernetes.
 
 E para construir uma catedral que fique de pé, precisamos cavar fundações sólidas. Por isso, começaremos pelo terminal.
 
@@ -279,7 +279,7 @@ Montar um ambiente de desenvolvimento limpo não é sobre preciosismo técnico o
 
 Ao estabelecermos o Debian Trixie como host, o SDKMAN com `.sdkmanrc` para travar o JDK 26 Temurin, o VS Codium sem telemetria e o JShell para experimentação ágil, eliminamos ruídos desnecessários. O foco passa a ser unicamente a arquitetura e a qualidade do código que vamos escrever.
 
-No próximo post, daremos o pontapé inicial na nossa aplicação: vamos criar o projeto base com Maven, explorar a filosofia do **12-Factor App** para desacoplamento de configurações e escrever nosso primeiro endpoint com testes automatizados.
+No [segundo post da série](/posts/spring-boot-tutorial-parte-2-projeto-base/), daremos o pontapé inicial na nossa aplicação: vamos criar o projeto base com Maven, explorar a filosofia do **12-Factor App** para desacoplamento de configurações e escrever nosso primeiro endpoint com testes automatizados.
 
 ## Referências
 

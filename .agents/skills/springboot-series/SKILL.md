@@ -14,7 +14,7 @@ Diretrizes, convenções técnicas e arquiteturais para os posts da série **Spr
 
 ## 1. Visão Geral e Filosofia da Série
 
-A série **Spring Boot Tutorial** acompanha a construção progressiva de uma API backend moderna para gerenciamento de tarefas (*TODO*), abordada sob a perspectiva de um engenheiro de infraestrutura, segurança e DevOps. 
+A série **Spring Boot Tutorial** acompanha a construção progressiva de uma API backend moderna para gerenciamento de tarefas (`tarefas-api`), abordada sob a perspectiva de um engenheiro de infraestrutura, segurança e DevOps. 
 
 O objetivo não é reinventar a roda com um CRUD trivial, mas usar um domínio simples para explorar a fundo decisões de arquitetura de produção, resiliência, observabilidade, conformidade com o 12-Factor App e padrões de engenharia modernos.
 
@@ -23,9 +23,10 @@ O objetivo não é reinventar a roda com um CRUD trivial, mas usar um domínio s
 - **Padrão de Título:** `title: "Spring Boot Tutorial, Parte X - [Tema]"`
 - **Subtítulo:** `subtitle: "[Frase descritiva e direta sobre o tema técnico abordado]"`
 - **Tags Recomendadas:** `[Spring Boot, Java, Backend, DevOps, Infraestrutura, Arquitetura]` (conforme o tema do post)
+- **Repositório Parceiro:** `[vndmtrx/estudos_springboot](https://github.com/vndmtrx/estudos_springboot)` estruturado por capítulos/pastas (`capitulo-02/`, `capitulo-03/`, etc.).
 - **Callout de Abertura:** Sempre incluir na abertura:
   ```markdown
-  > 🔔 *Nota da Série*: Este post faz parte da série **"Spring Boot Tutorial"**, onde construímos do zero uma API backend de produção com **Spring Boot**, explorando boas práticas de arquitetura, contratos, persistência, resiliência, observabilidade e nuvem.
+  > 🔔 *Nota da Série*: Este post faz parte da série **"Spring Boot Tutorial"**, onde construímos do zero uma API backend de produção com **Spring Boot**, explorando boas práticas de arquitetura, contratos, persistência, resiliência, observabilidade e nuvem. O código-fonte de apoio e os projetos de cada capítulo estão organizados no repositório parceiro [vndmtrx/estudos_springboot](https://github.com/vndmtrx/estudos_springboot).
   ```
 
 ---
