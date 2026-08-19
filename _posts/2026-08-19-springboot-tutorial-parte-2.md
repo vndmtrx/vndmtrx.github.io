@@ -158,7 +158,7 @@ logging:
     "[io.github.vndmtrx.tarefas_api]": INFO
 ```
 
-Repare no uso de colchetes e aspas duplas `"[nome.do.pacote]"` sob `logging.level`: em arquivos YAML, como os pacotes Java contêm pontos (`.`), essa sintaxe de escape é a convenção oficial recomendada pelo Spring Boot para evitar que o interpretador YAML confunda o nome do pacote com nós aninhados [^6].
+> ⚠️ *Aviso*: Repare no uso de colchetes e aspas duplas `"[nome.do.pacote]"` sob `logging.level`: em arquivos YAML, como os pacotes Java contêm pontos (`.`), essa sintaxe de escape é a convenção oficial recomendada pelo Spring Boot para evitar que o interpretador YAML confunda o nome do pacote com nós aninhados [^6].
 
 * No perfil `dev`, ativamos o nível `DEBUG` para a camada web e para o nosso pacote `io.github.vndmtrx.tarefas_api`, permitindo inspecionar o roteamento e detalhes internos durante os testes.
 * No perfil `prod`, elevamos o nível geral (`root`) para `ERROR` para silenciar ruídos de bibliotecas de terceiros, liberando apenas mensagens `INFO` relevantes do nosso próprio sistema.
