@@ -35,7 +35,7 @@ Série de posts para o blog `vndmtrx.github.io` abordando o ecossistema Spring B
 - **Testes**: Teste unitário inicial do Controller e garantia de 100% de sucesso para avançar.
 - **Interação**: Uso do **JShell (Java REPL)** integrado ao contexto do Spring Boot para exploração em tempo real e o papel do **DevTools** no ciclo de feedback rápido.
 - **Objetivo**: Estruturar a base da aplicação seguindo boas práticas de isolamento de ambiente e configuração externa.
-- **Entregável**: Projeto Spring Boot funcional, inicializado via Gradle, com endpoint básico e propriedades de infraestrutura parametrizadas por variáveis de ambiente.
+- **Entregável**: Projeto Spring Boot funcional, inicializado via Maven, com endpoint básico e propriedades de infraestrutura parametrizadas por variáveis de ambiente.
 
 ### Parte 3: Core API (Model/Repo/Service/Controller)
 - **Dependências**: `spring-boot-starter-data-jpa`, `com.h2database:h2`
@@ -68,15 +68,17 @@ Série de posts para o blog `vndmtrx.github.io` abordando o ecossistema Spring B
 - **Objetivo**: Migrar o armazenamento em memória para um banco de dados relacional de produção utilizando versionamento estruturado de schema.
 - **Entregável**: Banco de dados Postgres 18 ativo via Docker Compose, histórico de tabelas controlado por migrations Flyway e uso nativo de tipos avançados (UUIDv7/JSONB).
 
-### Parte 6: Contrato Independente e Documentação Viva (Design-First)
-- **Contextualização Crítica**: Explicação sobre a existência do SpringDoc e a abordagem Code-First (anotações poluindo o código). Discussão sobre o problema real de incompatibilidade do SpringDoc com o ecossistema do Spring Boot 4.x / versões modernas.
-- **Comparação Visual**: Exibição de um exemplo simples de documentação automática com SpringDoc em um endpoint "Hello World" versus os benefícios de seguir com o design limpo proposto na série. Decisão arquitetural de seguir sem o SpringDoc para total independência do ecossistema.
-- **Ferramentas**: Subida do **Swagger Editor local via Docker** para apoio à escrita. Uso do `openapi-generator-maven-plugin` (ou equivalente Gradle) + WebJar `swagger-ui` (ou Scalar).
-- **Prática**: Modelagem visual do contrato inicial em OpenAPI 3.0 usando o painel bicoluna e validação em tempo real do Swagger Editor. Salvamento do contrato final como `openapi.yaml` em `src/main/resources/static/docs/`.
-- **QoL**: Criação de um `index.html` estático consumindo o WebJar para renderizar o Swagger UI local por conta própria. Configuração do plugin de compilação para gerar as interfaces dos controllers de forma autônoma.
-- **Testes**: Adaptação e execução dos testes existentes contra as novas interfaces Java autogeradas.
-- **Objetivo**: Romper a dependência de varreduras em tempo de execução através da adoção da filosofia Design-First com ferramentas isoladas da JVM.
-- **Entregável**: Interface gráfica do Swagger UI servida estaticamente em `/docs/index.html` a partir de um contrato criado via Swagger Editor Docker, gerando código Java limpo.
+### Parte 6: Contratos e Documentação Viva (Design-First vs SpringDoc OpenAPI)
+- **Dependências**: `org.springdoc:springdoc-openapi-starter-webmvc-ui`, `org.webjars:swagger-ui`
+- **Tooling/Plugins**: `org.openapitools:openapi-generator-maven-plugin` e container Docker do **Swagger Editor**
+- **Abordagem Design-First**: Modelagem inicial do contrato estático em OpenAPI 3.0 usando o Swagger Editor local via Docker (painel bicoluna e validação em tempo real). Salvamento do contrato como `openapi.yaml` em `src/main/resources/static/docs/`.
+- **Geração de Código e UI Estática**: Configuração do `openapi-generator-maven-plugin` para gerar as interfaces dos controllers e consumo do WebJar `swagger-ui` (ou Scalar) servido em `/docs/index.html`.
+- **Análise Crítica e Trade-offs**: Discussão sobre os prós e contras de manter o contrato desacoplado do código (independência da JVM vs atrito de manutenção e sincronismo manual).
+- **A Solução Integrada com SpringDoc OpenAPI**: Apresentação do `springdoc-openapi`. Adição da dependência `springdoc-openapi-starter-webmvc-ui`, configuração no `application.yaml` e geração automática e dinâmica da documentação em `/v3/api-docs` e `/swagger-ui.html`.
+- **Comparação Prática**: Quadro comparativo direto entre Design-First (contrato estático) e Code-First/Integrado (SpringDoc), demonstrando quando cada abordagem faz sentido em projetos reais.
+- **Testes**: Execução e validação dos testes unitários garantindo que os endpoints continuam atendendo aos contratos.
+- **Objetivo**: Dominar tanto a modelagem de contratos desacoplados (Design-First) quanto a documentação integrada nativa em runtime com SpringDoc OpenAPI no Spring Boot 4.1.0.
+- **Entregável**: API documentada com Swagger Editor/contrato OpenAPI 3.0 e integração funcional com SpringDoc OpenAPI v3.1.0 servindo `/swagger-ui.html` dinamicamente.
 
 ### Parte 7: Arquitetura: RESTful vs RPC
 - **Dependências**: `spring-boot-starter-hateoas`

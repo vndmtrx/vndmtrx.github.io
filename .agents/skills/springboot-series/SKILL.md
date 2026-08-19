@@ -40,7 +40,7 @@ O objetivo não é reinventar a roda com um CRUD trivial, mas usar um domínio s
 | **Experimentação** | Java JShell (REPL) & DevTools | Cultura de *tinkering* e REPL-driven development para validação rápida de APIs antes da escrita formal. |
 | **Build Tool** | Apache Maven | Builds determinísticas e declarativas com `pom.xml` e plugins padrão do ecossistema. |
 | **Persistência** | H2 (in-memory dev/test) -> PostgreSQL 18 (Docker) | Migração estruturada com Flyway, uso nativo de `UUIDv7` e campos `JSONB` para metadados/tags. |
-| **Contrato & Docs** | Design-First com OpenAPI 3.0 via Swagger Editor | **Sem SpringDoc em runtime.** Geração de código limpo via plugin OpenAPI e Swagger UI estático servido via WebJar. |
+| **Contrato & Docs** | OpenAPI 3.0 (Swagger Editor) & SpringDoc OpenAPI v3.1.0+ | Comparação prática: Design-First (contrato estático e geração via plugin) vs SpringDoc integrado em runtime no Spring Boot. |
 | **Protocolo HTTP** | RESTful com HATEOAS & **HTTP QUERY (RFC 9734)** | Maturidade Richardson nível 3 e uso do verbo `QUERY` para buscas idempotentes com payload complexo. |
 | **Testes** | JUnit 5, Mockito, Testcontainers, Cucumber (BDD) e WireMock | Testes de unidade estritos (100% de sucesso) combinados com testes de integração reais em containers. |
 | **Segurança & Auditoria** | Spring Security + JWT Stateless + Hibernate Envers | Autenticação limpa, `AuditorAware` e rastreabilidade total de auditoria em tabelas `*_AUD`. |
