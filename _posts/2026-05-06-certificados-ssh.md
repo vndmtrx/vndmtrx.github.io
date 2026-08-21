@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "OpenSSH - A mágica dos Certificados (e o fim do TOFU)"
+subtitle: "Como abandonar o caos de authorized_keys e known_hosts usando uma autoridade certificadora nativa"
 author:
   - "Eduardo N. S. R."
 date: 2026-05-09 19:24:00 GMT-3

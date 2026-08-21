@@ -52,17 +52,19 @@ Estas regras são **absolutas** para manter a identidade visual e tipográfica d
 
 ### Front Matter Padrão
 
+Todo post deve **obrigatoriamente** conter um `subtitle` atuando como uma frase de efeito ou *tagline* marcante (provocativa, bem-humorada ou descritiva de impacto):
+
 ```yaml
 ---
 layout: post
 title: "Título do Post"
+subtitle: "Frase de efeito ou tagline marcante que sintetiza o post"
 author:
   - "Eduardo N. S. R."
 date: YYYY-MM-DD HH:MM:SS GMT-3
 permalink: /posts/slug-do-post/
 tags: [Tag1, Tag2]
 # Opcionais:
-subtitle: "Subtítulo descritivo"
 series: Nome da Série
 modified_date: YYYY-MM-DD HH:MM:SS GMT-3
 ---
@@ -169,6 +171,7 @@ Antes de publicar ou entregar qualquer post, valide:
 - [ ] Ritmo e cadência dinâmicos (auto-similaridade fractal, Fibonacci, alternância sístole/diástole)?
 - [ ] Variação de tamanho de frases (*burstiness* / staccato vs. legato)?
 - [ ] Front matter completo e correto (author em lista YAML, layout, tags)?
+- [ ] Subtítulo marcante no front matter (`subtitle: "..."`) atuando como frase de efeito/tagline?
 - [ ] Códigos com linguagem no fence e explicação em itálico (ou comentários inline)?
 - [ ] Comandos, flags e arquivos com backticks no texto corrido?
 - [ ] Termos em inglês e estrangeirismos em *itálico*?

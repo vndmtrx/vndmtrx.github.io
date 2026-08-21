@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Aprendendo Elixir - Introdução"
+subtitle: "Primeiros passos no paradigma funcional com ASDF, Mix e ExUnit"
 author:
   - "Eduardo N. S. R."
 date: 2025-04-18 15:09:00 GMT-3

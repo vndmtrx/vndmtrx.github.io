@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "E se a gente refatorasse o Cálculo?"
+subtitle: "Como a dívida técnica na matemática transformou derivadas e limites em pesadelos de decoreba"
 author:
 - "Eduardo N. S. R."
 date: 2026-08-16 14:18:00 GMT-3

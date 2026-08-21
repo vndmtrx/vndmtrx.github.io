@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Você não é um Engenheiro de Software"
+subtitle: "Por que a metáfora da construção civil falha e programar é, na verdade, cuidar de um jardim"
 author:
   - "Eduardo N. S. R."
 date: 2023-08-09 10:43:00 GMT-3

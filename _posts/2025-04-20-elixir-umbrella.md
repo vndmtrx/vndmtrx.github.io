@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Aprendendo Elixir - Estrutura Modular com Umbrella"
+subtitle: "Organizando aplicações complexas e domínios independentes com projetos guarda-chuva"
 author:
   - "Eduardo N. S. R."
 date: 2025-04-20 15:46:00 GMT-3

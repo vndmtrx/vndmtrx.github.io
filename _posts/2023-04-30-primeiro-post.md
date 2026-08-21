@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Recomeçando tudo de novo de algum lugar"
+subtitle: "Um novo espaço para escrever com a esperança de durar pelo menos uma década"
 author:
   - "Eduardo N. S. R."
 date: 2023-04-30 11:17:00 GMT-3

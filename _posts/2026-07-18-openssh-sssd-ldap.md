@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "OpenSSH + SSSD: Integrando autenticação LDAP ao SSH"
+subtitle: "Centralizando usuários, grupos e chaves públicas com Debian Trixie sem gambiarras locais"
 author:
   - "Eduardo N. S. R."
 date: 2026-07-18 21:57:00 GMT-3

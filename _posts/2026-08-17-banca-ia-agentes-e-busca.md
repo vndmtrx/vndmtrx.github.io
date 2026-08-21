@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Ensaio da Banca de 20 Minutos: Agentes e Busca em IA"
+subtitle: "Ansiedade acadêmica, modelos mentais de IA e como sobreviver à avaliação de apresentações relâmpago"
 author:
   - "Eduardo N. S. R."
 date: 2026-08-17 07:19:00 GMT-3

@@ -43,6 +43,15 @@ code, pre {
   font-variation-settings: "MONO" 1, "CASL" 0;
 }
 
+.post-subtitle {
+  font-size: 1.25rem;
+  line-height: 1.4;
+  font-weight: 300;
+  opacity: 0.85;
+  margin-top: -2px;
+  margin-bottom: 14px;
+}
+
 // Padronização semântica: reduz o tamanho visual dos headers para que possamos
 // usar h2 (##) como título principal das seções sem explodir a tela.
 .post-content {

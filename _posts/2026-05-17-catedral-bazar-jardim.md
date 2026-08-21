@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "A Catedral, o Bazar e o Jardim"
+subtitle: "Como a era da inteligência artificial está transformando a criação de software em um cultivo pessoal e hiperlocal"
 author:
 - "Eduardo N. S. R."
 date: 2026-05-17 06:43:00 GMT-3
