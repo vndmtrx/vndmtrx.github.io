@@ -27,7 +27,7 @@ Anos mais tarde, quando me deparei pela primeira vez com o manifesto dos **12-Fa
 
 Cada um daqueles doze fatores não era teoria acadêmica descolada da realidade. Cada linha era uma resposta direta a um pesadelo real que alguém, em algum lugar da história dos servidores, sofreu na pele às duas horas da manhã.
 
-Vamos dissecar cada um dos doze fatores. Mas não do jeito asséptico dos manuais acadêmicos: vamos ver o princípio técnico, como aplicá-lo em stacks modernas como Spring Boot, Elixir e Kubernetes, e, principalmente, o pesadelo real que acontece quando você decide ignorá-lo.
+Vamos dissecar cada um dos doze fatores. Mas não do jeito asséptico dos manuais acadêmicos: vamos ver o princípio técnico e os pesadelos reais que acontecem quando você decide ignorá-lo
 
 ## I. Base de Código: Uma base de código rastreada, muitos deploys
 
