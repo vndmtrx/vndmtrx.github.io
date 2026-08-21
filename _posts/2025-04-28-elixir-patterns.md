@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Aprendendo Elixir - Pattern Matching"
+subtitle: "Desconstrução de dados, fluxo idiomático e a implementação do algoritmo Shunting Yard"
 author:
   - "Eduardo N. S. R."
 date: 2025-04-28 20:28:00 GMT-3

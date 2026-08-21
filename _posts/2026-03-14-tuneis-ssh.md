@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "OpenSSH - O poder oculto do túneis (e que vc provavelmente não usa)"
+subtitle: "Desmistificando -L, -R, -D e ProxyJump para redirecionar tráfego seguro sem precisar de VPN"
 author:
   - "Eduardo N. S. R."
 date: 2026-03-14 21:16:00 GMT-3

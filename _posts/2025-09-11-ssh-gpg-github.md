@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Criando chaves SSH e GPG para o GitHub"
+subtitle: "Um guia prático para gerar chaves Ed25519 e assinar seus commits com segurança"
 author:
   - "Eduardo N. S. R."
 date: 2025-09-11 23:13:00 GMT-3

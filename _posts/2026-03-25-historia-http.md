@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Evolução do Protocolo HTTP e da World Wide Web"
+subtitle: "Do HTTP/0.9 de linha única no CERN até a revolução do HTTP/3 sobre QUIC"
 author:
 - "Eduardo N. S. R."
 date: 2026-03-21 20:16:00 GMT-3

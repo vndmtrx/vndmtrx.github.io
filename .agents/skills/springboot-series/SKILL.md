@@ -21,7 +21,7 @@ O objetivo não é reinventar a roda com um CRUD trivial, mas usar um domínio s
 ### Convenções de Publicação
 - **Série no Front Matter:** `series: Spring Boot Tutorial`
 - **Padrão de Título:** `title: "Spring Boot Tutorial, Parte X - [Tema]"`
-- **Subtítulo:** `subtitle: "[Frase descritiva e direta sobre o tema técnico abordado]"`
+- **Subtítulo:** `subtitle: "[Frase de efeito ou tagline técnica marcante sobre o tema abordado]"`
 - **Tags Recomendadas:** `[Spring Boot, Java, Backend, DevOps, Infraestrutura, Arquitetura]` (conforme o tema do post)
 - **Repositório Parceiro:** `[vndmtrx/estudos_springboot](https://github.com/vndmtrx/estudos_springboot)` estruturado por capítulos/pastas (`capitulo-02/`, `capitulo-03/`, etc.).
 - **Callout de Abertura:** Sempre incluir na abertura:

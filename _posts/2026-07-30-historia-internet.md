@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Uma Breve História da Internet"
+subtitle: "Das redes militares da ARPANET nos anos 60 à era do streaming e da computação em nuvem"
 author:
 - "Eduardo N. S. R."
 date: 2026-07-31 12:40:00 GMT-3

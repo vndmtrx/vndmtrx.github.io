@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Pinkwashing e o Mês do Orgulho LGBTQIAPN+"
+subtitle: "A ilusão da diversidade corporativa sazonal, memes de marketing e a realidade quando os holofotes se apagam"
 author:
 - "Eduardo N. S. R."
 date: 2026-06-04 16:51:00 GMT-3
