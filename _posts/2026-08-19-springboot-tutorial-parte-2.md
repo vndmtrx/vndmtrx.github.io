@@ -1,12 +1,13 @@
 ---
 layout: post
-title: "Spring Boot Tutorial, Parte 2 - Projeto Base e 12-Factor App"
+title: "Spring Boot Tutorial, Parte 2 - Projeto Base"
 subtitle: "Inicialização com Maven, variáveis de ambiente e perfis de execução"
 author:
   - "Eduardo N. S. R."
 date: 2026-08-19 16:31:00 GMT-3
+modified_date: 2026-08-21 19:02:00 GMT-3
 permalink: /posts/spring-boot-tutorial-parte-2-projeto-base/
-tags: [Spring Boot, Java, Maven, DevOps, 12-Factor]
+tags: [Spring Boot, Java, Maven, DevOps]
 series: Spring Boot Tutorial
 ---
 
@@ -16,7 +17,7 @@ No [primeiro post da série](/posts/spring-boot-tutorial-parte-1-ambiente/), mon
 
 Quem trabalha com infraestrutura e operações aprende rápido uma verdade incômoda: a esmagadora maioria dos incidentes de deploy não acontece por falha de sintaxe, mas por confusão de configuração. É o desenvolvedor que chumba a URL do banco local no meio do código, comita credenciais sensíveis no repositório ou assume que a aplicação vai rodar para sempre no mesmo caminho de diretório.
 
-Para evitar esse tipo de armadilha desde o primeiro commit, o ecossistema de nuvem e microsserviços se apoia na metodologia dos **12-Factor App** [^1]. Criada pelos desenvolvedores da plataforma Heroku, ela define doze princípios para criar aplicações portáveis, resilientes e escaláveis.
+Para evitar esse tipo de armadilha desde o primeiro commit, o ecossistema de nuvem e microsserviços se apoia na metodologia dos **12-Factor App** [^1]. Criada pelos desenvolvedores da plataforma Heroku, ela define doze princípios para criar aplicações portáveis, resilientes e escaláveis (se você quiser se aprofundar em cada um deles com causos reais de pesadelos de infraestrutura, confira o nosso post [12-Factor App: Como Fazer (e os Pesadelos de Como Não Fazer)](/posts/12-factor-app-pesadelos-e-pratica/)).
 
 Neste momento da série, dois desses fatores nos interessam diretamente:
 
@@ -61,7 +62,7 @@ $ curl https://start.spring.io/starter.tgz \
 # Baixa o arquivo compactado com a estrutura base do projeto
 ```
 
-Basta descompactar o arquivo `.tgz` no seu diretório de trabalho ou, se preferir, clonar e abrir diretamente o código deste capítulo no [repositório parceiro](https://github.com/vndmtrx/estudos_springboot).
+Basta descompactar o arquivo `.tgz` no seu diretório de trabalho ou, se preferir, clonar e abrir diretamente o código deste capítulo no [repositório parceiro](https://github.com/vndmtrx/estudos_springboot). Todos os exemplos a partir de agora serão baseados neste projeto. O código desse post está na pasta [estudos_springboot/parte2](https://github.com/vndmtrx/estudos_springboot/tree/main/parte2).
 
 Repare que na raiz do projeto temos o arquivo `mvnw` (o **Maven Wrapper**) [^3]. O Maven Wrapper é fundamental para a reprodutibilidade: ele garante que qualquer pessoa (ou servidor de CI) que clone o repositório execute exatamente a mesma versão do Maven sem precisar ter o binário instalado globalmente no sistema operacional.
 
