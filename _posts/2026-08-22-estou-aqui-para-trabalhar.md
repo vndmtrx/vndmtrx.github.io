@@ -148,6 +148,14 @@ Não há resposta certa para essa pergunta. O que há é a consciência de que e
 
 Vinte anos são muitos anos.
 
+## Mea Culpa
+
+Seria desonesto encerrar este texto sem apontar o espelho na direção de quem o escreveu. Goedecke fala do tubo que transborda quando o líquido é demais. Este texto é o que acontece quando o tubo de alguém transborda, não como raiva "não gritada" em reunião, mas como rancor. Rancor lento, meticuloso, do tipo que cataloga comportamentos alheios em planilhas mentais e encontra uma justificativa para cada entrada. Quem assiste, registra e alimenta a própria amargura com cada novo dado, como se fosse evidência num inquérito que ninguém abriu, também se tornou parte do ecossistema que descreve. Não no papel de quem opera os horrores. Mas no de quem transformou o próprio rancor em material de análise (o que é, convenhamos, uma forma bastante específica de participação).
+
+Tenho um princípio que antecede qualquer julgamento que eu faça sobre os outros: o espelho vem primeiro, e pesa mais. O rancor é meu. A decisão de continuar aqui, até agora, também. O que observo é que não sou o primeiro a perceber esses padrões: pessoas vieram e foram embora deste setor carregando relatos parecidos demais entre si para serem coincidência. Isso não absolve ninguém, muito menos quem escreve. Mas dá ao problema um contorno que nenhuma planilha mental individual consegue desenhar sozinha.
+
+Uma certa vez eu li um livro sobre um homem que tinha razões legítimas para odiar uma baleia. A baleia era real. A cicatriz era real. A dor era real. Ahab não estava errado sobre a natureza do animal. Estava errado sobre o que a caça faria com ele. Este texto não consegue responder se o arpão já mudou de mão, se a obsessão em julgar o comportamento alheio já não se tornou, ela mesma, a baleia branca de quem escreve. Ahab também achava que estava apenas fazendo o que precisava ser feito.
+
 ## Referências
 
 [^1]: **A Loucura do Trabalho: Estudo de Psicopatologia do Trabalho** {*Christophe Dejours*} ([Link](https://www.amazon.com.br/loucura-trabalho-estudo-psicopatologia-ebook/dp/B09F8NL6NH))
