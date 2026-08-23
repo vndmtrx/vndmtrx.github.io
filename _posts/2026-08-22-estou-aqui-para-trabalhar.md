@@ -5,7 +5,7 @@ subtitle: "Quando você passa mais horas com quem não escolheu do que com quem 
 author:
   - "Eduardo N. S. R."
 date: 2026-08-22 15:02:00 GMT-3
-modified_date: 2026-08-22 18:45:00 GMT-3
+modified_date: 2026-08-23 12:23:00 GMT-3
 permalink: /posts/estou-aqui-para-trabalhar/
 tags: [Sociedade, Trabalho, Opinião, Psicologia]
 ---
@@ -116,7 +116,7 @@ Mas a casa está pegando fogo. E a fumaça entra por baixo da porta, goste ou n�
 
 É tentador achar que essas pessoas são o puro suco de maldade, que acordam todo dia com o objetivo expresso de infernizar os coleguinhas. A realidade costuma ser mais mundana e triste: é provável que tenham chegado ali como qualquer um que entra num projeto novo, com planos, energia e vontade de fazer a coisa andar, até que a inércia da estrutura martelou a cabeça de cada um até aprenderem a calar a boca. O problema real, como Paulo Freire já avisava, é que quem sofre a violência sem conseguir transformá-la acaba internalizando a lógica de quem bate, e depois desconta em quem chega por último [^6]. O comportamento agressivo não é sinal de força. É só o rastro de quem desistiu e agora quer garantir que ninguém mais tente.
 
-Edmondson, que estudou equipes de alta performance em hospitais, companhias aéreas e empresas de tecnologia, chegou a uma conclusão que deveria ser pintada nas paredes de todo escritório: os times que mais erram não são os piores. São os que mais *admitem* errar [^2]. A segurança psicológica não é sobre ser gentil nem sobre abraçar árvores corporativas. É sobre poder dizer "eu não sei", "eu errei", "sua ideia é melhor que a minha" sem que isso vire munição de corredor na semana seguinte.
+Edmondson, que estudou equipes de alta performance em hospitais, companhias aéreas e empresas de tecnologia, chegou a uma conclusão que deveria ser pintada nas paredes de todo escritório: as melhores equipes não são as que fingem nunca errar, mas as que têm liberdade para admitir as próprias falhas [^2]. A segurança psicológica não é sobre ser gentil nem sobre abraçar árvores corporativas. É sobre poder dizer "eu não sei", "eu errei", "sua ideia é melhor que a minha" sem que isso vire munição de corredor na semana seguinte.
 
 Em setores onde esse mínimo de segurança não existe, o que se observa é exatamente o oposto: gente competente que se cala para não virar alvo. Ideias boas que morrem na garganta antes de chegar à mesa de reunião. Projetos que nunca saem do papel porque propor algo novo é se expor a uma demolição pública seguida de ostracismo social. O custo não é apenas emocional (embora só isso já devesse ser motivo suficiente de preocupação). É técnico, organizacional e, em última instância, institucional. A organização inteira paga o preço em inovação que não acontece, em talentos que pedem transferência na primeira oportunidade, em projetos que andam na velocidade do medo.
 
