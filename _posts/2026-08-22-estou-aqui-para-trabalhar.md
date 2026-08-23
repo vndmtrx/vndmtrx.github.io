@@ -5,7 +5,7 @@ subtitle: "Quando você passa mais horas com quem não escolheu do que com quem 
 author:
   - "Eduardo N. S. R."
 date: 2026-08-22 15:02:00 GMT-3
-modified_date: 2026-08-23 19:33:00 GMT-3
+modified_date: 2026-08-23 19:47:00 GMT-3
 permalink: /posts/estou-aqui-para-trabalhar/
 tags: [Sociedade, Trabalho, Opinião, Psicologia]
 ---
@@ -152,7 +152,7 @@ Vinte anos são muitos anos.
 
 ## Mea Culpa
 
-Nenhum ensaio sobre disfunção alheia escapa de ser, ele mesmo, um monumento ao próprio rancor. Fingir neutralidade aqui seria pura covardia: eu não escrevi estas linhas de um lugar imune. Este texto é a prova concreta de que o meu próprio tubo transbordou: não como raiva gritada aos quatro ventos, mas como rancor meticuloso. Catalogar disfunções alheias e encontrar justificativas para cada ofensa pode parecer lucidez clínica, mas é apenas a minha forma de participar do circo. Quem assiste a tudo calado, registra cada golpe e alimenta a própria amargura, já se tornou peça ativa do mesmo ecossistema que finge apenas descrever. Não no papel de quem opera os horrores. Mas no de quem transformou o próprio rancor em material de análise (o que é, convenhamos, uma forma bastante específica de participação).
+Nenhum ensaio sobre disfunção alheia escapa de ser, ele mesmo, um monumento ao próprio rancor. Fingir neutralidade aqui seria pura covardia: eu não escrevi estas linhas de um lugar imune. Este texto é a prova concreta de que o meu próprio tubo transbordou: não como raiva gritada aos quatro ventos, mas como rancor meticuloso. Dissecar o comportamento alheio pode parecer lucidez clínica, mas é apenas o sintoma de quem foi engolido pela mesma engrenagem. Passamos anos fingindo ser a besta para não sermos devorados por ela, até o momento em que percebemos que quem assiste a tudo calado, registra cada golpe e alimenta o próprio veneno, já se tornou peça ativa do mesmo ecossistema. Não no papel de quem opera os horrores. Mas no de quem transformou o próprio rancor em material de análise (o que é, convenhamos, uma forma bastante específica de contaminação).
 
 Tenho um princípio que antecede qualquer julgamento que eu faça sobre os outros: o espelho vem primeiro, e pesa mais. O rancor é meu. A decisão de continuar aqui, até agora, também. O que observo é que não sou o primeiro a perceber esses padrões: pessoas vieram e foram embora deste setor carregando relatos parecidos demais entre si para serem mera coincidência. Isso não absolve ninguém, muito menos esse que vos escreve. Mas dá ao problema um contorno que nenhuma percepção individual consegue desenhar sozinha.
 
