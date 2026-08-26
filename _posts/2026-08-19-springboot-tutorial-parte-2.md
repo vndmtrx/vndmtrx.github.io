@@ -5,7 +5,7 @@ subtitle: "Inicialização com Maven, variáveis de ambiente e perfis de execuç
 author:
   - "Eduardo N. S. R."
 date: 2026-08-19 16:31:00 GMT-3
-modified_date: 2026-08-21 19:02:00 GMT-3
+modified_date: 2026-08-26 10:17:00 GMT-3
 permalink: /posts/spring-boot-tutorial-parte-2-projeto-base/
 tags: [Spring Boot, Java, Maven, DevOps]
 series: Spring Boot Tutorial
@@ -49,7 +49,7 @@ A interface web é excelente para explorar dependências e visualizar opções. 
 $ curl https://start.spring.io/starter.tgz \
     -d type=maven-project \
     -d language=java \
-    -d bootVersion=4.1.0 \
+    -d bootVersion=4.1.1 \
     -d baseDir=tarefas-api \
     -d configurationFileFormat=yaml \
     -d groupId=io.github.vndmtrx \
