@@ -38,24 +38,28 @@ Série de posts para o blog `vndmtrx.github.io` abordando o ecossistema Spring B
 - **Entregável**: Projeto Spring Boot funcional, inicializado via Maven, com endpoint básico e gerenciamento de perfis e variáveis de ambiente validado.
 
 ### Parte 3: Core API (Model/Repo/Service/Controller)
-- **Dependências**: `spring-boot-starter-data-jpa`, `com.h2database:h2`
-- **Configuração de Infra**: Parametrização das variáveis de banco no `application.yaml` (`DB_URL`, `DB_USER`, `DB_PASS`, `DDL_AUTO`) usando a mecânica explicada na Parte 2.
-- **Domínio**: Entidade `Tarefa` (id, título, descrição, concluído)
-- **Persistência**: `JpaRepository` com H2 + `findByConcluido` + custom queries básicas
-- **Camadas**: Service e Controller REST manuais (temporários, preparando o terreno para o desacoplamento)
-- **Interação**: Usando o REPL/JShell para interagir com o `@Service`
-- **Testes**: Implementação de testes unitários de Service (com mocks) e persistência (`@DataJpaTest`). Sucesso total como critério de saída.
-- **Objetivo**: Implementar o fluxo básico de persistência e regras de negócio usando a arquitetura tradicional em camadas com banco parametrizado.
-- **Entregável**: CRUD de transações de persistência isolado na camada de serviço e exposto em endpoints REST rudimentares com cobertura de testes.
+- **Arquitetura de Pacotes**: Decisão estrutural entre **Package by Layer** vs **Package by Feature** vs **Hexagonal**, adotando o *Package by Feature* (`todo/`) e aproveitando a visibilidade `package-private`.
+- **Dependências**: `spring-boot-starter-data-jpa`, `com.h2database:h2` (runtime)
+- **Configuração de Infra**: Parametrização das variáveis de banco no `application.yaml` (`DB_URL`, `DB_USER`, `DB_PASS`, `DDL_AUTO`), debate de segurança sobre os riscos de `ddl-auto=update` em produção e desativação de `open-in-view: false`.
+- **Domínio**: Entidade `Tarefa` (id com `IDENTITY`, título com limite, descrição opcional, primitivo `boolean concluido` e método de negócio `concluir()`). Justificativa técnica para não utilizar Lombok nesta fase.
+- **Persistência & JPA**: `JpaRepository` com consultas derivadas (`findByConcluido`, `findByTituloContainingIgnoreCase`, `countByConcluido`) e Custom Query com `@Query` em JPQL (`buscarPendentesPorTitulo`), demonstrando o limite da derivação de métodos e antecipando o gancho para filtros dinâmicos na Parte 9.
+- **Camadas & Transações**: `TarefaService` transacional com `@Transactional(readOnly = true)` e escrita atômica. Dissecção da mecânica de **Dirty Checking** (contexto de persistência, estado *managed*, *snapshot* em memória e *flush* no *commit* sem chamar `save()`).
+- **Programação Funcional & Null-Safety**: Uso expressivo de `Optional<Tarefa>` no `buscarPorId` e integração com a mentalidade funcional (`Supplier`, `Predicate`, `Function`, `Consumer`) via `.orElseThrow()`. Uso padronizado de `IllegalArgumentException` como simplificação deliberada antes do refinamento.
+- **Camada Web Rústica**: `TarefaController` REST manual recebendo `TarefaRequest` simples e devolvendo a entidade diretamente (dívida técnica proposital preparando o terreno para o desacoplamento na Parte 4).
+- **Interação**: Sessão de **JShell (Java REPL)** subindo o contexto vivo do Spring Boot sem porta HTTP (`--spring.main.web-application-type=none`), injetando `@Service` e manipulando dados no H2 em tempo real.
+- **Testes**: Suíte completa com testes unitários de Service via Mockito (`TarefaServiceTest`) e testes de fatia JPA com `@DataJpaTest` real no H2 (`TarefaRepositoryTest`). Critério de saída: 100% de sucesso (9 testes verdes).
+- **Objetivo**: Implementar o fluxo básico de persistência e regras de negócio usando arquitetura em camadas Package by Feature com banco parametrizado.
+- **Entregável**: CRUD de persistência funcional isolado na camada de serviço, operável via JShell, exposto em endpoints REST rudimentares e coberto por testes unitários e de persistência.
 
 ### Parte 4: Refinamento e Contratos (O fim do "JPA no Controller")
 - **Dependências**: `spring-boot-starter-validation`, `org.mapstruct:mapstruct`
-- **Padrão**: DTOs com Java Records (desacoplando a Entidade da API) com configurações específicas (insert, visões de listagem, campos ocultos)
-- **Conversão**: Mapeamento Service <-> Controller usando MapStruct
-- **Validação**: Bean Validation (`@Valid`) nos Records e tratamento global de erros com `@ControllerAdvice` e Exceptions customizadas
-- **Testes**: Testes unitários para validar regras de negócio nos Records, DTOs e lógica do MapStruct. Sucesso de 100% obrigatório.
-- **Objetivo**: Blindar a integridade dos dados e desacoplar o modelo de banco de dados da camada pública da API.
-- **Entregável**: Camada de apresentação reestruturada exclusivamente com Java Records validados e mapeados via MapStruct, capturando falhas globalmente.
+- **Padrão**: DTOs com Java Records (desacoplando a Entidade da API pública) com configurações específicas (insert, visões de listagem, campos ocultos).
+- **Conversão**: Mapeamento seguro Service <-> Controller usando MapStruct para eliminar conversões manuais.
+- **Exceções de Domínio & Tratamento Global**: Criação de exceções customizadas de negócio (ex: `RecursoNaoEncontradoException`) e captura centralizada com `@ControllerAdvice` / `@ExceptionHandler`, traduzindo validações e regras em respostas HTTP padronizadas (`400 Bad Request`, `404 Not Found`).
+- **Validação**: Bean Validation (`@Valid`, `@NotBlank`, `@Size`) nos Records e blindagem de invariantes nos construtores compactos.
+- **Testes**: Testes unitários para validar regras de negócio nos Records, DTOs e lógica do MapStruct, além de testes de Controller (`MockMvc`) validando o `@ControllerAdvice`. Sucesso de 100% obrigatório.
+- **Objetivo**: Blindar a integridade dos dados, eliminar a exposição de entidades JPA na camada pública da API e centralizar o tratamento de erros HTTP.
+- **Entregável**: Camada de apresentação reestruturada exclusivamente com Java Records validados e mapeados via MapStruct, com exceções customizadas capturadas globalmente via `@ControllerAdvice`.
 
 ### Parte 5: Persistência Real com Postgres 18
 - **Dependências**: `org.postgresql:postgresql`, `org.flywaydb:flyway-core`, `org.flywaydb:flyway-database-postgresql`
