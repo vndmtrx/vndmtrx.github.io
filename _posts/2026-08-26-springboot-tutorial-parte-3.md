@@ -20,6 +20,28 @@ Quem vive de infraestrutura já viu esse filme repetidas vezes. Aplicação que 
 
 Por isso, nesta parte a gente faz o oposto do impulso: constrói a primeira fatia de domínio da `tarefas-api` em camadas separadas, com o banco parametrizado no padrão 12-Factor e com testes em cada fronteira importante. O controller, por ora, vai continuar rústico de propósito. Na Parte 4, a gente o enterra com Records, MapStruct e Bean Validation.
 
+## Da casca vazia ao domínio: o quarteto de camadas
+
+Na Parte 2, tínhamos apenas uma casca operacional: a aplicação subia, lia perfis de ambiente (`dev` e `prod`) e respondia o `/api/status` através de um `StatusController` que devolvia um Record isolado. Naquele cenário, o controller resolvia tudo sozinho em três linhas. E fazia sentido: não havia banco, não havia regras de negócio, não havia estado a preservar.
+
+Quando o domínio de verdade entra em jogo, essa abordagem não escala. Tentar resolver operações de negócio acumulando queries, regras e validações dentro de controllers transforma qualquer projeto em um emaranhado de código espaguete na primeira mudança de requisito.
+
+Na engenharia de software, a resposta para essa complexidade é a clássica **separação de responsabilidades** (*Separation of Concerns*). Em APIs backend no ecossistema Spring, essa separação se consolida em quatro papéis conceituais fundamentais:
+
+* **Model (Domínio e Estado):** Representa a estrutura dos dados, as regras de integridade interna e o estado que precisa ser preservado. É o núcleo do sistema, independente de protocolos de rede ou interfaces visuais.
+* **Repository (Persistência e I/O):** Isola toda a comunicação com a camada de armazenamento. Sua função é traduzir operações de domínio em consultas de banco, escondendo o dialeto SQL e o driver JDBC do restante do sistema.
+* **Service (Regras de Negócio e Transações):** O cérebro da aplicação. Orquestra os fluxos operacionais, valida invariantes de negócio e define os limites transacionais (o que deve ser salvo com sucesso ou desfeito atomicamente em caso de falha).
+* **Controller (Transporte e Protocolo):** O adaptador de entrada. Não conhece regras de banco nem toma decisões de negócio: sua única responsabilidade é receber requisições HTTP, validar os dados de entrada, acionar o serviço correto e devolver a resposta com o status HTTP semântico.
+
+No nosso projeto `tarefas-api`, materializaremos cada um desses quatro conceitos em componentes concretos ao longo deste post:
+
+1. **`Tarefa.java` (Model):** Entidade JPA que modela a tabela de tarefas e encapsula suas mudanças de estado.
+2. **`TarefaRepository.java` (Repository):** Interface que alavanca o Spring Data JPA para derivar queries e executar SQL no H2 sem código repetitivo.
+3. **`TarefaService.java` (Service):** Classe transacional com `@Transactional` que valida títulos, comanda o repositório e dita as regras de negócio.
+4. **`TarefaController.java` (Controller):** Porta de entrada REST que expõe os endpoints `/api/tarefas` sobre HTTP.
+
+Com a arquitetura conceituada e as peças do tabuleiro identificadas, surge a pergunta de ouro: como organizar essas classes na estrutura de arquivos do projeto?
+
 ## Onde cada classe vai morar: a decisão que os tutoriais pulam
 
 Antes de escrever a primeira entidade, há uma pergunta que quase todo tutorial esconde debaixo do tapete: em qual pacote cada classe vai morar?
@@ -109,6 +131,7 @@ Para isso, adicionamos duas dependências no `pom.xml`: o starter de persistênc
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-data-jpa</artifactId>
 </dependency>
+
 <dependency>
     <groupId>com.h2database</groupId>
     <artifactId>h2</artifactId>
@@ -253,13 +276,13 @@ public interface TarefaRepository extends JpaRepository<Tarefa, Long> {
 
 Herda-se `save`, `findById`, `findAll`, `delete` e companhia. Mas a grande mágica inicial reside nas **consultas derivadas**: o Spring lê `findByConcluido`, separa o prefixo `findBy` da propriedade `concluido` e gera a query SQL correspondente. `findByTituloContainingIgnoreCase` vira um `LIKE` com caixa ignorada. `countByConcluido` vira um `COUNT`.
 
-Esse recurso é ágil, mas tem limites claros. Tentar expressar critérios compostos por derivação pode gerar monstros como `findByTituloContainingIgnoreCaseAndConcluidoFalseOrderByTituloAsc`. O método até compila, mas vira um trava-línguas ilegível e frágil.
+Esse recurso é ágil, mas tem limite. Tentar expressar regras compostas por derivação gera monstros como `findByTituloContainingIgnoreCaseAndConcluidoFalseOrderByTituloAsc`. Compila, mas vira um trava-línguas ilegível e frágil.
 
-É exatamente aqui que entram as **Custom Queries com `@Query`**. Com a anotação `@Query`, escrevemos a consulta diretamente em JPQL (*Java Persistence Query Language*), mantendo a consulta expressa sobre o modelo de objetos (`Tarefa t`) em vez de tabelas SQL cruas, e batizamos o método com um nome limpo e de intenção clara de negócio: `buscarPendentesPorTitulo(fragmento)`.
+É onde entram as **Custom Queries com `@Query`** [^6]. Em vez de poluir a interface, escrevemos a consulta diretamente em JPQL (*Java Persistence Query Language*) sobre a entidade `Tarefa`, batizando o método com um nome claro de negócio: `buscarPendentesPorTitulo(fragmento)`.
 
-Repare no uso do parâmetro nomeado `:fragmento` casado com `@Param("fragmento")`. Em vez de amarrar a query à ordem dos argumentos com parâmetros posicionais (`?1`), os parâmetros nomeados tornam a instrução autoexplicativa e imune a quebras quando a assinatura do método for refatorada. Além disso, resolver a concatenação dos curingas diretamente no JPQL com `CONCAT('%', :fragmento, '%')` isola a responsabilidade de busca dentro do repositório: quem consome o método passa apenas a palavra limpa (`"estudar"`), sem a obrigação de poluir o código Java externo colando `%` nas pontas. Por baixo dos panos, o Hibernate traduz isso para variáveis de ligação (*bind parameters*) em um *Prepared Statement* do JDBC, blindando a consulta contra injeção de SQL por definição.
+Repare no uso do parâmetro nomeado `:fragmento` com `@Param("fragmento")`. Fazer o *binding* por nome em vez de posição (`?1`) protege a query caso a ordem dos argumentos mude no futuro. E ao resolver os curingas diretamente no JPQL com `CONCAT('%', :fragmento, '%')`, quem consome o método passa apenas a palavra limpa (`"estudar"`), sem precisar colar `%` no código Java. O Hibernate se encarrega de gerar o *Prepared Statement* parametrizado no banco, seguro contra injeção de SQL por definição.
 
-Contudo, mesmo o `@Query` tem suas restrições: ele é estático. Se o usuário da nossa API quiser combinar múltiplos filtros opcionais dinamicamente em tempo de execução (por exemplo, filtrar por status, por título ou por intervalos de datas em qualquer combinação), criar dezenas de variações de `@Query` seria inviável. É para resolver essa dor de forma definitiva que, na **Parte 9**, introduziremos o `JpaSpecificationExecutor` combinado ao vanguardista verbo **HTTP QUERY (RFC 9734)**.
+Ainda assim, o `@Query` é estático. Para buscas avançadas onde o cliente combina múltiplos filtros opcionais em tempo de execução, a Parte 9 trará o `JpaSpecificationExecutor` casado com o verbo **HTTP QUERY (RFC 9734)**.
 
 > 💡 *Dica*: O nome do método derivado é o contrato. Renomeou a propriedade `titulo`? O método derivado quebra em tempo de compilação. Por isso, os testes de repositório no final desta parte não são penduricalhos: eles confirmam o comportamento que cada consulta promete.
 
@@ -764,7 +787,7 @@ Mas esta parte deixa uma dívida técnica assumida. A resposta da API ainda é a
 
 Isso é dívida deliberada, não omissão. Na Parte 4, a camada de apresentação é reconstruída em cima de Java Records como DTOs, MapStruct para as conversões e Bean Validation com captura global via `@ControllerAdvice`. O "JPA no controller" morre de vez, e o serviço deixa de ver a entidade cruzar a fronteira do HTTP.
 
-Até lá, a base está firme: banco parametrizado no padrão 12-Factor, persistência em camadas e oito testes garantindo o contrato. Agora dá para refinar sem medo de desmoronar.
+Até lá, a base está firme: banco parametrizado no padrão 12-Factor, persistência em camadas e nove testes garantindo o contrato. Agora dá para refinar sem medo de desmoronar.
 
 ## Referências
 
@@ -777,3 +800,5 @@ Até lá, a base está firme: banco parametrizado no padrão 12-Factor, persist�
 [^4]: **Testing with @DataJpaTest** {*Spring Boot Reference Documentation*} ([Link](https://docs.spring.io/spring-boot/reference/testing/spring-boot-applications.html#testing.spring-boot-applications.autoconfigured-spring-data-jpa))
 
 [^5]: **Hibernate ORM User Guide: Schema Generation (hbm2ddl.auto)** {*Hibernate ORM*} ([Link](https://docs.hibernate.org/orm/current/userguide/html_single/#schema-generation))
+
+[^6]: **Spring Data JPA: Query Methods and Named Parameters** {*Spring / Broadcom*} ([Link](https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html#jpa.named-parameters))
