@@ -19,7 +19,7 @@ A tentação nesse ponto é honesta: abrir o controller, despejar ali toda a ló
 
 Quem vive de infraestrutura já viu esse filme repetidas vezes. Aplicação que funciona na máquina do dev e explode no deploy. Schema alterado na mão, sem histórico de migração. `ddl-auto=update` rodando em produção como se a JVM tivesse passe livre para reescrever o banco. O mesmo descuido que, na Parte 2, apontamos nas variáveis de configuração agora se manifesta na persistência, só que com potencial de estrago bem maior.
 
-Por isso, nesta parte a gente faz o oposto do impulso: constrói a primeira fatia de domínio da `tarefas-api` em camadas separadas, com o banco parametrizado no padrão 12-Factor e com testes em cada fronteira importante. O controller, por ora, vai continuar rústico de propósito. Na Parte 4, a gente o enterra com Records, MapStruct e Bean Validation.
+Por isso, nesta parte a gente faz o oposto do impulso: constrói a primeira fatia de domínio da `tarefas-api` em camadas separadas, com o banco parametrizado no padrão 12-Factor e com testes em cada fronteira importante. O controller, por ora, vai continuar rústico de propósito, e o refinamento fica para um próximo momento.
 
 ## Da casca vazia ao domínio: o quarteto de camadas
 
@@ -117,13 +117,13 @@ O pacote `todo` de teste enxerga as classes package-private do pacote `todo` de 
 
 Existe um terceiro caminho, o Hexagonal (Ports & Adapters). Nele, o domínio fica no centro e as fronteiras técnicas viram adaptadores plugáveis: o repositório se transforma em uma porta de saída, a persistência em um adaptador, e o Spring só enxerga a casca.
 
-É o desenho com maior isolamento dos três. É também o mais caro. Para uma API com uma única agregação, a indireção de portas e adaptadores não paga o aluguel. A regra que seguimos aqui é a da proporção: Package by Feature agora, Hexagonal quando houver domínio que justifique o isolamento. Mais adiante na série, essa conversa volta com mais bagagem.
+É o desenho com maior isolamento dos três. É também o mais caro. Para uma API com uma única agregação, a indireção de portas e adaptadores não paga o aluguel. A regra que seguimos aqui é a da proporção: Package by Feature agora, Hexagonal quando houver domínio que justifique o isolamento.
 
 Com o mapa definido, é hora de preparar o terreno do banco.
 
 ## Infraestrutura parametrizada: H2 e as variáveis do banco
 
-Antes de qualquer linha de domínio, o terreno precisa estar pronto. A escolha desta fase é o **H2** [^3], um banco relacional em memória que sobe junto com a aplicação e desaparece quando o processo termina. Para desenvolvimento e testes, é o paraíso: zero instalação, zero container, zero desculpa para não testar persistência. Na Parte 5, o Postgres 18 entra em cena via Docker e Flyway, e o H2 passa a ser apenas o aliado dos testes rápidos. Por ora, ele carrega o peso sozinho.
+Antes de qualquer linha de domínio, o terreno precisa estar pronto. A escolha desta fase é o **H2** [^3], um banco relacional em memória que sobe junto com a aplicação e desaparece quando o processo termina. Para desenvolvimento e testes, é o paraíso: zero instalação, zero container, zero desculpa para não testar persistência. Por ora, ele carrega o peso sozinho.
 
 Para isso, adicionamos duas dependências no `pom.xml`: o starter de persistência JPA e o driver do H2.
 
@@ -174,7 +174,7 @@ Também desligamos o `open-in-view`, que por padrão mantém a sessão do JPA ab
 
 O coração do domínio é quase banal: uma tarefa tem `id`, `titulo`, `descricao` e um *flag* `concluido`. Simples o suficiente para a gente se concentrar nas decisões ao redor dela sem ruído.
 
-Apesar do carinho pelos Java Records que cultivamos na Parte 1, aqui a entidade nasce como classe. A JPA exige um construtor sem argumentos para instanciar via reflexão e lida melhor com mutabilidade [^2]. Records, imutáveis por definição e sem construtor padrão, não se encaixam bem nesse papel. Eles voltarão triunfantes na Parte 4, agora como DTOs.
+Apesar do carinho pelos Java Records que cultivamos na Parte 1, aqui a entidade nasce como classe. A JPA exige um construtor sem argumentos para instanciar via reflexão e lida melhor com mutabilidade [^2]. Records, imutáveis por definição e sem construtor padrão, não se encaixam bem nesse papel. Eles voltarão triunfantes adiante, agora como DTOs.
 
 A entidade:
 
@@ -239,9 +239,9 @@ A `descricao` guarda o texto auxiliar, aquele detalhe que não cabe no título. 
 
 O `concluido` é um `boolean` primitivo, e essa escolha tem camadas. O primitivo nasce falso, então nenhuma tarefa surge concluída sem querer. A coluna gerada é `NOT NULL`, sem os três estados que um `Boolean` empacotado traria ao introduzir o nulo. E o acesso é assimétrico: há getter `isConcluido()`, mas não existe `setConcluido()`. O estado só muda pelo método `concluir()`, encapsulando uma transição de domínio. É o mesmo espírito do record com construtor compacto que validamos no JShell da Parte 1: invariantes protegidas no ponto de entrada.
 
-> ⚠️ *Aviso*: Você pode estar se perguntando: cadê o Lombok? Ele existe, é maduro e elimina exatamente esse bloco de getters e setters com `@Getter`, `@Setter` e `@Builder`. As vantagens são reais: menos linhas, menos manutenção manual e menos ruído visual. As desvantagens também: é mágica em tempo de compilação, depende de um processador de anotações que historicamente corre atrás de cada *release* nova do JDK e esconde os métodos que a JPA realmente lê para mapear a entidade. Neste momento da série, essa visibilidade importa mais do que a economia de linhas: queremos enxergar o Hibernate lendo os getters, os setters e as anotações `@Column` de forma explícita. Os Records já vão eliminar boa parte do *boilerplate* na Parte 4, agora como DTOs. Futuramente, se o projeto crescer e o time decidir, a gente revisita o Lombok com a devida cerimônia.
+> ⚠️ *Aviso*: Você pode estar se perguntando: cadê o Lombok? Ele existe, é maduro e elimina exatamente esse bloco de getters e setters com `@Getter`, `@Setter` e `@Builder`. As vantagens são reais: menos linhas, menos manutenção manual e menos ruído visual. As desvantagens também: é mágica em tempo de compilação, depende de um processador de anotações que historicamente corre atrás de cada *release* nova do JDK e esconde os métodos que a JPA realmente lê para mapear a entidade. Neste momento da série, essa visibilidade importa mais do que a economia de linhas: queremos enxergar o Hibernate lendo os getters, os setters e as anotações `@Column` de forma explícita. Os Records já vão eliminar boa parte do *boilerplate* adiante, agora como DTOs. Futuramente, se o projeto crescer e o time decidir, a gente revisita o Lombok com a devida cerimônia.
 
-Além dos atributos, três decisões estruturais merecem destaque. O construtor sem argumentos é `protected`, cumprindo a exigência da JPA sem convidar o resto do código a criar tarefas vazias. O `toString` sobrescrito devolve uma representação legível da tarefa em vez do hash padrão `Tarefa@4de5031f`, o que vai facilitar os logs e a sessão de JShell daqui a pouco. E o `id` numérico é provisório: na Parte 5, ele dá lugar ao `UUIDv7` com Flyway. Nada aqui é definitivo, e isso é proposital.
+Além dos atributos, três decisões estruturais merecem destaque. O construtor sem argumentos é `protected`, cumprindo a exigência da JPA sem convidar o resto do código a criar tarefas vazias. O `toString` sobrescrito devolve uma representação legível da tarefa em vez do hash padrão `Tarefa@4de5031f`, o que vai facilitar os logs e a sessão de JShell daqui a pouco. E o `id` numérico é provisório: em um próximo momento, ele dará lugar ao `UUIDv7` com Flyway. Nada aqui é definitivo, e isso é proposital.
 
 ## O repositório que escreve SQL sozinho
 
@@ -283,7 +283,7 @@ Esse recurso é ágil, mas tem limite. Tentar expressar regras compostas por der
 
 Veja que aqui usamos um parâmetro nomeado `:fragmento` com `@Param("fragmento")`. Fazer o *binding* por nome em vez de posição (`?1`) protege a query caso a ordem dos argumentos mude no futuro. E ao resolver os curingas diretamente na consulta com `CONCAT('%', :fragmento, '%')`, quem consome o método passa apenas a palavra limpa (`"estudar"`), sem precisar colar `%` no código Java. O `CONCAT` com três argumentos é um facilitador do Hibernate, provedor padrão do Spring Boot; na especificação JPA, a função recebe exatamente dois argumentos, e a forma portável seria aninhar dois `CONCAT`. O Hibernate se encarrega de gerar o *Prepared Statement* parametrizado no banco, seguro contra injeção de SQL por definição.
 
-Ainda assim, o `@Query` é estático. Para buscas avançadas onde o cliente combina múltiplos filtros opcionais em tempo de execução, a Parte 9 trará o `JpaSpecificationExecutor` casado com o verbo **HTTP QUERY (RFC 9734)**.
+Ainda assim, o `@Query` é estático. Para buscas avançadas onde o cliente combina múltiplos filtros opcionais em tempo de execução, ferramentas como o `JpaSpecificationExecutor` combinado com o verbo **HTTP QUERY (RFC 9734)** serão exploradas adiante.
 
 > 💡 *Dica*: O nome do método derivado é o contrato. Renomeou a propriedade `titulo`? O método derivado quebra em tempo de compilação. Por isso, os testes de repositório no final desta parte não são penduricalhos: eles confirmam o comportamento que cada consulta promete.
 
@@ -384,13 +384,13 @@ O `Optional` não é um recurso isolado: ele faz parte do kit de ferramentas de 
 * **`Function<T, R>`:** Viabiliza transformações imutáveis com `.map()` e `.flatMap()`, convertendo a entidade em outro tipo apenas se ela estiver presente.
 * **`Consumer<T>`:** Executa ações diretas sobre o valor com `.ifPresent()`, dispensando verificações manuais de existência.
 
-Essa abordagem substitui o velho código imperativo e defensivo por fluxos declarativos, seguros e autoexplicativos. Ao longo da série, essa mesma fundação funcional reaparecerá em momentos decisivos: desde o processamento de coleções com Streams até a construção de filtros dinâmicos de banco de dados com `Predicate` e `Specification` na Parte 9.
+Essa abordagem substitui o velho código imperativo e defensivo por fluxos declarativos, seguros e autoexplicativos. Ao longo da série, essa mesma fundação funcional reaparecerá em momentos decisivos: desde o processamento de coleções com Streams até a construção de filtros dinâmicos de banco de dados com `Predicate` e `Specification`.
 
-Para o ponto atual desta série, usaremos o ferramental padronizado do Java com a exceção `IllegalArgumentException` para sinalizar tanto o título inválido quanto o id inexistente. Na Parte 4, quando apresentarmos o `@ControllerAdvice` e o tratamento global de erros, criaremos nossas próprias exceções de negócio desacopladas e as mapearemos para respostas HTTP `404` bem desenhadas.
+Para o ponto atual desta série, usaremos o ferramental padronizado do Java com a exceção `IllegalArgumentException` para sinalizar tanto o título inválido quanto o id inexistente. Adiante, quando apresentarmos o `@ControllerAdvice` e o tratamento global de erros, criaremos nossas próprias exceções de negócio desacopladas e as mapearemos para respostas HTTP `404` bem desenhadas.
 
 ## O controller rústico: apenas HTTP, por ora
 
-O controller desta parte faz uma única coisa: traduzir HTTP para chamadas do serviço. Nada de SQL, nada de regra, nada de `if` espalhado. Ele ainda devolve a entidade diretamente no payload, e isso é um pecado que vamos confessar e corrigir na Parte 4. Agora, o objetivo é enxergar o fluxo inteiro funcionando.
+O controller desta parte faz uma única coisa: traduzir HTTP para chamadas do serviço. Nada de SQL, nada de regra, nada de `if` espalhado. Ele ainda devolve a entidade diretamente no payload, e isso é um pecado que vamos confessar e corrigir adiante. Agora, o objetivo é enxergar o fluxo inteiro funcionando.
 
 Primeiro, um record mínimo para receber o corpo das requisições de criação e atualização:
 
@@ -465,7 +465,7 @@ public class TarefaController {
 ```
 *Os status seguem a semântica HTTP: 200 para leitura e atualização, 201 para criação e 204 para exclusão.*
 
-O `TarefaRequest` não é a camada de DTOs que a aplicação merece. É um remendo honesto para não bater a entidade inteira no JSON de entrada. A resposta, porém, ainda expõe a entidade nua. Na Parte 4, a coisa muda de figura: DTOs de visão, MapStruct e Bean Validation entram para valer.
+O `TarefaRequest` não é a camada de DTOs que a aplicação merece. É um remendo honesto para não bater a entidade inteira no JSON de entrada. A resposta, porém, ainda expõe a entidade nua. Adiante, a coisa muda de figura: DTOs de visão, MapStruct e Bean Validation entram para valer.
 
 ## O JShell com o contexto inteiro do Spring
 
