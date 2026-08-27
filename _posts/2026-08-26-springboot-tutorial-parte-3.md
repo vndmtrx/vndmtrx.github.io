@@ -41,7 +41,7 @@ No nosso projeto `tarefas-api`, materializaremos cada um desses quatro conceitos
 3. **`TarefaService.java` (Service):** Classe transacional com `@Transactional` que valida títulos, comanda o repositório e dita as regras de negócio.
 4. **`TarefaController.java` (Controller):** Porta de entrada REST que expõe os endpoints `/api/tarefas` sobre HTTP.
 
-Com a arquitetura conceituada e as peças do tabuleiro identificadas, surge a pergunta de ouro: como organizar essas classes na estrutura de arquivos do projeto?
+Com a arquitetura conceituada e as peças do tabuleiro identificadas, surge a pergunta de um milhão de reais: como organizar essas classes na estrutura de arquivos do projeto?
 
 ## Onde cada classe vai morar: a decisão que os tutoriais pulam
 
@@ -94,7 +94,7 @@ src/main/java
         └── TarefaService.java
 ```
 
-Aqui, `todo` é uma unidade de negócio. Tudo que diz respeito a tarefas mora sob o mesmo teto. A mudança de uma regra de tarefa tende a permanecer em um único diretório: é a *feature cohesion* em ação. Repare que o Package by Feature não abole as camadas: controller, service e repository continuam existindo; eles apenas deixam de viver em guetos técnicos separados.
+Aqui, `todo` é uma unidade de negócio. Tudo que diz respeito a tarefas mora sob o mesmo teto. A mudança de uma regra de tarefa tende a permanecer em um único diretório: é a *feature cohesion* em ação. Detalhe importante: o Package by Feature não abole as camadas. Controller, service e repository continuam existindo; eles apenas deixam de viver em guetos técnicos separados.
 
 De quebra, o `package-private` volta a ter significado. Como `TarefaController`, `TarefaService`, `TarefaRepository` e `TarefaRequest` só fazem sentido dentro do pacote `todo`, eles não precisam ser `public`. Apenas a entidade `Tarefa` fica pública, por exigência do mapeamento da JPA. No entanto, como o JShell não aceita declaração de `package`, um snippet do REPL não conseguiria enxergar classes package-private do pacote `todo`; por isso, vamos mantê-las públicas.
 
@@ -164,7 +164,7 @@ app:
 
 Agora o ponto que separa a sanidade da catástrofe: a propriedade `ddl-auto` [^5]. O valor `create-drop` faz o Hibernate criar o schema no início e destruí-lo no fim, combinação perfeita para o H2 em memória. O valor `update` tenta sincronizar o schema com as entidades a cada boot.
 
-Soa inofensivo. Não é. Em produção, `ddl-auto=update` é um passaporte para o incidente: o Hibernate altera colunas, cria estruturas e sincroniza o schema conforme as entidades, mas sem nenhum histórico versionado. Adicionou um campo? O schema muda sozinho. Renomeou uma coluna? O Hibernate enxerga uma coluna órfã no banco, cria a coluna nova e deixa a antiga onde está, espalhando fósseis no schema sem que ninguém descubra até o incidente. Não há migração versionada, não há rollback controlado e não há rastro da evolução. É a receita do problema.
+Soa inofensivo. Não é. Em produção, `ddl-auto=update` é um passaporte para o incidente, do tipo que você só descobre na sexta às 18h (por favor não faça isso). O Hibernate altera colunas, cria estruturas e sincroniza o schema conforme as entidades, mas sem nenhum histórico versionado. Adicionou um campo? O schema muda sozinho. Renomeou uma coluna? O Hibernate enxerga uma coluna órfã no banco, cria a coluna nova e deixa a antiga onde está, espalhando fósseis no schema sem que ninguém descubra até o incidente. Não há migração versionada, não há rollback controlado e não há rastro da evolução. É a receita do problema.
 
 > ⚠️ *Aviso de Produção*: A propriedade `spring.jpa.hibernate.ddl-auto=create-drop` só faz sentido com banco efêmero em memória. Para bancos persistentes em produção, o padrão seguro é usar `validate` ou `none`, delegando o versionamento e a evolução do schema para ferramentas de migration como o Flyway.
 
@@ -281,7 +281,7 @@ Esse recurso é ágil, mas tem limite. Tentar expressar regras compostas por der
 
 É onde entram as **Custom Queries com `@Query`** [^6]. Em vez de poluir a interface, escrevemos a consulta diretamente em JPQL (*Java Persistence Query Language*) sobre a entidade `Tarefa`, batizando o método com um nome claro de negócio: `buscarPendentesPorTitulo(fragmento)`.
 
-Repare no uso do parâmetro nomeado `:fragmento` com `@Param("fragmento")`. Fazer o *binding* por nome em vez de posição (`?1`) protege a query caso a ordem dos argumentos mude no futuro. E ao resolver os curingas diretamente na consulta com `CONCAT('%', :fragmento, '%')`, quem consome o método passa apenas a palavra limpa (`"estudar"`), sem precisar colar `%` no código Java. O `CONCAT` com três argumentos é um facilitador do Hibernate, provedor padrão do Spring Boot; na especificação JPA, a função recebe exatamente dois argumentos, e a forma portável seria aninhar dois `CONCAT`. O Hibernate se encarrega de gerar o *Prepared Statement* parametrizado no banco, seguro contra injeção de SQL por definição.
+Veja que aqui usamos um parâmetro nomeado `:fragmento` com `@Param("fragmento")`. Fazer o *binding* por nome em vez de posição (`?1`) protege a query caso a ordem dos argumentos mude no futuro. E ao resolver os curingas diretamente na consulta com `CONCAT('%', :fragmento, '%')`, quem consome o método passa apenas a palavra limpa (`"estudar"`), sem precisar colar `%` no código Java. O `CONCAT` com três argumentos é um facilitador do Hibernate, provedor padrão do Spring Boot; na especificação JPA, a função recebe exatamente dois argumentos, e a forma portável seria aninhar dois `CONCAT`. O Hibernate se encarrega de gerar o *Prepared Statement* parametrizado no banco, seguro contra injeção de SQL por definição.
 
 Ainda assim, o `@Query` é estático. Para buscas avançadas onde o cliente combina múltiplos filtros opcionais em tempo de execução, a Parte 9 trará o `JpaSpecificationExecutor` casado com o verbo **HTTP QUERY (RFC 9734)**.
 
@@ -363,7 +363,7 @@ public class TarefaService {
     }
 }
 ```
-*Repare que os métodos `atualizar` e `concluir` não chamam `repository.save()`: a entidade é gerenciada pelo Hibernate dentro da transação, e o dirty checking sincroniza o estado automaticamente.*
+*Os métodos `atualizar` e `concluir` não chamam `repository.save()` de propósito: a entidade é gerenciada pelo Hibernate dentro da transação, e o dirty checking sincroniza o estado automaticamente.*
 
 > 💡 *Nota*: A validação `titulo.length() > 120` no serviço não anula o `@Column(length = 120)` da entidade. São duas barreiras com propósitos distintos: a anotação define o contrato no schema do banco de dados, enquanto a validação no serviço protege a integridade do domínio antes do I/O, produzindo mensagens de erro legíveis.
 
@@ -371,7 +371,7 @@ Três detalhes aqui merecem uma lupa atenta, porque mudam a forma como pensamos 
 
 O primeiro é a ausência deliberada de `repository.save()` nos métodos de alteração. Quem veio do JDBC puro ou de DAOs procedurais costuma carregar o vício de mandar salvar cada objeto manualmente. No JPA, a mecânica é orientada a estado. Quando o método `buscarTarefaPorId` executa dentro de uma transação ativa (`@Transactional`), o Hibernate carrega a entidade para dentro do seu **contexto de persistência** no estado gerenciado (*managed*), guardando uma cópia fiel daquele registro (um *snapshot* em memória).
 
-Quando você altera os atributos de `tarefa` (seja via setters ou pelo método de negócio `concluir()`), o objeto na memória muda, mas nenhuma instrução SQL é disparada de imediato. Ao final do método, quando o Spring prepara o *commit* da transação, o Hibernate executa a fase de *flush*: ele compara a entidade em memória com o *snapshot* inicial. Esse mecanismo é o **dirty checking** (*detecção de estado modificado*). Detectada a diferença, o próprio Hibernate gera e dispara o comando SQL `UPDATE` correspondente no banco. Invocar `save()` em uma entidade que já está no estado *managed* é redundância inócua.
+Quando você altera os atributos de `tarefa` (seja via setters ou pelo método de negócio `concluir()`), o objeto na memória muda, mas nenhuma instrução SQL é disparada de imediato. Ao final do método, quando o Spring prepara o *commit* da transação, o Hibernate executa a fase de *flush*: ele compara a entidade em memória com o *snapshot* inicial. Esse mecanismo é o *dirty checking* (*detecção de estado modificado*). Detectada a diferença, o próprio Hibernate gera e dispara o comando SQL `UPDATE` correspondente no banco. Invocar `save()` em uma entidade que já está no estado *managed* é redundância inócua.
 
 O segundo detalhe é a gestão das fronteiras com `@Transactional`. O `@Transactional(readOnly = true)` nos métodos de listagem e busca sinaliza ao Hibernate que ele não precisa guardar *snapshots* nem rastrear alterações para aquela sessão, economizando memória e permitindo otimizações de leitura pura na conexão JDBC. Nos métodos de escrita, a anotação assegura atomicidade: se qualquer regra for violada ou uma exceção estourar no meio do caminho, o Spring comanda o *rollback* imediato e nada contamina o banco.
 
@@ -696,7 +696,7 @@ class TarefaRepositoryTest {
     }
 }
 ```
-*Repare no pacote `boot.data.jpa.test.autoconfigure`, herança da reorganização de módulos do Spring Boot 4. Se você estiver no Spring Boot 3.x, o import correspondente é `org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest`.*
+*Ponto de atenção: o pacote `boot.data.jpa.test.autoconfigure` é herança da reorganização de módulos do Spring Boot 4. Se você estiver no Spring Boot 3.x, o import correspondente é `org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest`.*
 
 > 💡 *Dica*: O `@DataJpaTest` carrega exclusivamente a fatia de persistência (entidades e repositórios) e executa cada método de teste dentro de uma transação com *rollback* automático ao final, garantindo que um teste nunca contamine o estado do próximo.
 
