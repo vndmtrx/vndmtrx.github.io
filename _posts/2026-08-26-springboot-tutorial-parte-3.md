@@ -5,6 +5,7 @@ subtitle: "Do H2 parametrizado ao JpaRepository: a primeira fatia de domínio co
 author:
   - "Eduardo N. S. R."
 date: 2026-08-26 08:43:00 GMT-3
+modified_date: 2026-08-27 10:36:00 GMT-3
 permalink: /posts/spring-boot-tutorial-parte-3-core-api/
 tags: [Spring Boot, Java, JPA, Backend]
 series: Spring Boot Tutorial
@@ -481,30 +482,57 @@ $ jshell --class-path target/classes:$(cat .classpath.txt)
 # Abre o REPL enxergando as classes compiladas e as dependencias
 ```
 
-Dentro do JShell, o truque é iniciar o `SpringApplication` com o perfil web desativado. Assim o contexto sobe com JPA e H2, mas sem abrir porta HTTP:
+Dentro do JShell, o truque para uma exploração rápida e direta é iniciar o `SpringApplication` com o perfil web desativado (`--spring.main.web-application-type=none`). Assim o contexto sobe com JPA e H2 sem disputar porta HTTP, permitindo inspecionar qualquer bean do ecossistema. (Caso queira subir o servidor web completo para testar os endpoints simultaneamente no navegador ou via `curl`, basta omitir esse parâmetro, como faremos na seção de exercícios):
 
 ```bash
 jshell> import org.springframework.boot.SpringApplication;
 jshell> import io.github.vndmtrx.tarefas_api.*;
 jshell> import io.github.vndmtrx.tarefas_api.todo.*;
 
-jshell> var contexto = SpringApplication.run(TarefasApiApplication.class, "--spring.main.web-application-type=none");
-# O console despeja os logs do Hibernate; ao final, o contexto fica no ar
+jshell> var contexto = SpringApplication.run(
+   ...>     TarefasApiApplication.class,
+   ...>     "--spring.main.web-application-type=none");
+# O console despeja os logs do Hibernate; o contexto fica ativo
 
+# 1. Repositorio (Persistencia direta e Custom Queries)
+jshell> var repo = contexto.getBean(TarefaRepository.class);
+repo ==> org.springframework.data.jpa.repository.support.SimpleJpaRepository@...
+
+jshell> repo.save(new Tarefa("Estudar JPA", "Ler documentacao"));
+$5 ==> Tarefa{id=1, titulo='Estudar JPA', concluido=false}
+
+jshell> repo.findByConcluido(false);
+$6 ==> [Tarefa{id=1, titulo='Estudar JPA', concluido=false}]
+
+jshell> repo.buscarPendentesPorTitulo("JPA");
+$7 ==> [Tarefa{id=1, titulo='Estudar JPA', concluido=false}]
+
+# 2. Servico (Regras de negocio e Dirty Checking)
 jshell> var service = contexto.getBean(TarefaService.class);
-service ==> io.github.vndmtrx.tarefas_api.todo.TarefaService@2f9f7a5c
+service ==> io.github.vndmtrx.tarefas_api.todo.TarefaService@...
 
-jshell> var t1 = service.criar("Estudar Spring Data JPA", "Ler a documentacao");
-t1 ==> Tarefa{id=1, titulo='Estudar Spring Data JPA', concluido=false}
-
-jshell> var t2 = service.criar("Preparar o ambiente JShell", "");
-t2 ==> Tarefa{id=2, titulo='Preparar o ambiente JShell', concluido=false}
+jshell> var t2 = service.criar("Preparar ambiente", "");
+t2 ==> Tarefa{id=2, titulo='Preparar ambiente', concluido=false}
 
 jshell> service.concluir(2L);
-$7 ==> Tarefa{id=2, titulo='Preparar o ambiente JShell', concluido=true}
+$10 ==> Tarefa{id=2, titulo='Preparar ambiente', concluido=true}
 
 jshell> service.listar();
-$8 ==> [Tarefa{id=1, titulo='Estudar Spring Data JPA', concluido=false}, Tarefa{id=2, titulo='Preparar o ambiente JShell', concluido=true}]
+$11 ==> [Tarefa{id=1, ...}, Tarefa{id=2, ...}]
+
+# 3. Controller (DTOs e Envelopes HTTP)
+jshell> var controller = contexto.getBean(TarefaController.class);
+controller ==> io.github.vndmtrx.tarefas_api.todo.TarefaController@...
+
+jshell> var req = new TarefaRequest("Testar Controller", "No REPL");
+jshell> var resposta = controller.criar(req);
+resposta ==> <201 CREATED Created,Tarefa{id=3, titulo='Testar Controller', ...},[]>
+
+jshell> resposta.getStatusCode();
+$15 ==> 201 CREATED
+
+jshell> resposta.getBody();
+$16 ==> Tarefa{id=3, titulo='Testar Controller', concluido=false}
 
 jshell> contexto.close();
 # Encerra o contexto e descarta o banco em memoria
@@ -727,33 +755,7 @@ $ curl -s "http://localhost:8080/api/tarefas?concluida=false"
 
 </details>
 
-**2. Criando e listando tarefas via HTTP**
-
-Suba a aplicação com `./mvnw spring-boot:run` e use o `curl` para criar uma tarefa com `POST` e listar a coleção com `GET`, validando o JSON de ida e volta.
-
-<details markdown="1">
-<summary>Ver resposta</summary>
-
-```bash
-# Terminal 1: Iniciar a aplicacao
-$ ./mvnw spring-boot:run
-
-# Terminal 2: Criar uma tarefa
-$ curl -s -X POST http://localhost:8080/api/tarefas \
-    -H "Content-Type: application/json" \
-    -d '{"titulo":"Organizar a estante","descricao":"Livros tecnicos"}'
-{"id":1,"titulo":"Organizar a estante","descricao":"Livros tecnicos","concluido":false}
-
-# Terminal 2: Listar as tarefas persistidas
-$ curl -s http://localhost:8080/api/tarefas
-[{"id":1,"titulo":"Organizar a estante","descricao":"Livros tecnicos","concluido":false}]
-```
-
-*O H2 em memória persiste os dados enquanto o processo estiver no ar. Ao encerrar com `Ctrl + C`, o banco some junto.*
-
-</details>
-
-**3. Testando a exclusão de id inexistente**
+**2. Cobertura de testes: exclusão de id inexistente**
 
 Escreva um teste unitário para o cenário em que `excluir(7L)` é chamado, mas o repositório não encontra a tarefa. A exceção esperada é `IllegalArgumentException`.
 
@@ -776,6 +778,176 @@ void deveLancarExcecaoAoExcluirIdInexistente() {
 ```
 
 Execute `./mvnw test -Dtest=TarefaServiceTest` para validar o novo cenário.
+
+</details>
+
+**3. Ciclo completo de operações via HTTP com curl**
+
+Suba a aplicação com `./mvnw spring-boot:run` e use o `curl` para exercitar todos os verbos da API: cadastre 3 tarefas com `POST`, altere o título da tarefa 2 com `PUT`, conclua a tarefa 1 com `PATCH`, exclua a tarefa 3 com `DELETE` e liste o estado final com `GET`.
+
+<details markdown="1">
+<summary>Ver resposta</summary>
+
+```bash
+# Terminal 1: Iniciar a aplicacao
+$ ./mvnw spring-boot:run
+
+# Terminal 2: 1. Cadastrar tres tarefas (POST)
+$ curl -s -X POST http://localhost:8080/api/tarefas \
+    -H "Content-Type: application/json" \
+    -d '{"titulo":"Configurar JPA","descricao":"Parametrizar H2"}'
+{"id":1,"titulo":"Configurar JPA","descricao":"Parametrizar H2","concluido":false}
+
+$ curl -s -X POST http://localhost:8080/api/tarefas \
+    -H "Content-Type: application/json" \
+    -d '{"titulo":"Estudar Hibernate","descricao":"Dirty checking"}'
+{"id":2,"titulo":"Estudar Hibernate","descricao":"Dirty checking","concluido":false}
+
+$ curl -s -X POST http://localhost:8080/api/tarefas \
+    -H "Content-Type: application/json" \
+    -d '{"titulo":"Comprar cafe","descricao":"Cafe em graos"}'
+{"id":3,"titulo":"Comprar cafe","descricao":"Cafe em graos","concluido":false}
+
+# Terminal 2: 2. Alterar o titulo da tarefa 2 (PUT)
+$ curl -s -X PUT http://localhost:8080/api/tarefas/2 \
+    -H "Content-Type: application/json" \
+    -d '{"titulo":"Dominar JPA","descricao":"Dirty checking"}'
+{"id":2,"titulo":"Dominar JPA","descricao":"Dirty checking","concluido":false}
+
+# Terminal 2: 3. Concluir a tarefa 1 (PATCH)
+$ curl -s -X PATCH http://localhost:8080/api/tarefas/1/concluir
+{"id":1,"titulo":"Configurar JPA","descricao":"Parametrizar H2","concluido":true}
+
+# Terminal 2: 4. Excluir a tarefa 3 (DELETE -> 204 No Content)
+$ curl -s -i -X DELETE http://localhost:8080/api/tarefas/3 | head -n 1
+HTTP/1.1 204 No Content
+
+# Terminal 2: 5. Listar as tarefas restantes persistidas (GET)
+$ curl -s http://localhost:8080/api/tarefas
+[
+  {"id":1,"titulo":"Configurar JPA","descricao":"Parametrizar H2","concluido":true},
+  {"id":2,"titulo":"Dominar JPA","descricao":"Dirty checking","concluido":false}
+]
+
+# Terminal 1: Encerrar a aplicacao para liberar a porta 8080
+^C
+```
+
+*Lembre-se de encerrar o processo no Terminal 1 com `Ctrl + C` para liberar a porta `8080` antes de ir para o próximo exercício. O banco H2 em memória é descartado junto com a finalização.*
+
+</details>
+
+**4. Prototipação híbrida no JShell com TarefaService e servidor web ativo**
+
+Abra o JShell com o classpath do projeto e inicie a aplicação com o servidor web ativo (sem o flag `--spring.main.web-application-type=none`). Em seguida, reproduza o ciclo de vida das tarefas via chamadas Java no `TarefaService` (cadastre 3, altere a 2, conclua a 1 e exclua a 3) e, em outro terminal, use o `curl` para consultar `/api/tarefas` e comprovar que o Tomcat embutido está servindo os dados manipulados pelo REPL em tempo real.
+
+<details markdown="1">
+<summary>Ver resposta</summary>
+
+```bash
+# Terminal 1: Iniciar o JShell com o classpath da aplicacao
+$ jshell --class-path "target/classes:$(cat .classpath.txt)"
+
+# Dentro do JShell: subir o Spring Boot completo (com Tomcat na porta 8080)
+jshell> import org.springframework.boot.SpringApplication;
+jshell> import io.github.vndmtrx.tarefas_api.*;
+jshell> import io.github.vndmtrx.tarefas_api.todo.*;
+
+jshell> var contexto = SpringApplication.run(TarefasApiApplication.class);
+# O Tomcat sobe em segundo plano na porta 8080
+
+jshell> var service = contexto.getBean(TarefaService.class);
+
+# 1. Cadastrar tres tarefas via Java puro
+jshell> var t1 = service.criar("Configurar JPA", "Parametrizar H2");
+jshell> var t2 = service.criar("Estudar Hibernate", "Dirty checking");
+jshell> var t3 = service.criar("Comprar cafe", "Cafe em graos");
+
+# 2. Alterar a tarefa 2
+jshell> service.atualizar(2L, "Dominar JPA", "Dirty checking");
+
+# 3. Concluir a tarefa 1
+jshell> service.concluir(1L);
+
+# 4. Excluir a tarefa 3
+jshell> service.excluir(3L);
+
+# Terminal 2: Bater via HTTP no Tomcat vivo aberto pelo JShell
+$ curl -s http://localhost:8080/api/tarefas
+[
+  {"id":1,"titulo":"Configurar JPA","descricao":"Parametrizar H2","concluido":true},
+  {"id":2,"titulo":"Dominar JPA","descricao":"Dirty checking","concluido":false}
+]
+
+# Terminal 1 (JShell): Encerrar o servidor e fechar a sessao
+jshell> contexto.close();
+jshell> /exit
+```
+
+*O JShell e os endpoints HTTP compartilham a mesma instância do contexto de persistência e do H2 em memória na JVM.*
+
+</details>
+
+**5. Prototipação no JShell com TarefaController e envelopes HTTP**
+
+Abra uma nova sessão do JShell e inicie a aplicação com o servidor web ativo. Obtenha o bean do `TarefaController` e execute o ciclo completo passando instâncias de `TarefaRequest` (cadastre 3 tarefas com `criar`, altere a 2 com `atualizar`, conclua a 1 com `concluir` e exclua a 3 com `excluir`), inspecionando os códigos de status retornados no `ResponseEntity` (`201 CREATED`, `204 NO CONTENT`). Em outro terminal, valide o resultado com `curl`.
+
+<details markdown="1">
+<summary>Ver resposta</summary>
+
+```bash
+# Terminal 1: Iniciar o JShell com o classpath da aplicacao
+$ jshell --class-path "target/classes:$(cat .classpath.txt)"
+
+# Dentro do JShell: subir o Spring Boot completo (com Tomcat na porta 8080)
+jshell> import org.springframework.boot.SpringApplication;
+jshell> import io.github.vndmtrx.tarefas_api.*;
+jshell> import io.github.vndmtrx.tarefas_api.todo.*;
+
+jshell> var contexto = SpringApplication.run(TarefasApiApplication.class);
+# O Tomcat sobe em segundo plano na porta 8080
+
+jshell> var controller = contexto.getBean(TarefaController.class);
+
+# 1. Cadastrar tres tarefas via Controller (passando TarefaRequest)
+jshell> var req1 = new TarefaRequest("Configurar JPA", "Parametrizar H2");
+jshell> var r1 = controller.criar(req1);
+
+jshell> var req2 = new TarefaRequest("Estudar Hibernate", "Dirty checking");
+jshell> var r2 = controller.criar(req2);
+
+jshell> var req3 = new TarefaRequest("Comprar cafe", "Cafe em graos");
+jshell> var r3 = controller.criar(req3);
+
+# Inspecionar o status HTTP de criacao
+jshell> r1.getStatusCode();
+$8 ==> 201 CREATED
+
+# 2. Alterar a tarefa 2 via Controller
+jshell> var reqAlt = new TarefaRequest("Dominar JPA", "Dirty checking");
+jshell> controller.atualizar(2L, reqAlt);
+
+# 3. Concluir a tarefa 1 via Controller
+jshell> controller.concluir(1L);
+
+# 4. Excluir a tarefa 3 via Controller
+jshell> var rDel = controller.excluir(3L);
+jshell> rDel.getStatusCode();
+$12 ==> 204 NO CONTENT
+
+# Terminal 2: Bater via HTTP no Tomcat vivo aberto pelo JShell
+$ curl -s http://localhost:8080/api/tarefas
+[
+  {"id":1,"titulo":"Configurar JPA","descricao":"Parametrizar H2","concluido":true},
+  {"id":2,"titulo":"Dominar JPA","descricao":"Dirty checking","concluido":false}
+]
+
+# Terminal 1 (JShell): Encerrar o servidor e fechar a sessao
+jshell> contexto.close();
+jshell> /exit
+```
+
+*Como o `@RestController` é um bean gerenciado pelo Spring, podemos invocá-lo diretamente no REPL para inspecionar os envelopes `ResponseEntity` e validar status HTTP sem sair do Java.*
 
 </details>
 
