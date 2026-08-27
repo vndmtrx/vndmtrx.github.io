@@ -48,6 +48,7 @@ Série de posts para o blog `vndmtrx.github.io` abordando o ecossistema Spring B
 - **Camada Web Rústica**: `TarefaController` REST manual recebendo `TarefaRequest` simples e devolvendo a entidade diretamente (dívida técnica proposital preparando o terreno para o desacoplamento na Parte 4).
 - **Interação**: Sessão de **JShell (Java REPL)** subindo o contexto vivo do Spring Boot sem porta HTTP (`--spring.main.web-application-type=none`), injetando `@Service` e manipulando dados no H2 em tempo real.
 - **Testes**: Suíte completa com testes unitários de Service via Mockito (`TarefaServiceTest`) e testes de fatia JPA com `@DataJpaTest` real no H2 (`TarefaRepositoryTest`). Critério de saída: 100% de sucesso (9 testes verdes).
+- **Nota para as próximas partes**: Garantir que variáveis de ambiente reais (`DB_URL`, `DB_USER`, `DB_PASS`, `DDL_AUTO`) não vazem para os testes de persistência. Usar `@ActiveProfiles("test")` ou `application-test.yaml` com datasource H2 embarcado e `ddl-auto=create-drop`. A Parte 5 (Postgres) deve formalizar esse isolamento.
 - **Objetivo**: Implementar o fluxo básico de persistência e regras de negócio usando arquitetura em camadas Package by Feature com banco parametrizado.
 - **Entregável**: CRUD de persistência funcional isolado na camada de serviço, operável via JShell, exposto em endpoints REST rudimentares e coberto por testes unitários e de persistência.
 
