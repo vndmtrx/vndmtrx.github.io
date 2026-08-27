@@ -696,7 +696,7 @@ class TarefaRepositoryTest {
     }
 }
 ```
-*Ponto de atenção: o pacote `boot.data.jpa.test.autoconfigure` é herança da reorganização de módulos do Spring Boot 4. Se você estiver no Spring Boot 3.x, o import correspondente é `org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest`.*
+*Três cenários rodando contra o H2 real: persistência e contagem por status, filtro por fragmento ignorando caixa e busca pendente ordenada.*
 
 > 💡 *Dica*: O `@DataJpaTest` carrega exclusivamente a fatia de persistência (entidades e repositórios) e executa cada método de teste dentro de uma transação com *rollback* automático ao final, garantindo que um teste nunca contamine o estado do próximo.
 
