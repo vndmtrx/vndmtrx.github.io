@@ -269,7 +269,8 @@ $table-border-color: $lm-table-border-color;
 
   // Auto mode
 
-  :root {
+  :root,
+  html[data-theme="classic"] {
     --minima-brand-color: #{$lm-brand-color};
     --minima-brand-color-light: #{$lm-brand-color-light};
     --minima-brand-color-dimmed: #{$lm-brand-color-dimmed};
@@ -300,7 +301,7 @@ $table-border-color: $lm-table-border-color;
   @include lm-highlight;
 
   @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not([data-theme="classic"]) {
       --minima-brand-color: #{$dm-brand-color};
       --minima-brand-color-light: #{$dm-brand-color-light};
       --minima-brand-color-dimmed: #{$dm-brand-color-dimmed};
@@ -328,7 +329,43 @@ $table-border-color: $lm-table-border-color;
       --minima-table-border-color: #{$dm-table-border-color};
     }
 
+    html:not([data-theme="classic"]) {
+      @include dm-highlight;
+    }
+  }
+
+  html[data-theme="dark"] {
+    --minima-brand-color: #{$dm-brand-color};
+    --minima-brand-color-light: #{$dm-brand-color-light};
+    --minima-brand-color-dimmed: #{$dm-brand-color-dimmed};
+    --minima-brand-color-dark: #{$dm-brand-color-dark};
+
+    --minima-site-title-color: #{$dm-site-title-color};
+
+    --minima-heading-color: #{$dm-heading-color};
+    --minima-text-color: #{$dm-text-color};
+    --minima-background-color: #{$dm-background-color};
+    --minima-code-background-color: #{$dm-code-background-color};
+
+    --minima-link-base-color: #{$dm-link-base-color};
+    --minima-link-visited-color: #{$dm-link-visited-color};
+    --minima-link-hover-color: #{$dm-link-hover-color};
+
+    --minima-border-color-01: #{$dm-border-color-01};
+    --minima-border-color-02: #{$dm-border-color-02};
+    --minima-border-color-03: #{$dm-border-color-03};
+
+    --minima-table-text-color: #{$dm-table-text-color};
+    --minima-table-zebra-color: #{$dm-table-zebra-color};
+    --minima-table-header-bg-color: #{$dm-table-header-bg-color};
+    --minima-table-header-border: #{$dm-table-header-border};
+    --minima-table-border-color: #{$dm-table-border-color};
+
     @include dm-highlight;
+  }
+
+  html[data-theme="classic"] {
+    @include lm-highlight;
   }
 
   $brand-color: var(--minima-brand-color);
