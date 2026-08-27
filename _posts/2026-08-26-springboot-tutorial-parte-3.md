@@ -96,7 +96,7 @@ src/main/java
 
 Aqui, `todo` é uma unidade de negócio. Tudo que diz respeito a tarefas mora sob o mesmo teto. A mudança de uma regra de tarefa tende a permanecer em um único diretório: é a *feature cohesion* em ação. Repare que o Package by Feature não abole as camadas: controller, service e repository continuam existindo; eles apenas deixam de viver em guetos técnicos separados.
 
-De quebra, o `package-private` volta a ter significado. Como `TarefaController`, `TarefaService`, `TarefaRepository` e `TarefaRequest` só fazem sentido dentro do pacote `todo`, eles não precisam ser `public`. Apenas a entidade `Tarefa` fica pública, por exigência do mapeamento da JPA.
+De quebra, o `package-private` volta a ter significado. Como `TarefaController`, `TarefaService`, `TarefaRepository` e `TarefaRequest` só fazem sentido dentro do pacote `todo`, eles não precisam ser `public`. Apenas a entidade `Tarefa` fica pública, por exigência do mapeamento da JPA. No entanto, como o JShell não aceita declaração de `package`, um snippet do REPL não conseguiria enxergar classes package-private do pacote `todo`; por isso, vamos mantê-las públicas.
 
 Os testes espelham a mesma geografia:
 
@@ -164,7 +164,7 @@ app:
 
 Agora o ponto que separa a sanidade da catástrofe: a propriedade `ddl-auto` [^5]. O valor `create-drop` faz o Hibernate criar o schema no início e destruí-lo no fim, combinação perfeita para o H2 em memória. O valor `update` tenta sincronizar o schema com as entidades a cada boot.
 
-Soa inofensivo. Não é. Em produção, `ddl-auto=update` é um passaporte para o incidente: o Hibernate altera colunas, cria estruturas e, em alguns casos, derruba e recria sem histórico nenhum. Adicionou um campo? O schema muda sozinho. Renomeou uma coluna? O Hibernate enxerga uma coluna antiga e uma entidade nova e faz o que bem entende, muitas vezes com um `drop` no meio do caminho. É a receita do downtempo noturno.
+Soa inofensivo. Não é. Em produção, `ddl-auto=update` é um passaporte para o incidente: o Hibernate altera colunas, cria estruturas e sincroniza o schema conforme as entidades, mas sem nenhum histórico versionado. Adicionou um campo? O schema muda sozinho. Renomeou uma coluna? O Hibernate enxerga uma coluna órfã no banco, cria a coluna nova e deixa a antiga onde está, espalhando fósseis no schema sem que ninguém descubra até o incidente. Não há migração versionada, não há rollback controlado e não há rastro da evolução. É a receita do problema.
 
 > ⚠️ *Aviso de Produção*: A propriedade `spring.jpa.hibernate.ddl-auto=create-drop` só faz sentido com banco efêmero em memória. Para bancos persistentes em produção, o padrão seguro é usar `validate` ou `none`, delegando o versionamento e a evolução do schema para ferramentas de migration como o Flyway.
 
@@ -281,7 +281,7 @@ Esse recurso é ágil, mas tem limite. Tentar expressar regras compostas por der
 
 É onde entram as **Custom Queries com `@Query`** [^6]. Em vez de poluir a interface, escrevemos a consulta diretamente em JPQL (*Java Persistence Query Language*) sobre a entidade `Tarefa`, batizando o método com um nome claro de negócio: `buscarPendentesPorTitulo(fragmento)`.
 
-Repare no uso do parâmetro nomeado `:fragmento` com `@Param("fragmento")`. Fazer o *binding* por nome em vez de posição (`?1`) protege a query caso a ordem dos argumentos mude no futuro. E ao resolver os curingas diretamente no JPQL com `CONCAT('%', :fragmento, '%')`, quem consome o método passa apenas a palavra limpa (`"estudar"`), sem precisar colar `%` no código Java. O Hibernate se encarrega de gerar o *Prepared Statement* parametrizado no banco, seguro contra injeção de SQL por definição.
+Repare no uso do parâmetro nomeado `:fragmento` com `@Param("fragmento")`. Fazer o *binding* por nome em vez de posição (`?1`) protege a query caso a ordem dos argumentos mude no futuro. E ao resolver os curingas diretamente na consulta com `CONCAT('%', :fragmento, '%')`, quem consome o método passa apenas a palavra limpa (`"estudar"`), sem precisar colar `%` no código Java. O `CONCAT` com três argumentos é um facilitador do Hibernate, provedor padrão do Spring Boot; na especificação JPA, a função recebe exatamente dois argumentos, e a forma portável seria aninhar dois `CONCAT`. O Hibernate se encarrega de gerar o *Prepared Statement* parametrizado no banco, seguro contra injeção de SQL por definição.
 
 Ainda assim, o `@Query` é estático. Para buscas avançadas onde o cliente combina múltiplos filtros opcionais em tempo de execução, a Parte 9 trará o `JpaSpecificationExecutor` casado com o verbo **HTTP QUERY (RFC 9734)**.
 
@@ -739,7 +739,13 @@ public List<Tarefa> listarPorStatus(boolean concluido) {
 }
 ```
 
-No `TarefaController.java`, adicione o mapeamento com parâmetro:
+No `TarefaController.java`, adicione o import:
+
+```java
+import org.springframework.web.bind.annotation.RequestParam;
+```
+
+E o mapeamento com parâmetro:
 
 ```java
 @GetMapping(params = "concluido")
