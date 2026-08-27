@@ -166,7 +166,7 @@ Agora o ponto que separa a sanidade da catástrofe: a propriedade `ddl-auto` [^5
 
 Soa inofensivo. Não é. Em produção, `ddl-auto=update` é um passaporte para o incidente: o Hibernate altera colunas, cria estruturas e, em alguns casos, derruba e recria sem histórico nenhum. Adicionou um campo? O schema muda sozinho. Renomeou uma coluna? O Hibernate enxerga uma coluna antiga e uma entidade nova e faz o que bem entende, muitas vezes com um `drop` no meio do caminho. É a receita do downtempo noturno.
 
-> ⚠️ *Aviso*: Jamais use `ddl-auto=update` em produção. Na Parte 5, o Flyway assume a gestão do schema com migrations versionadas e o `ddl-auto` vira `validate`.
+> ⚠️ *Aviso de Produção*: A propriedade `spring.jpa.hibernate.ddl-auto=create-drop` só faz sentido com banco efêmero em memória. Para bancos persistentes em produção, o padrão seguro é usar `validate` ou `none`, delegando o versionamento e a evolução do schema para ferramentas de migration como o Flyway.
 
 Também desligamos o `open-in-view`, que por padrão mantém a sessão do JPA aberta durante a serialização da resposta HTTP. Desligado, o Hibernate libera a conexão assim que a transação termina. Na prática, isso nos obriga a buscar os dados dentro da transação e elimina surpresas de *lazy loading* na camada web.
 
@@ -365,6 +365,8 @@ public class TarefaService {
 ```
 *Repare que os métodos `atualizar` e `concluir` não chamam `repository.save()`: a entidade é gerenciada pelo Hibernate dentro da transação, e o dirty checking sincroniza o estado automaticamente.*
 
+> 💡 *Nota*: A validação `titulo.length() > 120` no serviço não anula o `@Column(length = 120)` da entidade. São duas barreiras com propósitos distintos: a anotação define o contrato no schema do banco de dados, enquanto a validação no serviço protege a integridade do domínio antes do I/O, produzindo mensagens de erro legíveis.
+
 Três detalhes aqui merecem uma lupa atenta, porque mudam a forma como pensamos persistência e segurança de tipos no ecossistema JPA.
 
 O primeiro é a ausência deliberada de `repository.save()` nos métodos de alteração. Quem veio do JDBC puro ou de DAOs procedurais costuma carregar o vício de mandar salvar cada objeto manualmente. No JPA, a mecânica é orientada a estado. Quando o método `buscarTarefaPorId` executa dentro de uma transação ativa (`@Transactional`), o Hibernate carrega a entidade para dentro do seu **contexto de persistência** no estado gerenciado (*managed*), guardando uma cópia fiel daquele registro (um *snapshot* em memória).
@@ -482,7 +484,7 @@ $ jshell --class-path target/classes:$(cat .classpath.txt)
 # Abre o REPL enxergando as classes compiladas e as dependencias
 ```
 
-Dentro do JShell, o truque para uma exploração rápida e direta é iniciar o `SpringApplication` com o perfil web desativado (`--spring.main.web-application-type=none`). Assim o contexto sobe com JPA e H2 sem disputar porta HTTP, permitindo inspecionar qualquer bean do ecossistema. (Caso queira subir o servidor web completo para testar os endpoints simultaneamente no navegador ou via `curl`, basta omitir esse parâmetro, como faremos na seção de exercícios):
+Dentro do JShell, o truque para uma exploração rápida e direta é iniciar o `SpringApplication` com o perfil web desativado (`--spring.main.web-application-type=none`). Assim o contexto sobe com JPA e H2 sem disputar porta HTTP, permitindo inspecionar qualquer bean do ecossistema. (Caso queira subir o servidor web completo para testar os endpoints simultaneamente no navegador ou via `curl`, basta omitir esse parâmetro, como faremos na seção de exercícios). No REPL, manter o hábito de fechar instruções com ponto e vírgula (` ; `) ajuda na hora de copiar trechos diretamente para classes Java:
 
 ```bash
 jshell> import org.springframework.boot.SpringApplication;
@@ -694,7 +696,9 @@ class TarefaRepositoryTest {
     }
 }
 ```
-*Repare no pacote `boot.data.jpa.test.autoconfigure`, herança da reorganização de módulos do Spring Boot 4.*
+*Repare no pacote `boot.data.jpa.test.autoconfigure`, herança da reorganização de módulos do Spring Boot 4. Se você estiver no Spring Boot 3.x, o import correspondente é `org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest`.*
+
+> 💡 *Dica*: O `@DataJpaTest` carrega exclusivamente a fatia de persistência (entidades e repositórios) e executa cada método de teste dentro de uma transação com *rollback* automático ao final, garantindo que um teste nunca contamine o estado do próximo.
 
 Rodamos tudo:
 
@@ -721,7 +725,7 @@ Para fixar a dinâmica de camadas, persistência e testes, execute os desafios a
 
 **1. Endpoint de listagem por status**
 
-Adicione no serviço um método `listarPorStatus(boolean concluido)` que delegue ao `repository.findByConcluido` e exponha no controller um endpoint `GET /api/tarefas?concluida=true` que filtre pelo *flag* de conclusão.
+Adicione no serviço um método `listarPorStatus(boolean concluido)` que delegue ao `repository.findByConcluido` e exponha no controller um endpoint que filtre pelo *flag* de conclusão.
 
 <details markdown="1">
 <summary>Ver resposta</summary>
@@ -738,20 +742,20 @@ public List<Tarefa> listarPorStatus(boolean concluido) {
 No `TarefaController.java`, adicione o mapeamento com parâmetro:
 
 ```java
-@GetMapping(params = "concluida")
-public List<Tarefa> listarPorStatus(@RequestParam("concluida") boolean concluida) {
-    return service.listarPorStatus(concluida);
+@GetMapping(params = "concluido")
+public List<Tarefa> listarPorStatus(@RequestParam("concluido") boolean concluido) {
+    return service.listarPorStatus(concluido);
 }
 ```
 
 Teste com `curl` após subir a aplicação:
 
 ```bash
-$ curl -s "http://localhost:8080/api/tarefas?concluida=false"
+$ curl -s "http://localhost:8080/api/tarefas?concluido=false"
 [{"id":1,"titulo":"Fazer cafe","descricao":"","concluido":false}]
 ```
 
-*O `@GetMapping(params = "concluida")` separa o mapeamento com query param do GET simples, sem conflito de rotas.*
+*O `@GetMapping(params = "concluido")` separa o mapeamento com query param do GET simples, sem conflito de rotas.*
 
 </details>
 
