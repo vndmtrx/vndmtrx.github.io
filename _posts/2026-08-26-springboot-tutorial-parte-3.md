@@ -25,7 +25,7 @@ Por isso, nesta parte a gente faz o oposto do impulso: constrói a primeira fati
 
 Na Parte 2, tínhamos apenas uma casca operacional: a aplicação subia, lia perfis de ambiente (`dev` e `prod`) e respondia o `/api/status` através de um `StatusController` que devolvia um Record isolado. Naquele cenário, o controller resolvia tudo sozinho em três linhas. E fazia sentido: não havia banco, não havia regras de negócio, não havia estado a preservar.
 
-Quando o domínio de verdade entra em jogo, essa abordagem não escala. Tentar resolver operações de negócio acumulando queries, regras e validações dentro de controllers transforma qualquer projeto em um emaranhado de código espaguete na primeira mudança de requisito.
+Quando o domínio de verdade entra em jogo, essa abordagem não escala. Tentar resolver operações de negócio acumulando queries, regras e validações dentro de controllers transforma qualquer projeto em um emaranhado de código na primeira mudança de requisito.
 
 Na engenharia de software, a resposta para essa complexidade é a clássica **separação de responsabilidades** (*Separation of Concerns*). Em APIs backend no ecossistema Spring, essa separação se consolida em quatro papéis conceituais fundamentais:
 
@@ -38,7 +38,7 @@ No nosso projeto `tarefas-api`, materializaremos cada um desses quatro conceitos
 
 1. **`Tarefa.java` (Model):** Entidade JPA que modela a tabela de tarefas e encapsula suas mudanças de estado.
 2. **`TarefaRepository.java` (Repository):** Interface que alavanca o Spring Data JPA para derivar queries e executar SQL no H2 sem código repetitivo.
-3. **`TarefaService.java` (Service):** Classe transacional com `@Transactional` que valida títulos, comanda o repositório e dita as regras de negócio.
+3. **`TarefaService.java` (Service):** Classe transacional com `@Transactional` que comanda o repositório e dita as regras de negócio.
 4. **`TarefaController.java` (Controller):** Porta de entrada REST que expõe os endpoints `/api/tarefas` sobre HTTP.
 
 Com a arquitetura conceituada e as peças do tabuleiro identificadas, surge a pergunta de um milhão de reais: como organizar essas classes na estrutura de arquivos do projeto?
