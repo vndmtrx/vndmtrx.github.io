@@ -82,10 +82,10 @@ Para a aplicação, não deve haver distinção entre um banco local rodando em 
 
 ```
 [ Aplicação Web ] 
-       |
-       +---> (URL: postgres://...) -----> [ Banco de Dados PostgreSQL ]
-       +---> (URL: redis://...) --------> [ Cache Redis ]
-       +---> (URL: amqp://...) ---------> [ Fila RabbitMQ ]
+       │
+       ├───> (URL: postgres://...) ─────> [ Banco de Dados PostgreSQL ]
+       ├───> (URL: redis://...) ────────> [ Cache Redis ]
+       └───> (URL: amqp://...) ─────────> [ Fila RabbitMQ ]
 ```
 
 > 💀 *Crônicas do Apocalipse*: No nosso querido monólito, o conceito de tratar serviços de apoio como recursos desacoplados simplesmente não existia. Para armazenamento de arquivos, em vez de usar um storage de objetos anexado via rede, os uploads eram gravados como campos BLOB gigantescos direto dentro do banco de dados relacional. Em pouco tempo, descobrimos usuários subindo arquivos de centenas de megabytes e até vários gigabytes dentro das tabelas: imagens ISO, vídeos, coleções inteiras de documentos. O banco relacional virou um depósito de entulho digital, transformando qualquer rotina de backup em uma verdadeira sessão de tortura.
@@ -103,11 +103,11 @@ O ciclo de vida de uma entrega de software deve ser dividido em três etapas rig
 3. **Execução (*Run*):** O processo da aplicação é iniciado no ambiente operacional a partir da *Release* gerada.
 
 ```
-+---------------+      +-------------------+      +----------------+
-|     BUILD     | ---> |      RELEASE      | ---> |      RUN       |
-| Código + Libs |      | Build + Configs   |      | Execução em    |
-| (Artefato)    |      | (Versão Imutável) |      | Produção       |
-+---------------+      +-------------------+      +----------------+
+┌───────────────┐      ┌───────────────────┐      ┌────────────────┐
+│     BUILD     │ ───> │      RELEASE      │ ───> │      RUN       │
+│ Código + Libs │      │ Build + Configs   │      │ Execução em    │
+│ (Artefato)    │      │ (Versão Imutável) │      │ Produção       │
+└───────────────┘      └───────────────────┘      └────────────────┘
 ```
 
 > 🤡 *Gambiarras que a Vida Ensina*: Como não tínhamos pipeline, o nosso *release* era um trabalho manual de artesanato. Para conseguir voltar atrás quando as coisas explodiam, criei uma estratégia com links simbólicos no Linux: o arquivo físico recebia o nome `sistema_vX.Y.Z_cti_AAAAMMDDHHmm.war` e eu criava um link simbólico `ln -sf` apontando `sistema_academico.war` para ele. Eram cinco módulos e nove bibliotecas interconectadas gerenciadas na base do `ln` e de um script bash caseiro. Esse era o melhor jeito que tínhamos para voltar para uma versão anterior sem precisar fazer deploy novamente.
@@ -139,7 +139,7 @@ A aplicação 12-factor é **completamente autocontida**. Ela não depende da in
 A própria aplicação inclui seu servidor web embutido como dependência de biblioteca e escuta requisições vinculando-se diretamente a uma porta de rede (geralmente informada pela variável de ambiente `PORT` ou configurada no arquivo base).
 
 ```
-[ Requisição HTTP ] -> Porta 8080 -> [ Processo da Aplicação (com Tomcat Embutido) ]
+[ Requisição HTTP ] ──> Porta 8080 ──> [ Processo da Aplicação (com Tomcat Embutido) ]
 ```
 
 > 🤡 *O Labirinto do AJP e DNS Round Robin*: Nossa aplicação não escutava diretamente em uma porta de forma autocontida. Para colocar o sistema no ar, dependíamos de uma teia maluca: quatro instâncias de JBoss rodando em duas VMs, comunicando-se via protocolo binário proprietário AJP com dois servidores Apache com `mod_jk`, que por sua vez eram balanceados na base da sorte através de Round Robin no DNS.
@@ -161,12 +161,12 @@ O 12-factor dita que a escala deve acontecer **horizontalmente através do model
 * **Processos Clock / Cron:** Responsáveis por disparar eventos periódicos e agendamentos.
 
 ```
-                  +---> [ Processo Web 1 ]
-[ Load Balancer ] +---> [ Processo Web 2 ]
-                  +---> [ Processo Web 3 ]
+                  ├───> [ Processo Web 1 ]
+[ Load Balancer ] ├───> [ Processo Web 2 ]
+                  └───> [ Processo Web 3 ]
 
-                  +---> [ Worker de Filas 1 ]
-[ Fila RabbitMQ ] +---> [ Worker de Filas 2 ]
+                  ├───> [ Worker de Filas 1 ]
+[ Fila RabbitMQ ] └───> [ Worker de Filas 2 ]
 ```
 
 > 🤮 *O Método de Login com 200 Parâmetros e o Botão Proibido*: No nosso monólito, a concorrência não era apenas ineficiente; ela era uma autodestruição programada de memória. Havia um método no sistema, acionado na tela de LOGIN (no simples ato de fazer login), cuja assinatura ostentava mais de **duzentos parâmetros**. Essa aberração fazia uma varredura tão profunda no banco que o primeiro login de um usuário alocava quase **2 GB** direto na memória da JVM para checar memorandos e avisos de qualquer perfil (de aluno a diretor).

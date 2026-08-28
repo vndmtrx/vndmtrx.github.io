@@ -47,16 +47,16 @@ Em termos do protocolo TCP, que foi o protocolo de transporte escolhido para ser
 
 ```
 Cliente                                     Servidor
-  | ---- SYN --------------------------------> |
-  | <--- SYN+ACK ----------------------------- |
-  | ---- ACK --------------------------------> |  (Conexão estabelecida)
-  |                                            |
-  | ---- "GET /index.html" ------------------> |
-  |                                            |
-  | <---- "<html>Conteúdo</html>" ------------ |  (conteúdo HTML)
-  |                                            |
-  | <--- FIN --------------------------------- |
-  | ---- ACK --------------------------------> |  (Conexão fechada)
+  │ ──── SYN ────────────────────────────────> │
+  │ <─── SYN+ACK ───────────────────────────── │
+  │ ──── ACK ────────────────────────────────> │  (Conexão estabelecida)
+  │                                            │
+  │ ──── "GET /index.html" ──────────────────> │
+  │                                            │
+  │ <──── "<html>Conteúdo</html>" ──────────── │  (conteúdo HTML)
+  │                                            │
+  │ <─── FIN ───────────────────────────────── │
+  │ ──── ACK ────────────────────────────────> │  (Conexão fechada)
 ```
 
 E essa era toda a essência do protocolo HTTP nessa versão. Não havia outros verbos além do `GET`, não havia cabeçalhos, não havia códigos de estado e nem de erro, e o servidor fechava a conexão TCP assim que terminava de enviar o recurso. No caso de algum erro (por exemplo, um arquivo inexistente), uma página era gerada e incluía uma descrição do problema. No entanto, para a época isso era o suficiente. Considerando tudo isso, protocolo HTTP e o WWW resolviam os seguintes problemas da época:
@@ -196,20 +196,20 @@ Os dois primeiros recursos melhoraram muito a latência no carregamento completo
 
 ```
 Cliente                                     Servidor
-  | ---- SYN --------------------------------> |
-  | <--- SYN+ACK ----------------------------- |
-  | ---- ACK --------------------------------> |  (Conexão estabelecida)
-  |                                            |
-  | ------ "GET /index.html HTTP/1.1" -------> |
-  |                                            |
-  | <--------- "HTTP/1.1 200 OK" ------------- |  (conteúdo HTML)
-  |                                            |
-  | ------ "GET /estilo.css HTTP/1.1" -------> |
-  | ------ "GET /imagem.gif HTTP/1.1" -------> |
-  |                                            |
-  | <----- "HTTP/1.1 304 Not Modified" ------- |  (conteúdo css)
-  | <--------- "HTTP/1.1 200 OK" ------------- |  (conteúdo gif)
-  |                                            |
+  │ ──── SYN ────────────────────────────────> │
+  │ <─── SYN+ACK ───────────────────────────── │
+  │ ──── ACK ────────────────────────────────> │  (Conexão estabelecida)
+  │                                            │
+  │ ────── "GET /index.html HTTP/1.1" ───────> │
+  │                                            │
+  │ <───────── "HTTP/1.1 200 OK" ───────────── │  (conteúdo HTML)
+  │                                            │
+  │ ────── "GET /estilo.css HTTP/1.1" ───────> │
+  │ ────── "GET /imagem.gif HTTP/1.1" ───────> │
+  │                                            │
+  │ <───── "HTTP/1.1 304 Not Modified" ─────── │  (conteúdo css)
+  │ <───────── "HTTP/1.1 200 OK" ───────────── │  (conteúdo gif)
+  │                                            │
 ...
 ```
 
@@ -246,15 +246,15 @@ Apesar das vantagens, o protocolo SPDY era um protocolo proprietário do Google,
 - O protocolo passa a ser um protocolo multiplexado: Requisições paralelas além de poderem ser feitas na mesma requisição, agora podem ser respondidas em qualquer ordem e permitindo a transferência de todos os recursos concomitantemente, sem a necessidade de se esperar a transferência de um recurso para o início da transferência do próximo
 
 ```
-+-----------------------------------------------+
-|                 Length (24)                   |
-+---------------+---------------+---------------+
-|   Type (8)    |   Flags (8)   |
-+-+-------------+---------------+-------------------------------+
-|R|                 Stream Identifier (31)                      |
-+=+=============================================================+
-|                   Frame Payload (0...)                      ...
-+---------------------------------------------------------------+
+┌───────────────────────────────────────────────┐
+│                 Length (24)                   │
+├───────────────┬───────────────┬───────────────┤
+│   Type (8)    │   Flags (8)   │
+├─┬─────────────┴───────────────┼───────────────────────────────┐
+│R│                 Stream Identifier (31)                      │
+├─┴─────────────────────────────────────────────────────────────┤
+│                   Frame Payload (0...)                      ...
+└───────────────────────────────────────────────────────────────┘
 ```
 
 A estrutura de frames claramente trazia uma vantagem na transmissão de dados entre navegador e servidor, por identificar cada fluxo de transferência de forma individualizada, permitindo a reconstituição dos fluxos originais após passar por dentro do TCP, que passa a agir como um túnel para os fluxos estipulados entre os dois agentes.
@@ -333,7 +333,7 @@ Falamos de HTTP o tempo todo mas não mencionamos **HTTPS** ou criptografia. Por
 ### O Modelo do HTTPS: HTTP Envelopado em TLS
 
 ```
-Navegador -> [Criptografia TLS] -> HTTP -> Servidor
+Navegador ──> [Criptografia TLS] ──> HTTP ──> Servidor
 ```
 
 *O tráfego HTTP convencional é totalmente cifrado dentro de uma sessão TLS antes de trafegar pelo TCP.*
