@@ -36,12 +36,14 @@ plugins:
  - jekyll-feed
  - jekyll-seo-tag
  - jekyll-paginate
-#
-# Uncomment the following setting if you wish to disable deprecation warnings
-#   from newer versions of sass converter. Adapt as required.
-# sass:
-#   quiet_deps: true
-#   silence_deprecations: [import]
+ - jekyll-archives
+
+jekyll-archives:
+  enabled:
+    - tags
+  layout: tag
+  permalinks:
+    tag: '/tags/:name/'
 
 paginate: 3
 paginate_path: "/page/:num/"
