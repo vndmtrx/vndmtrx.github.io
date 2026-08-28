@@ -33,9 +33,33 @@ layout: base
       </div>
       {%- endif %}
     </div>
+    {%- if page.tags and page.tags.size > 0 -%}
+    <div class="post-tags">
+      {%- for tag in page.tags -%}
+      {%- assign tag_slug = tag | slugify -%}
+      <a href="{{ '/tags/' | append: tag_slug | append: '/' | relative_url }}" class="tag-pill">
+        <i class="fas fa-tag" aria-hidden="true" style="font-size: 0.72rem;"></i>
+        <span>{{- tag -}}</span>
+      </a>
+      {%- endfor -%}
+    </div>
+    {%- endif -%}
   </header>
 
   <div class="post-content e-content" itemprop="articleBody">
+    {%- if page.series -%}
+    {%- assign series_slug = page.series | slugify -%}
+    <div class="series-notice">
+      <div class="series-notice-icon">
+        <i class="fas fa-book-bookmark" aria-hidden="true"></i>
+      </div>
+      <div class="series-notice-content">
+        <span>Esse post faz parte da série <a
+            href="{{ '/tutoriais/#' | append: series_slug | relative_url }}"><strong>{{ page.series
+              }}</strong></a></span>
+      </div>
+    </div>
+    {%- endif -%}
     {{ content }}
   </div>
 

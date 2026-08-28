@@ -1,0 +1,46 @@
+---
+layout: base
+---
+
+<div class="tag-page">
+  <header class="post-header" style="margin-bottom: 2rem;">
+    <h1 class="post-title">🏷️ {{ page.title }}</h1>
+    <div class="post-meta" style="margin-top: 0.5rem; font-size: 0.95rem;">
+      <span>
+        {% if page.posts.size == 1 %}
+          1 post com esta tag
+        {% else %}
+          {{ page.posts.size }} posts com esta tag
+        {% endif %}
+      </span>
+      <span class="bullet-divider">•</span>
+      <a href="{{ '/tags/' | relative_url }}">
+        <i class="fas fa-tags" aria-hidden="true"></i> Ver todas as tags
+      </a>
+    </div>
+  </header>
+
+  {%- if page.posts.size > 0 -%}
+    <ul class="post-list">
+      {%- assign date_format = site.minima.date_format | default: "%d/%m/%Y às %H:%M" -%}
+      {%- for post in page.posts -%}
+      <li style="margin-bottom: 2rem;">
+        <span class="post-meta">{{ post.date | date: date_format }}</span>
+        <h3>
+          <a class="post-link" href="{{ post.url | relative_url }}">
+            {{ post.title | escape }}
+          </a>
+        </h3>
+        {%- if post.subtitle -%}
+          <p class="post-subtitle">{{ post.subtitle | escape }}</p>
+        {%- endif -%}
+        {%- if site.minima.show_excerpts -%}
+          {{ post.excerpt }}
+        {%- endif -%}
+      </li>
+      {%- endfor -%}
+    </ul>
+  {%- else -%}
+    <p>Nenhum post encontrado com esta tag.</p>
+  {%- endif -%}
+</div>
