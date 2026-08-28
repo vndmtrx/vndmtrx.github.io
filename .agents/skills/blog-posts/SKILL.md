@@ -155,6 +155,7 @@ Incorpore as marcas registradas do autor como **tempero dosado** (1 a 2 por post
 - **Bordões e Transições Artificiais:** Evite "É importante notar que...", "Vale ressaltar que...", "Dito isso...", "Com isso em mente...".
 - **Adjetivação Pomposa e Jargões de IA (Proibido):** NUNCA use termos afetados ou pseudo-sofisticados típicos de IA. Exemplos proibidos: *"cirúrgico"*, *"magistral"*, *"impecável"*, *"eloquente"*, *"lapidar"*, *"arquitetura de elite"*, *"deveras"*, *"sublime"*, ou o uso excessivo e vazio de *"robusto"*.
 - **Aliterações e Exageros Dramáticos:** Evite figuras de linguagem teatrais, aliterações forçadas ou tom épico/presunçoso. O autor tem voz direta, técnica, pé no chão e com humor autêntico de quem vive nos bastidores de infra/DevOps.
+- **Ecos e Reciclagem Textual (Proibido):** NUNCA repita expressões idênticas, metáforas gêmeas, construções frasais espelhadas ou bordões em diferentes partes do post (ex: repetir *"décadas de disputa"*, *"prints com letras garrafais"*, *"guerra fiscal"* ou fórmulas similares em seções próximas ou distantes). Faça uma varredura atenta para garantir vocabulário fresco e formulações únicas para cada argumento.
 - **Listas Preguiçosas:** Não use bullet points como substituto de argumentação ou narrativa em prosa.
 - **Títulos Genéricos:** Evite "Visão Geral", "Entendendo o Conceito", "Melhores Práticas". Use títulos temáticos específicos.
 - **Conclusões Chapa-Branca:** Evite conclusões que apenas resumem o que já foi lido sem agregar uma reflexão ou provocação.
@@ -168,6 +169,7 @@ Antes de publicar ou entregar qualquer post, valide:
 
 - [ ] Invariantes respeitadas (sem backtick em títulos, sem `---` entre seções, sem travessão `—`, sem setas Unicode, sem emoji solto)?
 - [ ] Vocabulário limpo e autêntico (zero jargões pomposos como "cirúrgico", sem exageros narrativos ou tom épico de IA)?
+- [ ] Verificação de ecos e repetições (zero reciclagem de frases, metáforas idênticas ou fórmulas espelhadas ao longo do texto)?
 - [ ] Ritmo e cadência dinâmicos (auto-similaridade fractal, Fibonacci, alternância sístole/diástole)?
 - [ ] Variação de tamanho de frases (*burstiness* / staccato vs. legato)?
 - [ ] Front matter completo e correto (author em lista YAML, layout, tags)?
