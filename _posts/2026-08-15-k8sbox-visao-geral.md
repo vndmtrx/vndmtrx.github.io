@@ -42,33 +42,33 @@ A arquitetura geral do ambiente segue o diagrama abaixo:
 
 ```
 [ MÁQUINA HOSPEDEIRA (HOST) ]
-      |
-      +-> [ REDE PRIVADA DO CLUSTER: 172.24.0.0/24 ]
-            |
-            +-> VIP do Control Plane (Keepalived): 172.24.0.10
-            |     |
-            |     +-> [ LOAD BALANCERS: HAProxy + Keepalived ]
-            |           +-> loadbalancer1 (172.24.0.21)
-            |           +-> loadbalancer2 (172.24.0.22) [Modo Completo]
-            |
-            +-> [ MANAGERS / CONTROL PLANE: etcd + apiserver + controller + scheduler ]
-            |     +-> manager1 (172.24.0.31)
-            |     +-> manager2 (172.24.0.32) [Modo Completo]
-            |     +-> manager3 (172.24.0.33) [Modo Completo]
-            |
-            +-> [ WORKERS: kubelet + runtime de container ]
-            |     +-> worker1 (172.24.0.41)
-            |     +-> worker2 (172.24.0.42)
-            |
-            +-> [ SERVIÇOS AUXILIARES ]
-            |     +-> nfs (172.24.0.25) -> Armazenamento Persistente
-            |     +-> kubox (172.24.0.254) -> Bastion Host de Operação
-            |
-            +-> [ FAIXAS DE IP DE APLICAÇÃO E LOAD BALANCER ]
-                  +-> 172.24.0.101 -> Headlamp Dashboard
-                  +-> 172.24.0.102 -> Traefik Dashboard (Canal)
-                  +-> 172.24.0.103 -> Grafana (Observabilidade)
-                  +-> 172.24.0.104 -> Hubble UI (Cilium)
+      │
+      └──> [ REDE PRIVADA DO CLUSTER: 172.24.0.0/24 ]
+            │
+            ├──> VIP do Control Plane (Keepalived): 172.24.0.10
+            │     │
+            │     └──> [ LOAD BALANCERS: HAProxy + Keepalived ]
+            │           ├──> loadbalancer1 (172.24.0.21)
+            │           └──> loadbalancer2 (172.24.0.22) [Modo Completo]
+            │
+            ├──> [ MANAGERS / CONTROL PLANE: etcd + apiserver + controller + scheduler ]
+            │     ├──> manager1 (172.24.0.31)
+            │     ├──> manager2 (172.24.0.32) [Modo Completo]
+            │     └──> manager3 (172.24.0.33) [Modo Completo]
+            │
+            ├──> [ WORKERS: kubelet + runtime de container ]
+            │     ├──> worker1 (172.24.0.41)
+            │     └──> worker2 (172.24.0.42)
+            │
+            ├──> [ SERVIÇOS AUXILIARES ]
+            │     ├──> nfs (172.24.0.25) ──> Armazenamento Persistente
+            │     └──> kubox (172.24.0.254) ──> Bastion Host de Operação
+            │
+            └──> [ FAIXAS DE IP DE APLICAÇÃO E LOAD BALANCER ]
+                  ├──> 172.24.0.101 ──> Headlamp Dashboard
+                  ├──> 172.24.0.102 ──> Traefik Dashboard (Canal)
+                  ├──> 172.24.0.103 ──> Grafana (Observabilidade)
+                  └──> 172.24.0.104 ──> Hubble UI (Cilium)
 ```
 
 Cada grupo de máquinas possui uma função estrita no ecossistema:

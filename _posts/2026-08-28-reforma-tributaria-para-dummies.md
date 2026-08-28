@@ -212,13 +212,13 @@ Uma das inovações mais inteligentes da reforma na minha visão é o *split pay
 
 ```
 Cliente paga R$ 100,00 (via Pix, cartao, boleto)
-         |
-         v
+         │
+         ▼
    [Sistema Financeiro]
-         |
-    +----+----+
-    |         |
-    v         v
+         │
+    ┌────┴────┐
+    │         │
+    ▼         ▼
 R$ 78,00   R$ 22,00
 Empresa    Governo (CBS + IBS)
 ```

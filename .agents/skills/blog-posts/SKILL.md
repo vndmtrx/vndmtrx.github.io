@@ -42,7 +42,7 @@ Estas regras são **absolutas** para manter a identidade visual e tipográfica d
 1. **Títulos Limpos:** NUNCA use backticks, links ou código inline em cabeçalhos (`##`, `###`, `####`). Escreva em texto puro (ex: `## O truque elegante: override_homedir`).
 2. **Sem Divisores (`---`):** NUNCA insira linhas horizontais (`---`) entre seções `##`. O tema Minima cuida do espaçamento. Exceção única: antes de `## Referências` em posts muito extensos.
 3. **Sem Travessão Longo (—):** NUNCA use travessão longo no texto. Use vírgulas, dois-pontos ou quebre em frases menores.
-4. **Símbolos ASCII:** NUNCA use caracteres Unicode (`→`, `←`, `⇒`, `↔`). Use sempre caracteres ASCII (`->`, `<-`, `=>`, `<->`).
+4. **Símbolos e Setas no Texto Corrido:** NUNCA use setas Unicode (`→`, `←`, `⇒`, `↔`) soltas no texto corrido em prosa. Use sempre representações ASCII (`->`, `<-`, `=>`, `<->`). Para diagramas, caixas e árvores em blocos de código (`code fences`), o padrão é o uso obrigatório de **Block Constructions / Box-Drawing** (veja a Seção 6).
 5. **Emojis Apenas em Callouts:** NUNCA insira emojis soltos no texto corrido. Emojis são permitidos exclusivamente dentro de callouts/blockquotes.
 6. **Sem H1 no Corpo:** O `#` é exclusivo do título no front matter. No corpo, comece em `##`.
 
@@ -129,7 +129,7 @@ Alterne o número de frases por parágrafo conforme o papel cognitivo:
 | **Estrangeirismos** | *termo em inglês* | Itálico para termos técnicos não traduzidos (*slop*, *page cache*, *dirty*, *runtime*). |
 | **Callouts** | `> 💡 *Label*: Texto da nota` | Máximo 1 por seção. Sempre em blockquote com emoji e rótulo reto `*Label*:`. (Tipos: `💡 *Dica*:`, `⚠️ *Aviso*:`, `🚨 *Aviso Crítico de Segurança*:`, `🔔 *Disclaimer*:`, `✏️ *Nota da Série*:`). |
 | **Analogias** | Mundo físico e cotidiano | Usar quando o conceito for abstrato (ex: túnel SSH como cano de água com fio dentro; sudoers como chave mestra para entregador de pizza). |
-| **Diagramas ASCII** | Textos monoespaçados com setas ASCII | Usar `->`, `<-`, `+`, `-`, `|` para topologias e arquiteturas. |
+| **Diagramas e Árvores (Block Construction)** | Textos monoespaçados com caracteres Box-Drawing | Usar **Block Constructions** Unicode (`├──`, `└──`, `│`, `┌──┐`, `└──┘`, `├──┤`, `──>`, `<──`, `───[túnel]──>`) para árvores de diretórios, topologias de rede, esquemas de frames e fluxogramas em fences de código. Evitar caracteres legados como `+--` e `|` soltos quando houver equivalentes limpos em box-drawing. |
 | **Tabelas** | Markdown com alinhamento limpo | Para resumos comparativos e mapeamentos de flags. |
 | **Footnotes** | `[^1]: **Título** {*Fonte*} ([Link](url))` | Referências externas no final, exclusivamente na seção `## Referências`. |
 | **Exercícios** | `<details markdown="1">` com resposta | Apenas para tutoriais/séries. Obrigatoriamente com o atributo `markdown="1"` no details. |
@@ -178,5 +178,6 @@ Antes de publicar ou entregar qualquer post, valide:
 - [ ] Comandos, flags e arquivos com backticks no texto corrido?
 - [ ] Termos em inglês e estrangeirismos em *itálico*?
 - [ ] Callouts em blockquotes com `*Label*:`?
+- [ ] Diagramas, fluxos e árvores usando Block Constructions / Box-Drawing (`├──`, `└──`, `│`, `┌──┐`, `└──┘`, `──>`)?
 - [ ] Referências com footnote `[^n]` na seção `## Referências`?
 - [ ] Para séries: menção ao repositório/tag parceiro e exercícios com `<details markdown="1">`?
