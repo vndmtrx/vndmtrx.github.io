@@ -37,6 +37,10 @@ plugins:
  - jekyll-seo-tag
  - jekyll-paginate
  - jekyll-archives
+ - jekyll-gfm-admonitions
+
+gfm_admonitions:
+  inject_css: false
 
 jekyll-archives:
   enabled:
