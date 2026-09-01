@@ -63,6 +63,19 @@ layout: base
     {{ content }}
   </div>
 
+  <div class="post-pix-box">
+    <div class="post-pix-info">
+      <div class="post-pix-badge">☕ Apoio ao conteúdo</div>
+      <h3 class="post-pix-title">Gostou deste artigo?</h3>
+      <p class="post-pix-text">Se este tutorial ou texto te ajudou, considere me pagar um cafézinho. Qualquer quantia é muito bem-vinda como agradecimento e incentiva a continuar produzindo novos conteúdos!</p>
+    </div>
+    <div class="post-pix-action">
+      <button type="button" class="pix-trigger-btn post-pix-btn" onclick="openPixModal()">
+        <span>☕ Me pague um café</span>
+      </button>
+    </div>
+  </div>
+
   {% if jekyll.environment == 'production' -%}
   {% if page.comments == false -%}
   <div class="comments-disabled-message">

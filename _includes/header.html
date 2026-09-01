@@ -1,20 +1,27 @@
 <header class="site-header">
 
-  <div class="wrapper">
+  <div class="wrapper site-header-wrapper">
     {%- assign default_paths = site.pages | map: "path" -%}
     {%- assign page_paths = site.minima.nav_pages | default: default_paths -%}
     {%- assign page_titles = site.pages | map: 'title' | compact %}
     <a class="site-title" rel="author" href="{{ '/' | relative_url }}">{{ site.title | escape }}</a>
 
-    {%- unless page_titles == empty %}
-      <nav class="site-nav">
-        <input type="checkbox" id="nav-trigger" />
-        <label for="nav-trigger">
-          <span class="menu-icon"></span>
-        </label>
+    <div class="site-header-right">
+      <button type="button" class="pix-nav-btn" onclick="openPixModal()" title="Me pague um café ☕" aria-label="Me pague um café">
+        <span class="pix-nav-icon">☕</span>
+        <span class="pix-nav-text"><span class="pix-text-extra">Me pague um </span>Café</span>
+      </button>
 
-        {% include nav-items.html paths = page_paths %}
-      </nav>
-    {%- endunless %}
+      {%- unless page_titles == empty %}
+        <nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" />
+          <label for="nav-trigger">
+            <span class="menu-icon"></span>
+          </label>
+
+          {% include nav-items.html paths = page_paths %}
+        </nav>
+      {%- endunless %}
+    </div>
   </div>
 </header>
