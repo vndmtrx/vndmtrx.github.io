@@ -23,7 +23,8 @@ ssh-keygen -t ed25519 -a 100 -C "seu-email@exemplo.com"
 
 *Gera o par de chaves ED25519 com 100 rodadas de KDF para retardar ataques de força bruta contra a passphrase.*
 
-> 💡 *Dica*: O parâmetro `-a 100` define o número de rodadas da função de derivação de chave (KDF). Isso aumenta significativamente o custo computacional para um atacante tentar quebrar a sua senha por força bruta caso obtenha o arquivo da chave privada.
+> [!TIP] Dica
+> O parâmetro `-a 100` define o número de rodadas da função de derivação de chave (KDF). Isso aumenta significativamente o custo computacional para um atacante tentar quebrar a sua senha por força bruta caso obtenha o arquivo da chave privada.
 
 Durante a execução, o utilitário solicitará o caminho de destino (o padrão `~/.ssh/id_ed25519` é o mais indicado) e uma *passphrase* forte.
 

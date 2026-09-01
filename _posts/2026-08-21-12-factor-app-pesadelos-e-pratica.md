@@ -19,7 +19,8 @@ Para coroar o cenário, o contrato de sustentação com a empresa terceirizada a
 
 Como o negócio não podia parar, coube a mim a missão inglória de manter o dinossauro vivo. Mais do que isso: tive que migrar o monstro inteiro para a nuvem da AWS (um *lift-and-shift* em instâncias EC2 com um malabarismo de rede colossal para os módulos continuarem enxergando o banco). Como o código estava congelado no tempo, qualquer vulnerabilidade crítica que explodia no mundo (como o infame bug do Log4j ou falhas de execução remota de código na *expression language* do RichFaces/JSF) não podia ser corrigida no fonte. A gente tinha que segurar o tranco no perímetro da infraestrutura: empilhando regras acrobáticas no Apache com `mod_security`, `mod_evasive`, `mod_ratelimit` e bloqueando na marreta as URLs que disparavam os erros.
 
-> 🙈🙉🙊 *Desabafo Sincero*: Que fique claro: este post não tem o objetivo de apontar dedos ou falar mal de pessoas específicas. O foco aqui é expor a sucessão infinita de processos tortos e decisões arquiteturais que transformavam a gestão de infraestrutura em uma dança de forró em salão encerado segurando uma bandeja de copos de cerveja empilhados. Rir dos nossos traumas do passado é a única forma de não repeti-los em produção.
+> [!NOTE] Desabafo Sincero
+> Que fique claro: este post não tem o objetivo de apontar dedos ou falar mal de pessoas específicas. O foco aqui é expor a sucessão infinita de processos tortos e decisões arquiteturais que transformavam a gestão de infraestrutura em uma dança de forró em salão encerado segurando uma bandeja de copos de cerveja empilhados. Rir dos nossos traumas do passado é a única forma de não repeti-los em produção.
 
 Muito do que sou hoje como sysadmin, analista de infraestrutura e de DevOps nasceu desse batismo de fogo. Foi precisando inventar soluções e diagnósticos para as bizarrices desse sistema que aprendi, na marra, o valor de cada boa prática de engenharia.
 
@@ -35,7 +36,8 @@ O princípio é direto: deve haver uma única base de código rastreada em contr
 
 Sem uma base rastreada, você perde a capacidade de auditar o que mudou entre uma versão e outra, rastrear a origem de um bug ou sequer confirmar qual versão exata do código está rodando em produção neste momento. Cada deploy vira um ato de fé.
 
-> 🤡 *O Circo de Horrores da Infra*: A gênese do nosso sistema acadêmico já era fruto de uma aberração de base de código: ele não nascera na empresa contratada, mas fora herdado de outra universidade. A terceirizada fora contratada para "customizar" o código para a nossa realidade. Como não havia pipeline nem governança de repositório, o controle de versão virou ficção científica. As versões eram entregues como arquivos `.zip` anexados em chamados, com nome poético como `sistema_academico.war` todas as vezes.
+> [!WARNING] O Circo de Horrores da Infra
+> A gênese do nosso sistema acadêmico já era fruto de uma aberração de base de código: ele não nascera na empresa contratada, mas fora herdado de outra universidade. A terceirizada fora contratada para "customizar" o código para a nossa realidade. Como não havia pipeline nem governança de repositório, o controle de versão virou ficção científica. As versões eram entregues como arquivos `.zip` anexados em chamados, com nome poético como `sistema_academico.war` todas as vezes.
 >
 > Certa vez, a empresa substituiu o arquivo em produção copiando o `.war` quebrado diretamente por cima do antigo no servidor. Sem histórico, sem commit, sem volta. O pânico foi tão generalizado que precisei criar um repositório Git local dentro do servidor de aplicação só para versionar os binários compilados que eles nos enviavam, porque o arquivo anterior tinha ido de arrasta pra cima.
 
@@ -49,7 +51,8 @@ Uma aplicação 12-factor nunca presume a existência implícita de pacotes ou f
 
 Quando dependências são implícitas, você perde a capacidade de recriar o ambiente do zero. O servidor vira um artefato artesanal insubstituível: se a máquina morrer, ninguém sabe quais pacotes foram instalados na mão, quais versões de bibliotecas nativas estão no `/usr/lib` e quais variáveis de ambiente foram configuradas por tentativa e erro ao longo dos anos.
 
-> 🤮 *Traumas Não Superados*: O sistema do nosso causo tinha uma dependência central cujo código-fonte simplesmente foi perdido no tempo pela empresa desenvolvedora. Eles tinham apenas um arquivo `.jar` obscuro. Quando a JVM precisou ser atualizada, o jar parou de carregar. A solução da equipe de desenvolvimento? Descompilaram o binário na força bruta, alteraram meia dúzia de instruções no arquivo `.class` gerado e empacotaram de volta sem testes. Ninguém no planeta sabia exatamente o que aquela biblioteca fazia, mas ela ficava solta na pasta `/lib` global do JBoss junto com jars do RichFaces e do JSF (pra citar esses em específico). Se o servidor fosse recriado do zero, o sistema morria sem deixar pistas.
+> [!WARNING] Traumas Não Superados
+> O sistema do nosso causo tinha uma dependência central cujo código-fonte simplesmente foi perdido no tempo pela empresa desenvolvedora. Eles tinham apenas um arquivo `.jar` obscuro. Quando a JVM precisou ser atualizada, o jar parou de carregar. A solução da equipe de desenvolvimento? Descompilaram o binário na força bruta, alteraram meia dúzia de instruções no arquivo `.class` gerado e empacotaram de volta sem testes. Ninguém no planeta sabia exatamente o que aquela biblioteca fazia, mas ela ficava solta na pasta `/lib` global do JBoss junto com jars do RichFaces e do JSF (pra citar esses em específico). Se o servidor fosse recriado do zero, o sistema morria sem deixar pistas.
 
 Em aplicações contemporâneas, o isolamento ocorre em duas camadas:
 
@@ -64,7 +67,8 @@ A configuração de uma aplicação é tudo aquilo que varia entre ambientes de 
 
 O teste definitivo para saber se você cumpre esse fator é simples: *você poderia abrir o código-fonte do seu projeto no GitHub agora mesmo, como repositório público, sem vazar nenhuma senha ou comprometer a segurança da infraestrutura?*
 
-> 😵💫 *O Malabarismo do Caos*: No nosso querido monólito, a configuração era um festival de horrores. Havia senhas de banco de dados em texto puro dentro de arquivos XML no meio do pacote compilado. Mas a maior bizarrice vinha dos relatórios: para renderizar o logotipo da instituição no cabeçalho dos PDFs gerados pelo JasperReports, o sistema não lia a imagem do disco local. Ele fazia uma requisição HTTP via URL absoluta para o próprio servidor (`http://[IP_ADDRESS]/img/logo.png`), e esse IP ficava gravado dentro de uma tabela de configurações no banco de dados. Quando migramos as VMs para a AWS EC2 com outra faixa de IP, a emissão de históricos escolares travou o servidor inteiro com timeouts de rede até descobrirmos essa pérola.
+> [!WARNING] O Malabarismo do Caos
+> No nosso querido monólito, a configuração era um festival de horrores. Havia senhas de banco de dados em texto puro dentro de arquivos XML no meio do pacote compilado. Mas a maior bizarrice vinha dos relatórios: para renderizar o logotipo da instituição no cabeçalho dos PDFs gerados pelo JasperReports, o sistema não lia a imagem do disco local. Ele fazia uma requisição HTTP via URL absoluta para o próprio servidor (`http://[IP_ADDRESS]/img/logo.png`), e esse IP ficava gravado dentro de uma tabela de configurações no banco de dados. Quando migramos as VMs para a AWS EC2 com outra faixa de IP, a emissão de históricos escolares travou o servidor inteiro com timeouts de rede até descobrirmos essa pérola.
 
 Nas arquiteturas modernas, a regra é consumir variáveis de ambiente do sistema operacional:
 
@@ -88,7 +92,8 @@ Para a aplicação, não deve haver distinção entre um banco local rodando em 
        └───> (URL: amqp://...) ─────────> [ Fila RabbitMQ ]
 ```
 
-> 💀 *Crônicas do Apocalipse*: No nosso querido monólito, o conceito de tratar serviços de apoio como recursos desacoplados simplesmente não existia. Para armazenamento de arquivos, em vez de usar um storage de objetos anexado via rede, os uploads eram gravados como campos BLOB gigantescos direto dentro do banco de dados relacional. Em pouco tempo, descobrimos usuários subindo arquivos de centenas de megabytes e até vários gigabytes dentro das tabelas: imagens ISO, vídeos, coleções inteiras de documentos. O banco relacional virou um depósito de entulho digital, transformando qualquer rotina de backup em uma verdadeira sessão de tortura.
+> [!CAUTION] Crônicas do Apocalipse
+> No nosso querido monólito, o conceito de tratar serviços de apoio como recursos desacoplados simplesmente não existia. Para armazenamento de arquivos, em vez de usar um storage de objetos anexado via rede, os uploads eram gravados como campos BLOB gigantescos direto dentro do banco de dados relacional. Em pouco tempo, descobrimos usuários subindo arquivos de centenas de megabytes e até vários gigabytes dentro das tabelas: imagens ISO, vídeos, coleções inteiras de documentos. O banco relacional virou um depósito de entulho digital, transformando qualquer rotina de backup em uma verdadeira sessão de tortura.
 >
 > Para piorar, para compartilhar arquivos estáticos entre as instâncias, alguém montou um compartilhamento NFS de rede diretamente dentro do diretório de deploy do JBoss. Quando a rede oscilava e o NFS caía silenciosamente, as instâncias travavam uma a uma em cascata com erros bizarros de I/O.
 
@@ -110,7 +115,8 @@ O ciclo de vida de uma entrega de software deve ser dividido em três etapas rig
 └───────────────┘      └───────────────────┘      └────────────────┘
 ```
 
-> 🤡 *Gambiarras que a Vida Ensina*: Como não tínhamos pipeline, o nosso *release* era um trabalho manual de artesanato. Para conseguir voltar atrás quando as coisas explodiam, criei uma estratégia com links simbólicos no Linux: o arquivo físico recebia o nome `sistema_vX.Y.Z_cti_AAAAMMDDHHmm.war` e eu criava um link simbólico `ln -sf` apontando `sistema_academico.war` para ele. Eram cinco módulos e nove bibliotecas interconectadas gerenciadas na base do `ln` e de um script bash caseiro. Esse era o melhor jeito que tínhamos para voltar para uma versão anterior sem precisar fazer deploy novamente.
+> [!WARNING] Gambiarras que a Vida Ensina
+> Como não tínhamos pipeline, o nosso *release* era um trabalho manual de artesanato. Para conseguir voltar atrás quando as coisas explodiam, criei uma estratégia com links simbólicos no Linux: o arquivo físico recebia o nome `sistema_vX.Y.Z_cti_AAAAMMDDHHmm.war` e eu criava um link simbólico `ln -sf` apontando `sistema_academico.war` para ele. Eram cinco módulos e nove bibliotecas interconectadas gerenciadas na base do `ln` e de um script bash caseiro. Esse era o melhor jeito que tínhamos para voltar para uma versão anterior sem precisar fazer deploy novamente.
 >
 > E era feito geralmente à noite para não atrapalhar o funcionamento do sistema. Lembro de uma vez que foi preciso fazer isso durante o lançamento de notas de alunos, e os professores ligando desesperados porque não conseguiam lançar as notas. Foi tenso. Um erro de digitação no terminal e metade dos módulos apontava para a versão de agosto e a outra metade para a versão de maio. Tivemos que parar o sistema por um tempo para corrigir.
 
@@ -122,7 +128,8 @@ Os processos da aplicação devem ser **completamente sem estado (*stateless*) e
 
 A memória do processo ou o sistema de arquivos local podem ser usados apenas como rascunho temporário e volátil durante a execução de uma operação única. Nunca presuma que algo gravado na memória no request A estará disponível no request B.
 
-> 😵 *Sessões Fantasmas e o Pânico dos Professores*: Nosso JBoss distribuía sessões HTTP através de replicação de memória entre as instâncias e o famigerado `mod_jk` no Apache. Quando um professor estava lançando as notas finais de quinhentos alunos e o balanceador de carga decidia alternar o tráfego para a outra VM, a sincronização de sessão em memória falhava miseravelmente. O resultado? O professor era sumariamente desconectado no meio do lançamento, perdia todas as notas digitadas e a diretoria de TI recebia ligações em chamas.
+> [!WARNING] Sessões Fantasmas e o Pânico dos Professores
+> Nosso JBoss distribuía sessões HTTP através de replicação de memória entre as instâncias e o famigerado `mod_jk` no Apache. Quando um professor estava lançando as notas finais de quinhentos alunos e o balanceador de carga decidia alternar o tráfego para a outra VM, a sincronização de sessão em memória falhava miseravelmente. O resultado? O professor era sumariamente desconectado no meio do lançamento, perdia todas as notas digitadas e a diretoria de TI recebia ligações em chamas.
 >
 > A culpa não era dos professores: era da arquitetura que insistia em guardar estado dentro da memória volátil do processo em vez de delegar para um cache compartilhado.
 
@@ -142,7 +149,8 @@ A própria aplicação inclui seu servidor web embutido como dependência de bib
 [ Requisição HTTP ] ──> Porta 8080 ──> [ Processo da Aplicação (com Tomcat Embutido) ]
 ```
 
-> 🤡 *O Labirinto do AJP e DNS Round Robin*: Nossa aplicação não escutava diretamente em uma porta de forma autocontida. Para colocar o sistema no ar, dependíamos de uma teia maluca: quatro instâncias de JBoss rodando em duas VMs, comunicando-se via protocolo binário proprietário AJP com dois servidores Apache com `mod_jk`, que por sua vez eram balanceados na base da sorte através de Round Robin no DNS.
+> [!WARNING] O Labirinto do AJP e DNS Round Robin
+> Nossa aplicação não escutava diretamente em uma porta de forma autocontida. Para colocar o sistema no ar, dependíamos de uma teia maluca: quatro instâncias de JBoss rodando em duas VMs, comunicando-se via protocolo binário proprietário AJP com dois servidores Apache com `mod_jk`, que por sua vez eram balanceados na base da sorte através de Round Robin no DNS.
 >
 > Qualquer oscilação em um desses intermediários gerava telas de erro 500 bizarras que ninguém sabia em qual camada do labirinto haviam sido geradas. Era um verdadeiro pesadelo. Foram tantas quedas que a turma de TI até criou uma gíria interna: quando o sistema estava instável, diziam que ele estava em **"modo mistério"**, porque ninguém conseguia diagnosticar a causa real da instabilidade.
 
@@ -169,7 +177,8 @@ O 12-factor dita que a escala deve acontecer **horizontalmente através do model
 [ Fila RabbitMQ ] └───> [ Worker de Filas 2 ]
 ```
 
-> 🤮 *O Método de Login com 200 Parâmetros e o Botão Proibido*: No nosso monólito, a concorrência não era apenas ineficiente; ela era uma autodestruição programada de memória. Havia um método no sistema, acionado na tela de LOGIN (no simples ato de fazer login), cuja assinatura ostentava mais de **duzentos parâmetros**. Essa aberração fazia uma varredura tão profunda no banco que o primeiro login de um usuário alocava quase **2 GB** direto na memória da JVM para checar memorandos e avisos de qualquer perfil (de aluno a diretor).
+> [!CAUTION] O Método de Login com 200 Parâmetros e o Botão Proibido
+> No nosso monólito, a concorrência não era apenas ineficiente; ela era uma autodestruição programada de memória. Havia um método no sistema, acionado na tela de LOGIN (no simples ato de fazer login), cuja assinatura ostentava mais de **duzentos parâmetros**. Essa aberração fazia uma varredura tão profunda no banco que o primeiro login de um usuário alocava quase **2 GB** direto na memória da JVM para checar memorandos e avisos de qualquer perfil (de aluno a diretor).
 >
 > Para piorar, processos pesados de negócio rodavam síncronos na mesma thread HTTP: a funcionalidade de "depreciação de bens" no patrimônio tinha um aviso espiritual em letras garrafais colado na mente de todos: "não clica na ***** dessa funcionalidade", porque o cálculo demorava tanto que a página do RichFaces expirava o timeout e o processo era interrompido no meio da execução, deixando os saldos contábeis do patrimônio corrompidos pela metade.
 
@@ -184,7 +193,8 @@ Os processos da aplicação devem ser **descartáveis**: eles podem ser iniciado
 1. **Inicialização rápida (*Fast Startup*):** O processo deve levar poucos segundos do momento em que o binário é chamado até estar pronto para receber tráfego real. Inicializações rápidas permitem deploys contínuos sem indisponibilidade e elasticidade real em autoscaling.
 2. **Desligamento gracioso (*Graceful Shutdown*):** Ao receber um sinal de término do sistema operacional (`SIGTERM`), o processo deve parar de aceitar novas requisições, concluir com calma as transações que já estão em andamento, liberar conexões de banco de dados e sair limpamente com código zero.
 
-> 💀 *O Ritual Místico de Inicialização*: O boot do nosso servidor legado levava inacreditáveis **quinze minutos por instância**. E não parava por aí: havia uma ordem mística de subida. Primeiro a VM 1, Instância 1. Você tinha que abrir o log no terminal, esperar ela emitir uma mensagem específica de inicialização, e só então subir a Instância 2 da VM 1, para depois repetir o processo na VM 2, porque todas as instâncias dependiam da primeira para bootstrap. Reiniciar o cluster em um incidente era uma operação de uma hora de tela travada e stress.
+> [!WARNING] O Ritual Místico de Inicialização
+> O boot do nosso servidor legado levava inacreditáveis **quinze minutos por instância**. E não parava por aí: havia uma ordem mística de subida. Primeiro a VM 1, Instância 1. Você tinha que abrir o log no terminal, esperar ela emitir uma mensagem específica de inicialização, e só então subir a Instância 2 da VM 1, para depois repetir o processo na VM 2, porque todas as instâncias dependiam da primeira para bootstrap. Reiniciar o cluster em um incidente era uma operação de uma hora de tela travada e stress.
 
 Em ambientes modernos de contêineres e orquestração (como o Kubernetes), os pods são destruídos e recriados constantemente por balanceamento de nós ou políticas de autoscaling. Se a sua aplicação não respeitar o `SIGTERM` ou demorar minutos para subir, o orquestrador matará o processo com `SIGKILL` forçado, derrubando requisições de clientes no meio do caminho.
 
@@ -198,7 +208,8 @@ Historicamente, existiam abismos gigantescos entre o ambiente de desenvolvimento
 
 O 12-factor exige **paridade máxima**: reduza o intervalo de deploy para horas ou minutos, faça os próprios autores do código participarem da operação e use rigorosamente os mesmos serviços de apoio em todos os ambientes.
 
-> 🤡 *O Clone Sagrado de 400 GB*: A paridade do sistema antigo era resolvida da pior forma possível: para criar um ambiente de testes, a equipe clonava a imagem inteira da máquina virtual de produção no hipervisor (uma VM colossal de mais de 400 GB). Como ninguém sabia como instalar o sistema do zero, essa era a única maneira de ter um ambiente "parecido". Mas como os testes eram feitos alterando dados diretamente dentro dessa cópia, o ambiente de desenvolvimento rapidamente apodrecia e ficava tão corrompido que os bugs testados lá não tinham relação nenhuma com a realidade de produção.
+> [!WARNING] O Clone Sagrado de 400 GB
+> A paridade do sistema antigo era resolvida da pior forma possível: para criar um ambiente de testes, a equipe clonava a imagem inteira da máquina virtual de produção no hipervisor (uma VM colossal de mais de 400 GB). Como ninguém sabia como instalar o sistema do zero, essa era a única maneira de ter um ambiente "parecido". Mas como os testes eram feitos alterando dados diretamente dentro dessa cópia, o ambiente de desenvolvimento rapidamente apodrecia e ficava tão corrompido que os bugs testados lá não tinham relação nenhuma com a realidade de produção.
 
 Hoje, ferramentas como o **Docker Compose** e o **Testcontainers** sepultaram a desculpa do *"na minha máquina funciona"*. 
 
@@ -212,7 +223,8 @@ Em vez disso, cada processo escreve seu fluxo de eventos de forma contínua e se
 
 Durante o desenvolvimento local, o programador visualiza esse fluxo impresso diretamente em seu terminal. Em ambientes de produção e homologação, o ambiente de execução (Docker, systemd, Kubernetes) captura esses fluxos de `stdout` e os encaminha para plataformas especializadas de roteamento e indexação (como Vector, Fluentbit, Loki, Elasticsearch ou Datadog).
 
-> 😵 *A Partição /var em Chamas*: No nosso sistema de estimação, o Log4j gerenciava arquivos de log locais com rotação diária (e não por tamanho). Em épocas de matrícula ou lançamento de notas, a verbosidade configurada em `INFO` gerava dezenas de gigabytes por dia. Como o processo frequentemente travava a rotina de exclusão de arquivos antigos, a partição `/var` do servidor lotava 100% de espaço em disco com frequência estarrecedora. O resultado? O sistema caía porque não conseguia mais alocar descritores de arquivo. Chegamos ao ponto humilhante de ter um lembrete fixo na agenda diária da equipe de infraestrutura: "Entrar no servidor pela manhã e apagar logs antigos na mão".
+> [!WARNING] A Partição /var em Chamas
+> No nosso sistema de estimação, o Log4j gerenciava arquivos de log locais com rotação diária (e não por tamanho). Em épocas de matrícula ou lançamento de notas, a verbosidade configurada em `INFO` gerava dezenas de gigabytes por dia. Como o processo frequentemente travava a rotina de exclusão de arquivos antigos, a partição `/var` do servidor lotava 100% de espaço em disco com frequência estarrecedora. O resultado? O sistema caía porque não conseguia mais alocar descritores de arquivo. Chegamos ao ponto humilhante de ter um lembrete fixo na agenda diária da equipe de infraestrutura: "Entrar no servidor pela manhã e apagar logs antigos na mão".
 
 Logs são **fluxos contínuos de eventos ordenados no tempo**, e não arquivos estáticos sob responsabilidade do desenvolvedor. A aplicação emite; a infraestrutura coleta e agrega.
 
@@ -222,7 +234,8 @@ Tarefas administrativas pontuais (como migrações de esquema de banco de dados 
 
 Esses processos devem rodar exatamente no mesmo ambiente, com a mesma release e com as mesmas configurações da aplicação principal. O código dessas tarefas deve ser versionado junto com o código da aplicação para evitar discrepâncias entre o que o script assume e o que o modelo de dados realmente suporta. Isso inclui rotinas de recálculo, consolidação de relatórios e qualquer tarefa de manutenção que precise operar sobre os mesmos dados e regras de negócio da aplicação principal.
 
-> 💀 *O DBA Acidental e a Normalização -1000*: Na época do nosso sistema acadêmico, além de analista de infraestrutura, acabei virando o "DBA acidental" da instituição por pura falta de opção. Cada atualização vinha acompanhada de um script SQL gigantesco enviado por e-mail, escrito à mão pelos desenvolvedores. Cabia a mim abrir o pgAdmin conectado diretamente no banco de produção, colar centenas de linhas de `ALTER TABLE` e `UPDATE` e torcer para o script não quebrar na metade. Como os scripts frequentemente falhavam por erros de sintaxe ou violação de constraints, tirar um snapshot completo da VM do banco antes de cada execução era uma questão de pura autopreservação.
+> [!CAUTION] O DBA Acidental e a Normalização -1000
+> Na época do nosso sistema acadêmico, além de analista de infraestrutura, acabei virando o "DBA acidental" da instituição por pura falta de opção. Cada atualização vinha acompanhada de um script SQL gigantesco enviado por e-mail, escrito à mão pelos desenvolvedores. Cabia a mim abrir o pgAdmin conectado diretamente no banco de produção, colar centenas de linhas de `ALTER TABLE` e `UPDATE` e torcer para o script não quebrar na metade. Como os scripts frequentemente falhavam por erros de sintaxe ou violação de constraints, tirar um snapshot completo da VM do banco antes de cada execução era uma questão de pura autopreservação.
 >
 > A mitologia institucional contava ainda que a migração inicial dos dados consistira em exportar o banco antigo para uma única planilha colossal com normalização na escala -1000: um atentado relacional tão brutal que faria Edgar Codd e Martin Fowler caírem de joelhos querendo a nossa pele. No dia a dia, o setor de almoxarifado precisava seguir um roteiro manual de recálculos para fazer o Relatório Mensal de Almoxarifado (RMA) fechar as contas no final do mês, porque as rotinas internas do sistema erravam os saldos com tanta frequência que ninguém confiava mais nelas. E quando alguém acidentalmente rodava a famigerada depreciação de bens e corrompia os registros, o processo de correção via scripts manuais no banco era tão excruciante e tedioso que a solução definitiva adotada foi simplesmente proibir o uso da funcionalidade.
 
