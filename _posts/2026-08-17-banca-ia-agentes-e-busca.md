@@ -65,7 +65,7 @@ Aqui, o básico que até eu, que li correndo no fim de semana, percebo é a nece
 
 Outro ponto que eu espero que fique nítido é a diferença entre o **espaço de estados** (o mapa completo e conceitual do problema) e a **árvore de busca** (os caminhos que o algoritmo realmente abre na memória para tentar achar a saída).
 
-E aí vem o tema central: a **maldição da dimensionalidade**. Se a cada passo você tem várias opções e o objetivo está longe, o número de caminhos possíveis explode exponencialmente ($O(b^d)$). É por isso que buscas cegas (como olhar tudo em largura ou profundidade) não servem para problemas reais: a memória ou o tempo acabam muito rápido.
+E aí vem o tema central: a **maldição da dimensionalidade**. Se a cada passo você tem várias opções e o objetivo está longe, o número de caminhos possíveis explode exponencialmente (da ordem de `b^d`). É por isso que buscas cegas (como olhar tudo em largura ou profundidade) não servem para problemas reais: a memória ou o tempo acabam muito rápido.
 
 Para resolver isso, entram as heurísticas e a busca informada com o algoritmo `A*`, que usa a conhecida função:
 
