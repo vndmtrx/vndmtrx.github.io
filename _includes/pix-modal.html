@@ -1,0 +1,101 @@
+<!-- Modal do Pix / Me pague um café -->
+<div id="pix-modal-overlay" class="pix-modal-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="pix-modal-title" onclick="handlePixOverlayClick(event)">
+  <div class="pix-modal-dialog">
+    <button type="button" class="pix-modal-close" onclick="closePixModal()" aria-label="Fechar">&times;</button>
+    
+    <div class="pix-modal-header">
+      <div class="pix-modal-badge">☕ Me pague um café</div>
+      <h3 id="pix-modal-title" class="pix-modal-title">Apoie com um Pix</h3>
+      <p class="pix-modal-subtitle">Qualquer quantia é muito bem-vinda como forma de agradecimento pelo conteúdo!</p>
+    </div>
+
+    <div class="pix-modal-body">
+      <div class="pix-qrcode-container">
+        <div class="pix-qrcode-card">
+          <img src="{{ '/assets/images/pix-qrcode.png' | relative_url }}" alt="QR Code Pix" class="pix-qrcode-image" />
+        </div>
+      </div>
+
+      <div class="pix-copy-wrapper">
+        <label class="pix-copy-label" for="pix-key-input">Chave Pix (Chave Aleatória):</label>
+        <div class="pix-copy-input-group">
+          <input type="text" id="pix-key-input" class="pix-key-input" value="f37b496b-5f20-450b-94a2-ca683914abf0" readonly onclick="this.select();" />
+          <button type="button" id="pix-copy-btn" class="pix-copy-btn" onclick="copyPixKey()" title="Copiar chave">
+            <span id="pix-copy-icon">📋</span>
+            <span id="pix-copy-text">Copiar</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="pix-modal-footer">
+      <p class="pix-modal-thanks">Se este post te ajudou de alguma forma, muito obrigado pelo apoio! ❤️</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openPixModal() {
+    var modal = document.getElementById('pix-modal-overlay');
+    if (modal) {
+      modal.classList.add('is-active');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('pix-modal-open');
+    }
+  }
+
+  function closePixModal() {
+    var modal = document.getElementById('pix-modal-overlay');
+    if (modal) {
+      modal.classList.remove('is-active');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('pix-modal-open');
+    }
+  }
+
+  function handlePixOverlayClick(e) {
+    if (e.target.id === 'pix-modal-overlay') {
+      closePixModal();
+    }
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' || e.key === 'Esc') {
+      closePixModal();
+    }
+  });
+
+  function copyPixKey() {
+    var pixInput = document.getElementById('pix-key-input');
+    var copyBtn = document.getElementById('pix-copy-btn');
+    var copyIcon = document.getElementById('pix-copy-icon');
+    var copyText = document.getElementById('pix-copy-text');
+    if (!pixInput) return;
+
+    var textToCopy = pixInput.value;
+
+    function onCopied() {
+      if (copyBtn) copyBtn.classList.add('is-copied');
+      if (copyIcon) copyIcon.textContent = '✓';
+      if (copyText) copyText.textContent = 'Copiado!';
+
+      setTimeout(function () {
+        if (copyBtn) copyBtn.classList.remove('is-copied');
+        if (copyIcon) copyIcon.textContent = '📋';
+        if (copyText) copyText.textContent = 'Copiar';
+      }, 2500);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(textToCopy).then(onCopied).catch(function () {
+        pixInput.select();
+        document.execCommand('copy');
+        onCopied();
+      });
+    } else {
+      pixInput.select();
+      document.execCommand('copy');
+      onCopied();
+    }
+  }
+</script>
