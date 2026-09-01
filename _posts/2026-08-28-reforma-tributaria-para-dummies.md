@@ -5,6 +5,7 @@ subtitle: "Talvez a reforma tributária seja mais simples que seu contador faz p
 author:
   - "Eduardo N. S. R."
 date: 2026-08-28 06:38:00 GMT-3
+modified_date: 2026-08-31 22:19:00 GMT-3
 permalink: /posts/reforma-tributaria-python/
 tags: [Python, Impostos, Opinião, Programação, Sociedade]
 ---
@@ -275,9 +276,11 @@ Nunca.
 
 Em nenhum cenário, universo paralelo ou realidade alternativa prevista pela legislação vigente.
 
-Essa *fake news* é o zumbi das *fake news* tributárias: já morreu várias vezes e continua voltando [^10]. O Pix é um **meio de pagamento**, não um fato gerador de tributo. Taxar o Pix faria tanto sentido quanto taxar o ato de entregar dinheiro na mão de alguém. A reforma tributa o **consumo de bens e serviços**, não a movimentação financeira.
+Essa *fake news* é o zumbi das *fake news* tributárias: já morreu várias vezes e continua voltando [^10]. O Pix é um **meio de pagamento**, não um fato gerador de tributo. Taxar o Pix faria tanto sentido quanto taxar o ato de entregar uma cédula de dinheiro vivo na mão de alguém: a reforma tributa o **consumo de bens e serviços**, não o trânsito do dinheiro.
 
-A confusão nasceu em 2020, quando uma *certa proposta* que nunca saiu do papel cogitou criar um imposto sobre transações financeiras no estilo da antiga CPMF. Aquilo morreu. Mas o cadáver continua sendo desenterrado toda vez que alguém precisa de um *espantalho* pra atacar qualquer coisa relacionada a impostos. Se alguém te mandou isso no WhatsApp, essa pessoa provavelmente também acha que vacina tem chip 5G. Desconfia de qualquer teoria que chega mastigada em áudio anônimo ou card alarmista de rede social.
+Quem taxa transações comerciais por aqui há décadas não é o Fisco: são as bandeiras de cartão e as donas das maquininhas. Muita gente nem repara, mas o comerciante deixa uma fatia de cada venda entre taxas de intermediação (*MDR*) e aluguel de terminal. É daí que nasce a clássica placa de "desconto no Pix ou dinheiro vivo": o lojista só está repassando a economia de não pagar pedágio pra intermediário. O Pix é uma infraestrutura pública que transformou pagamento digital instantâneo em protocolo aberto e gratuito, contornando as bandeiras privadas. Perder essa torneira de receita automática é a razão real pela qual as gigantes de pagamento lá do país imperialista olham com tanto rancor para o Pix e adorariam ver o modelo brasileiro naufragar.
+
+A confusão sobre imposto no Pix nasceu em 2020, quando uma *certa proposta* que nunca saiu do papel cogitou criar um imposto sobre transações financeiras no estilo da antiga CPMF. Aquilo morreu. Mas o cadáver continua sendo desenterrado toda vez que alguém precisa de um *espantalho* pra atacar qualquer coisa relacionada a impostos. Se alguém te mandou isso no WhatsApp, essa pessoa provavelmente também acha que vacina tem chip 5G. Desconfie de qualquer teoria que chega mastigada em áudio anônimo ou card alarmista de rede social.
 
 ### A cervejinha do churrasco vai dobrar de preço com o Imposto do Pecado?
 
