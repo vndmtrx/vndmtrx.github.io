@@ -13,7 +13,8 @@ series: Spring Boot Tutorial
 
 No [primeiro post da série](/posts/spring-boot-tutorial-parte-1-ambiente/), montamos nossa bancada de trabalho com Debian Trixie, SDKMAN travando o JDK 26 e o VS Codium livre de telemetrias. Com as ferramentas no lugar, o impulso natural da maioria dos tutoriais é abrir o editor e sair cuspindo código de negócio desordenado. Mas se queremos construir uma aplicação que sobreviva ao mundo real, precisamos falar antes sobre como uma aplicação nasce e como ela lida com seus ambientes.
 
-> 🔔 *Nota da Série*: Este post faz parte da série **"Spring Boot Tutorial"**, onde construímos do zero uma API backend de produção com **Spring Boot**, explorando boas práticas de arquitetura, contratos, persistência, resiliência, observabilidade e nuvem. O código-fonte de apoio e os projetos de cada capítulo estão organizados no repositório parceiro [vndmtrx/estudos_springboot](https://github.com/vndmtrx/estudos_springboot).
+> [!NOTE] Nota da Série
+> Este post faz parte da série **"Spring Boot Tutorial"**, onde construímos do zero uma API backend de produção com **Spring Boot**, explorando boas práticas de arquitetura, contratos, persistência, resiliência, observabilidade e nuvem. O código-fonte de apoio e os projetos de cada capítulo estão organizados no repositório parceiro [vndmtrx/estudos_springboot](https://github.com/vndmtrx/estudos_springboot).
 
 Quem trabalha com infraestrutura e operações aprende rápido uma verdade incômoda: a esmagadora maioria dos incidentes de deploy não acontece por falha de sintaxe, mas por confusão de configuração. É o desenvolvedor que chumba a URL do banco local no meio do código, comita credenciais sensíveis no repositório ou assume que a aplicação vai rodar para sempre no mesmo caminho de diretório.
 
@@ -159,7 +160,8 @@ logging:
     "[io.github.vndmtrx.tarefas_api]": INFO
 ```
 
-> ⚠️ *Aviso*: Repare no uso de colchetes e aspas duplas `"[nome.do.pacote]"` sob `logging.level`: em arquivos YAML, como os pacotes Java contêm pontos (`.`), essa sintaxe de escape é a convenção oficial recomendada pelo Spring Boot para evitar que o interpretador YAML confunda o nome do pacote com nós aninhados [^6].
+> [!WARNING] Aviso
+> Repare no uso de colchetes e aspas duplas `"[nome.do.pacote]"` sob `logging.level`: em arquivos YAML, como os pacotes Java contêm pontos (`.`), essa sintaxe de escape é a convenção oficial recomendada pelo Spring Boot para evitar que o interpretador YAML confunda o nome do pacote com nós aninhados [^6].
 
 * No perfil `dev`, ativamos o nível `DEBUG` para a camada web e para o nosso pacote `io.github.vndmtrx.tarefas_api`, permitindo inspecionar o roteamento e detalhes internos durante os testes.
 * No perfil `prod`, elevamos o nível geral (`root`) para `ERROR` para silenciar ruídos de bibliotecas de terceiros, liberando apenas mensagens `INFO` relevantes do nosso próprio sistema.

@@ -13,7 +13,8 @@ series: Spring Boot Tutorial
 
 Se você chegou até aqui com a aplicação da Parte 2 no ar, então já tem um servidor que sobe, troca de perfil e responde o `/api/status`. O que você não tem ainda é domínio. Não existe tarefa, não existe estado, não existe nada para persistir. A aplicação é um esqueleto saudável, mas ainda é um esqueleto.
 
-> 🔔 *Nota da Série*: Este post faz parte da série **"Spring Boot Tutorial"**, onde construímos do zero uma API backend de produção com **Spring Boot**, explorando boas práticas de arquitetura, contratos, persistência, resiliência, observabilidade e nuvem. O código-fonte de apoio e os projetos de cada capítulo estão organizados no repositório parceiro [vndmtrx/estudos_springboot](https://github.com/vndmtrx/estudos_springboot). O código desta parte está na pasta [parte3](https://github.com/vndmtrx/estudos_springboot/tree/main/parte3).
+> [!NOTE] Nota da Série
+> Este post faz parte da série **"Spring Boot Tutorial"**, onde construímos do zero uma API backend de produção com **Spring Boot**, explorando boas práticas de arquitetura, contratos, persistência, resiliência, observabilidade e nuvem. O código-fonte de apoio e os projetos de cada capítulo estão organizados no repositório parceiro [vndmtrx/estudos_springboot](https://github.com/vndmtrx/estudos_springboot). O código desta parte está na pasta [parte3](https://github.com/vndmtrx/estudos_springboot/tree/main/parte3).
 
 A tentação nesse ponto é honesta: abrir o controller, despejar ali toda a lógica de negócio e ir para casa. É o caminho mais curto entre a ideia e o HTTP. E é também o caminho que, aos poucos, transforma projeto promissor em um código espaguete: controller consultando banco, service inventado depois por remorso, teste que só descobre regressão em produção.
 
@@ -166,7 +167,8 @@ Agora o ponto que separa a sanidade da catástrofe: a propriedade `ddl-auto` [^5
 
 Soa inofensivo. Não é. Em produção, `ddl-auto=update` é um passaporte para o incidente, do tipo que você só descobre na sexta às 18h (por favor não faça isso). O Hibernate altera colunas, cria estruturas e sincroniza o schema conforme as entidades, mas sem nenhum histórico versionado. Adicionou um campo? O schema muda sozinho. Renomeou uma coluna? O Hibernate enxerga uma coluna órfã no banco, cria a coluna nova e deixa a antiga onde está, espalhando fósseis no schema sem que ninguém descubra até o incidente. Não há migração versionada, não há rollback controlado e não há rastro da evolução. É a receita do problema.
 
-> ⚠️ *Aviso de Produção*: A propriedade `spring.jpa.hibernate.ddl-auto=create-drop` só faz sentido com banco efêmero em memória. Para bancos persistentes em produção, o padrão seguro é usar `validate` ou `none`, delegando o versionamento e a evolução do schema para ferramentas de migration como o Flyway.
+> [!WARNING] Aviso de Produção
+> A propriedade `spring.jpa.hibernate.ddl-auto=create-drop` só faz sentido com banco efêmero em memória. Para bancos persistentes em produção, o padrão seguro é usar `validate` ou `none`, delegando o versionamento e a evolução do schema para ferramentas de migration como o Flyway.
 
 Também desligamos o `open-in-view`, que por padrão mantém a sessão do JPA aberta durante a serialização da resposta HTTP. Desligado, o Hibernate libera a conexão assim que a transação termina. Na prática, isso nos obriga a buscar os dados dentro da transação e elimina surpresas de *lazy loading* na camada web.
 
@@ -239,7 +241,8 @@ A `descricao` guarda o texto auxiliar, aquele detalhe que não cabe no título. 
 
 O `concluido` é um `boolean` primitivo, e essa escolha tem camadas. O primitivo nasce falso, então nenhuma tarefa surge concluída sem querer. A coluna gerada é `NOT NULL`, sem os três estados que um `Boolean` empacotado traria ao introduzir o nulo. E o acesso é assimétrico: há getter `isConcluido()`, mas não existe `setConcluido()`. O estado só muda pelo método `concluir()`, encapsulando uma transição de domínio. É o mesmo espírito do record com construtor compacto que validamos no JShell da Parte 1: invariantes protegidas no ponto de entrada.
 
-> ⚠️ *Aviso*: Você pode estar se perguntando: cadê o Lombok? Ele existe, é maduro e elimina exatamente esse bloco de getters e setters com `@Getter`, `@Setter` e `@Builder`. As vantagens são reais: menos linhas, menos manutenção manual e menos ruído visual. As desvantagens também: é mágica em tempo de compilação, depende de um processador de anotações que historicamente corre atrás de cada *release* nova do JDK e esconde os métodos que a JPA realmente lê para mapear a entidade. Neste momento da série, essa visibilidade importa mais do que a economia de linhas: queremos enxergar o Hibernate lendo os getters, os setters e as anotações `@Column` de forma explícita. Os Records já vão eliminar boa parte do *boilerplate* adiante, agora como DTOs. Futuramente, se o projeto crescer e o time decidir, a gente revisita o Lombok com a devida cerimônia.
+> [!WARNING] Aviso
+> Você pode estar se perguntando: cadê o Lombok? Ele existe, é maduro e elimina exatamente esse bloco de getters e setters com `@Getter`, `@Setter` e `@Builder`. As vantagens são reais: menos linhas, menos manutenção manual e menos ruído visual. As desvantagens também: é mágica em tempo de compilação, depende de um processador de anotações que historicamente corre atrás de cada *release* nova do JDK e esconde os métodos que a JPA realmente lê para mapear a entidade. Neste momento da série, essa visibilidade importa mais do que a economia de linhas: queremos enxergar o Hibernate lendo os getters, os setters e as anotações `@Column` de forma explícita. Os Records já vão eliminar boa parte do *boilerplate* adiante, agora como DTOs. Futuramente, se o projeto crescer e o time decidir, a gente revisita o Lombok com a devida cerimônia.
 
 Além dos atributos, três decisões estruturais merecem destaque. O construtor sem argumentos é `protected`, cumprindo a exigência da JPA sem convidar o resto do código a criar tarefas vazias. O `toString` sobrescrito devolve uma representação legível da tarefa em vez do hash padrão `Tarefa@4de5031f`, o que vai facilitar os logs e a sessão de JShell daqui a pouco. E o `id` numérico é provisório: em um próximo momento, ele dará lugar ao `UUIDv7` com Flyway. Nada aqui é definitivo, e isso é proposital.
 
@@ -285,7 +288,8 @@ Veja que aqui usamos um parâmetro nomeado `:fragmento` com `@Param("fragmento")
 
 Ainda assim, o `@Query` é estático. Para buscas avançadas onde o cliente combina múltiplos filtros opcionais em tempo de execução, ferramentas como o `JpaSpecificationExecutor` combinado com o verbo **HTTP QUERY (RFC 9734)** serão exploradas adiante.
 
-> 💡 *Dica*: O nome do método derivado é o contrato. Renomeou a propriedade `titulo`? O método derivado quebra em tempo de compilação. Por isso, os testes de repositório no final desta parte não são penduricalhos: eles confirmam o comportamento que cada consulta promete.
+> [!TIP] Dica
+> O nome do método derivado é o contrato. Renomeou a propriedade `titulo`? O método derivado quebra em tempo de compilação. Por isso, os testes de repositório no final desta parte não são penduricalhos: eles confirmam o comportamento que cada consulta promete.
 
 ## O serviço transacional e a regra que não mora no controller
 
@@ -365,7 +369,8 @@ public class TarefaService {
 ```
 *Os métodos `atualizar` e `concluir` não chamam `repository.save()` de propósito: a entidade é gerenciada pelo Hibernate dentro da transação, e o dirty checking sincroniza o estado automaticamente.*
 
-> 💡 *Nota*: A validação `titulo.length() > 120` no serviço não anula o `@Column(length = 120)` da entidade. São duas barreiras com propósitos distintos: a anotação define o contrato no schema do banco de dados, enquanto a validação no serviço protege a integridade do domínio antes do I/O, produzindo mensagens de erro legíveis.
+> [!NOTE] Nota
+> A validação `titulo.length() > 120` no serviço não anula o `@Column(length = 120)` da entidade. São duas barreiras com propósitos distintos: a anotação define o contrato no schema do banco de dados, enquanto a validação no serviço protege a integridade do domínio antes do I/O, produzindo mensagens de erro legíveis.
 
 Três detalhes aqui merecem uma lupa atenta, porque mudam a forma como pensamos persistência e segurança de tipos no ecossistema JPA.
 
@@ -543,7 +548,8 @@ jshell> /exit
 |  Goodbye
 ```
 
-> ℹ️ *Nota*: Esse warning do H2 no `contexto.close()` é esperado e inofensivo. O Hibernate fecha o banco antes que o bean `inMemoryDatabaseShutdownExecutor` do Spring Boot tente o `SHUTDOWN` final; daí o *"Database is already closed"*. O encerramento continua normalmente em seguida, com o pool do HikariCP sendo fechado e o JShell saindo com `Goodbye`.
+> [!NOTE] Nota
+> Esse warning do H2 no `contexto.close()` é esperado e inofensivo. O Hibernate fecha o banco antes que o bean `inMemoryDatabaseShutdownExecutor` do Spring Boot tente o `SHUTDOWN` final; daí o *"Database is already closed"*. O encerramento continua normalmente em seguida, com o pool do HikariCP sendo fechado e o JShell saindo com `Goodbye`.
 
 Isso não é teste automatizado, e não substitui um. É exploração guiada, a mesma lógica de REPL-Driven Development da Parte 1: provar a hipótese no terminal antes de formalizar a garantia. O `toString` da entidade, que adicionamos sem grande alarde, agora paga a conta da legibilidade.
 
@@ -698,7 +704,8 @@ class TarefaRepositoryTest {
 ```
 *Três cenários rodando contra o H2 real: persistência e contagem por status, filtro por fragmento ignorando caixa e busca pendente ordenada.*
 
-> 💡 *Dica*: O `@DataJpaTest` carrega exclusivamente a fatia de persistência (entidades e repositórios) e executa cada método de teste dentro de uma transação com *rollback* automático ao final, garantindo que um teste nunca contamine o estado do próximo.
+> [!TIP] Dica
+> O `@DataJpaTest` carrega exclusivamente a fatia de persistência (entidades e repositórios) e executa cada método de teste dentro de uma transação com *rollback* automático ao final, garantindo que um teste nunca contamine o estado do próximo.
 
 Rodamos tudo:
 

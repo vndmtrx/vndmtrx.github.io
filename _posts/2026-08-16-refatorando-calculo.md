@@ -16,7 +16,8 @@ A sensação era de estar diante de um assunto que todo mundo parecia assimilar 
 
 Aí, esses dias, eu esbarrei em um artigo de 2018 chamado *"Simplifying and Refactoring Introductory Calculus"* [^1], do Jonathan Bartlett, e tive uma daquelas epifanias libertadoras. O autor coloca o dedo na ferida e propõe uma reformulação profunda no ensino de cálculo usando um conceito que qualquer pessoa de computação conhece na pele: a ideia de *refactoring*.
 
-> 🔔 *Disclaimer*: Este post reflete a minha experiência pessoal com o ensino de cálculo e a leitura do artigo. Não sou matemático, não pretendo ser, e se eu errar alguma tecnicalidade aqui, fiquem à vontade para me corrigir nos comentários.
+> [!NOTE] Disclaimer
+> Este post reflete a minha experiência pessoal com o ensino de cálculo e a leitura do artigo. Não sou matemático, não pretendo ser, e se eu errar alguma tecnicalidade aqui, fiquem à vontade para me corrigir nos comentários.
 
 ## Dívida técnica, mas na matemática
 

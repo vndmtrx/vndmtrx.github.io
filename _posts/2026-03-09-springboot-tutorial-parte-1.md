@@ -13,7 +13,8 @@ series: Spring Boot Tutorial
 
 E se de repente a gente decidisse escrever um tutorial de Spring Boot? Pois é, eu decidi começar essa seara de estudo do framework pela parte que ninguém liga, mas que geralmente é a que quebra tudo quando não é feito do jeito certo: o ambiente de desenvolvimento. Parece bobo, mas sem ele sólido desde o começo, o resto vira dor de cabeça infinita.
 
-> 🔔 *Nota da Série*: Este post inaugura a série **"Spring Boot Tutorial"**, onde construímos do zero uma API backend de produção com **Spring Boot**, explorando boas práticas de arquitetura, contratos, persistência, resiliência, observabilidade e nuvem. O código-fonte de apoio e os projetos dos capítulos práticos estão disponíveis no repositório parceiro [vndmtrx/estudos_springboot](https://github.com/vndmtrx/estudos_springboot).
+> [!NOTE] Nota da Série
+> Este post inaugura a série **"Spring Boot Tutorial"**, onde construímos do zero uma API backend de produção com **Spring Boot**, explorando boas práticas de arquitetura, contratos, persistência, resiliência, observabilidade e nuvem. O código-fonte de apoio e os projetos dos capítulos práticos estão disponíveis no repositório parceiro [vndmtrx/estudos_springboot](https://github.com/vndmtrx/estudos_springboot).
 
 Nos últimos anos, minha rotina profissional tem sido focada quase que inteiramente em segurança, infraestrutura e DevOps. Isso envolve migrações complexas para a nuvem, automação de esteiras de CI/CD e governança de clusters de VMs e contêineres. Olhando o desenvolvimento sob essa lente operacional, uma coisa sempre salta aos olhos: a negligência com o setup local de quem programa cobra juros altíssimos em produção. O clássico "na minha máquina funciona" quase sempre nasce aqui.
 

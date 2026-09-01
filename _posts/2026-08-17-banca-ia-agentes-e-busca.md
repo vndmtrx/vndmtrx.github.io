@@ -21,7 +21,8 @@ O desafio deles não é trivial: tiveram apenas uma semana para digerir capítul
 
 Como forma de acalmar meus próprios nervos e criar uma bússola prática para a aula de logo mais, decidi colocar no papel o que eu consegui pescar como a espinha dorsal desses textos. No fim das contas, este texto é um desabafo honesto e um guia pessoal sobre o que considero obrigatório ver em cada apresentação e o que é perfeitamente compreensível relevar quando todo mundo teve pouco tempo e o relógio está correndo contra você.
 
-> 🔔 **Disclaimer**: Este texto reflete as anotações de alguém que passou o fim de semana tentando digerir leituras densas de IA para não passar vergonha na aula. Não domino nenhum detalhe formal desses papers, e estou usando a escrita justamente para organizar a minha intuição antes da apresentação.
+> [!NOTE] Disclaimer
+> Este texto reflete as anotações de alguém que passou o fim de semana tentando digerir leituras densas de IA para não passar vergonha na aula. Não domino nenhum detalhe formal desses papers, e estou usando a escrita justamente para organizar a minha intuição antes da apresentação.
 
 ## A angústia do primeiro grupo avaliador
 
@@ -90,7 +91,8 @@ A maior armadilha de uma apresentação de vinte minutos é o desespero de quere
 
 Saber escolher o que enfatizar e o que cortar é sinal de clareza. Para quem está assistindo (especialmente quem passou o fim de semana alternando entre ler paper e cuidar de plantações virtuais, tentando não surtar com a quantidade de conteúdo), vale muito mais entender por que a reatividade pura falha ou por que o espaço de estados explode do que ver vinte slides abarrotados de texto passados a jato.
 
-> 💡 **Nota de Bancada**: Uma boa apresentação de vinte minutos foca nas perguntas certas: "qual é o gargalo aqui?" e "por que inventaram essa solução?".
+> [!NOTE] Nota de Bancada
+> Uma boa apresentação de vinte minutos foca nas perguntas certas: "qual é o gargalo aqui?" e "por que inventaram essa solução?".
 
 ## A listinha de checagem para a hora da apresentação
 

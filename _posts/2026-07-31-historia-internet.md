@@ -14,7 +14,8 @@ A internet é uma dessas coisas que a gente usa o dia inteiro sem parar pra pens
 
 A ideia desse post é contar essa história de uma forma razoavelmente acessível, passando pelos momentos que eu considero mais marcantes na trajetória da internet. Não é um tratado acadêmico e nem pretende ser exaustivo. É mais um passeio cronológico que vai das redes militares dos anos 60 até o streaming e a Internet das Coisas. Considere esse texto como um mapa de onde as coisas vieram e de como essa infraestrutura que usamos todos os dias foi construída.
 
-> 💡 *Nota de Mea Culpa*: Ok, admito que no fim das contas a história não ficou tão breve assim. Quando comecei a juntar as peças, percebi que resumir seis décadas de evolução sem perder os detalhes importantes ia exigir bem mais do que um post rápido. Tive um trabalho considerável de pesquisa para compilar, organizar e cruzar dezenas de fontes em uma linha do tempo única, tentando entregar tudo de forma direta pra você (claro, com uma ajudinha de IA para ajudar a localizar fontes e organizar as ideias). Aliás, não deixe de conferir as referências no final.
+> [!NOTE] Nota de Mea Culpa
+> Ok, admito que no fim das contas a história não ficou tão breve assim. Quando comecei a juntar as peças, percebi que resumir seis décadas de evolução sem perder os detalhes importantes ia exigir bem mais do que um post rápido. Tive um trabalho considerável de pesquisa para compilar, organizar e cruzar dezenas de fontes em uma linha do tempo única, tentando entregar tudo de forma direta pra você (claro, com uma ajudinha de IA para ajudar a localizar fontes e organizar as ideias). Aliás, não deixe de conferir as referências no final.
 
 ## Linha do Tempo e Estrutura do Post
 

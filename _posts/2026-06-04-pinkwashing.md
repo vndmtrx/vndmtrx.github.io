@@ -13,7 +13,8 @@ tags: [Sociedade, Orgulho, LGBT, LGBTQIAPN+]
 
 Se você trabalha com marketing, RH ou simplesmente navega pelo LinkedIn e redes sociais em junho, muito provavelmente já riu (de puro nervoso) com esse vídeo viral da jujudosteclados servindo *cunt* [^1]. A paródia escancara um roteiro que centenas de corporações seguem fielmente: o desespero comercial de parecer inclusiva à base de clichês forçados, descontos aleatórios e selos superficiais de aprovação. O "Pinkwashing" virou meme porque a realidade corporativa consegue ser assustadoramente caricata. É a partir dessa piada, porém, que precisamos falar sobre o que acontece quando a tela apaga e o expediente do dia a dia continua.
 
-> 🏳️‍🌈 *Disclaimer*: Este post traz uma mistura de desabafo pessoal e análise de cultura corporativa.
+> [!NOTE] Disclaimer
+> Este post traz uma mistura de desabafo pessoal e análise de cultura corporativa.
 
 ## A ilusão da diversidade sazonal
 

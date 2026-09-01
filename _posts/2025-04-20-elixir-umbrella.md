@@ -34,7 +34,8 @@ cd conversor
 
 A flag `--umbrella` inicializa a estrutura com a pasta `apps/`, onde viverão todas as nossas subaplicações.
 
-> ⚠️ *Aviso*: A partir daqui, sempre que falarmos da **raiz** do projeto, estamos nos referindo a esta pasta inicial criada com o comando acima.
+> [!WARNING] Aviso
+> A partir daqui, sempre que falarmos da **raiz** do projeto, estamos nos referindo a esta pasta inicial criada com o comando acima.
 
 Agora, dentro do diretório `apps`, criamos os três subprojetos independentes:
 
@@ -73,7 +74,8 @@ conversor
 └── mix.exs
 ```
 
-> ⚠️ *Aviso*: Esta listagem resume apenas os arquivos principais de lógica e teste para mantermos o foco didático.
+> [!WARNING] Aviso
+> Esta listagem resume apenas os arquivos principais de lógica e teste para mantermos o foco didático.
 
 O arquivo `mix.exs` [^2] da raiz define que o projeto é do tipo umbrella através da opção `apps_path: "apps"`, centralizando a compilação e a execução dos testes.
 
@@ -143,7 +145,8 @@ end
 
 *Implementa conversões de temperatura entre escalas Celsius e Fahrenheit.*
 
-> 💡 *Nota*: Uma convenção comum e elegante no Elixir é usar nomes com namespaces modulares, como `Conversor.Temperatura` e `Conversor.Distancia`. Isso organiza a estrutura de pacotes, evita conflitos de identificadores e esclarece imediatamente o domínio de cada função.
+> [!NOTE] Nota
+> Uma convenção comum e elegante no Elixir é usar nomes com namespaces modulares, como `Conversor.Temperatura` e `Conversor.Distancia`. Isso organiza a estrutura de pacotes, evita conflitos de identificadores e esclarece imediatamente o domínio de cada função.
 
 ## App Integrador: Main
 
@@ -164,7 +167,8 @@ end
 
 *Declara dependências internas do projeto guarda-chuva utilizando a opção in_umbrella.*
 
-> 💡 *Nota*: Em projetos umbrella, cada app vive isolado em sua própria pasta, mas todos compartilham o mesmo ambiente de execução na compilação. Ao adicionar `in_umbrella: true`, os módulos dos apps dependentes ficam imediatamente disponíveis no namespace sem necessidade de configurações adicionais.
+> [!NOTE] Nota
+> Em projetos umbrella, cada app vive isolado em sua própria pasta, mas todos compartilham o mesmo ambiente de execução na compilação. Ao adicionar `in_umbrella: true`, os módulos dos apps dependentes ficam imediatamente disponíveis no namespace sem necessidade de configurações adicionais.
 
 O módulo interativo de terminal:
 
@@ -199,7 +203,8 @@ end
 
 *Orquestra as chamadas aos conversores recebendo entradas do usuário e tratando parsing inválido recursivamente.*
 
-> ⚠️ *Aviso*: Em aplicações corporativas dificilmente usaremos loop de console interativo dessa forma; trata-se apenas de um exemplo simples para demonstrar a orquestração e execução de múltiplos módulos locais.
+> [!WARNING] Aviso
+> Em aplicações corporativas dificilmente usaremos loop de console interativo dessa forma; trata-se apenas de um exemplo simples para demonstrar a orquestração e execução de múltiplos módulos locais.
 
 ## Compilação e execução standalone
 
@@ -278,7 +283,8 @@ mix conversor_task
 
 *Roda a Mix Task recém-criada a partir de qualquer nível do projeto.*
 
-> 💡 *Dica*: Ao rodar `mix help | grep conversor`, o Mix listará automaticamente a sua task com o resumo que você definiu no `@shortdoc`.
+> [!TIP] Dica
+> Ao rodar `mix help | grep conversor`, o Mix listará automaticamente a sua task com o resumo que você definiu no `@shortdoc`.
 
 ## Usando IEx com projetos umbrella
 
