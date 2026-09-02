@@ -5,6 +5,7 @@ subtitle: "Centralizando usuários, grupos e chaves públicas com Debian Trixie 
 author:
   - "Eduardo N. S. R."
 date: 2026-07-18 21:57:00 GMT-3
+modified_date: 2026-09-02 13:57:00 GMT-3
 permalink: /posts/openssh-sssd-ldap/
 tags: [SSH, SSSD, LDAP, Debian]
 series: OpenSSH na Prática
@@ -42,10 +43,10 @@ O SSSD não é apenas "mais um cliente LDAP". Ele é um **daemon de sistema** [^
 - **NSS (Name Service Switch):** Permite que comandos como `getent passwd`, `id`, `ls -la` resolvam nomes de usuários e grupos que não existem no `/etc/passwd` local. Para o kernel e os programas, é como se o usuário fosse local. Transparente. Invisível.
 - **PAM (Pluggable Authentication Modules):** Permite que o processo de login (seja via SSH, console, `su`, ou qualquer outra porta de entrada) valide a senha do usuário contra o diretório remoto, sem precisar de senhas locais no `/etc/shadow`.
 
-O SSSD faz tudo isso com **cache local** inteligente: se o servidor LDAP cair (porque servidores LDAP adoram cair na sexta-feira às 18h), os usuários que já logaram recentemente continuam acessando normalmente, graças a credenciais cacheadas localmente no banco de dados do SSSD (`/var/lib/sss/db/`).
+O SSSD faz tudo isso com **cache local** inteligente: se o servidor LDAP cair (porque servidores LDAP adoram cair na sexta-feira às 18h), os usuários que já logaram recentemente continuam acessando normalmente, graças a credenciais cacheadas localmente no banco de dados do SSSD (`/var/lib/sss/db/`) [^3].
 
 > [!NOTE] Curiosidade
-> O SSSD nasceu como um projeto da Red Hat/Fedora, mas hoje é mantido como projeto upstream independente [^3] e está presente nos repositórios de praticamente todas as distribuições Linux relevantes. No Debian 13 (Trixie), o metapacote `sssd` puxa automaticamente os módulos para NSS (`sssd-common`), PAM (`libpam-sss`) e o provedor LDAP (`sssd-ldap`).
+> O SSSD nasceu como um projeto da Red Hat/Fedora, mas hoje é mantido como [projeto upstream independente](https://github.com/SSSD/sssd) e está presente nos repositórios de praticamente todas as distribuições Linux relevantes. No Debian 13 (Trixie), o metapacote `sssd` puxa automaticamente os módulos para NSS (`sssd-common`), PAM (`libpam-sss`) e o provedor LDAP (`sssd-ldap`).
 
 Mas a cereja no topo do bolo para o nosso contexto é uma feature que pouca gente conhece: o SSSD pode **armazenar e servir chaves públicas SSH diretamente do LDAP** para o OpenSSH, usando um utilitário chamado `sss_ssh_authorizedkeys` [^4]. É isso que vamos explorar a fundo.
 
@@ -237,10 +238,10 @@ override_homedir = /tmp/%u
 
 *Substitui dinamicamente o diretório home para um caminho temporário `/tmp/usuario`.*
 
-Isso faz o SSSD **ignorar** o atributo `homeDirectory` do LDAP (que provavelmente está apontando para `/home/joao`) e substituir por `/tmp/joao` em todos os servidores. O diretório `/tmp` já existe, é limpo automaticamente pelo sistema, e ninguém deveria guardar nada importante lá.
+Isso faz o SSSD **ignorar** o atributo `homeDirectory` do LDAP (que provavelmente está apontando para `/home/joao`) e substituir por `/tmp/joao` em todos os servidores [^7]. O diretório `/tmp` já existe, é limpo automaticamente pelo sistema, e ninguém deveria guardar nada importante lá.
 
 > [!NOTE] Nota
-> O `%u` é um token que o SSSD expande para o nome do usuário. Existem outros tokens úteis: `%d` (nome do domínio), `%f` (FQDN do usuário), `%U` (UID numérico). A documentação completa está no `sssd.conf(5)` [^7].
+> O `%u` é um token que o SSSD expande para o nome do usuário. Existem outros tokens úteis: `%d` (nome do domínio), `%f` (FQDN do usuário), `%U` (UID numérico). A documentação completa está no [`sssd.conf(5)`](https://manpages.debian.org/testing/sssd-common/sssd.conf.5.en.html).
 
 "Mas Dudu, se o home directory do usuário é `/tmp/joao`, o SSH não vai procurar o `authorized_keys` nesse diretório?"
 

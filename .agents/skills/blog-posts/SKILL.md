@@ -45,6 +45,7 @@ Estas regras são **absolutas** para manter a identidade visual e tipográfica d
 4. **Símbolos e Setas no Texto Corrido:** NUNCA use setas Unicode (`→`, `←`, `⇒`, `↔`) soltas no texto corrido em prosa. Use sempre representações ASCII (`->`, `<-`, `=>`, `<->`). Para diagramas, caixas e árvores em blocos de código (`code fences`), o padrão é o uso obrigatório de **Block Constructions / Box-Drawing** (veja a Seção 6).
 5. **Emojis Apenas em Callouts:** NUNCA insira emojis soltos no texto corrido. Emojis são permitidos exclusivamente dentro de callouts/blockquotes.
 6. **Sem H1 no Corpo:** O `#` é exclusivo do título no front matter. No corpo, comece em `##`.
+7. **Callouts sem Footnotes ou Referências Externas:** NUNCA use notas de rodapé (`[^n]`) ou referências de links indiretas (`[texto][ref]`) dentro de caixas de callout (`> [!TIPO]`). O plugin `jekyll-gfm-admonitions` compila o bloco isoladamente via `@markdown.convert`, fazendo com que definições externas não sejam resolvidas e apareçam como texto literal puro (`[^n]`). Em callouts, use apenas links diretos inline (`[texto](url)`). Marcações autossuficientes (**negrito**, *itálico*, `código`, listas e blocos de código) funcionam normalmente.
 
 ---
 
@@ -127,7 +128,7 @@ Alterne o número de frases por parágrafo conforme o papel cognitivo:
 | **Bloco de Código** | Fence com linguagem + explicação em itálico logo abaixo | ```` ```bash\nssh ...\n```\n*Explicação do comando em itálico.* ```` (em tutoriais interativos com `$`, comentários inline `#` substituem o itálico). |
 | **Código Inline** | \`comando\`, \`flag\`, \`caminho\`, \`função\` | Obrigatório para qualquer menção de código no texto corrido. *Nunca em títulos.* |
 | **Estrangeirismos** | *termo em inglês* | Itálico para termos técnicos não traduzidos (*slop*, *page cache*, *dirty*, *runtime*). |
-| **Callouts / Alerts** | `> [!TIPO] Título em Português`<br>`> Texto da nota` | Máximo 1 por seção. Sempre no padrão **GFM Admonitions** com **título explícito em português** (`> [!TIP] Dica`, `> [!NOTE] Nota`, `> [!NOTE] Disclaimer`, `> [!NOTE] Nota da Série`, `> [!WARNING] Aviso`, `> [!WARNING] Atenção`, `> [!IMPORTANT] Importante`, `> [!CAUTION] Aviso Crítico de Segurança`). Processado nativamente pelo plugin `jekyll-gfm-admonitions`. |
+| **Callouts / Alerts** | `> [!TIPO] Título em Português`<br>`> Texto da nota` | Máximo 1 por seção. Sempre no padrão **GFM Admonitions** com **título explícito em português** (`> [!TIP] Dica`, `> [!NOTE] Nota`, `> [!NOTE] Disclaimer`, `> [!NOTE] Nota da Série`, `> [!WARNING] Aviso`, `> [!WARNING] Atenção`, `> [!IMPORTANT] Importante`, `> [!CAUTION] Aviso Crítico de Segurança`). Processado nativamente pelo plugin `jekyll-gfm-admonitions`. **Atenção:** o plugin compila o bloco de forma isolada — formatações locais funcionam perfeitamente (**negrito**, *itálico*, links diretos inline, código), mas **NUNCA** use notas de rodapé (`[^n]`) ou referências com definições fora da caixa, pois não são resolvidas e viram texto literal. |
 | **Analogias** | Mundo físico e cotidiano | Usar quando o conceito for abstrato (ex: túnel SSH como cano de água com fio dentro; sudoers como chave mestra para entregador de pizza). |
 | **Diagramas e Árvores (Block Construction)** | Textos monoespaçados com caracteres Box-Drawing | Usar **Block Constructions** Unicode (`├──`, `└──`, `│`, `┌──┐`, `└──┘`, `├──┤`, `──>`, `<──`, `───[túnel]──>`) para árvores de diretórios, topologias de rede, esquemas de frames e fluxogramas em fences de código. Evitar caracteres legados como `+--` e `|` soltos quando houver equivalentes limpos em box-drawing. |
 | **Tabelas** | Markdown com alinhamento limpo | Para resumos comparativos e mapeamentos de flags. |
@@ -177,7 +178,7 @@ Antes de publicar ou entregar qualquer post, valide:
 - [ ] Códigos com linguagem no fence e explicação em itálico (ou comentários inline)?
 - [ ] Comandos, flags e arquivos com backticks no texto corrido?
 - [ ] Termos em inglês e estrangeirismos em *itálico*?
-- [ ] Callouts em blockquotes com `*Label*:`?
+- [ ] Callouts no padrão GFM Admonitions (`> [!TIPO] Título`) sem notas de rodapé ou referências externas (apenas links inline diretos)?
 - [ ] Diagramas, fluxos e árvores usando Block Constructions / Box-Drawing (`├──`, `└──`, `│`, `┌──┐`, `└──┘`, `──>`)?
 - [ ] Referências com footnote `[^n]` na seção `## Referências`?
 - [ ] Para séries: menção ao repositório/tag parceiro e exercícios com `<details markdown="1">`?

@@ -5,6 +5,7 @@ subtitle: "Por que construir um cluster Kubernetes na mão?"
 author:
   - "Eduardo N. S. R."
 date: 2026-08-15 14:30:00 GMT-3
+modified_date: 2026-09-02 13:57:00 GMT-3
 permalink: /posts/k8sbox-visao-geral/
 tags: [Kubernetes, Ansible, DevOps, Infraestrutura]
 series: Kubernetes in a Box
@@ -13,13 +14,13 @@ series: Kubernetes in a Box
 Se você trabalha com infraestrutura, nuvem ou DevOps, as chances de você já ter digitado `kubeadm init` ou subido um cluster em nuvem gerenciada (EKS, GKE, AKS) com dois cliques são de praticamente cem por cento. Essas ferramentas são incríveis para o dia a dia de trabalho porque ninguém em sã consciência quer passar quatro horas configurando certificados e manifestos na mão para subir um ambiente de homologação. O problema começa quando algo quebra nos bastidores e você não faz a menor ideia do que está acontecendo por baixo do capô.
 
 > [!NOTE] Nota da Série
-> Este post inaugura a série **"Kubernetes in a Box"**, onde vamos dissecar e construir, do zero e de forma totalmente reproduzível via Ansible, um cluster Kubernetes completo, com alta disponibilidade, armazenamento persistente, rede moderna e observabilidade. Todo o código do projeto está disponível no repositório parceiro [vndmtrx/k8s-in-a-box](https://github.com/vndmtrx/k8s-in-a-box) [^1].
+> Este post inaugura a série **"Kubernetes in a Box"**, onde vamos dissecar e construir, do zero e de forma totalmente reproduzível via Ansible, um cluster Kubernetes completo, com alta disponibilidade, armazenamento persistente, rede moderna e observabilidade. Todo o código do projeto está disponível no repositório parceiro [vndmtrx/k8s-in-a-box](https://github.com/vndmtrx/k8s-in-a-box).
 
 Há algum tempo, eu mantinha um projeto de estudos chamado `vagrant-k8s-cluster` [^2], onde eu subia máquinas virtuais locais e deixava o `kubeadm` fazer a mágica dele. Funcionava perfeitamente, mas aquilo sempre me deixava com uma pulga atrás da orelha. O `kubeadm` gerava dezenas de certificados, subia um `etcd`, configurava o *control plane*, gerava *kubeconfigs*, e no final me entregava um comando de *join*. Mas o que exatamente estava acontecendo ali dentro? Como os certificados se conversavam? Como o *control plane* encontrava o `etcd`? Como o nó decidia quem tinha autoridade para fazer o quê?
 
-A resposta para essas perguntas não está nos instaladores automáticos. Ela está em abrir a caixa preta e montar o quebra-cabeça peça por peça. Foi assim que nasceu o projeto **k8s-in-a-box**: um laboratório estruturado para construir um cluster Kubernetes seguindo a cartilha do *Kubernetes The Hard Way* [^3], mas com uma diferença crucial. Em vez de colar comandos gigantescos no terminal até os dedos doerem e nunca mais conseguir reproduzir o ambiente, automatizamos cada milímetro do processo com **Ansible** e **Vagrant**.
+A resposta para essas perguntas não está nos instaladores automáticos. Ela está em abrir a caixa preta e montar o quebra-cabeça peça por peça. Foi assim que nasceu o projeto **k8s-in-a-box** [^1]: um laboratório estruturado para construir um cluster Kubernetes seguindo a cartilha do *Kubernetes The Hard Way* [^3], mas com uma diferença crucial. Em vez de colar comandos gigantescos no terminal até os dedos doerem e nunca mais conseguir reproduzir o ambiente, automatizamos cada milímetro do processo com **Ansible** e **Vagrant**.
 
-A proposta aqui é construir o conhecimento de forma estritamente progressiva. Vamos começar do hardware virtual até chegar num cluster completo, seguro e validado pelo teste de conformidade oficial da CNCF.
+A proposta aqui é construir o conhecimento de forma estritamente progressiva. Vamos começar do hardware virtual até chegar num cluster completo, seguro e validado pelo teste de conformidade oficial da CNCF [^6].
 
 ## A ilusão da conveniência e o valor do Hard Way
 
@@ -122,7 +123,7 @@ Ao longo do desenvolvimento do projeto, várias decisões técnicas foram tomada
 * **Cache local com Skopeo e extração via OverlayFS**: para não gastar sua banda baixando gigabytes de imagens a cada recriação de laboratório, o projeto faz cache centralizado das imagens via `skopeo copy`. Além disso, o utilitário `etcdctl` é extraído diretamente da camada *OverlayFS* do contêiner do `etcd` em execução, sem necessidade de baixar pacotes compactados extras da internet.
 
 > [!NOTE] Conformidade CNCF
-> Desde a versão anterior (baseada puramente em serviços `systemd`) até a atual (com *Static Pods*), o cluster foi testado e **aprovado** na suíte oficial de testes de conformidade da CNCF via `sonobuoy` [^6]. Isso garante que a nossa construção artesanal não é só um brinquedo de entusiasta: o cluster é 100% aderente aos padrões e às especificações oficiais do Kubernetes.
+> Desde a versão anterior (baseada puramente em serviços `systemd`) até a atual (com *Static Pods*), o cluster foi testado e **aprovado** na [suíte oficial de testes de conformidade da CNCF via Sonobuoy](https://github.com/cncf/k8s-conformance). Isso garante que a nossa construção artesanal não é só um brinquedo de entusiasta: o cluster é 100% aderente aos padrões e às especificações oficiais do Kubernetes.
 
 ## Como a série está organizada
 

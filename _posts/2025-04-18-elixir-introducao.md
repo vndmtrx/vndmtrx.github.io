@@ -5,7 +5,7 @@ subtitle: "Primeiros passos no paradigma funcional com ASDF, Mix e ExUnit"
 author:
   - "Eduardo N. S. R."
 date: 2025-04-18 15:09:00 GMT-3
-modified_date: 2026-08-14 15:25:00 GMT-3
+modified_date: 2026-09-02 13:57:00 GMT-3
 permalink: /posts/elixir-introducao/
 tags: [Programação, Programação Funcional, Elixir]
 series: Aprendendo Elixir
@@ -32,18 +32,18 @@ Neste primeiro módulo, vamos configurar o ambiente do zero com o ASDF, entender
 ## Antes de instalar: uma nota sobre versões
 
 > [!WARNING] Atenção
-> Erlang e Elixir têm ciclos de vida independentes e versões que chegam ao fim do suporte com regularidade. Antes de seguir com a instalação, recomendo verificar as versões ativas no [endoflife.date/erlang](https://endoflife.date/erlang) [^5] e no [endoflife.date/elixir](https://endoflife.date/elixir) [^6]. Neste guia, usamos o **Erlang 27.3.2** e o **Elixir 1.18.3-otp-27**, que formam uma combinação estável e suportada.
+> Erlang e Elixir têm ciclos de vida independentes e versões que chegam ao fim do suporte com regularidade. Antes de seguir com a instalação, recomendo verificar as versões ativas no [endoflife.date/erlang](https://endoflife.date/erlang) e no [endoflife.date/elixir](https://endoflife.date/elixir). Neste guia, usamos o **Erlang 27.3.2** e o **Elixir 1.18.3-otp-27**, que formam uma combinação estável e suportada.
 
-Um ponto importante sobre a nomenclatura das versões: quando você instala o Elixir via ASDF, o sufixo `-otp-XX` indica com qual versão principal do Erlang/OTP aquele *build* do Elixir foi compilado. Usar `1.18.3-otp-27` significa que temos o Elixir 1.18.3 compilado contra o OTP 27, casando exatamente com o Erlang 27 instalado. Misturar versões incompatíveis resulta em erros crípticos de inicialização na BEAM, então sempre preste atenção a esse sufixo.
+Um ponto importante sobre a nomenclatura das versões: quando você instala o Elixir via ASDF, o sufixo `-otp-XX` indica com qual versão principal do Erlang/OTP aquele *build* do Elixir foi compilado. Usar `1.18.3-otp-27` significa que temos o Elixir 1.18.3 compilado contra o OTP 27, casando exatamente com o Erlang 27 instalado. Misturar versões incompatíveis resulta em erros crípticos de inicialização na BEAM, então sempre preste atenção a esse sufixo [^5] [^6].
 
 ## Instalação do ASDF e das dependências
 
 > [!WARNING] Aviso
-> Este guia de instalação foi testado no Debian 12 (Bookworm) e Debian 13 (Trixie). Os comandos e pacotes listados podem variar ligeiramente dependendo da sua distribuição Linux ou sistema operacional. A documentação oficial do ASDF [^7] fornece instruções específicas para cada ambiente.
+> Este guia de instalação foi testado no Debian 12 (Bookworm) e Debian 13 (Trixie). Os comandos e pacotes listados podem variar ligeiramente dependendo da sua distribuição Linux ou sistema operacional. A [documentação oficial do ASDF](https://asdf-vm.com/) fornece instruções específicas para cada ambiente.
 
 ### Dependências para compilação do Erlang
 
-Antes de instalar o ASDF e compilar as linguagens, precisamos garantir as bibliotecas de desenvolvimento, ferramentas de compilação e suporte a SSL no sistema:
+Antes de instalar o ASDF [^7] e compilar as linguagens, precisamos garantir as bibliotecas de desenvolvimento, ferramentas de compilação e suporte a SSL no sistema:
 
 ```bash
 sudo apt update && sudo apt install -y git curl autoconf \
