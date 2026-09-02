@@ -43,7 +43,8 @@ body {
   -webkit-hyphens: auto;
 }
 
-code, pre {
+code,
+pre {
   font-variation-settings: "MONO" 1, "CASL" 0;
 }
 
@@ -80,10 +81,12 @@ code, pre {
     font-size: 1.6rem;
     margin-top: 2rem;
   }
+
   h3 {
     font-size: 1.3rem;
     margin-top: 1.5rem;
   }
+
   h4 {
     font-size: 1.1rem;
     margin-top: 1.2rem;
@@ -124,7 +127,8 @@ details {
     }
   }
 
-  .highlight, pre {
+  .highlight,
+  pre {
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
   }
@@ -413,29 +417,24 @@ body.pix-modal-open {
 
   .pix-modal-badge {
     display: inline-block;
-    font-size: 0.75rem;
+    font-size: 0.78rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
     color: #d97706;
     background-color: rgba(245, 158, 11, 0.12);
     border: 1px solid rgba(245, 158, 11, 0.3);
-    padding: 0.2rem 0.65rem;
+    padding: 0.3rem 0.85rem;
+    line-height: 1.35;
     border-radius: 9999px;
-    margin-bottom: 0.5rem;
-  }
-
-  .pix-modal-title {
-    font-size: 1.35rem;
-    font-weight: 600;
-    margin: 0 0 0.35rem 0;
-    color: var(--minima-heading-color);
+    margin: 0 0 0.65rem 0;
   }
 
   .pix-modal-subtitle {
-    font-size: 0.875rem;
+    font-size: 0.85rem;
     color: var(--minima-brand-color);
-    margin: 0;
+    margin: 0 auto;
+    max-width: 340px;
     line-height: 1.45;
   }
 }
@@ -504,9 +503,9 @@ html[data-theme="dark"] .pix-modal-header .pix-modal-badge {
     flex: 1;
     border: none;
     background: transparent;
-    padding: 0.55rem 0.75rem;
+    padding: 0.55rem 0.65rem;
     font-family: var(--minima-code-font-family, monospace);
-    font-size: 0.78rem;
+    font-size: 0.7rem;
     color: var(--minima-text-color);
     outline: none;
     text-overflow: ellipsis;
@@ -678,7 +677,8 @@ html[data-theme="dark"] .post-pix-box .post-pix-badge {
     line-height: 1;
     margin-bottom: 0.45rem;
 
-    svg, .octicon {
+    svg,
+    .octicon {
       flex-shrink: 0;
       width: 15px;
       height: 15px;

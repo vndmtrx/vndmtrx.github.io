@@ -1,12 +1,13 @@
-<!-- Modal do Pix / Me pague um café -->
-<div id="pix-modal-overlay" class="pix-modal-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="pix-modal-title" onclick="handlePixOverlayClick(event)">
+<!-- Modal do Pix / Apoie -->
+<div id="pix-modal-overlay" class="pix-modal-overlay" aria-hidden="true" role="dialog" aria-modal="true"
+  aria-labelledby="pix-modal-title" onclick="handlePixOverlayClick(event)">
   <div class="pix-modal-dialog">
     <button type="button" class="pix-modal-close" onclick="closePixModal()" aria-label="Fechar">&times;</button>
-    
+
     <div class="pix-modal-header">
-      <div class="pix-modal-badge">☕ Me pague um café</div>
-      <h3 id="pix-modal-title" class="pix-modal-title">Apoie com um Pix</h3>
-      <p class="pix-modal-subtitle">Qualquer quantia é muito bem-vinda como forma de agradecimento pelo conteúdo!</p>
+      <div id="pix-modal-title" class="pix-modal-badge">☕ Apoie este Blog</div>
+      <p class="pix-modal-subtitle">Qualquer quantia é muito bem-vinda para nos motivar a produzir conteúdo de
+        qualidade!</p>
     </div>
 
     <div class="pix-modal-body">
@@ -17,9 +18,10 @@
       </div>
 
       <div class="pix-copy-wrapper">
-        <label class="pix-copy-label" for="pix-key-input">Chave Pix (Chave Aleatória):</label>
+        <label class="pix-copy-label" for="pix-key-input">Pix (Chave Aleatória):</label>
         <div class="pix-copy-input-group">
-          <input type="text" id="pix-key-input" class="pix-key-input" value="f37b496b-5f20-450b-94a2-ca683914abf0" readonly onclick="this.select();" />
+          <input type="text" id="pix-key-input" class="pix-key-input" value="f37b496b-5f20-450b-94a2-ca683914abf0"
+            readonly onclick="this.select();" />
           <button type="button" id="pix-copy-btn" class="pix-copy-btn" onclick="copyPixKey()" title="Copiar chave">
             <span id="pix-copy-icon">📋</span>
             <span id="pix-copy-text">Copiar</span>
