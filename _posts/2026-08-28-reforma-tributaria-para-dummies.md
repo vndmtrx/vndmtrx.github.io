@@ -5,7 +5,7 @@ subtitle: "Talvez a reforma tributária seja mais simples que seu contador faz p
 author:
   - "Eduardo N. S. R."
 date: 2026-08-28 06:38:00 GMT-3
-modified_date: 2026-08-31 22:19:00 GMT-3
+modified_date: 2026-09-02 13:57:00 GMT-3
 permalink: /posts/reforma-tributaria-python/
 tags: [Python, Impostos, Opinião, Programação, Sociedade]
 ---
@@ -17,7 +17,7 @@ Nas últimas semanas, minha timeline virou um festival de pânico moral e desinf
 Pois bem. Cá estamos. Eu peguei a Emenda Constitucional 132/2023, a Lei Complementar 214/2025 e os dados públicos da Receita Federal, e fiz o que qualquer pessoa sentada (e com um pouco de conhecimento de programação) pode fazer: modelei a mecânica do fluxo. Os números estão aí embaixo. O código roda em qualquer máquina. A matemática aqui não serve para defender governos ou dourar a pílula do capitalismo brasileiro; serve para desarmar a retórica que usa o medo para fazer o trabalhador defender, sem saber, os privilégios de quem vive de renda e sonegação.
 
 > [!NOTE] Disclaimer
-> Os cálculos abaixo usam alíquotas e margens simplificadas para fins didáticos. O objetivo não é ser um simulador contábil complexo, mas demonstrar a *mecânica real* de cada sistema. O código Python completo e executável com todas as simulações está disponível no [Gist](https://gist.github.com/vndmtrx/ae9626557a0fec313b3d8fc1cf49648d) [^11]. Rode, mude os números e tire suas próprias conclusões.
+> Os cálculos abaixo usam alíquotas e margens simplificadas para fins didáticos. O objetivo não é ser um simulador contábil complexo, mas demonstrar a *mecânica real* de cada sistema. O código Python completo e executável com todas as simulações está disponível no [Gist](https://gist.github.com/vndmtrx/ae9626557a0fec313b3d8fc1cf49648d). Rode, mude os números e tire suas próprias conclusões.
 
 ## A bagunça que a gente chama de sistema tributário
 

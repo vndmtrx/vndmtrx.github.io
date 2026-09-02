@@ -5,7 +5,7 @@ subtitle: "Inicialização com Maven, variáveis de ambiente e perfis de execuç
 author:
   - "Eduardo N. S. R."
 date: 2026-08-19 16:31:00 GMT-3
-modified_date: 2026-08-26 10:17:00 GMT-3
+modified_date: 2026-09-02 13:57:00 GMT-3
 permalink: /posts/spring-boot-tutorial-parte-2-projeto-base/
 tags: [Spring Boot, Java, Maven, DevOps]
 series: Spring Boot Tutorial
@@ -161,9 +161,9 @@ logging:
 ```
 
 > [!WARNING] Aviso
-> Repare no uso de colchetes e aspas duplas `"[nome.do.pacote]"` sob `logging.level`: em arquivos YAML, como os pacotes Java contêm pontos (`.`), essa sintaxe de escape é a convenção oficial recomendada pelo Spring Boot para evitar que o interpretador YAML confunda o nome do pacote com nós aninhados [^6].
+> Repare no uso de colchetes e aspas duplas `"[nome.do.pacote]"` sob `logging.level`: em arquivos YAML, como os pacotes Java contêm pontos (`.`), essa sintaxe de escape é a [convenção oficial recomendada pelo Spring Boot](https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.typesafe-configuration-properties.relaxed-binding.maps) para evitar que o interpretador YAML confunda o nome do pacote com nós aninhados.
 
-* No perfil `dev`, ativamos o nível `DEBUG` para a camada web e para o nosso pacote `io.github.vndmtrx.tarefas_api`, permitindo inspecionar o roteamento e detalhes internos durante os testes.
+* No perfil `dev`, ativamos o nível `DEBUG` para a camada web e para o nosso pacote `io.github.vndmtrx.tarefas_api` [^6], permitindo inspecionar o roteamento e detalhes internos durante os testes.
 * No perfil `prod`, elevamos o nível geral (`root`) para `ERROR` para silenciar ruídos de bibliotecas de terceiros, liberando apenas mensagens `INFO` relevantes do nosso próprio sistema.
 
 Para ativar um perfil durante a execução, podemos usar três estratégias diferentes:
