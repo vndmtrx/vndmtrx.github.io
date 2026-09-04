@@ -39,13 +39,14 @@ O autor (Eduardo) é a autoridade máxima e definidora de tom, ideias e posicion
 
 Estas regras são **absolutas** para manter a identidade visual e tipográfica do blog:
 
-1. **Títulos Limpos:** NUNCA use backticks, links ou código inline em cabeçalhos (`##`, `###`, `####`). Escreva em texto puro (ex: `## O truque elegante: override_homedir`).
+1. **Títulos Limpos:** NUNCA use backticks, links, código inline ou notas de rodapé/citações (`[^n]`) em cabeçalhos (`##`, `###`, `####`). Escreva cabeçalhos em texto 100% puro (ex: `## O truque elegante: override_homedir`). Citações e referências bibliográficas devem ficar exclusivamente no texto corrido dos parágrafos da seção.
 2. **Sem Divisores (`---`):** NUNCA insira linhas horizontais (`---`) entre seções `##`. O tema Minima cuida do espaçamento. Exceção única: antes de `## Referências` em posts muito extensos.
 3. **Sem Travessão Longo (—):** NUNCA use travessão longo no texto. Use vírgulas, dois-pontos ou quebre em frases menores.
 4. **Símbolos e Setas no Texto Corrido:** NUNCA use setas Unicode (`→`, `←`, `⇒`, `↔`) soltas no texto corrido em prosa. Use sempre representações ASCII (`->`, `<-`, `=>`, `<->`). Para diagramas, caixas e árvores em blocos de código (`code fences`), o padrão é o uso obrigatório de **Block Constructions / Box-Drawing** (veja a Seção 6).
 5. **Emojis Apenas em Callouts:** NUNCA insira emojis soltos no texto corrido. Emojis são permitidos exclusivamente dentro de callouts/blockquotes.
 6. **Sem H1 no Corpo:** O `#` é exclusivo do título no front matter. No corpo, comece em `##`.
 7. **Callouts sem Footnotes ou Referências Externas:** NUNCA use notas de rodapé (`[^n]`) ou referências de links indiretas (`[texto][ref]`) dentro de caixas de callout (`> [!TIPO]`). O plugin `jekyll-gfm-admonitions` compila o bloco isoladamente via `@markdown.convert`, fazendo com que definições externas não sejam resolvidas e apareçam como texto literal puro (`[^n]`). Em callouts, use apenas links diretos inline (`[texto](url)`). Marcações autossuficientes (**negrito**, *itálico*, `código`, listas e blocos de código) funcionam normalmente.
+8. **Primeiro Parágrafo sem Footnotes (Excerpt da Home Limpo):** NUNCA insira notas de rodapé (`[^n]`) no primeiro parágrafo do post (o parágrafo de abertura logo após o front matter). O Jekyll/Minima utiliza o primeiro parágrafo como *excerpt* (resumo automático) na listagem da página inicial (`home`). Inserir footnotes no primeiro parágrafo faz com que marcadores soltos apareçam na *home* sem a respectiva resolução. Deixe o primeiro parágrafo 100% livre de notas de rodapé; introduza notas `[^n]` apenas a partir do segundo parágrafo ou no corpo das seções.
 
 ---
 
@@ -132,7 +133,7 @@ Alterne o número de frases por parágrafo conforme o papel cognitivo:
 | **Analogias** | Mundo físico e cotidiano | Usar quando o conceito for abstrato (ex: túnel SSH como cano de água com fio dentro; sudoers como chave mestra para entregador de pizza). |
 | **Diagramas e Árvores (Block Construction)** | Textos monoespaçados com caracteres Box-Drawing | Usar **Block Constructions** Unicode (`├──`, `└──`, `│`, `┌──┐`, `└──┘`, `├──┤`, `──>`, `<──`, `───[túnel]──>`) para árvores de diretórios, topologias de rede, esquemas de frames e fluxogramas em fences de código. Evitar caracteres legados como `+--` e `|` soltos quando houver equivalentes limpos em box-drawing. |
 | **Tabelas** | Markdown com alinhamento limpo | Para resumos comparativos e mapeamentos de flags. |
-| **Footnotes** | `[^1]: **Título** {*Fonte*} ([Link](url))` | Referências externas no final, exclusivamente na seção `## Referências`. |
+| **Footnotes** | `[^1]: **Título** {*Fonte*} ([Link](url))` | Referências externas no final, exclusivamente na seção `## Referências`. **Proibido no primeiro parágrafo** do post (para não poluir o *excerpt* na *home*) e proibido dentro de callouts. |
 | **Exercícios** | `<details markdown="1">` com resposta | Apenas para tutoriais/séries. Obrigatoriamente com o atributo `markdown="1"` no details. |
 | **Atualizações** | `**Atualização (DD/MM/AAAA):** Texto` | Para notas inseridas pós-publicação. |
 
@@ -181,4 +182,5 @@ Antes de publicar ou entregar qualquer post, valide:
 - [ ] Callouts no padrão GFM Admonitions (`> [!TIPO] Título`) sem notas de rodapé ou referências externas (apenas links inline diretos)?
 - [ ] Diagramas, fluxos e árvores usando Block Constructions / Box-Drawing (`├──`, `└──`, `│`, `┌──┐`, `└──┘`, `──>`)?
 - [ ] Referências com footnote `[^n]` na seção `## Referências`?
+- [ ] Primeiro parágrafo de abertura 100% livre de footnotes `[^n]` (sem quebrar o *excerpt* da *home*)?
 - [ ] Para séries: menção ao repositório/tag parceiro e exercícios com `<details markdown="1">`?
