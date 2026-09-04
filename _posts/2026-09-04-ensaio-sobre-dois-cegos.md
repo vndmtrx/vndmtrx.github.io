@@ -26,7 +26,7 @@ O título deste post não é metáfora fofa (Saramago que o diga) [^2]. Escrever
 
 A primeira é a **cegueira da máquina**. O modelo tem bilhões de parâmetros decorados, lê uma enciclopédia em três milissegundos, mas tem a sensibilidade de uma britadeira. Ele não tem corpo, nunca passou pela humilhação de reprovar numa prova de lógica e não faz a menor ideia da diferença entre uma ironia ácida e uma piada de tiozão no churrasco de domingo. Se você deixar a IA solta, ela vai invariavelmente produzir um texto engomado, prolixo e com aquele tom insuportável de coach motivacional de firma.
 
-A segunda é a **cegueira do autor**. E aqui entra a minha própria incompetência: quando estou escrevendo, perco completamente o senso de proporção. Fico apegado àquela piada ruim que achei genial às duas da manhã, empilho parênteses como se não houvesse amanhã, repito as mesmas três palavras de efeito em todo santo parágrafo e tenho a ilusão de que o leitor tem a obrigação moral de acompanhar as voltas do meu labirinto mental.
+A segunda é a **cegueira do autor**. E aqui entra a minha própria incompetência: quando estou escrevendo, perco completamente o senso de proporção. Fico apegado àquela piada ruim que achei genial às duas da manhã, empilho analogias (entre parênteses) como se não houvesse amanhã, repito as mesmas três palavras de efeito em todo santo parágrafo e tenho a ilusão de que o leitor tem a obrigação moral de acompanhar as voltas do meu labirinto mental.
 
 A mágica não acontece quando um cede ao outro. Acontece quando a gente se cansa das tosquices mútuas e começa a cortar excessos.
 
