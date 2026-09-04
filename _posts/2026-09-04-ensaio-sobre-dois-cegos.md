@@ -88,7 +88,10 @@ A autoria não mora na digitação; mora no **discernimento estético**. Mora no
 
 E isso vale para todos os tipos de conteúdo que eu produzo. O mesmo método sustenta desde posts técnicos com código até posts onde eu destilo meu ranço com alguma situação ou ferramenta. A máquina ajuda a manter consistência terminológica, a checar se um bloco de código conversa com o que foi explicado antes, a organizar uma sequência didática. A decisão final sobre o que discutir e o que defender continua sendo minha. A ferramenta muda, o papel de cada um na mesa não.
 
-No fim das contas, continuamos dois cegos tateando a linguagem. Mas a graça é que, batendo uma cegueira contra a outra com a dose certa de atrito, deboche e ceticismo, a gente consegue, pelo menos por alguns parágrafos, fazer o texto enxergar.
+> [!TIP] A sexta fase
+> Dizem que existe uma sexta fase do luto: encontrar significado. Eu não sei se encontrei significado nisso tudo. Mas encontrei um jeito de escrever que me obriga a ser mais honesto do que eu seria sozinho, me forçando a encarar os vícios que eu fingiria não ter. Se isso conta, fico com a sexta fase.
+
+No fim das contas, continuamos dois cegos tateando a linguagem, talvez buscando significado onde parece só ter atrito [^4]. Mas a graça é que, batendo uma cegueira contra a outra com a dose certa de deboche e ceticismo, a gente consegue, pelo menos por alguns parágrafos, fazer o texto enxergar.
 
 ## Referências
 
@@ -97,3 +100,5 @@ No fim das contas, continuamos dois cegos tateando a linguagem. Mas a graça é 
 [^2]: **Ensaio sobre a cegueira** {*José Saramago, 1995*} ([Companhia das Letras](https://www.amazon.com.br/Ensaio-sobre-cegueira-Edi%C3%A7%C3%A3o-anos-ebook/dp/B0GKCC7T6L))
 
 [^3]: **Modelo do sofrimento de Kübler-Ross** {*Elisabeth Kübler-Ross, 1969*} ([Wikipédia](https://pt.wikipedia.org/wiki/Modelo_de_K%C3%BCbler-Ross))
+
+[^4]: **Finding Meaning: The Sixth Stage of Grief** {*David Kessler, 2019*} ([Scribner](https://www.amazon.com.br/Finding-Meaning-Sixth-Stage-English-ebook/dp/B07P5GCND6))
