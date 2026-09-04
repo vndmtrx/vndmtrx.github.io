@@ -16,7 +16,7 @@ Existe uma vergonha velada na internet quando o assunto é usar IA para escrever
 Os dois lados compartilham a mesmíssima ilusão: acham que escrever com IA é apertar um botão e esperar o milagre pronto.
 
 > [!NOTE] Mea culpa
-> Eu já passei por todas as fases do luto da escrita com IA. Negação (*"isso é modinha, não vai durar"*), raiva (*"se essa coisa cuspir mais um 'vale ressaltar' eu jogo o notebook pela janela"*), barganha (*"só vou usar pra revisar gramática, prometo"*), depressão (*"meu texto tá saindo pior que o da máquina"*) e aceitação (*"ok, vamos ver como essa conversa funciona de verdade"*). O tiro aqui não é em quem usa ou em quem ainda está transitando entre as fases. É na demagogia de quem finge que nunca precisou de ajuda e na hipocrisia de quem finge que colar output bruto é a mesma coisa que escrever.
+> Eu já passei por todas as fases do luto [^3] na escrita com IA. Negação (*"isso é modinha, não vai durar"*), raiva (*"se essa coisa cuspir mais um 'vale ressaltar' eu jogo o notebook pela janela"*), barganha (*"só vou usar pra revisar gramática, prometo"*), depressão (*"meu texto tá saindo pior que o da máquina"*) e aceitação (*"ok, vamos ver como essa conversa funciona de verdade"*). O tiro aqui não é em quem usa ou em quem ainda está transitando entre as fases. É na demagogia de quem finge que nunca precisou de ajuda e na hipocrisia de quem finge que colar output bruto é a mesma coisa que escrever.
 
 Quem realmente senta para escrever de verdade sabe que não é nada disso. Não é automação; é pura briga de foice no escuro. É uma sessão de *pair writing* regada a atrito, onde o texto só sai porque duas entidades completamente cegas de seus próprios vícios entram em rota de colisão constante: uma dinâmica que tem muito menos a ver com "produtividade corporativa" e muito mais com a teoria dialógica de Bakhtin.
 
@@ -95,3 +95,5 @@ No fim das contas, continuamos dois cegos tateando a linguagem. Mas a graça é 
 [^1]: **The Dialogic Imagination: Four Essays** {*Bakhtin, M. M.*} ([University of Texas Press](https://www.amazon.com.br/Dialogic-Imagination-Essays-University-English-ebook/dp/B003HS5HMI))
 
 [^2]: **Ensaio sobre a cegueira** {*José Saramago, 1995*} ([Companhia das Letras](https://www.amazon.com.br/Ensaio-sobre-cegueira-Edi%C3%A7%C3%A3o-anos-ebook/dp/B0GKCC7T6L))
+
+[^3]: **Modelo do sofrimento de Kübler-Ross** {*Elisabeth Kübler-Ross, 1969*} ([Wikipédia](https://pt.wikipedia.org/wiki/Modelo_de_K%C3%BCbler-Ross))
