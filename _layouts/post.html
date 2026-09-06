@@ -11,18 +11,24 @@ layout: base
     <div class="post-meta">
       {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
       {% assign pdate = page.date | date_to_xmlschema %}
-      {%- if page.modified_date %}<span class="meta-label">Publicado em:</span>{% endif %}
-      <time class="dt-published" datetime="{{ pdate }}" itemprop="datePublished">
-        {{ pdate | date: date_format }}
-      </time>
-      {%- if page.modified_date -%}
-      <span class="bullet-divider">•</span>
-      <span class="meta-label">Atualizado em:</span>
-      {%- assign mdate = page.modified_date | date_to_xmlschema %}
-      <time class="dt-modified" datetime="{{ mdate }}" itemprop="dateModified">
-        {{ mdate | date: date_format }}
-      </time>
-      {%- endif -%}
+      <div class="post-dates">
+        <span class="meta-item" title="Publicado em">
+          <span class="meta-icon" aria-hidden="true">📅</span>
+          <time class="dt-published" datetime="{{ pdate }}" itemprop="datePublished">
+            {{ pdate | date: date_format }}
+          </time>
+        </span>
+        {%- if page.modified_date -%}
+        <span class="bullet-divider">•</span>
+        {%- assign mdate = page.modified_date | date_to_xmlschema %}
+        <span class="meta-item" title="Atualizado em">
+          <span class="meta-icon" aria-hidden="true">🔄</span>
+          <time class="dt-modified" datetime="{{ mdate }}" itemprop="dateModified">
+            {{ mdate | date: date_format }}
+          </time>
+        </span>
+        {%- endif -%}
+      </div>
       {%- if page.author %}
       <div class="{% unless page.modified_date %}force-inline {% endunless %}post-authors">
         {%- for author in page.author %}

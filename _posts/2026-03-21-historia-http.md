@@ -246,14 +246,12 @@ Apesar das vantagens, o protocolo SPDY era um protocolo proprietário do Google,
 - O protocolo passa a ser um protocolo multiplexado: Requisições paralelas além de poderem ser feitas na mesma requisição, agora podem ser respondidas em qualquer ordem e permitindo a transferência de todos os recursos concomitantemente, sem a necessidade de se esperar a transferência de um recurso para o início da transferência do próximo
 
 ```
-┌───────────────────────────────────────────────┐
-│                 Length (24)                   │
-├───────────────┬───────────────┬───────────────┤
-│   Type (8)    │   Flags (8)   │
-├─┬─────────────┴───────────────┼───────────────────────────────┐
-│R│                 Stream Identifier (31)                      │
-├─┴─────────────────────────────────────────────────────────────┤
-│                   Frame Payload (0...)                      ...
+┌───────────────────────────────────────────────┬───────────────┐
+│                  Length (24)                  │   Type (8)    │
+├───────────────┬─┬─────────────────────────────┴───────────────┤
+│   Flags (8)   │R│                 Stream Identifier (31)      │
+├───────────────┴─┴─────────────────────────────────────────────┤
+│                     Frame Payload (0...)                      │
 └───────────────────────────────────────────────────────────────┘
 ```
 
@@ -291,24 +289,24 @@ Para resolver esse problema em específico, não havia opção a não ser sair d
 #### HTTP/2 sobre TCP: O Bloqueio em Nível de Transporte
 
 ```
-┌──────────────┐ ┌──────────────┐ ┌──────────────┐
-│ Stream CSS   │ │ Stream JS    │ │ Stream IMG   │ <- multiplexado
-├──────────────┤ ├──────────────┤ ├──────────────┤
-│                  [TCP ÚNICO]                   │
-└────────────────────────────────────────────────┘
+┌──────────────┬────────────────┬──────────────┐
+│  Stream CSS  │   Stream JS    │  Stream IMG  │
+├──────────────┴────────────────┴──────────────┤
+│              Conexão TCP Única               │
+└──────────────────────────────────────────────┘
 ```
-*pacote perdido = TUDO para*
+*Perda de um único pacote TCP bloqueia todas as streams simultâneas (Head-of-Line Blocking).*
 
 #### HTTP/3 sobre QUIC: Streams Independentes em UDP
 
 ```
-┌──────────────┐ ┌──────────────┐ ┌──────────────┐
-│ Stream CSS   │ │ Stream JS    │ │ Stream IMG   │
-├──────────────┤ ├──────────────┤ ├──────────────┤
-│  UDP Stream  │ │  UDP Stream  │ │  UDP Stream  │ <- independentes!
-└──────────────┘ └──────────────┘ └──────────────┘
+┌──────────────┬────────────────┬──────────────┐
+│  Stream CSS  │   Stream JS    │  Stream IMG  │
+├──────────────┼────────────────┼──────────────┤
+│  UDP Stream  │   UDP Stream   │  UDP Stream  │
+└──────────────┴────────────────┴──────────────┘
 ```
-*Pacote perdido = só uma stream para*
+*Perda de pacote em uma stream não afeta as demais; cada fluxo é independente.*
 
 Basicamente, a solução do Google descartava o TCP e passou a usar o UDP, e implementou seus próprios protocolos de tráfego confiável (a exemplo do que o TCP faz), mas focado em permitir independência total entre os fluxos de transferência do navegador com servidor, e vice-versa.
 
