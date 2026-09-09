@@ -567,7 +567,7 @@ Se tudo correu bem, neste momento você tem um ambiente de laboratório completo
 
 Não tem Kubernetes instalado ainda. Não tem certificado gerado. Não tem nenhum serviço rodando. E isso é proposital. A ideia de separar a infraestrutura do hospedeiro do provisionamento do cluster permite que você destrua e recrie as VMs quantas vezes precisar sem perder tempo reinstalando ferramentas no seu sistema operacional.
 
-No próximo post (**Parte 3: O Inventário Ansible e as Variáveis do Cluster**), vamos mergulhar na outra metade do cérebro do projeto: o arquivo `all.yml` onde todas as variáveis do cluster moram, o `.ansible.cfg` com suas decisões de configuração, e como uma única mudança de variável propaga por todo o ecossistema de *roles* e *playbooks*. É onde o Ansible deixa de ser apenas uma ferramenta de automação e vira o mapa completo do cluster que estamos construindo.
+No próximo post ({% include post-ref.html slug="k8sbox-inventario-ansible" text="Parte 3: O Inventário Ansible e as Variáveis do Cluster" %}), vamos mergulhar na outra metade do cérebro do projeto: o arquivo `all.yml` onde todas as variáveis do cluster moram, o `.ansible.cfg` com suas decisões de configuração, e como uma única mudança de variável propaga por todo o ecossistema de *roles* e *playbooks*. É onde o Ansible deixa de ser apenas uma ferramenta de automação e vira o mapa completo do cluster que estamos construindo.
 
 ## Referências
 
@@ -589,4 +589,4 @@ No próximo post (**Parte 3: O Inventário Ansible e as Variáveis do Cluster**)
 
 [^9]: **Ansible Documentation** {*Red Hat*} ([Link](https://docs.ansible.com/))
 
-[^10]: **Kubernetes in a Box, Parte 1 - Visão Geral** {*vndmtrx.github.io*} ([Link](/posts/k8sbox-visao-geral/))
+[^10]: **Kubernetes in a Box, Parte 1 - Visão Geral** {*vndmtrx.github.io*} ({% include post-ref.html slug="k8sbox-visao-geral" text="Link" %})

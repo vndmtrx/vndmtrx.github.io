@@ -87,7 +87,7 @@ Essa camada foi criada por Tim Berners-Lee [^13], um cientista do CERN, o Labora
 
 Até o final de 1990, Berners-Lee já tinha desenvolvido os componentes fundamentais da Web: o primeiro servidor web, o primeiro navegador (chamado WorldWideWeb) e os protocolos base (HTML, HTTP e URIs). O primeiro site da história ficava no endereço info.cern.ch [^14] e ainda pode ser acessado nos dias de hoje. Em agosto de 1991, Berners-Lee fez o anúncio público da Web no newsgroup alt.hypertext [^15], convidando qualquer pessoa a acessar e contribuir.
 
-Eu escrevi com mais detalhes sobre a evolução técnica do HTTP e da Web no meu post sobre [Evolução do Protocolo HTTP e da World Wide Web](/posts/evolucao-http/), se você quiser se aprofundar na evolução do protocolo.
+Eu escrevi com mais detalhes sobre a evolução técnica do HTTP e da Web no meu post sobre {% include post-ref.html slug="evolucao-http" text="Evolução do Protocolo HTTP e da World Wide Web" %}, se você quiser se aprofundar na evolução do protocolo.
 
 Um fator que não dá pra ignorar na expansão da Web foi a decisão do CERN, em **30 de abril de 1993**, de liberar o software da World Wide Web para o domínio público [^16]. Se o CERN tivesse decidido cobrar licenças ou patentear a tecnologia, é provável que a Web como conhecemos simplesmente não existisse. Essa decisão garantiu que a tecnologia fosse aberta, e qualquer pessoa ou instituição pudesse construir em cima dela.
 

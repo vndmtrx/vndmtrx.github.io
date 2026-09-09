@@ -42,6 +42,10 @@ plugins:
 gfm_admonitions:
   inject_css: false
 
+kramdown:
+  input: GFM
+  smart_quotes: ["apos", "apos", "quot", "quot"]
+
 jekyll-archives:
   enabled:
     - tags

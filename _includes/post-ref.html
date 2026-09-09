@@ -1,0 +1,15 @@
+{%- assign key = include.slug | default: include.url -%}
+{%- assign target = site.posts | where: "slug", key | first -%}
+{%- unless target -%}
+  {%- assign target = site.posts | where: "url", key | first -%}
+{%- endunless -%}
+{%- unless target -%}
+  {%- assign formatted_url = key | prepend: "/posts/" | append: "/" -%}
+  {%- assign target = site.posts | where: "url", formatted_url | first -%}
+{%- endunless -%}
+{%- assign label = include.text | default: include.title | default: target.title | default: key -%}
+{%- if target -%}
+<a href="{{ target.url | relative_url }}{% if include.anchor %}#{{ include.anchor }}{% endif %}">{{ label }}</a>
+{%- else -%}
+<strong>{{ label }}</strong> <em>(em breve)</em>
+{%- endif -%}

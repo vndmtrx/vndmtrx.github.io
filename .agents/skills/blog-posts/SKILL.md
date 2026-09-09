@@ -40,13 +40,14 @@ O autor (Eduardo) é a autoridade máxima e definidora de tom, ideias e posicion
 Estas regras são **absolutas** para manter a identidade visual e tipográfica do blog:
 
 1. **Títulos Limpos:** NUNCA use backticks, links, código inline ou notas de rodapé/citações (`[^n]`) em cabeçalhos (`##`, `###`, `####`). Escreva cabeçalhos em texto 100% puro (ex: `## O truque elegante: override_homedir`). Citações e referências bibliográficas devem ficar exclusivamente no texto corrido dos parágrafos da seção.
-2. **Sem Divisores (`---`):** NUNCA insira linhas horizontais (`---`) entre seções `##`. O tema Minima cuida do espaçamento. Exceção única: antes de `## Referências` em posts muito extensos.
+2. **Sem Divisores (`---`):** NUNCA insira linhas horizontais (`---`) no corpo do post, entre seções `##` ou antes de `## Referências`. O tema Minima cuida do espaçamento visual. Delimitadores `---` são de uso exclusivo do front matter YAML no topo do arquivo.
 3. **Sem Travessão Longo (—):** NUNCA use travessão longo no texto. Use vírgulas, dois-pontos ou quebre em frases menores.
 4. **Símbolos e Setas no Texto Corrido:** NUNCA use setas Unicode (`→`, `←`, `⇒`, `↔`) soltas no texto corrido em prosa. Use sempre representações ASCII (`->`, `<-`, `=>`, `<->`). Para diagramas, caixas e árvores em blocos de código (`code fences`), o padrão é o uso obrigatório de **Block Constructions / Box-Drawing** (veja a Seção 6).
 5. **Emojis Apenas em Callouts:** NUNCA insira emojis soltos no texto corrido. Emojis são permitidos exclusivamente dentro de callouts/blockquotes.
 6. **Sem H1 no Corpo:** O `#` é exclusivo do título no front matter. No corpo, comece em `##`.
 7. **Callouts sem Footnotes ou Referências Externas:** NUNCA use notas de rodapé (`[^n]`) ou referências de links indiretas (`[texto][ref]`) dentro de caixas de callout (`> [!TIPO]`). O plugin `jekyll-gfm-admonitions` compila o bloco isoladamente via `@markdown.convert`, fazendo com que definições externas não sejam resolvidas e apareçam como texto literal puro (`[^n]`). Em callouts, use apenas links diretos inline (`[texto](url)`). Marcações autossuficientes (**negrito**, *itálico*, `código`, listas e blocos de código) funcionam normalmente.
 8. **Primeiro Parágrafo sem Footnotes (Excerpt da Home Limpo):** NUNCA insira notas de rodapé (`[^n]`) no primeiro parágrafo do post (o parágrafo de abertura logo após o front matter). O Jekyll/Minima utiliza o primeiro parágrafo como *excerpt* (resumo automático) na listagem da página inicial (`home`). Inserir footnotes no primeiro parágrafo faz com que marcadores soltos apareçam na *home* sem a respectiva resolução. Deixe o primeiro parágrafo 100% livre de notas de rodapé; introduza notas `[^n]` apenas a partir do segundo parágrafo ou no corpo das seções.
+9. **Links Internos via `post-ref.html`:** NUNCA use links internos hardcoded com URLs diretas (como `[Texto](/posts/slug/)` ou caminhos absolutos). Sempre use o include `{% include post-ref.html slug="slug-do-post" text="Texto do Link" %}` (ou omitindo `text` para adotar o título oficial do post). Esse include resolve a URL dinamicamente via `relative_url` respeitando qualquer ambiente (`baseurl`) e trata posts futuros ou agendados automaticamente, renderizando `<strong>Texto</strong> <em>(em breve)</em>` até a data em que o post for efetivamente publicado. Para links com âncoras de seção, use o parâmetro `anchor="nome-da-ancora"`.
 
 ---
 
@@ -134,8 +135,56 @@ Alterne o número de frases por parágrafo conforme o papel cognitivo:
 | **Diagramas e Árvores (Block Construction)** | Textos monoespaçados com caracteres Box-Drawing | Usar **Block Constructions** Unicode (`├──`, `└──`, `│`, `┌──┐`, `└──┘`, `├──┤`, `──>`, `<──`, `───[túnel]──>`) para árvores de diretórios, topologias de rede, esquemas de frames e fluxogramas em fences de código. Evitar caracteres legados como `+--` e `|` soltos quando houver equivalentes limpos em box-drawing. |
 | **Tabelas** | Markdown com alinhamento limpo | Para resumos comparativos e mapeamentos de flags. |
 | **Footnotes** | `[^1]: **Título** {*Fonte*} ([Link](url))` | Referências externas no final, exclusivamente na seção `## Referências`. **Proibido no primeiro parágrafo** do post (para não poluir o *excerpt* na *home*) e proibido dentro de callouts. |
-| **Exercícios** | `<details markdown="1">` com resposta | Apenas para tutoriais/séries. Obrigatoriamente com o atributo `markdown="1"` no details. |
+| **Exercícios** | `<details markdown="1">` com resposta | Apenas para tutoriais/séries. Obrigatoriamente na seção dedicada `## Exercícios`, enunciado visível, `<summary>Ver resposta</summary>` e atributo `markdown="1"`. Veja detalhes abaixo. |
 | **Atualizações** | `**Atualização (DD/MM/AAAA):** Texto` | Para notas inseridas pós-publicação. |
+
+### Padrão Estrutural de Exercícios (Tutoriais e Séries)
+
+Para manter a consistência didática em todas as séries e tutoriais práticos do blog, a montagem de exercícios segue regras estritas de layout e visibilidade:
+
+1. **Seção Dedicada (`## Exercícios`):** Os exercícios nunca devem ficar espalhados soltos no meio dos tópicos conceituais. Eles são agrupados exclusivamente em uma seção dedicada `## Exercícios`, posicionada perto do final do post (logo antes da Conclusão / O Que Vem / Referências).
+2. **Frase Introdutória:** A seção inicia com uma frase convidando o leitor a praticar (ex: *"Para fixar a dinâmica de X, Y e Z, execute os desafios práticos abaixo no seu terminal."*).
+3. **Numeração por Post:** A numeração sempre reinicia em cada post (`**1. ...**`, `**2. ...**`, `**3. ...**`). NUNCA propague numeração contínua entre posts diferentes da mesma série.
+4. **Título do Desafio em Negrito:** Use o formato `**N. Nome do Desafio**` diretamente no texto (nunca como cabeçalho `###` ou dentro do `<summary>`).
+5. **Enunciado Sempre Visível:** O contexto do problema, as instruções do desafio e os comandos iniciais ficam **100% visíveis no corpo do post**. O leitor deve conseguir ler e tentar resolver o exercício sem precisar clicar em nada.
+6. **Resposta Oculta com `<summary>Ver resposta</summary>`:** Apenas a resposta, código de solução e explicações analíticas ficam recolhidos dentro de `<details markdown="1">`. O texto do `<summary>` deve ser rigorosamente padronizado como `<summary>Ver resposta</summary>`. NUNCA coloque títulos ou o enunciado dentro do `<summary>`.
+7. **Atributo `markdown="1"` Obrigatório:** A tag de abertura deve ser estritamente `<details markdown="1">` para que blocos de código (`code fences`), realce de sintaxe e formatações Markdown sejam renderizados corretamente pelo motor kramdown do Jekyll.
+
+#### Exemplo Canônico de Exercício:
+
+````markdown
+## Exercícios
+
+Para fixar a dinâmica de [tópico], execute os desafios abaixo no terminal.
+
+**1. Título do primeiro desafio**
+
+Contexto do problema e instruções claras do que o leitor deve fazer ou testar no terminal ou no código.
+
+<details markdown="1">
+<summary>Ver resposta</summary>
+
+Explicação detalhada da solução:
+
+```bash
+$ comando-da-solucao
+```
+
+*Nota ou reflexão técnica sobre a mecânica da resposta.*
+
+</details>
+
+**2. Título do segundo desafio**
+
+Instruções do segundo desafio...
+
+<details markdown="1">
+<summary>Ver resposta</summary>
+
+Solução e análise do segundo desafio...
+
+</details>
+````
 
 ---
 
@@ -183,4 +232,5 @@ Antes de publicar ou entregar qualquer post, valide:
 - [ ] Diagramas, fluxos e árvores usando Block Constructions / Box-Drawing (`├──`, `└──`, `│`, `┌──┐`, `└──┘`, `──>`)?
 - [ ] Referências com footnote `[^n]` na seção `## Referências`?
 - [ ] Primeiro parágrafo de abertura 100% livre de footnotes `[^n]` (sem quebrar o *excerpt* da *home*)?
-- [ ] Para séries: menção ao repositório/tag parceiro e exercícios com `<details markdown="1">`?
+- [ ] Links internos para outros posts do blog usando exclusivamente o include `{% include post-ref.html slug="..." text="..." %}` (zero links hardcoded `/posts/...`)?
+- [ ] Para séries/tutoriais: seção dedicada `## Exercícios` no final do post, com enunciados visíveis, numeração reiniciada (1..N) e respostas recolhidas em `<details markdown="1"><summary>Ver resposta</summary>`?
