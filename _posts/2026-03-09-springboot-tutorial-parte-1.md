@@ -280,7 +280,7 @@ Montar um ambiente de desenvolvimento limpo não é sobre preciosismo técnico o
 
 Ao estabelecermos o Debian Trixie como host, o SDKMAN com `.sdkmanrc` para travar o JDK 26 Temurin, o VS Codium sem telemetria e o JShell para experimentação ágil, eliminamos ruídos desnecessários. O foco passa a ser unicamente a arquitetura e a qualidade do código que vamos escrever.
 
-No [segundo post da série](/posts/spring-boot-tutorial-parte-2-projeto-base/), daremos o pontapé inicial na nossa aplicação: vamos criar o projeto base com Maven, explorar a filosofia do **12-Factor App** para desacoplamento de configurações e escrever nosso primeiro endpoint com testes automatizados.
+No {% include post-ref.html slug="spring-boot-tutorial-parte-2-projeto-base" text="segundo post da série" %}, daremos o pontapé inicial na nossa aplicação: vamos criar o projeto base com Maven, explorar a filosofia do **12-Factor App** para desacoplamento de configurações e escrever nosso primeiro endpoint com testes automatizados.
 
 ## Referências
 

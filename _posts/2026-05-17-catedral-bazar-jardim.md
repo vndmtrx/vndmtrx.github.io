@@ -60,7 +60,7 @@ Nós não somos engenheiros. Somos jardineiros.
 
 [^1]: **The Cathedral, the Bazaar and the Kitchen** {*vrypan, Mai/2026*} ([Link](https://blog.vrypan.net/2026/05/11/the-cathedral-the-bazaar-and-the-kitchen/))
 
-[^2]: **Você não é um Engenheiro de Software** {*Eduardo N. S. R., Ago/2023*} ([Link](/posts/jardineiro-software/))
+[^2]: **Você não é um Engenheiro de Software** {*Eduardo N. S. R., Ago/2023*} ({% include post-ref.html slug="jardineiro-software" text="Link" %})
 
 [^3]: **The Cathedral and the Bazaar** {*Eric S. Raymond, 1997*} ([Link](http://www.catb.org/~esr/writings/cathedral-bazaar/cathedral-bazaar/))
 

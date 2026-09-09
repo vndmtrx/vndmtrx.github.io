@@ -11,7 +11,7 @@ tags: [Spring Boot, Java, JPA, Backend]
 series: Spring Boot Tutorial
 ---
 
-Se você chegou até aqui com a aplicação da Parte 2 no ar, então já tem um servidor que sobe, troca de perfil e responde o `/api/status`. O que você não tem ainda é domínio. Não existe tarefa, não existe estado, não existe nada para persistir. A aplicação é um esqueleto saudável, mas ainda é um esqueleto.
+Se você chegou até aqui com a aplicação da {% include post-ref.html slug="spring-boot-tutorial-parte-2-projeto-base" text="Parte 2" %} no ar, então já tem um servidor que sobe, troca de perfil e responde o `/api/status`. O que você não tem ainda é domínio. Não existe tarefa, não existe estado, não existe nada para persistir. A aplicação é um esqueleto saudável, mas ainda é um esqueleto.
 
 > [!NOTE] Nota da Série
 > Este post faz parte da série **"Spring Boot Tutorial"**, onde construímos do zero uma API backend de produção com **Spring Boot**, explorando boas práticas de arquitetura, contratos, persistência, resiliência, observabilidade e nuvem. O código-fonte de apoio e os projetos de cada capítulo estão organizados no repositório parceiro [vndmtrx/estudos_springboot](https://github.com/vndmtrx/estudos_springboot). O código desta parte está na pasta [parte3](https://github.com/vndmtrx/estudos_springboot/tree/main/parte3).
@@ -974,7 +974,7 @@ Uma aplicação que persiste de verdade muda o tom da jornada. Deixamos de ter u
 
 Mas esta parte deixa uma dívida técnica assumida. A resposta da API ainda é a entidade nua. Não há DTOs separando visões. Não há validação declarativa nos corpos de entrada. Um erro de negócio ainda vira stacktrace genérico em vez de um JSON de erro desenhado.
 
-Isso é dívida deliberada, não omissão. Na Parte 4, a camada de apresentação é reconstruída em cima de Java Records como DTOs, MapStruct para as conversões e Bean Validation com captura global via `@ControllerAdvice`. O "JPA no controller" morre de vez, e o serviço deixa de ver a entidade cruzar a fronteira do HTTP.
+Isso é dívida deliberada, não omissão. Na {% include post-ref.html slug="spring-boot-tutorial-parte-4-dtos-validacao" text="Parte 4: DTOs e Validação" %}, a camada de apresentação é reconstruída em cima de Java Records como DTOs, MapStruct para as conversões e Bean Validation com captura global via `@ControllerAdvice`. O "JPA no controller" morre de vez, e o serviço deixa de ver a entidade cruzar a fronteira do HTTP.
 
 Até lá, a base está firme: banco parametrizado no padrão 12-Factor, persistência em camadas e nove testes garantindo o contrato. Agora dá para refinar sem medo de desmoronar.
 

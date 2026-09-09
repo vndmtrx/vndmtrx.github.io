@@ -11,14 +11,14 @@ tags: [Spring Boot, Java, Maven, DevOps]
 series: Spring Boot Tutorial
 ---
 
-No [primeiro post da série](/posts/spring-boot-tutorial-parte-1-ambiente/), montamos nossa bancada de trabalho com Debian Trixie, SDKMAN travando o JDK 26 e o VS Codium livre de telemetrias. Com as ferramentas no lugar, o impulso natural da maioria dos tutoriais é abrir o editor e sair cuspindo código de negócio desordenado. Mas se queremos construir uma aplicação que sobreviva ao mundo real, precisamos falar antes sobre como uma aplicação nasce e como ela lida com seus ambientes.
+No {% include post-ref.html slug="spring-boot-tutorial-parte-1-ambiente" text="primeiro post da série" %}, montamos nossa bancada de trabalho com Debian Trixie, SDKMAN travando o JDK 26 e o VS Codium livre de telemetrias. Com as ferramentas no lugar, o impulso natural da maioria dos tutoriais é abrir o editor e sair cuspindo código de negócio desordenado. Mas se queremos construir uma aplicação que sobreviva ao mundo real, precisamos falar antes sobre como uma aplicação nasce e como ela lida com seus ambientes.
 
 > [!NOTE] Nota da Série
 > Este post faz parte da série **"Spring Boot Tutorial"**, onde construímos do zero uma API backend de produção com **Spring Boot**, explorando boas práticas de arquitetura, contratos, persistência, resiliência, observabilidade e nuvem. O código-fonte de apoio e os projetos de cada capítulo estão organizados no repositório parceiro [vndmtrx/estudos_springboot](https://github.com/vndmtrx/estudos_springboot).
 
 Quem trabalha com infraestrutura e operações aprende rápido uma verdade incômoda: a esmagadora maioria dos incidentes de deploy não acontece por falha de sintaxe, mas por confusão de configuração. É o desenvolvedor que chumba a URL do banco local no meio do código, comita credenciais sensíveis no repositório ou assume que a aplicação vai rodar para sempre no mesmo caminho de diretório.
 
-Para evitar esse tipo de armadilha desde o primeiro commit, o ecossistema de nuvem e microsserviços se apoia na metodologia dos **12-Factor App** [^1]. Criada pelos desenvolvedores da plataforma Heroku, ela define doze princípios para criar aplicações portáveis, resilientes e escaláveis (se você quiser se aprofundar em cada um deles com causos reais de pesadelos de infraestrutura, confira o nosso post [12-Factor App: Como Fazer (e os Pesadelos de Como Não Fazer)](/posts/12-factor-app-pesadelos-e-pratica/)).
+Para evitar esse tipo de armadilha desde o primeiro commit, o ecossistema de nuvem e microsserviços se apoia na metodologia dos **12-Factor App** [^1]. Criada pelos desenvolvedores da plataforma Heroku, ela define doze princípios para criar aplicações portáveis, resilientes e escaláveis (se você quiser se aprofundar em cada um deles com causos reais de pesadelos de infraestrutura, confira o nosso post {% include post-ref.html slug="12-factor-app-pesadelos-e-pratica" text="12-Factor App: Como Fazer (e os Pesadelos de Como Não Fazer)" %}).
 
 Neste momento da série, dois desses fatores nos interessam diretamente:
 
@@ -472,7 +472,7 @@ Neste segundo passo da série, estabelecemos as fundações de arquitetura do no
 
 Com o esqueleto da aplicação de pé e o ciclo de feedback azeitado pelo DevTools, estamos prontos para avançar para as regras de negócio. 
 
-Na Parte 3, entraremos no domínio da nossa aplicação de tarefas: vamos modelar a entidade `Tarefa`, configurar a persistência em memória com H2, estruturar as camadas de Repository, Service e Controller, e introduzir as variáveis de infraestrutura de banco de dados.
+Na {% include post-ref.html slug="spring-boot-tutorial-parte-3-core-api" text="Parte 3" %}, entraremos no domínio da nossa aplicação de tarefas: vamos modelar a entidade `Tarefa`, configurar a persistência em memória com H2, estruturar as camadas de Repository, Service e Controller, e introduzir as variáveis de infraestrutura de banco de dados.
 
 ## Referências
 
