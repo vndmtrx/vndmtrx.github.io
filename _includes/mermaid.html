@@ -1,0 +1,228 @@
+<!-- Mermaid.js integration for vndmtrx.github.io -->
+<style>
+  .mermaid-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 2.5rem 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0.8rem 0;
+  }
+  .mermaid-wrapper .mermaid {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  .mermaid-wrapper .mermaid * {
+    hyphens: manual !important;
+    -webkit-hyphens: manual !important;
+    word-break: normal !important;
+  }
+  .mermaid-wrapper .mermaid svg {
+    max-width: 100%;
+    height: auto;
+    font-family: inherit;
+  }
+  .mermaid-wrapper .mermaid .node rect,
+  .mermaid-wrapper .mermaid .node polygon {
+    rx: 8px !important;
+    ry: 8px !important;
+  }
+  .mermaid-wrapper .mermaid .node .label,
+  .mermaid-wrapper .mermaid .node foreignObject,
+  .mermaid-wrapper .mermaid .node .nodeLabel {
+    text-align: left !important;
+    line-height: 1.6;
+  }
+  .mermaid-wrapper .mermaid .node.key .label,
+  .mermaid-wrapper .mermaid .node.key foreignObject,
+  .mermaid-wrapper .mermaid .node.key .nodeLabel {
+    text-align: center !important;
+  }
+  .mermaid-wrapper .mermaid .node ul {
+    text-align: left !important;
+    margin: 0.4rem 0 0.1rem 0 !important;
+    padding-left: 1.2rem !important;
+    display: block !important;
+  }
+  .mermaid-wrapper .mermaid .node li {
+    text-align: left !important;
+    margin-bottom: 0.25rem;
+    line-height: 1.5;
+  }
+
+  /* --- Badge VS --- */
+  .mermaid-wrapper .mermaid .node.vs .label,
+  .mermaid-wrapper .mermaid .node.vs foreignObject,
+  .mermaid-wrapper .mermaid .node.vs .nodeLabel {
+    text-align: center !important;
+    font-weight: 700 !important;
+    font-size: 0.82rem !important;
+    letter-spacing: 1.5px !important;
+  }
+
+  /* --- Tema Claro (Classic) --- */
+  [data-theme="classic"] .mermaid .node.vs circle,
+  [data-theme="classic"] .mermaid .node.vs rect {
+    fill: #e2e8f0 !important;
+    stroke: #64748b !important;
+    stroke-width: 2px !important;
+  }
+  [data-theme="classic"] .mermaid .node.vs .label,
+  [data-theme="classic"] .mermaid .node.vs span {
+    color: #1e293b !important;
+  }
+  [data-theme="classic"] .mermaid .node.key rect {
+    fill: #f1f5f9 !important;
+    stroke: #64748b !important;
+    stroke-width: 1.5px !important;
+  }
+  [data-theme="classic"] .mermaid .node.neutral rect {
+    fill: #ffffff !important;
+    stroke: #cbd5e1 !important;
+    stroke-width: 1.5px !important;
+  }
+  [data-theme="classic"] .mermaid .node.failure rect {
+    fill: #fef2f2 !important;
+    stroke: #ef4444 !important;
+    stroke-width: 1.5px !important;
+  }
+  [data-theme="classic"] .mermaid .node.failure .label,
+  [data-theme="classic"] .mermaid .node.failure span {
+    color: #991b1b !important;
+  }
+  [data-theme="classic"] .mermaid .node.success rect {
+    fill: #f0fdf4 !important;
+    stroke: #22c55e !important;
+    stroke-width: 1.5px !important;
+  }
+  [data-theme="classic"] .mermaid .node.success .label,
+  [data-theme="classic"] .mermaid .node.success span {
+    color: #166534 !important;
+  }
+
+  /* --- Tema Escuro (Dark) --- */
+  [data-theme="dark"] .mermaid .node.vs circle,
+  [data-theme="dark"] .mermaid .node.vs rect {
+    fill: #1e293b !important;
+    stroke: #64748b !important;
+    stroke-width: 2px !important;
+  }
+  [data-theme="dark"] .mermaid .node.vs .label,
+  [data-theme="dark"] .mermaid .node.vs span {
+    color: #f1f5f9 !important;
+  }
+  [data-theme="dark"] .mermaid .node.key rect {
+    fill: #1e293b !important;
+    stroke: #475569 !important;
+    stroke-width: 1.5px !important;
+  }
+  [data-theme="dark"] .mermaid .node.key .label,
+  [data-theme="dark"] .mermaid .node.key span {
+    color: #f1f5f9 !important;
+  }
+  [data-theme="dark"] .mermaid .node.neutral rect {
+    fill: #1e293b !important;
+    stroke: #475569 !important;
+    stroke-width: 1.5px !important;
+  }
+  [data-theme="dark"] .mermaid .node.neutral .label,
+  [data-theme="dark"] .mermaid .node.neutral span {
+    color: #e2e8f0 !important;
+  }
+  [data-theme="dark"] .mermaid .node.failure rect {
+    fill: #351616 !important;
+    stroke: #f87171 !important;
+    stroke-width: 1.5px !important;
+  }
+  [data-theme="dark"] .mermaid .node.failure .label,
+  [data-theme="dark"] .mermaid .node.failure span {
+    color: #fecaca !important;
+  }
+  [data-theme="dark"] .mermaid .node.success rect {
+    fill: #132e22 !important;
+    stroke: #4ade80 !important;
+    stroke-width: 1.5px !important;
+  }
+  [data-theme="dark"] .mermaid .node.success .label,
+  [data-theme="dark"] .mermaid .node.success span {
+    color: #bbf7d0 !important;
+  }
+</style>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@12/dist/mermaid.esm.min.mjs';
+
+  function getTheme() {
+    return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'neutral';
+  }
+
+  let renderCounter = 0;
+
+  async function renderDiagram(container) {
+    const src = container.getAttribute('data-mermaid-src');
+    if (!src) return;
+    try {
+      const id = 'mermaid-diagram-' + (++renderCounter);
+      const { svg } = await mermaid.render(id, src);
+      container.innerHTML = svg;
+    } catch (err) {
+      console.error('Falha ao renderizar diagrama Mermaid:', err);
+    }
+  }
+
+  async function renderAll() {
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: getTheme(),
+      fontFamily: 'inherit',
+      securityLevel: 'loose',
+      flowchart: {
+        useMaxWidth: true,
+        htmlLabels: true,
+        curve: 'basis',
+        wrappingWidth: 500,
+        nodeSpacing: 30,
+        rankSpacing: 35,
+        padding: 16
+      }
+    });
+
+    const diagrams = document.querySelectorAll('.mermaid[data-mermaid-src]');
+    for (const diagram of diagrams) {
+      await renderDiagram(diagram);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    // Localiza blocos ```mermaid processados pelo Kramdown / Rouge
+    const codeBlocks = document.querySelectorAll('code.language-mermaid');
+
+    codeBlocks.forEach((code) => {
+      const wrapper = code.closest('.highlighter-rouge') || code.closest('pre') || code;
+      const outerContainer = document.createElement('div');
+      outerContainer.className = 'mermaid-wrapper';
+
+      const mermaidDiv = document.createElement('div');
+      mermaidDiv.className = 'mermaid';
+      const rawText = code.textContent.trim();
+      mermaidDiv.setAttribute('data-mermaid-src', rawText);
+
+      outerContainer.appendChild(mermaidDiv);
+      wrapper.parentNode.replaceChild(outerContainer, wrapper);
+    });
+
+    await renderAll();
+
+    // Observa mudanças no data-theme para re-renderizar diagramas ao alternar claro/escuro
+    const observer = new MutationObserver((mutations) => {
+      for (const m of mutations) {
+        if (m.attributeName === 'data-theme') {
+          renderAll();
+          break;
+        }
+      }
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  });
+</script>
