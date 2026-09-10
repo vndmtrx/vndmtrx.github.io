@@ -48,6 +48,8 @@ Estas regras são **absolutas** para manter a identidade visual e tipográfica d
 7. **Callouts sem Footnotes ou Referências Externas:** NUNCA use notas de rodapé (`[^n]`) ou referências de links indiretas (`[texto][ref]`) dentro de caixas de callout (`> [!TIPO]`). O plugin `jekyll-gfm-admonitions` compila o bloco isoladamente via `@markdown.convert`, fazendo com que definições externas não sejam resolvidas e apareçam como texto literal puro (`[^n]`). Em callouts, use apenas links diretos inline (`[texto](url)`). Marcações autossuficientes (**negrito**, *itálico*, `código`, listas e blocos de código) funcionam normalmente.
 8. **Primeiro Parágrafo sem Footnotes (Excerpt da Home Limpo):** NUNCA insira notas de rodapé (`[^n]`) no primeiro parágrafo do post (o parágrafo de abertura logo após o front matter). O Jekyll/Minima utiliza o primeiro parágrafo como *excerpt* (resumo automático) na listagem da página inicial (`home`). Inserir footnotes no primeiro parágrafo faz com que marcadores soltos apareçam na *home* sem a respectiva resolução. Deixe o primeiro parágrafo 100% livre de notas de rodapé; introduza notas `[^n]` apenas a partir do segundo parágrafo ou no corpo das seções.
 9. **Links Internos via `post-ref.html`:** NUNCA use links internos hardcoded com URLs diretas (como `[Texto](/posts/slug/)` ou caminhos absolutos). Sempre use o include `{% include post-ref.html slug="slug-do-post" text="Texto do Link" %}` (ou omitindo `text` para adotar o título oficial do post). Esse include resolve a URL dinamicamente via `relative_url` respeitando qualquer ambiente (`baseurl`) e trata posts futuros ou agendados automaticamente, renderizando `<strong>Texto</strong> <em>(em breve)</em>` até a data em que o post for efetivamente publicado. Para links com âncoras de seção, use o parâmetro `anchor="nome-da-ancora"`.
+10. **Proteção de Código Conflitante com Liquid (`raw` pontual):** O Jekyll processa o Markdown utilizando a engine Liquid. Qualquer trecho de código que contenha chaves duplas (`{{ ... }}` ou `{% ... %}`) — como playbooks do Ansible, templates Jinja2, Helm charts, Vue ou Angular — entrará em conflito direto com o Liquid, resultando em variáveis sendo apagadas em silêncio (virando strings vazias) ou em quebra do build com warnings/erros de sintaxe. NUNCA envolva o post inteiro em raw. Envolva **estritamente o bloco de código específico ou a expressão inline afetada** com `{% raw %}` e `{% endraw %}`.
+11. **Diagramas Mermaid via Front Matter (`mermaid: true`):** Quando utilizar blocos de diagramas Mermaid (` ```mermaid `), adicione **obrigatoriamente** `mermaid: true` no front matter do post. O carregamento do JavaScript (Mermaid v12) é condicional para preservar a performance e tempo de carregamento dos demais posts.
 
 ---
 
@@ -133,6 +135,8 @@ Alterne o número de frases por parágrafo conforme o papel cognitivo:
 | **Callouts / Alerts** | `> [!TIPO] Título em Português`<br>`> Texto da nota` | Máximo 1 por seção. Sempre no padrão **GFM Admonitions** com **título explícito em português** (`> [!TIP] Dica`, `> [!NOTE] Nota`, `> [!NOTE] Disclaimer`, `> [!NOTE] Nota da Série`, `> [!WARNING] Aviso`, `> [!WARNING] Atenção`, `> [!IMPORTANT] Importante`, `> [!CAUTION] Aviso Crítico de Segurança`). Processado nativamente pelo plugin `jekyll-gfm-admonitions`. **Atenção:** o plugin compila o bloco de forma isolada — formatações locais funcionam perfeitamente (**negrito**, *itálico*, links diretos inline, código), mas **NUNCA** use notas de rodapé (`[^n]`) ou referências com definições fora da caixa, pois não são resolvidas e viram texto literal. |
 | **Analogias** | Mundo físico e cotidiano | Usar quando o conceito for abstrato (ex: túnel SSH como cano de água com fio dentro; sudoers como chave mestra para entregador de pizza). |
 | **Diagramas e Árvores (Block Construction)** | Textos monoespaçados com caracteres Box-Drawing | Usar **Block Constructions** Unicode (`├──`, `└──`, `│`, `┌──┐`, `└──┘`, `├──┤`, `──>`, `<──`, `───[túnel]──>`) para árvores de diretórios, topologias de rede, esquemas de frames e fluxogramas em fences de código. Evitar caracteres legados como `+--` e `|` soltos quando houver equivalentes limpos em box-drawing. |
+| **Diagramas Mermaid** | Fence ```` ```mermaid ```` + `mermaid: true` no front matter | Para fluxogramas, grafos ou diagramas de sequência modernos e vetoriais (SVG). Exige obrigatoriamente a flag `mermaid: true` no front matter do post para carregamento condicional do script. |
+| **Código Conflitante com Liquid (Jinja2/Ansible)** | Envolver com `{% raw %}` e `{% endraw %}` pontuais | Obrigatório ao citar variáveis com duplas chaves (`{{ ... }}`) ou diretivas de template em blocos de código ou comandos inline, evitando que o Liquid do Jekyll tente interpretá-los. Nunca envolver o arquivo inteiro. |
 | **Tabelas** | Markdown com alinhamento limpo | Para resumos comparativos e mapeamentos de flags. |
 | **Footnotes** | `[^1]: **Título** {*Fonte*} ([Link](url))` | Referências externas no final, exclusivamente na seção `## Referências`. **Proibido no primeiro parágrafo** do post (para não poluir o *excerpt* na *home*) e proibido dentro de callouts. |
 | **Exercícios** | `<details markdown="1">` com resposta | Apenas para tutoriais/séries. Obrigatoriamente na seção dedicada `## Exercícios`, enunciado visível, `<summary>Ver resposta</summary>` e atributo `markdown="1"`. Veja detalhes abaixo. |
@@ -186,6 +190,66 @@ Solução e análise do segundo desafio...
 </details>
 ````
 
+### Padrão de Engenharia para Diagramas Mermaid (Pragmatismo, Tipos e Anti-Overengenharia)
+
+O Mermaid (v12) está integrado nativamente ao blog com renderização vetorial (SVG), suporte a Dark Mode e recálculo dinâmico. Contudo, **diagrama não é enfeite**: deve ser usado com estrito pragmatismo técnico para evitar poluição visual e "overengenharia" desnecessária.
+
+#### 1. Critério de Decisão: Quando USAR vs. Quando NÃO USAR
+
+* **NÃO use Mermaid para comparação de especificações:** Se o objetivo é comparar hardware, tabelas de benchmark, parâmetros ou opções de comandos, **use Tabelas Markdown nativas**. Uma tabela simples de 2 ou 3 colunas é infinitamente mais elegante, rápida de ler e natural que um grafo artificial.
+* **NÃO use Mermaid para saídas de terminal ou árvores estáticas:** Saídas de comandos (`lsblk`, `tree`, logs, headers) pertencem a blocos de código com caracteres Unicode **Block Construction / Box-Drawing**.
+* **USE Mermaid para dinâmica e lógica de fluxo:** O Mermaid brilha em processos que envolvem **decisão (if/else), sequência temporal de passos, algoritmos, pipelines de dados, máquinas de estados ou troca de mensagens entre atores**.
+* **Regra da Decisão do Autor:** A IA pode propor uma representação em Mermaid além do óbvio caso julgue que a visualização gráfica agregará valor didático ou estético superior à alternativa em texto/tabela, mas **deve apresentar a proposta para o autor (Eduardo) bater o martelo final**.
+
+#### 2. Tipos de Diagramas e seus Usos Reais
+
+Qualquer diagrama suportado pelo Mermaid pode ser utilizado, desde que sua proposta case com o problema técnico abordado:
+
+* **`flowchart TD / LR` (Fluxogramas):** Decisões algorítmicas, pipelines de CI/CD, esteiras de compilação, árvores de decisão e sequenciamento de passos.
+* **`sequenceDiagram` (Diagramas de Sequência):** Protocolos de rede, trocas de mensagens (SSH, HTTP/REST, gRPC, OAuth), handshakes criptográficos e chamadas entre microsserviços.
+* **`stateDiagram-v2` (Máquinas de Estado):** Ciclos de vida de conexões, estados de processos no kernel, transições de tarefas ou máquinas de estado em código.
+* **`gantt` (Gráficos de Gantt/Tempo):** Paralelismo de I/O, tempos concorrentes de inicialização de serviços ou fases temporais.
+* **`gitGraph` (Grafos Git):** Estratégias de ramificação, rebase, cherry-pick, conflitos e merge.
+
+#### 3. Invariantes Rígidas de Estilo para Diagramas
+
+Para manter a sobriedade e a identidade do blog nos diagramas:
+
+1. **Front Matter Obrigatório:** Sempre adicionar `mermaid: true` no front matter do post para que o bundle JS seja baixado condicionalmente.
+2. **Zero Emojis:** NUNCA use emojis dentro dos nós do diagrama. Mantenha o padrão técnico e limpo do blog.
+3. **Setas em Texto Puro:** Use setas no padrão ASCII (`-->` ou `==>`), nunca setas tipográficas (`──>`).
+4. **Sem Caixas Aninhadas Falsas (Anti-Subgraph Unitário):** NUNCA envolva um único nó dentro de um `subgraph` apenas para colocar um título externo. Isso cria o visual feio de "caixa dentro de outra caixa" (borda dupla). Use `subgraph` exclusivamente para agrupar 2 ou mais nós que pertencem a um mesmo subsistema/módulo real.
+5. **Estrutura dos Cards (Flowcharts):**
+   * **Título em Negrito:** Primeira linha do nó com `<b>N. Título da Etapa</b>`.
+   * **Listas HTML `<ul><li>`:** Use elementos de lista para múltiplos itens ou descrições, garantindo alinhamento à esquerda perfeito e recuo proporcional (*hanging indent*) mesmo em telas de celular.
+   * **Alinhamento:** Textos dos cards detalhados alinhados à esquerda; nós acionadores ou badges de topo (como o `KEY`) centralizados.
+6. **Classes Semânticas de Cores:** Atribua classes semânticas aos nós para harmonização com os temas claro (`classic`) e escuro (`dark`):
+   * `class ID key;`: Para badges de entrada, acionadores ou seletores (neutro escuro/ardósia, centralizado).
+   * `class ID neutral;`: Para etapas informativas padrão ou neutras.
+   * `class ID failure;`: Para caminhos de falha, erros, desvios indesejados, lentidão ou descarte (borda e fundo em alerta avermelhado sutil).
+   * `class ID success;`: Para caminhos felizes, conclusões bem-sucedidas ou etapas otimizadas (borda e fundo em tom esmeralda suave).
+
+#### Exemplo Canônico de Flowchart Estilizado:
+
+````markdown
+```mermaid
+flowchart TD
+    KEY["<b>Teclado:</b> Senha digitada"]
+    S0["<b>1. Testar Slot 0:</b> Vazio<br>Pula direto para o próximo"]
+    S1["<b>2. Testar Slot 1:</b> Arquivo de chave (5M iterações)<ul><li>O GRUB não sabe que é um keyfile!</li><li>Aplica a senha e calcula 5 MILHÕES de hashes em single-core</li><li>Falha após ~30 segundos desperdiçados!</li></ul>"]
+    S2["<b>3. Testar Slot 2:</b> Minha senha real (1,4M iterações)<ul><li>Aplica a senha no Slot 2</li><li>Calcula mais 1,4 milhão de hashes...</li><li>Sucesso após ~10 segundos!</li></ul>"]
+
+    KEY --> S0
+    S0 --> S1
+    S1 --> S2
+
+    class KEY key;
+    class S0 neutral;
+    class S1 failure;
+    class S2 success;
+```
+````
+
 ---
 
 ## 7. Padrões de Autoria e Estilo de Eduardo (Voz Autêntica)
@@ -233,4 +297,7 @@ Antes de publicar ou entregar qualquer post, valide:
 - [ ] Referências com footnote `[^n]` na seção `## Referências`?
 - [ ] Primeiro parágrafo de abertura 100% livre de footnotes `[^n]` (sem quebrar o *excerpt* da *home*)?
 - [ ] Links internos para outros posts do blog usando exclusivamente o include `{% include post-ref.html slug="..." text="..." %}` (zero links hardcoded `/posts/...`)?
+- [ ] Sintaxes com chaves duplas `{{ ... }}` (Ansible, Jinja2, Helm) protegidas pontualmente com `{% raw %} ... {% endraw %}` para não conflitar com o Liquid do Jekyll?
+- [ ] Se o post utilizar diagramas Mermaid (` ```mermaid `), a flag `mermaid: true` está presente no front matter?
+- [ ] Diagramas Mermaid respeitam as diretrizes de engenharia (sem emojis, setas ASCII `-->`, nós em lista `<ul><li>`, classes semânticas e zero caixas aninhadas)?
 - [ ] Para séries/tutoriais: seção dedicada `## Exercícios` no final do post, com enunciados visíveis, numeração reiniciada (1..N) e respostas recolhidas em `<details markdown="1"><summary>Ver resposta</summary>`?
