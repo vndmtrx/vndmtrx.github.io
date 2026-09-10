@@ -13,10 +13,11 @@ Série de posts para o blog `vndmtrx.github.io` abordando o ecossistema Spring B
 | **Maturidade e Especificações** | 8 a 10 | BDD / Testcontainers, HTTP QUERY & Jobs | Testes reais com Docker, RFC 9734 (HTTP QUERY) e automações assíncronas |
 | **Segurança e Produção** | 11 a 13 | JWT / Envers, OpenTelemetry & Resilience4J | Auditoria completa, telemetria unificada e padrões de resiliência com Redis |
 | **Deploy e Distribuição** | 14 a 15 | K8s / Helm & Mensageria EDA | Empacotamento em imagens OCI, Helm charts e mensageria distribuída com DLQ |
+| **Dados em Escala** | 16 a 17 | Particionamento, FDW & Tiering | Particionamento declarativo, `postgres_fdw` para Hot/Cold e re-hidratação com Redis |
 
 ---
 
-## Detalhamento das 15 Partes
+## Detalhamento das 17 Partes
 
 ### Parte 1: Ambiente de Desenvolvimento
 - **OS**: Debian Trixie como base de trabalho
@@ -164,3 +165,28 @@ Série de posts para o blog `vndmtrx.github.io` abordando o ecossistema Spring B
 - **Testes**: Uso de Testcontainers para subir o Broker (Rabbit/Kafka) nos testes de integração. Sucesso total de 100%.
 - **Objetivo**: Desacoplar a comunicação de microsserviços migrando do processamento síncrono local para troca assíncrona de mensagens distribuídas.
 - **Entregável**: Produtores e consumidores de mensagens resilientes operando em cima de filas distribuídas com tratamento automático de erros via DLQ.
+
+### Parte 16: Bônus - Particionamento e Data Tiering com PostgreSQL
+- **Conceito**: O problema de dados históricos em bases transacionais de alta performance — por que simplesmente "ter um banco grande" não escala financeiramente e o racional por trás da segregação Hot/Cold.
+- **Particionamento Declarativo por Range**: Implementação de `PARTITION BY RANGE (created_at)` no PostgreSQL 18, criação de partições mensais/anuais e como o **Partition Pruning** elimina varreduras desnecessárias.
+- **UUIDv7 e Chave Composta**: Racional da chave primária `(id, created_at)` — por que particionar diretamente pelo UUIDv7 é um anti-pattern (apesar do timestamp embutido nos 48 bits iniciais) e por que `created_at` explícito é a escolha sólida.
+- **`postgres_fdw` para Tiering Hot/Cold**: Configuração de Foreign Data Wrapper para apontar partições antigas para uma instância PostgreSQL secundária (hardware modesto), enquanto partições recentes ficam no nó primário de alta performance.
+- **Transparência Total no Spring Data JPA**: Demonstração de que a aplicação Spring Boot continua usando `@Entity`, `JpaRepository` e `@Transactional` sem alteração — sem múltiplos `DataSource`, sem Apache ShardingSphere, sem libs externas de sharding.
+- **Condição Crítica — Partition Pruning no Código**: Como a presença (ou ausência) da coluna de particionamento no `WHERE` das queries JPA/JPQL impacta radicalmente a latência, e por que isso precisa ser uma convenção de time.
+- **DDL e Automação**: Desativação definitiva de `ddl-auto`, uso de `pg_partman` para criação automática de partições futuras e cron jobs de manutenção.
+- **Anti-patterns**: Por que `updated_at` como chave de particionamento é uma armadilha (row movement distribuído, transações DELETE+INSERT pela rede, destruição do Partition Pruning, dead tuples).
+- **Infra**: Docker Compose com 2 instâncias PostgreSQL (hot/cold) simulando o cenário de tiering.
+- **Testes**: Testes de integração com Testcontainers subindo as 2 instâncias PostgreSQL. Sucesso total de 100%.
+- **Objetivo**: Implementar particionamento declarativo e tiering de dados transparente à aplicação Spring Boot, segregando dados históricos em infraestrutura de menor custo sem alterar código aplicacional.
+- **Entregável**: Schema particionado por range com `postgres_fdw` ativo, 2 nós PostgreSQL em Docker Compose e suíte de testes de integração validando Partition Pruning e queries remotas.
+
+### Parte 17: Bônus - Re-hidratação, Operações em Dados Frios e Ciclo de Vida
+- **Re-hidratação por Registro**: Estratégia de buscar registros antigos no nó frio sob demanda e cachear em Redis com TTL (aproveitando a infraestrutura da Parte 13), aliviando o nó secundário para acessos repetidos.
+- **Re-hidratação por Partição (Infra/DBA)**: Cenário operacional de `DETACH PARTITION` + `ATTACH PARTITION` para trazer um mês/ano inteiro de volta ao nó quente quando a demanda analítica justifica.
+- **Edições em Dados Frios**: Demonstração de `UPDATE`/`DELETE` remotos via `postgres_fdw` transparentes ao JPA — e os trade-offs de latência e transação distribuída.
+- **Particionamento por Lista como Alternativa**: `PARTITION BY LIST (status)` para segregação por ciclo de vida de negócio (ativos no nó quente, arquivados/finalizados no nó frio), com migração ocorrendo apenas em transições explícitas de estado.
+- **Comparação de Estratégias**: Tabela comparativa Range vs. List vs. Hash com cenários de uso reais.
+- **Monitoramento**: Queries de diagnóstico para verificar Partition Pruning (`EXPLAIN ANALYZE`), tamanho de partições e latência de queries remotas — integração com a observabilidade da Parte 12.
+- **Testes**: Testes de integração validando fluxos de re-hidratação, cache hit/miss no Redis e operações remotas. Sucesso total de 100%.
+- **Objetivo**: Completar o ciclo de vida operacional do tiering com estratégias de acesso, cache e manutenção de dados frios.
+- **Entregável**: Fluxo de re-hidratação funcional com Redis, operações remotas validadas e guia operacional de manutenção de partições.
