@@ -3,7 +3,8 @@ name: springboot-series
 description: >
   Skill e roteiro para a série "Spring Boot Tutorial" do blog vndmtrx.github.io.
   Contém as convenções arquiteturais, decisões de design, stack tecnológica e o
-  roteiro de 15 partes (do setup de ambiente ao deploy em Kubernetes e mensageria).
+  roteiro de 17 partes (do setup de ambiente ao deploy em Kubernetes, mensageria
+  e data tiering com PostgreSQL).
 ---
 
 # Skill: Série Spring Boot Tutorial
@@ -40,7 +41,7 @@ O objetivo não é reinventar a roda com um CRUD trivial, mas usar um domínio s
 | **IDE / Editor** | VS Codium via `extrepo` | Ambiente de desenvolvimento livre de telemetria e open source com extensões oficiais Java/Spring. |
 | **Experimentação** | Java JShell (REPL) & DevTools | Cultura de *tinkering* e REPL-driven development para validação rápida de APIs antes da escrita formal. |
 | **Build Tool** | Apache Maven | Builds determinísticas e declarativas com `pom.xml` e plugins padrão do ecossistema. |
-| **Persistência** | H2 (in-memory dev/test) -> PostgreSQL 18 (Docker) | Migração estruturada com Flyway, uso nativo de `UUIDv7` e campos `JSONB` para metadados/tags. |
+| **Persistência** | H2 (in-memory dev/test) -> PostgreSQL 18 (Docker) | Migração estruturada com Flyway, uso nativo de `UUIDv7` e campos `JSONB` para metadados/tags. Particionamento declarativo por range e `postgres_fdw` para tiering Hot/Cold. |
 | **Contrato & Docs** | OpenAPI 3.0 (Swagger Editor) & SpringDoc OpenAPI v3.1.0+ | Comparação prática: Design-First (contrato estático e geração via plugin) vs SpringDoc integrado em runtime no Spring Boot. |
 | **Protocolo HTTP** | RESTful com HATEOAS & **HTTP QUERY (RFC 9734)** | Maturidade Richardson nível 3 e uso do verbo `QUERY` para buscas idempotentes com payload complexo. |
 | **Testes** | JUnit 5, Mockito, Testcontainers, Cucumber (BDD) e WireMock | Testes de unidade estritos (100% de sucesso) combinados com testes de integração reais em containers. |
