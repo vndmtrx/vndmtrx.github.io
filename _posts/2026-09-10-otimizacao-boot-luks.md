@@ -7,6 +7,7 @@ author:
 date: 2026-09-10 17:01:00 GMT-3
 permalink: /posts/otimizacao-boot-luks/
 tags: [Linux, Debian, Segurança, Hardware, Performance]
+mermaid: true
 ---
 
 Existe uma sensação física de puro ódio que todo usuário de Linux já experimentou: ligar o notebook, digitar a senha do disco e ficar encarando uma tela preta estática, sem cursor piscando, sem sinal de vida, enquanto os segundos escorrem pelo ralo. No meu notebook, um Dell com SSD NVMe rápido rodando Debian Trixie (o mesmo ambiente que mostrei no {% include post-ref.html slug="spring-boot-tutorial-parte-1-ambiente" text="Spring Boot Tutorial, Parte 1" %}), esse ritual diário estava cobrando um pedágio ridículo de um minuto e quarenta segundos.
@@ -129,19 +130,10 @@ Só tem uma pegadinha: o `cryptsetup` roda no Linux quentinho e confortável. O 
 
 Mas adivinha quem NÃO tem nada disso? Ele mesmo, o GRUB:
 
-```text
-┌──────────────────────────────────────────────────────────────┐
-│                 NO KERNEL LINUX EM EXECUÇÃO                  │
-│  Multi-core + Aceleração por Hardware (AES-NI / AVX)         │
-│  Benchmark: 2.000 ms  ──>  Calcula ~6.000.000 de iterações   │
-└──────────────────────────────────────────────────────────────┘
-                                vs
-┌──────────────────────────────────────────────────────────────┐
-│                    DENTRO DO BOOTLOADER                      │
-│  Modo protegido x86_64, SINGLE-CORE, zero AES-NI             │
-│  Cálculo puramente em software  ──>  Demora ~50 segundos!    │
-└──────────────────────────────────────────────────────────────┘
-```
+| Ambiente | Núcleos de CPU | Aceleração por Hardware | Tempo para 6M Hashes |
+| :--- | :--- | :--- | :--- |
+| **Kernel Linux** | Multi-core (todos os núcleos) | AES-NI + AVX2 (Hardware) | **~2 segundos** |
+| **GRUB Bootloader** | 1 núcleo (Single-core) | Nenhuma (Software puro) | **~50 segundos** |
 
 O GRUB roda no ambiente tosco do firmware UEFI. Ele opera em modo protegido de 64 bits, num único núcleo, sem drivers avançados e sem usar nenhuma instrução de aceleração criptográfica por hardware, uma limitação notória e amplamente documentada no ecossistema do bootloader [^3]. O que o kernel mastiga em dois segundos vira um calvário de cinquenta segundos de pura tortura matemática no bootloader.
 
@@ -176,30 +168,21 @@ Pensa comigo no que eu acabei de fazer. Eu apaguei o Slot 0 e botei minha senha 
 
 Quando eu digitava minha senha no GRUB, o coitado do bootloader fazia exatamente isso:
 
-```text
-[Teclado: Senha Digitada]
-           │
-           ▼
- ┌────────────────────────────────────────────────────────┐
- │ 1. Testar Slot 0: Vazio. Pula pro próximo.             │
- └────────────────────────────────────────────────────────┘
-           │
-           ▼
- ┌────────────────────────────────────────────────────────┐
- │ 2. Testar Slot 1: Arquivo de chave (5M iterações)      │
- │    ──> O GRUB não sabe que é um keyfile!               │
- │    ──> Ele pega minha senha digitada e aplica no Slot 1│
- │    ──> Calcula CINCO MILHÕES de hashes em single-core! │
- │    ──> Falha após ~30 segundos jogados fora!           │
- └────────────────────────────────────────────────────────┘
-           │
-           ▼
- ┌────────────────────────────────────────────────────────┐
- │ 3. Testar Slot 2: Minha senha real (1,4M iterações)    │
- │    ──> Aplica a senha no Slot 2.                       │
- │    ──> Calcula mais 1,4 milhão de iterações...         │
- │    ──> Sucesso após ~10 segundos!                      │
- └────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    KEY["<b>Teclado:</b> Senha digitada"]
+    S0["<b>1. Testar Slot 0:</b> Vazio<br>Pula direto para o próximo"]
+    S1["<b>2. Testar Slot 1:</b> Arquivo de chave (5M iterações)<ul><li>O GRUB não sabe que é um keyfile!</li><li>Aplica a senha digitada e calcula 5 MILHÕES de hashes em single-core</li><li>Falha após ~30 segundos jogados fora!</li></ul>"]
+    S2["<b>3. Testar Slot 2:</b> Minha senha real (1,4M iterações)<ul><li>Aplica a senha no Slot 2</li><li>Calcula mais 1,4 milhão de hashes...</li><li>Sucesso após ~10 segundos!</li></ul>"]
+
+    KEY --> S0
+    S0 --> S1
+    S1 --> S2
+
+    class KEY key;
+    class S0 neutral;
+    class S1 failure;
+    class S2 success;
 ```
 
 O GRUB pegava a senha humana do teclado, jogava no Slot 1 (que era um keyfile binário), calculava cinco milhões de hashes até perceber que não batia, descartava com erro e só aí ia pro Slot 2 calcular mais 1,4 milhão!
