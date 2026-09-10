@@ -389,6 +389,9 @@ NAME       TYPE      SIZE USED PRIO
 
 Metade da memória RAM física (15,5 GB) transformada em swap ultrarrápido com compressão `zstd`, sem tocar no SSD.
 
+> [!NOTE] O zram não "sequestrou" metade da sua memória RAM
+> Ver 15,5 GB listados no `swapon` assusta à primeira vista, mas o zram trabalha com alocação estritamente dinâmica (*thin provisioning*). Ele não pré-aloca nem "come" essa memória na inicialização. Repare no `USED 0B` na tabela: enquanto o swap estiver desocupado, o consumo real na RAM física é zero. Somente quando o kernel envia páginas inativas é que o bloco aloca memória e comprime os dados em tempo real via `zstd` (numa proporção típica de 2:1 a 3:1). Os 15,5 GB são apenas o teto virtual máximo aceito, e não memória confiscada. Para auditar no detalhe quanto espaço físico comprimido ele está consumindo a qualquer momento, use o comando `zramctl`.
+
 O ganho no boot foi imediato: sem precisar inicializar subsistema de resume nem escanear partição de swap no dm-crypt, o tempo de **kernel despencou de 8.716s para 5.957s**. Quase três segundos de economia direta arrancados só nessa faxina.
 
 ### Reivindicando os 34 GB: expansão do LUKS e ext4 a quente
