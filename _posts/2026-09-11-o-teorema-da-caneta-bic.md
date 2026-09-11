@@ -24,7 +24,7 @@ O tipo de notícia que a maioria lê em silêncio, balança a cabeça com o cini
 Foi aí que Josafá decidiu entrar em cena.
 
 > [!WARNING] Admissão do próprio veneno
-> Apelar para esse *argumentum ad verecundiam* é uma covardia retórica? É, com certeza. Mas se é pra fazer exposed, que comece pelo meu: não tem ninguém pleno ou iluminado aqui não. Eu sou mesquinho, rancoroso e desci do salto com gosto. A paciência foi com Jezuis antes das nove da manhã, o ranço bateu no teto e resolvi canalizar a minha vilã de novela das 9, porque eu sou ser humano e vocês não têm nada a ver com isso.
+> Apelar para esse *argumentum ad verecundiam* é uma covardia retórica? É, com certeza. Mas se é pra fazer exposed, que comece pelo meu: não tem ninguém pleno ou iluminado aqui não. Eu sou mesquinho, rancoroso e desci do salto com gosto. A paciência foi com Jezuis antes das nove da manhã, o ranço bateu no teto e resolvi canalizar a minha *"vilã de novela"* interior, porque eu sou ser humano e vocês não têm nada a ver com isso.
 
 Para não dar nome ao coleguinha, resolvi batizá-lo de Josafá simplesmente porque sim. Tem aquela sonoridade bíblica empoeirada do Antigo Testamento, carrega um peso de cartório do século retrasado e casa sob medida com a solenidade arcaica com que ele tenta justificar o injustificável.
 
