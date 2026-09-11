@@ -4,7 +4,7 @@ title: "Do Zero ao Desktop Perfeito: Automatizando o Debian 13 Trixie com Ansibl
 subtitle: "Como transformar a sofrência de formatar a máquina em algo idempotente"
 author:
   - "Eduardo N. S. R."
-date: 2026-09-10 16:30:00 GMT-3
+date: 2026-09-14 14:45:00 GMT-3
 permalink: /posts/ansible-debian-desktop/
 tags: [Linux, Debian, Ansible, DevOps, Produtividade]
 ---
