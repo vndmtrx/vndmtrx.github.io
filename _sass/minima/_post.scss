@@ -168,17 +168,17 @@ table {
 
 // Padronização semântica e tipográfica dos elementos de conteúdo
 .post-content {
-  h2 {
+  > h2, article & h2:not([class*="-title"]) {
     font-size: 1.6rem;
     margin-top: 2rem;
   }
 
-  h3 {
+  > h3, article & h3:not([class*="-title"]) {
     font-size: 1.3rem;
     margin-top: 1.5rem;
   }
 
-  h4 {
+  > h4, article & h4:not([class*="-title"]) {
     font-size: 1.1rem;
     margin-top: 1.2rem;
   }
