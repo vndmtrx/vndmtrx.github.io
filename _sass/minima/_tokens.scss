@@ -1,12 +1,12 @@
 @charset "utf-8";
 
 // 1. Variáveis base de tipografia e layout (defaults)
-$base-font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", "Apple Color Emoji", Roboto, Helvetica, Arial, sans-serif !default;
-$code-font-family: "Menlo", "Inconsolata", "Consolas", "Roboto Mono", "Ubuntu Mono", "Liberation Mono", "Courier New", monospace;
-$base-font-size:   16px !default;
+$base-font-family: "Source Serif 4", Georgia, serif !default;
+$code-font-family: "Source Code Pro", monospace !default;
+$base-font-size:   17px !default;
 $base-font-weight: 400 !default;
 $small-font-size:  $base-font-size * 0.875 !default;
-$base-line-height: 1.5 !default;
+$base-line-height: 1.7 !default;
 
 $spacing-unit:     30px !default;
 $table-text-align: left !default;
@@ -17,11 +17,7 @@ $on-laptop:        800px !default;
 $on-medium:        $on-palm !default;
 $on-large:         $on-laptop !default;
 
-// 2. Sobrescritas customizadas do projeto
-$base-font-family: "Source Serif 4", Georgia, serif;
-$code-font-family: "Source Code Pro", monospace;
-$base-font-size: 17px;
-$base-line-height: 1.7;
+
 
 // 3. Variáveis de cores dinâmicas (mapeadas para as variáveis CSS do auto.scss)
 $brand-color: var(--minima-brand-color);
