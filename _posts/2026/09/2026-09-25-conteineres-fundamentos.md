@@ -6,7 +6,7 @@ author:
   - "Eduardo N. S. R."
 date: 2026-09-25 14:00:00 GMT-3
 permalink: /posts/conteineres-fundamentos/
-tags: [Docker, Podman, Contêineres, Linux, DevOps, Infraestrutura]
+tags: [Docker, Contêineres, Linux, DevOps]
 series: Contêineres de Cabo a Rabo
 published: false
 category: Tutoriais

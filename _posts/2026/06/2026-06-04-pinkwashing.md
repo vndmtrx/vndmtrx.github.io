@@ -6,7 +6,7 @@ author:
 - "Eduardo N. S. R."
 date: 2026-06-04 16:51:00 GMT-3
 permalink: /posts/pinkwashing/
-tags: [Sociedade, Orgulho, LGBT, LGBTQIAPN+]
+tags: [Sociedade, Política, LGBTQIAPN+, Opinião]
 category: Crônicas
 ---
 

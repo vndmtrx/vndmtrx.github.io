@@ -6,7 +6,7 @@ author:
   - "Eduardo N. S. R."
 date: 2026-10-09 17:01:00 GMT-3
 permalink: /posts/otimizacao-boot-luks/
-tags: [Linux, Debian, Segurança, Hardware, Performance]
+tags: [Linux, Debian, Segurança, Performance]
 mermaid: true
 published: false
 category: Artigos

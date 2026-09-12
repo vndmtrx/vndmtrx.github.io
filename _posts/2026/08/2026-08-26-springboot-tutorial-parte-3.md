@@ -7,7 +7,7 @@ author:
 date: 2026-08-26 08:43:00 GMT-3
 modified_date: 2026-08-27 10:36:00 GMT-3
 permalink: /posts/spring-boot-tutorial-parte-3-core-api/
-tags: [Spring Boot, Java, JPA, Backend]
+tags: [Spring Boot, Java, Backend, Engenharia de Software]
 series: Spring Boot Tutorial
 category: Tutoriais
 ---

@@ -6,7 +6,7 @@ author:
   - "Eduardo N. S. R."
 date: 2026-08-17 07:19:00 GMT-3
 permalink: /posts/banca-ia-agentes-e-busca/
-tags: [Inteligência Artificial, Agentes, Algoritmos, Faculdade, Opinião]
+tags: [Inteligência Artificial, Algoritmos, Faculdade, Opinião]
 category: Ensaios
 ---
 

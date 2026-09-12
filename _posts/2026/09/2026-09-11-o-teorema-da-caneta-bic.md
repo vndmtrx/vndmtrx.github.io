@@ -6,7 +6,7 @@ author:
   - "Eduardo N. S. R."
 date: 2026-09-11 16:20:00 GMT-3
 permalink: /posts/o-teorema-da-caneta-bic/
-tags: [Sociedade, Política, Filosofia, Trabalho, Crônica]
+tags: [Sociedade, Política, Filosofia, Trabalho]
 category: Crônicas
 ---
 

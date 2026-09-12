@@ -6,7 +6,7 @@ author:
   - "Eduardo N. S. R."
 date: 2026-09-14 14:45:00 GMT-3
 permalink: /posts/ansible-debian-desktop/
-tags: [Linux, Debian, Ansible, DevOps, Produtividade]
+tags: [Linux, Debian, Ansible, DevOps]
 published: false
 category: Tutoriais
 ---

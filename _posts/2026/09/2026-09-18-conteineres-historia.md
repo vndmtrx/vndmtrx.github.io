@@ -6,7 +6,7 @@ author:
   - "Eduardo N. S. R."
 date: 2026-09-18 14:00:00 GMT-3
 permalink: /posts/conteineres-historia/
-tags: [Docker, Contêineres, Linux, História, DevOps, Infraestrutura]
+tags: [Docker, Contêineres, Linux, História]
 series: Contêineres de Cabo a Rabo
 published: false
 category: Artigos

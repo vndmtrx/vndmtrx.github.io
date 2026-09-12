@@ -6,7 +6,7 @@ author:
 - "Eduardo N. S. R."
 date: 2026-05-17 06:43:00 GMT-3
 permalink: /posts/catedral-bazar-jardim/
-tags: [Programação, Análise de Sistemas, Inteligência Artificial]
+tags: [Programação, Engenharia de Software, Inteligência Artificial, Opinião]
 category: Ensaios
 ---
 
