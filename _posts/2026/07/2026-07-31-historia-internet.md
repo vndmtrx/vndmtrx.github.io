@@ -8,6 +8,7 @@ date: 2026-07-31 12:40:00 GMT-3
 modified_date: 2026-08-07 18:40:00 GMT-3
 permalink: /posts/historia-internet/
 tags: [Internet, Web, História, Redes]
+category: Artigos
 ---
 
 A internet é uma dessas coisas que a gente usa o dia inteiro sem parar pra pensar no que tem por baixo. A gente acorda, olha o celular, entra no Instagram, assiste um vídeo no YouTube, manda mensagem no WhatsApp, pede comida, carro e até hospedagem por aplicativo, e tudo isso acontece em cima de uma rede que levou décadas pra chegar onde está. E a história de como isso tudo foi construído é das mais interessantes da computação.

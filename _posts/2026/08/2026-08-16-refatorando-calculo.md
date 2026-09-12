@@ -8,6 +8,7 @@ date: 2026-08-16 14:18:00 GMT-3
 modified_date: 2026-08-16 20:09:00 GMT-3
 permalink: /posts/refatorando-calculo/
 tags: [Matemática, Cálculo, Educação, Opinião]
+category: Ensaios
 ---
 
 Eu desisti de fazer faculdade de Matemática por causa de cálculo, e definitivamente não foi por falta de interesse na disciplina como um todo. Pelo contrário: matemática discreta, teoria de números, teoria de conjuntos, axiomas de Peano, a incompletude de Gödel, a cardinalidade de infinitos e a hipótese do continuum sempre me fascinaram de um jeito quase obsessivo. Eu lia sobre essas estruturas por puro prazer, porque achava bonito ver cada peça lógica se encaixar com elegância. O problema era quando chegava em cálculo: ali a matéria virava um muro intransponível de regras mecânicas, e durante muitos anos eu me convenci de que a limitação era exclusivamente minha.

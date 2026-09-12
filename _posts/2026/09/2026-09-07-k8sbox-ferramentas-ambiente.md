@@ -8,6 +8,7 @@ date: 2026-09-07 11:33:00 GMT-3
 permalink: /posts/k8sbox-ferramentas-ambiente/
 tags: [Kubernetes, Ansible, DevOps, Infraestrutura]
 series: Kubernetes in a Box
+category: Tutoriais
 ---
 
 Na Parte 1 desta série, gastamos o post inteiro falando sobre *por que* construir um cluster Kubernetes na mão e *o que* pretendemos montar. Conceitos, diagramas, motivação. Agora é hora de sujar as mãos de verdade: vamos configurar o computador hospedeiro, dissecar linha por linha como o Vagrant lê nosso inventário Ansible para criar máquinas virtuais e resolver o problema mais traiçoeiro de qualquer laboratório local de Kubernetes: fazer a rede funcionar direito.

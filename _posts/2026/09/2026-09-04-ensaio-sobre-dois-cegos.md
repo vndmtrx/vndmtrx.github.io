@@ -7,6 +7,7 @@ author:
 date: 2026-09-04 06:53:00 GMT-3
 permalink: /posts/ensaio-sobre-dois-cegos/
 tags: [Inteligência Artificial, Escrita, Filosofia, Opinião]
+category: Ensaios
 ---
 
 Vamos tirar o elefante da sala logo no primeiro parágrafo: sim, eu uso inteligência artificial para escrever. E sim, este ensaio que você começou a ler foi parido a quatro mãos em uma conversa direta entre mim e um modelo de linguagem. Podem rasgar as vestes, acionar a inquisição dos puristas da folha em branco ou me denunciar para a polícia da literatura orgânica: a verdade é que não tenho a menor vergonha disso. Fingir que eu psicografei cada vírgula sozinho em um transe solitário diante de uma tela escura para manter pose de gênio romântico seria uma hipocrisia tão patética que nem o Linkedin teria coragem de publicar.

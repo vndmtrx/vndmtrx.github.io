@@ -9,6 +9,7 @@ modified_date: 2026-05-10 10:26:00 GMT-3
 permalink: /posts/ssh-gpg-github/
 tags: [SSH, GPG, Git, Github]
 series: OpenSSH na Prática
+category: Tutoriais
 ---
 
 Não sei se vocês passam por isso, mas frequentemente eu troco minhas chaves SSH e GPG que uso no GitHub. Às vezes por precaução, mas a maioria das vezes é por esquecimento mesmo. E todas as vezes que vou criar novas chaves é o mesmo parto. Em vista disso, resolvi resumir um pouco o trabalho que é fazer toda essa via sacra de criação. Não chega a ser complicado, mas ter esses passos resumidos em um só lugar ajuda.
