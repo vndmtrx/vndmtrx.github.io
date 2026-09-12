@@ -43,8 +43,54 @@ k8sbox:
   url: "/tutoriais/k8sbox/"
   icon: "fas fa-dharmachakra"
   status: "Em andamento"
+  total_planned: 24
   repo: "https://github.com/vndmtrx/k8s-in-a-box"
   description: "Construção de um cluster Kubernetes multinodo e altamente disponível rodando localmente em máquinas virtuais Debian no Proxmox/KVM, dissecando control plane, workers, CNI e storage."
+  future_parts:
+    - part: 3
+      title: "O Inventário Ansible e as Variáveis do Cluster"
+    - part: 4
+      title: "Preparação do Sistema Base"
+    - part: 5
+      title: "Certificados e a Infraestrutura de PKI (Teoria)"
+    - part: 6
+      title: "Certificados e PKI (Implementação)"
+    - part: 7
+      title: "O Balanceador de Carga (HAProxy e Keepalived)"
+    - part: 8
+      title: "O Container Runtime e o kubelet"
+    - part: 9
+      title: "A Evolução Arquitetural: de Binários a Static Pods"
+    - part: 10
+      title: "O Cluster etcd"
+    - part: 11
+      title: "O kube-apiserver (Static Pod)"
+    - part: 12
+      title: "Controller Manager e Scheduler (Static Pods)"
+    - part: 13
+      title: "O Bastion Host (kubox) e as Ferramentas de Operação"
+    - part: 14
+      title: "O Cluster Ganha Vida (CNI + CoreDNS + kube-proxy)"
+    - part: 15
+      title: "Armazenamento: NFS, Volumes Persistentes e StorageClass"
+    - part: 16
+      title: "Gateway API e Exposição de Serviços"
+    - part: 17
+      title: "Observabilidade (Prometheus + Grafana + Headlamp)"
+    - part: 18
+      title: "Labels, Taints e Primeiras Aplicações (Rootless)"
+    - part: 19
+      title: "Autoscaling (VPA + HPA + Testes de Carga)"
+    - part: 20
+      title: "Conformidade e Validação Final"
+    - part: E1
+      title: "SELinux e Kubernetes"
+    - part: E2
+      title: "CNI Alternativo (Canal - Flannel + Calico)"
+    - part: E3
+      title: "Container Runtime Alternativo (containerd)"
+    - part: E4
+      title: "Acesso Remoto com Túneis SSH"
 
 conteineres:
   title: "Contêineres de Cabo a Rabo"
@@ -69,3 +115,69 @@ elixir:
   icon: "fas fa-tint"
   status: "Em andamento"
   description: "Anotações e conceitos práticos sobre a linguagem Elixir e a máquina virtual BEAM: imutabilidade, pattern matching expressivo e organização modular de projetos com Umbrella apps."
+
+engsoftware:
+  title: "Engenharia de Software Essencial"
+  slug: "engsoftware"
+  url: "/tutoriais/engsoftware/"
+  icon: "fas fa-code-branch"
+  status: "Planejada"
+  total_planned: 28
+  description: "Condensação dos fundamentos e a espinha dorsal da Engenharia de Software moderna, alinhada às Áreas de Conhecimento do SWEBOK v4.0. Um guia prático, referencial de campo e mapa mental de autoestudo através da construção do Sistema de Gestão e Controle de Frotas (SGCF)."
+  future_parts:
+    - part: 1
+      title: "A Natureza do Software e a Origem da Engenharia"
+    - part: 2
+      title: "Modelos de Processo, Ciclos de Vida e Fluxo de Trabalho"
+    - part: 3
+      title: "Fatores Humanos -- Psicologia da Elicitação e Pedagogia da Conversa"
+    - part: 4
+      title: "Engenharia de Requisitos -- Elicitação Técnica e Apoio por IA"
+    - part: 5
+      title: "Carga Cognitiva e Fatores Humanos em Requisitos (HCI)"
+    - part: 6
+      title: "Especificação de Requisitos, Taxonomia ISO/IEC 25010 e Security by Design"
+    - part: 7
+      title: "Delimitação de Escopo com Casos de Uso (UML)"
+    - part: 8
+      title: "Dimensionamento de Software e Métricas de Pontos de Função (APF)"
+    - part: 9
+      title: "Transações na APF, Estimativas de Esforço e Custos"
+    - part: 10
+      title: "Modelagem Estrutural e de Domínio com UML & DDD Estratégico"
+    - part: 11
+      title: "Fundamentos Relacionais e Álgebra Relacional"
+    - part: 12
+      title: "Teoria da Normalização, Modelagem de Dados e Imutabilidade"
+    - part: 13
+      title: "Modelagem Dinâmica -- Troca de Mensagens no Tempo"
+    - part: 14
+      title: "Modelagem Dinâmica -- Estados, Ciclos de Vida e Atividades"
+    - part: 15
+      title: "Princípios Fundamentais de Design de Software"
+    - part: 16
+      title: "Padrões de Projeto (GoF) Aplicados ao Negócio"
+    - part: 17
+      title: "Design de Contratos, Interfaces e Integrações"
+    - part: 18
+      title: "Segurança Contínua, DevSecOps e SBOM"
+    - part: 19
+      title: "Dinâmica Organizacional -- Lei de Conway e Team Topologies"
+    - part: 20
+      title: "Estilos Arquiteturais e o Modelo C4"
+    - part: 21
+      title: "Integridade Transacional, Concorrência e Locks"
+    - part: 22
+      title: "Da Arquitetura à Infraestrutura -- IaC, Contêineres e Deploy"
+    - part: 23
+      title: "Padrões para Integrações Assíncronas e Sistemas Externos"
+    - part: 24
+      title: "Estratégia de Qualidade e a Pirâmide de Testes"
+    - part: 25
+      title: "Observabilidade Ativa, Telemetria e Confiabilidade (SRE)"
+    - part: 26
+      title: "Gestão de Mudança e Engenharia de Adoção (Modelo ADKAR)"
+    - part: 27
+      title: "Engenharia de Software Assistida por Inteligência Artificial (AI-Assisted SE)"
+    - part: 28
+      title: "Governança Técnica, Sustentabilidade e Transição"
