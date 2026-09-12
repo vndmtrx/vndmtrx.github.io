@@ -22,11 +22,10 @@ permalink: /tutoriais/
           <div class="series-card-icon">
             <i class="{{ serie.icon | default: 'fas fa-book' }}" aria-hidden="true"></i>
           </div>
+          <h3 class="series-card-title">
+            <a href="{{ serie.url | relative_url }}">{{ serie.title }}</a>
+          </h3>
         </div>
-
-        <h3 class="series-card-title">
-          <a href="{{ serie.url | relative_url }}">{{ serie.title }}</a>
-        </h3>
 
         <div class="series-card-counter">
           <i class="fas fa-bookmark" aria-hidden="true"></i>
