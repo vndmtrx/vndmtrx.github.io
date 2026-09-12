@@ -20,7 +20,9 @@ A série **Spring Boot Tutorial** acompanha a construção progressiva de uma AP
 O objetivo não é reinventar a roda com um CRUD trivial, mas usar um domínio simples para explorar a fundo decisões de arquitetura de produção, resiliência, observabilidade, conformidade com o 12-Factor App e padrões de engenharia modernos.
 
 ### Convenções de Publicação
+- **Categoria Obrigatória no Front Matter:** `category: Tutoriais` (invariante obrigatória em 100% dos posts da série).
 - **Série no Front Matter:** `series: Spring Boot Tutorial`
+- **Página de Coleção / Trilha da Série:** A série possui sua página dedicada em [`tutoriais/spring-boot.md`](file:///c:/Users/Pichau/Documentos/dev/vndmtrx.github.io/tutoriais/spring-boot.md) (`/tutoriais/spring-boot/`) baseada no layout `serie`. Os metadados da série e a ementa de capítulos futuros estão centralizados em [`_data/series.yml`](file:///c:/Users/Pichau/Documentos/dev/vndmtrx.github.io/_data/series.yml). Novos capítulos publicados são incluídos automaticamente na trilha e devem manter paridade com o roteiro de 17 partes.
 - **Padrão de Título:** `title: "Spring Boot Tutorial, Parte X - [Tema]"`
 - **Subtítulo:** `subtitle: "[Frase de efeito ou tagline técnica marcante sobre o tema abordado]"`
 - **Tags Recomendadas:** `[Spring Boot, Java, Backend, DevOps, Infraestrutura, Arquitetura]` (conforme o tema do post)

@@ -8,6 +8,7 @@ date: 2026-08-28 06:38:00 GMT-3
 modified_date: 2026-09-02 13:57:00 GMT-3
 permalink: /posts/reforma-tributaria-python/
 tags: [Python, Impostos, Opinião, Programação, Sociedade]
+category: Artigos
 ---
 
 Eu sou de infra. Meu trabalho é manter servidores de pé, redes funcionando e deploys acontecendo sem que ninguém perceba. Programação pra mim é ferramenta, não profissão. Eu abro o Python quando quero dissecar um conceito, do mesmo jeito que abro um terminal pra provar que a falha não é na aplicação, é na rota de rede: não é sobre elegância, é sobre desmontar a máquina pra entender quem ela realmente serve.

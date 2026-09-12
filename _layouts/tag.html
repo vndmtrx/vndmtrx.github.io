@@ -1,16 +1,20 @@
 ---
 layout: base
+pagination:
+  enabled: true
 ---
 
 <div class="tag-page">
   <header class="post-header" style="margin-bottom: 2rem;">
     <h1 class="post-title">🏷️ {{ page.title }}</h1>
+  {%- assign posts = paginator.posts | default: page.posts -%}
+  {%- assign total_posts = paginator.total_posts | default: page.posts.size -%}
     <div class="post-meta" style="margin-top: 0.5rem; font-size: 0.95rem;">
       <span>
-        {% if page.posts.size == 1 %}
+        {% if total_posts == 1 %}
           1 post com esta tag
         {% else %}
-          {{ page.posts.size }} posts com esta tag
+          {{ total_posts }} posts com esta tag
         {% endif %}
       </span>
       <span class="bullet-divider">•</span>
@@ -20,10 +24,10 @@ layout: base
     </div>
   </header>
 
-  {%- if page.posts.size > 0 -%}
+  {%- if posts.size > 0 -%}
     <ul class="post-list">
       {%- assign date_format = site.minima.date_format | default: "%d/%m/%Y às %H:%M" -%}
-      {%- for post in page.posts -%}
+      {%- for post in posts -%}
       <li style="margin-bottom: 2rem;">
         <span class="post-meta">{{ post.date | date: date_format }}</span>
         <h3>
@@ -40,6 +44,54 @@ layout: base
       </li>
       {%- endfor -%}
     </ul>
+
+    {% if paginator.total_pages > 1 %}
+      <div class="pager">
+        <ul class="pagination">
+        {%- if paginator.page > 1 %}
+          <li>
+            <a href="{{ paginator.first_page_path | relative_url }}" class="first-page" title="Primeira página">
+              &laquo;
+            </a>
+          </li>
+        {%- else %}
+          <li><div class="pager-edge" title="Primeira página">&laquo;</div></li>
+        {%- endif %}
+
+        {%- if paginator.previous_page %}
+          <li>
+            <a href="{{ paginator.previous_page_path | relative_url }}" class="previous-page" title="Página {{ paginator.previous_page }}">
+              {{ paginator.previous_page }}
+            </a>
+          </li>
+        {%- else %}
+          <li><div class="pager-edge">•</div></li>
+        {%- endif %}
+
+          <li><div class="current-page">{{ paginator.page }}</div></li>
+
+        {%- if paginator.next_page %}
+          <li>
+            <a href="{{ paginator.next_page_path | relative_url }}" class="next-page" title="Página {{ paginator.next_page }}">
+              {{ paginator.next_page }}
+            </a>
+          </li>
+        {%- else %}
+          <li><div class="pager-edge">•</div></li>
+        {%- endif %}
+
+        {%- if paginator.page < paginator.total_pages %}
+          <li>
+            <a href="{{ paginator.last_page_path | relative_url }}" class="last-page" title="Última página ({{ paginator.total_pages }})">
+              &raquo;
+            </a>
+          </li>
+        {%- else %}
+          <li><div class="pager-edge" title="Última página">&raquo;</div></li>
+        {%- endif %}
+        </ul>
+      </div>
+    {%- endif %}
   {%- else -%}
     <p>Nenhum post encontrado com esta tag.</p>
   {%- endif -%}

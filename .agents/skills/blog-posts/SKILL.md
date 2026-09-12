@@ -50,6 +50,8 @@ Estas regras são **absolutas** para manter a identidade visual e tipográfica d
 9. **Links Internos via `post-ref.html`:** NUNCA use links internos hardcoded com URLs diretas (como `[Texto](/posts/slug/)` ou caminhos absolutos). Sempre use o include `{% include post-ref.html slug="slug-do-post" text="Texto do Link" %}` (ou omitindo `text` para adotar o título oficial do post). Esse include resolve a URL dinamicamente via `relative_url` respeitando qualquer ambiente (`baseurl`) e trata posts futuros ou agendados automaticamente, renderizando `<strong>Texto</strong> <em>(em breve)</em>` até a data em que o post for efetivamente publicado. Para links com âncoras de seção, use o parâmetro `anchor="nome-da-ancora"`.
 10. **Proteção de Código Conflitante com Liquid (`raw` pontual):** O Jekyll processa o Markdown utilizando a engine Liquid. Qualquer trecho de código que contenha chaves duplas (`{{ ... }}` ou `{% ... %}`) — como playbooks do Ansible, templates Jinja2, Helm charts, Vue ou Angular — entrará em conflito direto com o Liquid, resultando em variáveis sendo apagadas em silêncio (virando strings vazias) ou em quebra do build com warnings/erros de sintaxe. NUNCA envolva o post inteiro em raw. Envolva **estritamente o bloco de código específico ou a expressão inline afetada** com `{% raw %}` e `{% endraw %}`.
 11. **Diagramas Mermaid via Front Matter (`mermaid: true`):** Quando utilizar blocos de diagramas Mermaid (` ```mermaid `), adicione **obrigatoriamente** `mermaid: true` no front matter do post. O carregamento do JavaScript (Mermaid v12) é condicional para preservar a performance e tempo de carregamento dos demais posts.
+12. **Categoria Obrigatória no Front Matter (`category:`):** NUNCA publique ou rascunhe um post sem o campo `category:` explicitamente definido no front matter. O blog adota 4 macro-categorias editoriais estritas para a arquitetura de informação e autopaginação (`/categorias/:cat/`): `Tutoriais`, `Artigos`, `Ensaios` ou `Crônicas`. O campo `category:` não é opcional; ele é indispensável para a categorização, badges de taxonomia no cabeçalho do post e índices do `jekyll-paginate-v2`.
+13. **Controle de Rebuild e Commits de Rascunho (`[skip ci]`):** O build e deploy do site no GitHub Pages consome recursos do GitHub Actions e só deve ser disparado quando o trabalho estiver consolidado e expressamente recomendado pelo autor (geralmente em um único envio/pull consolidado). Ao commitar rascunhos (*drafts*), posts em andamento, ajustes parciais de texto ou alterações internas de documentação/skills, utilize **obrigatoriamente** `[skip ci]` na mensagem do commit (ex: `git commit -m "draft: rascunho inicial do capítulo 5 [skip ci]"`). Rascunhos de posts também devem manter `published: false` no front matter enquanto estiverem em desenvolvimento para não serem publicados antes da hora.
 
 ---
 
@@ -57,7 +59,7 @@ Estas regras são **absolutas** para manter a identidade visual e tipográfica d
 
 ### Front Matter Padrão
 
-Todo post deve **obrigatoriamente** conter um `subtitle` atuando como uma frase de efeito ou *tagline* marcante (provocativa, bem-humorada ou descritiva de impacto):
+Todo post deve **obrigatoriamente** conter um `subtitle` atuando como uma frase de efeito ou *tagline* marcante (provocativa, bem-humorada ou descritiva de impacto) e pertencer a uma `category` editorial válida (`Tutoriais`, `Artigos`, `Ensaios` ou `Crônicas`):
 
 ```yaml
 ---
@@ -68,12 +70,20 @@ author:
   - "Eduardo N. S. R."
 date: YYYY-MM-DD HH:MM:SS GMT-3
 permalink: /posts/slug-do-post/
+category: Tutoriais # Opções: Tutoriais | Artigos | Ensaios | Crônicas
 tags: [Tag1, Tag2]
 # Opcionais:
 series: Nome da Série
 modified_date: YYYY-MM-DD HH:MM:SS GMT-3
 ---
 ```
+
+### Regra de Ouro para Séries de Posts (Coleção / Hub & Spoke)
+
+Toda série de posts (`series: Nome da Série`) deve **obrigatoriamente** possuir sua própria página dedicada de coleção / trilha de aprendizado:
+1. **Página Dedicada (`tutoriais/<slug>.md`):** Criar o arquivo sob `tutoriais/<slug>.md` utilizando `layout: serie`, `title: "Nome da Série"`, `series_key: <slug>` e `permalink: /tutoriais/<slug>/`.
+2. **Registro Central em `_data/series.yml`:** Cadastrar a chave da série em [`_data/series.yml`](file:///c:/Users/Pichau/Documentos/dev/vndmtrx.github.io/_data/series.yml) contendo título, slug, url, ícone (FontAwesome), status (*Em andamento* ou *Concluída*), link do repositório parceiro (se houver), resumo descritivo e ementa das partes futuras (`future_parts`).
+3. **Integração Automática:** O layout `_layouts/serie.html` compõe automaticamente a trilha cronológica ordenada dos capítulos publicados e das partes futuras como *(Em breve)*, e o layout `_layouts/post.html` conecta dinamicamente o aviso de abertura do post à URL da página da série correspondente.
 
 ### Macroestrutura Narrativa
 
@@ -288,6 +298,8 @@ Antes de publicar ou entregar qualquer post, valide:
 - [ ] Ritmo e cadência dinâmicos (auto-similaridade fractal, Fibonacci, alternância sístole/diástole)?
 - [ ] Variação de tamanho de frases (*burstiness* / staccato vs. legato)?
 - [ ] Front matter completo e correto (author em lista YAML, layout, tags)?
+- [ ] Categoria editorial válida preenchida no front matter (`category: Tutoriais, Artigos, Ensaios ou Crônicas`)?
+- [ ] Se o post pertencer a uma série: a série possui sua página dedicada em `tutoriais/<slug>.md` e está devidamente registrada em `_data/series.yml`?
 - [ ] Subtítulo marcante no front matter (`subtitle: "..."`) atuando como frase de efeito/tagline?
 - [ ] Códigos com linguagem no fence e explicação em itálico (ou comentários inline)?
 - [ ] Comandos, flags e arquivos com backticks no texto corrido?
@@ -301,3 +313,5 @@ Antes de publicar ou entregar qualquer post, valide:
 - [ ] Se o post utilizar diagramas Mermaid (` ```mermaid `), a flag `mermaid: true` está presente no front matter?
 - [ ] Diagramas Mermaid respeitam as diretrizes de engenharia (sem emojis, setas ASCII `-->`, nós em lista `<ul><li>`, classes semânticas e zero caixas aninhadas)?
 - [ ] Para séries/tutoriais: seção dedicada `## Exercícios` no final do post, com enunciados visíveis, numeração reiniciada (1..N) e respostas recolhidas em `<details markdown="1"><summary>Ver resposta</summary>`?
+- [ ] Se for commit de rascunho (*draft*), edição intermediária ou documentação/skills: adicionou `[skip ci]` na mensagem do commit para evitar rebuild desnecessário no GitHub Actions?
+- [ ] O build de produção no GitHub Actions só é liberado quando o post/alteração estiver 100% finalizado e expressamente recomendado pelo autor.

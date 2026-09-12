@@ -8,6 +8,7 @@ date: 2026-08-22 15:02:00 GMT-3
 modified_date: 2026-08-23 19:47:00 GMT-3
 permalink: /posts/estou-aqui-para-trabalhar/
 tags: [Sociedade, Trabalho, Opinião, Psicologia]
+category: Crônicas
 ---
 
 A frase do título foi dita, com todas as letras, por alguém com quem trabalho. Foi dita com raiva. Não a raiva explosiva das discussões que todo mundo vê e ninguém esquece, mas aquela raiva de baixa temperatura que fermenta durante meses até impregnar cada palavra com uma amargura densa e específica. Não saiu como constatação pragmática de quem separa vida pessoal de profissional com critério: saiu como declaração de guerra fria, proferida por alguém que já havia catalogado mentalmente cada pessoa do setor como inimiga em potencial, ré confessa ou mera peça descartável no tabuleiro (às vezes as três coisas ao mesmo tempo, dependendo da semana).

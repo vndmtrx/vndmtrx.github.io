@@ -8,6 +8,7 @@ date: 2026-03-21 20:16:00 GMT-3
 modified_date: 2026-03-25 14:11:00 GMT-3
 permalink: /posts/evolucao-http/
 tags: [HTTP, Web, Internet]
+category: Artigos
 ---
 
 A história do protocolo HTTP e da World Wide Web está intimamente ligada, desde a sua fundação. Originalmente desenvolvido pelos cientistas do CERN, o HTTP vem passando por várias mudanças que mantiveram sua simplicidade ao passo que melhoraram sua flexibilidade para lidar com os cenários cada vez mais completos e modernos da Web com o passar dos anos. Pensado originalmente para troca de informações automatizadas entre cientistas entre universidades, tornou-se hoje em uma estrutura capaz de carregar imagens e vídeos de alta resolução, além de ser a base de praticamente todos os protocolos de troca de dados dos Web Services, seja em REST, seja RPC ou SOAP, para citar apenas estes.

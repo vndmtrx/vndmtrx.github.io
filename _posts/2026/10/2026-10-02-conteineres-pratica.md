@@ -9,6 +9,7 @@ permalink: /posts/conteineres-pratica/
 tags: [Docker, Podman, Contêineres, Linux, DevOps, Infraestrutura]
 series: Contêineres de Cabo a Rabo
 published: false
+category: Tutoriais
 ---
 
 Na primeira parte desta série, mergulhamos nas entranhas do kernel Linux. Vimos que contêineres não são máquinas virtuais mágicas: são processos comuns isolados visualmente por *namespaces*, restritos em consumo de hardware por *cgroups* v2 e alimentados por um sistema de arquivos em camadas montado pelo driver *OverlayFS*. Chegamos ao ponto de empacotar todas essas primitivas em um script em shell de cinquenta linhas capaz de rodar um ambiente Linux funcional a partir do zero.
