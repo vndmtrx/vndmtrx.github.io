@@ -30,7 +30,7 @@
 .series-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 1.5rem;
+  gap: var(--size-4);
   margin-bottom: 2.5rem;
 }
 
@@ -39,14 +39,14 @@
   flex-direction: column;
   background-color: var(--minima-background-color);
   border: 1px solid var(--minima-border-color-01);
-  border-radius: 10px;
-  padding: 1.35rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  border-radius: var(--radius-3);
+  padding: var(--size-4);
+  box-shadow: var(--shadow-2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color var(--ease-2) 0.2s;
 
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-3);
     border-color: var(--minima-link-base-color);
   }
 }
@@ -66,7 +66,7 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  border-radius: 8px;
+  border-radius: var(--radius-2);
   background-color: rgba(128, 128, 128, 0.08);
 }
 
@@ -151,7 +151,7 @@ html[data-theme="dark"] .series-status-badge {
   font-weight: 600;
   color: var(--minima-link-base-color);
   text-decoration: none;
-  transition: gap 0.2s ease;
+  transition: gap var(--ease-2) 0.2s;
 
   &:hover {
     gap: 0.7rem;
@@ -206,7 +206,7 @@ html[data-theme="dark"] .series-status-badge {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 10px;
+    border-radius: var(--radius-3);
     background-color: rgba(128, 128, 128, 0.1);
   }
 
@@ -214,7 +214,7 @@ html[data-theme="dark"] .series-status-badge {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 0.6rem;
+    gap: var(--size-2);
   }
 
   .series-count-badge {
@@ -238,7 +238,7 @@ html[data-theme="dark"] .series-status-badge {
     border: 1px solid var(--minima-border-color-01);
     color: var(--minima-text-color);
     text-decoration: none;
-    transition: all 0.2s ease;
+    transition: all var(--ease-2) 0.2s;
 
     &:hover {
       border-color: var(--minima-link-base-color);
@@ -273,7 +273,7 @@ html[data-theme="dark"] .series-status-badge {
     margin-bottom: 1.5rem;
     display: flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: var(--size-2);
     border-bottom: 1px solid var(--minima-border-color-01);
     padding-bottom: 0.5rem;
   }
@@ -288,10 +288,10 @@ html[data-theme="dark"] .series-status-badge {
     display: flex;
     gap: 1.2rem;
     padding: 1.15rem 1.35rem;
-    border-radius: 10px;
+    border-radius: var(--radius-3);
     border: 1px solid var(--minima-border-color-01);
     background-color: var(--minima-background-color);
-    transition: all 0.2s ease;
+    transition: all var(--ease-2) 0.2s;
 
     &.item-published {
       &:hover {
@@ -338,7 +338,7 @@ html[data-theme="dark"] .series-status-badge {
   .syllabus-meta {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: var(--size-2);
     margin-bottom: 0.25rem;
     font-size: 0.8rem;
   }
@@ -395,7 +395,7 @@ html[data-theme="dark"] .series-status-badge {
 .categories-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
+  gap: var(--size-4);
   margin-bottom: 2.5rem;
 }
 
@@ -404,14 +404,14 @@ html[data-theme="dark"] .series-status-badge {
   flex-direction: column;
   background-color: var(--minima-background-color);
   border: 1px solid var(--minima-border-color-01);
-  border-radius: 10px;
-  padding: 1.35rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  border-radius: var(--radius-3);
+  padding: var(--size-4);
+  box-shadow: var(--shadow-2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color var(--ease-2) 0.2s;
 
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-3);
     border-color: var(--minima-link-base-color);
   }
 }
@@ -469,7 +469,7 @@ html[data-theme="dark"] .series-status-badge {
   color: var(--minima-link-base-color);
   text-decoration: none;
   margin-top: auto;
-  transition: gap 0.2s ease;
+  transition: gap var(--ease-2) 0.2s;
 
   &:hover {
     gap: 0.7rem;
@@ -484,13 +484,13 @@ html[data-theme="dark"] .series-status-badge {
   padding: 0.35rem 0.8rem;
   font-size: 0.9rem;
   line-height: 1.2;
-  border-radius: 9999px;
+  border-radius: var(--radius-round);
   background-color: rgba(234, 88, 12, 0.08);
   border: 1px solid rgba(234, 88, 12, 0.28);
   color: #c2410c;
   text-decoration: none;
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition: all var(--ease-2) 0.2s;
   white-space: nowrap;
 
   i {
@@ -504,7 +504,7 @@ html[data-theme="dark"] .series-status-badge {
     color: #9a3412;
     text-decoration: none;
     transform: translateY(-1px);
-    box-shadow: 0 2px 6px rgba(234, 88, 12, 0.15);
+    box-shadow: var(--shadow-2);
   }
 }
 
@@ -521,6 +521,6 @@ html[data-theme="dark"] .category-pill {
     background-color: rgba(249, 115, 22, 0.22);
     border-color: #fb923c;
     color: #ffedd5;
-    box-shadow: 0 2px 8px rgba(249, 115, 22, 0.22);
+    box-shadow: var(--shadow-2);
   }
 }

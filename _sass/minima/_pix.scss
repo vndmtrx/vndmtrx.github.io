@@ -52,10 +52,10 @@
   color: #b45309;
   background-color: rgba(245, 158, 11, 0.12);
   border: 1px solid rgba(245, 158, 11, 0.35);
-  border-radius: 9999px;
+  border-radius: var(--radius-round);
   cursor: pointer;
   text-decoration: none;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--ease-3) 0.2s;
   white-space: nowrap;
   vertical-align: middle;
   float: none;
@@ -64,7 +64,7 @@
   .pix-nav-icon {
     font-size: 1rem;
     line-height: 1;
-    transition: transform 0.2s ease;
+    transition: transform var(--ease-2) 0.2s;
   }
 
   &:hover {
@@ -72,7 +72,7 @@
     border-color: rgba(245, 158, 11, 0.6);
     color: #92400e;
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+    box-shadow: var(--shadow-2);
 
     .pix-nav-icon {
       transform: scale(1.15) rotate(-5deg);
@@ -101,7 +101,7 @@
       right: $spacing-unit * 0.6;
       background-color: var(--minima-background-color);
       border: 1px solid var(--minima-border-color-01);
-      border-radius: 8px;
+      border-radius: var(--radius-2);
       box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
       z-index: 10;
       overflow: hidden;
@@ -115,10 +115,10 @@
         margin: 0;
         padding: 7px 12px;
         font-size: 0.95rem;
-        border-radius: 6px;
+        border-radius: var(--radius-2);
         text-align: right;
         color: var(--minima-text-color);
-        transition: background-color 0.15s ease;
+        transition: background-color var(--ease-2) 0.15s;
 
         &:hover {
           background-color: rgba(128, 128, 128, 0.1);
@@ -133,7 +133,7 @@
     right: calc(#{$spacing-unit * 0.6} + 36px + 8px);
     width: 36px;
     height: 36px;
-    border-radius: 6px;
+    border-radius: var(--radius-2);
     background-color: var(--minima-background-color);
     border: 1px solid var(--minima-border-color-01);
     z-index: 5;
@@ -152,7 +152,7 @@
     height: 36px;
     padding: 0 10px;
     font-size: 0.875rem;
-    border-radius: 6px;
+    border-radius: var(--radius-2);
     z-index: 5;
 
     .pix-text-extra {
@@ -195,7 +195,7 @@ body.pix-modal-open {
   z-index: 99999;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.2s ease, visibility 0.2s ease;
+  transition: opacity 0.2s ease, visibility var(--ease-2) 0.2s;
   padding: 1rem;
   box-sizing: border-box;
 
@@ -218,12 +218,12 @@ body.pix-modal-open {
   background-color: var(--minima-background-color);
   color: var(--minima-text-color);
   border: 1px solid var(--minima-border-color-01);
-  border-radius: 14px;
+  border-radius: var(--radius-3);
   padding: 1.75rem 1.5rem;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow-5);
   transform: scale(0.94) translateY(10px);
   opacity: 0;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity var(--ease-2) 0.2s;
   box-sizing: border-box;
   text-align: center;
 }
@@ -240,8 +240,8 @@ body.pix-modal-open {
   color: var(--minima-brand-color);
   cursor: pointer;
   padding: 4px 8px;
-  border-radius: 6px;
-  transition: color 0.15s ease, background-color 0.15s ease;
+  border-radius: var(--radius-2);
+  transition: color 0.15s ease, background-color var(--ease-2) 0.15s;
 
   &:hover {
     color: var(--minima-heading-color);
@@ -264,7 +264,7 @@ body.pix-modal-open {
     border: 1px solid rgba(245, 158, 11, 0.3);
     padding: 0.3rem 0.85rem;
     line-height: 1.35;
-    border-radius: 9999px;
+    border-radius: var(--radius-round);
     margin: 0 0 0.65rem 0;
   }
 
@@ -292,9 +292,9 @@ html[data-theme="dark"] .pix-modal-header .pix-modal-badge {
   .pix-qrcode-card {
     background-color: #ffffff;
     padding: 8px;
-    border-radius: 10px;
+    border-radius: var(--radius-3);
     border: 1px solid var(--minima-border-color-01);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-2);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -326,10 +326,10 @@ html[data-theme="dark"] .pix-modal-header .pix-modal-badge {
     display: flex;
     align-items: center;
     border: 1px solid var(--minima-border-color-01);
-    border-radius: 8px;
+    border-radius: var(--radius-2);
     background-color: var(--minima-code-background-color);
     overflow: hidden;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow var(--ease-2) 0.2s;
 
     &:focus-within {
       border-color: var(--minima-link-base-color);
@@ -360,7 +360,7 @@ html[data-theme="dark"] .pix-modal-header .pix-modal-badge {
     font-size: 0.8rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color var(--ease-2) 0.2s;
     white-space: nowrap;
 
     &:hover {
@@ -393,8 +393,8 @@ html[data-theme="dark"] .pix-modal-header .pix-modal-badge {
   padding: 1.25rem 1.5rem;
   background-color: rgba(128, 128, 128, 0.05);
   border: 1px solid var(--minima-border-color-01);
-  border-radius: 10px;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  border-radius: var(--radius-3);
+  transition: background-color 0.2s ease, border-color var(--ease-2) 0.2s;
 
   &:hover {
     border-color: var(--minima-border-color-02);
@@ -439,10 +439,10 @@ html[data-theme="dark"] .pix-modal-header .pix-modal-badge {
     color: #ffffff;
     background-color: var(--minima-link-base-color);
     border: none;
-    border-radius: 9999px;
+    border-radius: var(--radius-round);
     cursor: pointer;
     white-space: nowrap;
-    transition: background-color 0.2s ease, transform 0.15s ease;
+    transition: background-color 0.2s ease, transform var(--ease-2) 0.15s;
 
     &:hover {
       background-color: var(--minima-link-visited-color);
