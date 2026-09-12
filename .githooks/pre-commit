@@ -1,0 +1,38 @@
+#!/bin/sh
+#
+# Pre-commit hook para vndmtrx.github.io
+# Bloqueia commits se houver arquivos de texto com quebra de linha CRLF (\r\n)
+
+crlf_files=""
+
+for file in $(git diff --cached --name-only --diff-filter=ACM); do
+  if [ -f "$file" ]; then
+    case "$file" in
+      *.md|*.html|*.scss|*.css|*.js|*.yml|*.yaml|*.xml|*.txt|*.json|*.webmanifest|*.svg)
+        if file_content=$(git show ":$file" 2>/dev/null); then
+          if printf "%s" "$file_content" | grep -qU $'\r'; then
+            crlf_files="$crlf_files\n  - $file"
+          fi
+        fi
+        ;;
+    esac
+  fi
+done
+
+if [ -n "$crlf_files" ]; then
+  echo ""
+  echo "================================================================="
+  echo " [ERRO] Quebras de linha CRLF (Windows) detectadas no commit!"
+  echo "================================================================="
+  echo -e "Os seguintes arquivos staged possuem '\\r\\n':$crlf_files"
+  echo ""
+  echo "Para corrigir automaticamente e converter para LF (Linux):"
+  echo "  dos2unix <arquivo>  (ou salve o arquivo com quebras LF)"
+  echo ""
+  echo "Commit abortado para evitar quebra de resumos (excerpts) no Jekyll."
+  echo "================================================================="
+  echo ""
+  exit 1
+fi
+
+exit 0
