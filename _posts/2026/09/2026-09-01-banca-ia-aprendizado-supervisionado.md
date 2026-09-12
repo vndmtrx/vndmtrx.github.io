@@ -7,6 +7,7 @@ author:
 date: 2026-09-01 14:37:00 GMT-3
 permalink: /posts/banca-ia-aprendizado-supervisionado/
 tags: [Inteligência Artificial, Machine Learning, Algoritmos, Faculdade, Opinião]
+category: Ensaios
 ---
 
 Botar um cronômetro de vinte minutos na sua frente e ter que explicar aprendizado supervisionado e aprendizado por reforço é um exercício de síntese homérico, na melhor definição que consigo pensar agora (e olha que eu gosto de uma boa dose de masoquismo). Estamos falando de duas áreas monumentais da computação que consumiram décadas de pesquisas, acumularam centenas de variações algorítmicas e hoje sustentam quase tudo o que chamamos de IA moderna.

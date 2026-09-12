@@ -9,6 +9,7 @@ modified_date: 2026-08-19 09:30:00 GMT-3
 permalink: /posts/spring-boot-tutorial-parte-1-ambiente/
 tags: [Spring Boot, Java, DevOps, Linux]
 series: Spring Boot Tutorial
+category: Tutoriais
 ---
 
 E se de repente a gente decidisse escrever um tutorial de Spring Boot? Pois é, eu decidi começar essa seara de estudo do framework pela parte que ninguém liga, mas que geralmente é a que quebra tudo quando não é feito do jeito certo: o ambiente de desenvolvimento. Parece bobo, mas sem ele sólido desde o começo, o resto vira dor de cabeça infinita.

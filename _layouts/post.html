@@ -28,6 +28,14 @@ layout: base
           </time>
         </span>
         {%- endif -%}
+        {%- assign words = content | strip_html | number_of_words -%}
+        {%- assign read_minutes = words | divided_by: 275 -%}
+        {%- if read_minutes == 0 %}{% assign read_minutes = 1 %}{% endif -%}
+        <span class="bullet-divider">•</span>
+        <span class="meta-item" title="Tempo estimado de leitura">
+          <span class="meta-icon" aria-hidden="true">⏱️</span>
+          <span>{{ read_minutes }} min de leitura</span>
+        </span>
       </div>
       {%- if page.author %}
       <div class="{% unless page.modified_date %}force-inline {% endunless %}post-authors">
@@ -39,30 +47,43 @@ layout: base
       </div>
       {%- endif %}
     </div>
-    {%- if page.tags and page.tags.size > 0 -%}
-    <div class="post-tags">
-      {%- for tag in page.tags -%}
-      {%- assign tag_slug = tag | slugify -%}
-      <a href="{{ '/tags/' | append: tag_slug | append: '/' | relative_url }}" class="tag-pill">
-        <i class="fas fa-tag" aria-hidden="true" style="font-size: 0.72rem;"></i>
-        <span>{{- tag -}}</span>
+    <div class="post-taxonomies">
+      {%- if page.category -%}
+      {%- assign cat_slug = page.category | slugify: "latin" -%}
+      <a href="{{ '/categorias/' | append: cat_slug | append: '/' | relative_url }}" class="category-pill" title="Categoria: {{ page.category }}">
+        <i class="fas fa-folder-open" aria-hidden="true"></i>
+        <span>{{ page.category }}</span>
       </a>
-      {%- endfor -%}
+      {%- endif -%}
+      {%- if page.tags and page.tags.size > 0 -%}
+        {%- for tag in page.tags -%}
+        {%- assign tag_slug = tag | slugify: "latin" -%}
+        <a href="{{ '/tags/' | append: tag_slug | append: '/' | relative_url }}" class="tag-pill" title="Tag: {{ tag }}">
+          <i class="fas fa-tag" aria-hidden="true"></i>
+          <span>{{- tag -}}</span>
+        </a>
+        {%- endfor -%}
+      {%- endif -%}
     </div>
-    {%- endif -%}
   </header>
 
   <div class="post-content e-content" itemprop="articleBody">
     {%- if page.series -%}
-    {%- assign series_slug = page.series | slugify -%}
+    {%- assign series_data = nil -%}
+    {%- for s_entry in site.data.series -%}
+      {%- if s_entry[1].title == page.series -%}
+        {%- assign series_data = s_entry[1] -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {%- assign series_url = series_data.url | default: '/tutoriais/' -%}
     <div class="series-notice">
       <div class="series-notice-icon">
         <i class="fas fa-book-bookmark" aria-hidden="true"></i>
       </div>
       <div class="series-notice-content">
         <span>Esse post faz parte da série <a
-            href="{{ '/tutoriais/#' | append: series_slug | relative_url }}"><strong>{{ page.series
-              }}</strong></a></span>
+            href="{{ series_url | relative_url }}"><strong>{{ page.series
+              }}</strong></a>. Confira a <a href="{{ series_url | relative_url }}">trilha completa de capítulos</a>.</span>
       </div>
     </div>
     {%- endif -%}
@@ -82,15 +103,7 @@ layout: base
     </div>
   </div>
 
-  {% if jekyll.environment == 'production' -%}
-  {% if page.comments == false -%}
-  <div class="comments-disabled-message">
-    Comments have been disabled for this post.
-  </div>
-  {% else -%}
-  {%- include comments.html -%}
-  {% endif -%}
-  {% endif -%}
+
 
   <a class="u-url" href="{{ page.url | relative_url }}" hidden></a>
 

@@ -1,0 +1,316 @@
+@use "tokens" as *;
+
+// ==========================================================================
+// Layout de Post e Elementos Base
+// ==========================================================================
+
+body {
+  transition: background-color 0.2s ease, color var(--ease-2) 0.2s;
+}
+
+// --------------------------------------------------
+// Code formatting (tamanho equilibrado e leve rebaixo)
+// --------------------------------------------------
+
+code,
+pre {
+  font-weight: 400;
+}
+
+div.highlight,
+figure.highlight,
+pre:not(.highlight) {
+  border-radius: var(--radius-2);
+  border: 1px solid var(--minima-border-color-01);
+  background-color: var(--minima-code-background-color);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+
+  pre {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    margin: 0;
+    padding: 12px 16px;
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+}
+
+html[data-theme="dark"] {
+  div.highlight,
+  figure.highlight,
+  pre:not(.highlight) {
+    border-color: var(--minima-border-color-01);
+    background-color: var(--minima-code-background-color);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.35);
+  }
+
+  .post-content {
+    kbd {
+      box-shadow: 0 1.5px 0 rgba(0, 0, 0, 0.6);
+    }
+
+    figure > img,
+    p > img {
+      box-shadow: var(--shadow-2);
+    }
+
+    blockquote {
+      background-color: rgba(255, 255, 255, 0.03);
+      border-left-color: var(--minima-link-base-color);
+    }
+  }
+}
+
+// --------------------------------------------------
+// Tables (Tabelas compactas e proporcionais)
+// --------------------------------------------------
+
+table {
+  font-size: 13.5px;
+  line-height: 1.5;
+  margin-bottom: 1.75rem;
+
+  th,
+  td {
+    padding: 7px 11px;
+  }
+
+  th {
+    font-weight: 600;
+  }
+
+  code.highlighter-rouge {
+    font-size: 12px;
+    padding: 1px 4px;
+    white-space: nowrap;
+  }
+}
+
+@include media-query($on-palm) {
+  table {
+    font-size: 13px;
+
+    th,
+    td {
+      padding: 6px 9px;
+    }
+  }
+}
+
+.post-content p,
+.post-list li p,
+.footer-col p {
+  text-align: justify;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+
+
+.post-title,
+.post-content h1 {
+  font-size: clamp(1.65rem, 5.5vw, 2.35rem);
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+}
+
+.post-subtitle {
+  font-size: clamp(1.05rem, 3.2vw, 1.25rem);
+  line-height: 1.4;
+  font-weight: 300;
+  opacity: 0.85;
+  margin-top: -2px;
+  margin-bottom: 14px;
+}
+
+.post-dates {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem 0.4rem;
+
+  .meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    white-space: nowrap;
+  }
+
+  .meta-icon {
+    font-size: 0.9em;
+    line-height: 1;
+  }
+
+  .bullet-divider {
+    padding-inline: 4px;
+    opacity: 0.6;
+  }
+}
+
+.post-list li {
+  h3 {
+    margin-top: 0.25rem;
+    margin-bottom: 0.35rem;
+    line-height: 1.25;
+  }
+
+  .post-subtitle {
+    font-size: 1.1rem;
+    line-height: 1.4;
+    font-weight: 300;
+    opacity: 0.85;
+    margin-top: 0;
+    margin-bottom: 0.65rem;
+  }
+}
+
+// Padronização semântica e tipográfica dos elementos de conteúdo
+.post-content {
+  h2 {
+    font-size: 1.6rem;
+    margin-top: 2rem;
+  }
+
+  h3 {
+    font-size: 1.3rem;
+    margin-top: 1.5rem;
+  }
+
+  h4 {
+    font-size: 1.1rem;
+    margin-top: 1.2rem;
+  }
+
+  // Divisores horizontais limpos
+  hr {
+    border: 0;
+    border-top: 1px solid var(--minima-border-color-01);
+    margin: 2.25rem 0;
+  }
+
+  // Citações (Blockquotes) proporcionais
+  blockquote {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--minima-text-color);
+    background-color: rgba(128, 128, 128, 0.04);
+    border-left: 3px solid var(--minima-link-base-color);
+    border-radius: 0 var(--radius-2) var(--radius-2) 0;
+    padding: 0.75rem 1.15rem;
+    margin: 1.5rem 0;
+
+    p {
+      margin-bottom: 0.5rem;
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  // Teclas de atalho (<kbd>) estilizadas como keycaps táteis
+  kbd {
+    font-family: var(--minima-code-font-family, monospace);
+    font-size: 0.78em;
+    padding: 0.15em 0.45em;
+    border-radius: 4px;
+    border: 1px solid var(--minima-border-color-01);
+    background-color: var(--minima-code-background-color);
+    box-shadow: 0 1.5px 0 var(--minima-border-color-02);
+    white-space: nowrap;
+    vertical-align: baseline;
+  }
+
+  // Imagens e figuras
+  figure {
+    margin: 1.75rem 0;
+    text-align: center;
+
+    > img {
+      margin: 0 auto;
+    }
+  }
+
+  figure > img,
+  p > img {
+    display: block;
+    max-width: 100%;
+    margin: 1.5rem auto;
+    border-radius: var(--radius-2);
+    border: 1px solid var(--minima-border-color-01);
+    box-shadow: var(--shadow-2);
+  }
+
+  figcaption {
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--minima-brand-color);
+    margin-top: 0.5rem;
+    text-align: center;
+  }
+
+  // Marcador de Nota de Rodapé no parágrafo (evita desalinhar o line-height)
+  sup[id^="fnref"] {
+    line-height: 0;
+    vertical-align: baseline;
+    position: relative;
+    top: -0.4em;
+    font-size: 0.75em;
+
+    a.footnote {
+      padding: 0 0.15em;
+      text-decoration: none;
+      font-weight: 600;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  // Seção de Notas de Rodapé (Footnotes)
+  .footnotes {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--minima-text-color);
+    border-top: 1px solid var(--minima-border-color-01);
+    margin-top: 2.5rem;
+    padding-top: 1.25rem;
+
+    ol {
+      margin-left: 1.5rem;
+      padding-left: 0;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+
+      p {
+        font-size: inherit;
+        line-height: inherit;
+        margin-bottom: 0.25rem;
+      }
+    }
+
+    .reversefootnote {
+      font-size: 0.9em;
+      text-decoration: none;
+      margin-left: 0.25rem;
+      opacity: 0.75;
+      transition: opacity var(--ease-2) 0.15s;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+
+  // Ajuste de recuo de listas em celular
+  @include media-query($on-palm) {
+    ul,
+    ol {
+      margin-left: 1.25rem;
+    }
+  }
+}

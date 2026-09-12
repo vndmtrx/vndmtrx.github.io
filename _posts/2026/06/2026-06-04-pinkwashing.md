@@ -7,6 +7,7 @@ author:
 date: 2026-06-04 16:51:00 GMT-3
 permalink: /posts/pinkwashing/
 tags: [Sociedade, Orgulho, LGBT, LGBTQIAPN+]
+category: Crônicas
 ---
 
 "Oi, gay! Feliz mês do orgulho! Estamos lacrando nos descontos esse mês. Como assim, mona? Sim, no mês do orgulho nós estamos pensando ainda mais em vocês, gays. Afinal de contas, meu melhor amigo é gay, meu primo é gay, isso me faz quase gay. Então por isso nossas Tupperwares estão com 24% de desconto!"

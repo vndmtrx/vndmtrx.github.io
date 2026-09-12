@@ -1,6 +1,7 @@
 ---
 layout: page
-title: "💫 Sobre euzinhe"
+title: "💫 Sobre"
+nav_title: "💫 Sobre"
 permalink: /about/
 ---
 

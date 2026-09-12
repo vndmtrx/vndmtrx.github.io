@@ -7,6 +7,7 @@ author:
 date: 2026-08-21 18:57:00 GMT-3
 permalink: /posts/12-factor-app-pesadelos-e-pratica/
 tags: [DevOps, Arquitetura, 12-Factor, SysAdmin, Engenharia de Software]
+category: Artigos
 ---
 
 Se você trabalha com desenvolvimento ou infraestrutura há tempo suficiente, certamente guarda na memória um sistema que te dava calafrios. Aquele monstro sagrado da empresa que ninguém tinha coragem de reiniciar numa sexta-feira. Aquele software cujo processo de deploy parecia um ritual de invocação medieval, com quinze passos manuais, três rezas e uma oferenda aos deuses do hipervisor.

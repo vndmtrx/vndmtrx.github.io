@@ -1,0 +1,71 @@
+spring-boot:
+  title: "Spring Boot Tutorial"
+  slug: "spring-boot"
+  url: "/tutoriais/spring-boot/"
+  icon: "fas fa-leaf"
+  status: "Em andamento"
+  total_planned: 17
+  repo: "https://github.com/vndmtrx/estudos_springboot"
+  description: "Construção progressiva de uma API backend moderna de produção com Spring Boot e Java 26, explorando arquitetura de software, 12-Factor App, persistência avançada com Postgres 18, contratos OpenAPI, resiliência, observabilidade e Kubernetes."
+  future_parts:
+    - part: 4
+      title: "Refinamento e Contratos (O fim do JPA no Controller)"
+    - part: 5
+      title: "Persistência Real com Postgres 18"
+    - part: 6
+      title: "Contratos e Documentação Viva (Design-First vs SpringDoc OpenAPI)"
+    - part: 7
+      title: "Arquitetura: RESTful vs RPC (HATEOAS)"
+    - part: 8
+      title: "Testes de Integração e Specs (BDD e Testcontainers)"
+    - part: 9
+      title: "Paginação, Filtros Dinâmicos e o Novo Verbo HTTP QUERY (RFC 9734)"
+    - part: 10
+      title: "Calendário, Agendamento e Background Jobs"
+    - part: 11
+      title: "Usuários, Security e Auditoria Completa (JWT e Hibernate Envers)"
+    - part: 12
+      title: "Observabilidade: Actuator, Prometheus e OpenTelemetry"
+    - part: 13
+      title: "Caches e Resiliência com Redis e Resilience4J"
+    - part: 14
+      title: "Containerização e o Caminho para o Kubernetes"
+    - part: 15
+      title: "Bônus: Mensageria Distribuída e EDA (RabbitMQ / Kafka)"
+    - part: 16
+      title: "Bônus: Particionamento e Data Tiering com PostgreSQL"
+    - part: 17
+      title: "Bônus: Re-hidratação, Operações em Dados Frios e Ciclo de Vida"
+
+k8sbox:
+  title: "Kubernetes in a Box"
+  slug: "k8sbox"
+  url: "/tutoriais/k8sbox/"
+  icon: "fas fa-dharmachakra"
+  status: "Em andamento"
+  repo: "https://github.com/vndmtrx/k8s-in-a-box"
+  description: "Construção de um cluster Kubernetes multinodo e altamente disponível rodando localmente em máquinas virtuais Debian no Proxmox/KVM, dissecando control plane, workers, CNI e storage."
+
+conteineres:
+  title: "Contêineres de Cabo a Rabo"
+  slug: "conteineres"
+  url: "/tutoriais/conteineres/"
+  icon: "fas fa-box-open"
+  status: "Em andamento"
+  description: "Uma imersão completa no universo dos contêineres: da pré-história do chroot e namespaces do kernel Linux até o uso moderno de Docker, Docker Compose, Podman e arquitetura OCI."
+
+openssh:
+  title: "OpenSSH na Prática"
+  slug: "openssh"
+  url: "/tutoriais/openssh/"
+  icon: "fas fa-terminal"
+  status: "Concluída"
+  description: "Guia profundo sobre o protocolo mais essencial da infraestrutura: geração segura de chaves ed25519/GPG, túneis e port forwarding, eliminação do TOFU com Autoridade Certificadora (CA) e autenticação centralizada com LDAP e SSSD."
+
+elixir:
+  title: "Aprendendo Elixir"
+  slug: "elixir"
+  url: "/tutoriais/elixir/"
+  icon: "fas fa-tint"
+  status: "Em andamento"
+  description: "Anotações e conceitos práticos sobre a linguagem Elixir e a máquina virtual BEAM: imutabilidade, pattern matching expressivo e organização modular de projetos com Umbrella apps."

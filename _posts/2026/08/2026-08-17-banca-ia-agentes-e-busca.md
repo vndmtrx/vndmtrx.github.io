@@ -7,6 +7,7 @@ author:
 date: 2026-08-17 07:19:00 GMT-3
 permalink: /posts/banca-ia-agentes-e-busca/
 tags: [Inteligência Artificial, Agentes, Algoritmos, Faculdade, Opinião]
+category: Ensaios
 ---
 
 Hoje mais tarde eu tenho aula de Tópicos em Inteligência Artificial, e o professor resolveu implementar uma daquelas dinâmicas que colocam a minha ansiedade em órbita: bancas avaliadoras compostas pelos próprios alunos. Funciona assim: enquanto um grupo vai para a frente da sala defender o tema da semana, outro grupo senta na primeira fila com a nobre e ingrata missão de fazer perguntas, avaliar o conteúdo e fingir pleno controle da própria vida acadêmica.

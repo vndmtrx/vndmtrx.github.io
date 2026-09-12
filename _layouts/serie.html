@@ -1,0 +1,90 @@
+---
+layout: base
+---
+
+{%- assign date_format = site.minima.date_format | default: "%d/%m/%Y" -%}
+{%- assign serie_key = page.series_key -%}
+{%- assign serie_data = site.data.series[serie_key] -%}
+{%- assign serie_title = serie_data.title | default: page.title -%}
+{%- assign serie_posts = site.posts | where: "series", serie_title | sort: "date" -%}
+
+<div class="series-detail-page">
+  <div class="series-back-link">
+    <a href="{{ '/tutoriais/' | relative_url }}">
+      <i class="fas fa-arrow-left" aria-hidden="true"></i> Voltar para as Trilhas
+    </a>
+  </div>
+
+  <header class="series-header">
+    <div class="series-header-top">
+      <div class="series-icon-box">
+        <i class="{{ serie_data.icon | default: 'fas fa-book' }}" aria-hidden="true"></i>
+      </div>
+      <div class="series-header-meta">
+        {%- if serie_data.status -%}
+        <span class="series-status-badge {% if serie_data.status == 'Concluída' %}status-completed{% else %}status-ongoing{% endif %}">
+          {{ serie_data.status }}
+        </span>
+        {%- endif -%}
+        <span class="series-count-badge">
+          {{ serie_posts.size }}{% if serie_data.total_planned %} de {{ serie_data.total_planned }}{% endif %} capítulos
+        </span>
+        {%- if serie_data.repo -%}
+        <a href="{{ serie_data.repo }}" target="_blank" rel="noopener noreferrer" class="series-repo-link" title="Repositório no GitHub">
+          <i class="fab fa-github" aria-hidden="true"></i> Repositório
+        </a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <h1 class="series-main-title">{{ serie_title }}</h1>
+
+    {%- if serie_data.description -%}
+    <p class="series-description">{{ serie_data.description }}</p>
+    {%- endif -%}
+  </header>
+
+  {{ content }}
+
+  <div class="series-syllabus-section">
+    <h2 class="syllabus-heading">
+      <i class="fas fa-list-ol" aria-hidden="true"></i> Trilha de Capítulos
+    </h2>
+
+    <div class="syllabus-timeline">
+      {%- for post in serie_posts -%}
+      <div class="syllabus-item item-published">
+        <div class="syllabus-badge">{{ forloop.index }}</div>
+        <div class="syllabus-content">
+          <div class="syllabus-meta">
+            <span class="post-meta">{{ post.date | date: date_format }}</span>
+            <span class="syllabus-tag-published">Publicado</span>
+          </div>
+          <h3 class="syllabus-title">
+            <a href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+          </h3>
+          {%- if post.subtitle -%}
+          <p class="syllabus-subtitle">{{ post.subtitle | escape }}</p>
+          {%- endif -%}
+        </div>
+      </div>
+      {%- endfor -%}
+
+      {%- if serie_data.future_parts -%}
+        {%- for future in serie_data.future_parts -%}
+        <div class="syllabus-item item-upcoming">
+          <div class="syllabus-badge">{{ future.part }}</div>
+          <div class="syllabus-content">
+            <div class="syllabus-meta">
+              <span class="syllabus-tag-upcoming">Em breve</span>
+            </div>
+            <h3 class="syllabus-title upcoming-title">
+              {{ future.title | escape }}
+            </h3>
+          </div>
+        </div>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</div>

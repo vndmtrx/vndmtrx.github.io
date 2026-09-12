@@ -9,6 +9,7 @@ modified_date: 2026-09-02 13:57:00 GMT-3
 permalink: /posts/spring-boot-tutorial-parte-2-projeto-base/
 tags: [Spring Boot, Java, Maven, DevOps]
 series: Spring Boot Tutorial
+category: Tutoriais
 ---
 
 No {% include post-ref.html slug="spring-boot-tutorial-parte-1-ambiente" text="primeiro post da série" %}, montamos nossa bancada de trabalho com Debian Trixie, SDKMAN travando o JDK 26 e o VS Codium livre de telemetrias. Com as ferramentas no lugar, o impulso natural da maioria dos tutoriais é abrir o editor e sair cuspindo código de negócio desordenado. Mas se queremos construir uma aplicação que sobreviva ao mundo real, precisamos falar antes sobre como uma aplicação nasce e como ela lida com seus ambientes.

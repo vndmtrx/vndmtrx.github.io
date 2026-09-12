@@ -9,6 +9,7 @@ modified_date: 2026-05-10 10:26:00 GMT-3
 permalink: /posts/certificados-ssh/
 tags: [SSH, Certificados]
 series: OpenSSH na Prática
+category: Tutoriais
 ---
 
 No último post sobre SSH, falei sobre o poder oculto dos túneis (`-L`, `-R`, `-D`) e como a maioria de nós usa apenas uma fração do que o OpenSSH oferece. Hoje, vamos dar mais um passo nessa jornada e falar sobre um recurso que resolve uma das maiores dores de cabeça de quem administra infraestrutura em escala: o gerenciamento de identidades e chaves públicas.

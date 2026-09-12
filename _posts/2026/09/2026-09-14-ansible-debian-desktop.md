@@ -8,6 +8,7 @@ date: 2026-09-14 14:45:00 GMT-3
 permalink: /posts/ansible-debian-desktop/
 tags: [Linux, Debian, Ansible, DevOps, Produtividade]
 published: false
+category: Tutoriais
 ---
 
 Formatar o computador sempre começa com uma sensação maravilhosa de tela limpa e termina, invariavelmente, num pesadelo de três dias. Você senta na cadeira jurando que em vinte minutos vai estar com o ambiente pronto para programar. Quatro horas depois, você ainda está caçando chaves GPG na internet, brigando com repositórios que mudaram de nome, tentando lembrar quais extensões do GNOME deixavam sua barra utilizável e instalando compiladores na mão porque o sistema operacional veio pelado.

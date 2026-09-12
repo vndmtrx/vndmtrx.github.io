@@ -1,40 +1,77 @@
 ---
 layout: page
-title: '📚 Tutoriais'
+title: '📚 Trilhas'
+nav_title: '📚 Trilhas'
 permalink: /tutoriais/
 ---
 
-{%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+{%- assign date_format = site.minima.date_format | default: "%d/%m/%Y" -%}
 
-{%- assign series_list = "" -%}
-{%- for post in site.posts -%}
-  {%- if post.series -%}
-    {%- assign check_item = "|" | append: post.series | append: "|" -%}
-    {%- assign current_list = "|" | append: series_list -%}
-    {%- unless current_list contains check_item -%}
-      {%- assign series_list = series_list | append: post.series | append: "|" -%}
-    {%- endunless -%}
-  {%- endif -%}
-{%- endfor -%}
+<p class="hub-intro">
+  Séries temáticas de estudo e projetos estruturados passo a passo cobrindo desenvolvimento de software, infraestrutura, automação, Linux e arquitetura de sistemas.
+</p>
 
-{%- assign unique_series = series_list | split: "|" -%}
+<section class="series-hub-section">
+  <div class="series-grid">
+    {%- for item in site.data.series -%}
+      {%- assign key = item[0] -%}
+      {%- assign serie = item[1] -%}
+      {%- assign serie_posts = site.posts | where: "series", serie.title -%}
+      <div class="series-card">
+        <div class="series-card-header">
+          <div class="series-card-icon">
+            <i class="{{ serie.icon | default: 'fas fa-book' }}" aria-hidden="true"></i>
+          </div>
+          <span class="series-status-badge {% if serie.status == 'Concluída' %}status-completed{% else %}status-ongoing{% endif %}">
+            {{ serie.status }}
+          </span>
+        </div>
 
-<div id="full-series-list">
-  {%- for serie in unique_series -%}
-  <h2 id="{{ serie | slugify }}" class="linked-section">
-    <i class="fas fa-book" aria-hidden="true"></i>
-    &nbsp;{{ serie }}
-  </h2>
-  <ul class="post-list">
-    {%- assign serie_posts = site.posts | where: "series", serie -%}
-    {%- for post in serie_posts -%}
-    <li style="margin-bottom: 15px;">
-      <span class="post-meta">{{ post.date | date: date_format }}</span>
-      <div style="margin-top: 2px;">
-        <a href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+        <h3 class="series-card-title">
+          <a href="{{ serie.url | relative_url }}">{{ serie.title }}</a>
+        </h3>
+
+        <div class="series-card-counter">
+          <i class="fas fa-bookmark" aria-hidden="true"></i>
+          {{ serie_posts.size }}{% if serie.total_planned %} de {{ serie.total_planned }}{% endif %} capítulos publicados
+        </div>
+
+        <p class="series-card-desc">{{ serie.description }}</p>
+
+        <div class="series-card-footer">
+          <a href="{{ serie.url | relative_url }}" class="series-card-btn">
+            <span>Acessar Trilha</span>
+            <i class="fas fa-arrow-right" aria-hidden="true"></i>
+          </a>
+        </div>
       </div>
-    </li>
+    {%- endfor -%}
+  </div>
+</section>
+
+{%- assign standalone_tutorials = "" -%}
+<section class="standalone-tutorials-section" style="margin-top: 3.5rem;">
+  <h2 class="hub-section-title">
+    <i class="fas fa-wrench" aria-hidden="true"></i> Guias Práticos & Tutoriais Avulsos
+  </h2>
+
+  {%- assign tutorial_posts = site.posts | where: "category", "Tutoriais" | sort: "date" | reverse -%}
+  <ul class="post-list">
+    {%- for post in tutorial_posts -%}
+      {%- unless post.series -%}
+      <li style="margin-bottom: 1.8rem;">
+        <span class="post-meta">{{ post.date | date: date_format }}</span>
+        <h3>
+          <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+        </h3>
+        {%- if post.subtitle -%}
+        <p class="post-subtitle">{{ post.subtitle | escape }}</p>
+        {%- endif -%}
+        {%- if site.minima.show_excerpts -%}
+        {{ post.excerpt }}
+        {%- endif -%}
+      </li>
+      {%- endunless -%}
     {%- endfor -%}
   </ul>
-  {%- endfor -%}
-</div>
+</section>

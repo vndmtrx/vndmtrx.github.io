@@ -9,6 +9,7 @@ modified_date: 2026-09-02 13:57:00 GMT-3
 permalink: /posts/k8sbox-visao-geral/
 tags: [Kubernetes, Ansible, DevOps, Infraestrutura]
 series: Kubernetes in a Box
+category: Tutoriais
 ---
 
 Se você trabalha com infraestrutura, nuvem ou DevOps, as chances de você já ter digitado `kubeadm init` ou subido um cluster em nuvem gerenciada (EKS, GKE, AKS) com dois cliques são de praticamente cem por cento. Essas ferramentas são incríveis para o dia a dia de trabalho porque ninguém em sã consciência quer passar quatro horas configurando certificados e manifestos na mão para subir um ambiente de homologação. O problema começa quando algo quebra nos bastidores e você não faz a menor ideia do que está acontecendo por baixo do capô.

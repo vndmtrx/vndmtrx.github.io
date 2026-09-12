@@ -9,6 +9,7 @@ permalink: /posts/otimizacao-boot-luks/
 tags: [Linux, Debian, Segurança, Hardware, Performance]
 mermaid: true
 published: false
+category: Artigos
 ---
 
 Existe uma sensação física de puro ódio que todo usuário de Linux já experimentou: ligar o notebook, digitar a senha do disco e ficar encarando uma tela preta estática, sem cursor piscando, sem sinal de vida, enquanto os segundos escorrem pelo ralo. No meu notebook, um Dell com SSD NVMe rápido rodando Debian Trixie (o mesmo ambiente que mostrei no {% include post-ref.html slug="spring-boot-tutorial-parte-1-ambiente" text="Spring Boot Tutorial, Parte 1" %}), esse ritual diário estava cobrando um pedágio ridículo de um minuto e quarenta segundos.

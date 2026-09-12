@@ -9,6 +9,7 @@ modified_date: 2026-08-27 10:36:00 GMT-3
 permalink: /posts/spring-boot-tutorial-parte-3-core-api/
 tags: [Spring Boot, Java, JPA, Backend]
 series: Spring Boot Tutorial
+category: Tutoriais
 ---
 
 Se você chegou até aqui com a aplicação da {% include post-ref.html slug="spring-boot-tutorial-parte-2-projeto-base" text="Parte 2" %} no ar, então já tem um servidor que sobe, troca de perfil e responde o `/api/status`. O que você não tem ainda é domínio. Não existe tarefa, não existe estado, não existe nada para persistir. A aplicação é um esqueleto saudável, mas ainda é um esqueleto.

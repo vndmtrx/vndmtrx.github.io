@@ -7,6 +7,7 @@ author:
 date: 2026-05-17 06:43:00 GMT-3
 permalink: /posts/catedral-bazar-jardim/
 tags: [Programação, Análise de Sistemas, Inteligência Artificial]
+category: Ensaios
 ---
 
 A forma como descrevemos o desenvolvimento de software diz muito sobre como escolhemos construí-lo. Por muito tempo, tentamos nos convencer de que éramos engenheiros erguendo estruturas imutáveis de concreto e aço, seguindo plantas rígidas e previsíveis. Mas quem vive o dia a dia do código sabe que essa caixa de ferramentas não dá conta da realidade: somos, na verdade, algo muito diferente disso.
