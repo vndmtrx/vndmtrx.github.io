@@ -1,0 +1,62 @@
+@charset "utf-8";
+
+// 1. Variáveis base de tipografia e layout (defaults)
+$base-font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", "Apple Color Emoji", Roboto, Helvetica, Arial, sans-serif !default;
+$code-font-family: "Menlo", "Inconsolata", "Consolas", "Roboto Mono", "Ubuntu Mono", "Liberation Mono", "Courier New", monospace;
+$base-font-size:   16px !default;
+$base-font-weight: 400 !default;
+$small-font-size:  $base-font-size * 0.875 !default;
+$base-line-height: 1.5 !default;
+
+$spacing-unit:     30px !default;
+$table-text-align: left !default;
+$content-width:    800px !default;
+
+$on-palm:          600px !default;
+$on-laptop:        800px !default;
+$on-medium:        $on-palm !default;
+$on-large:         $on-laptop !default;
+
+// 2. Sobrescritas customizadas do projeto
+$base-font-family: "Source Serif 4", Georgia, serif;
+$code-font-family: "Source Code Pro", monospace;
+$base-font-size: 17px;
+$base-line-height: 1.7;
+
+// 3. Variáveis de cores dinâmicas (mapeadas para as variáveis CSS do auto.scss)
+$brand-color: var(--minima-brand-color);
+$brand-color-light: var(--minima-brand-color-light);
+$brand-color-dimmed: var(--minima-brand-color-dimmed);
+$brand-color-dark: var(--minima-brand-color-dark);
+
+$site-title-color: var(--minima-site-title-color);
+
+$heading-color: var(--minima-heading-color);
+$text-color: var(--minima-text-color);
+$background-color: var(--minima-background-color);
+$code-background-color: var(--minima-code-background-color);
+
+$link-base-color: var(--minima-link-base-color);
+$link-visited-color: var(--minima-link-visited-color);
+$link-hover-color: var(--minima-link-hover-color);
+
+$border-color-01: var(--minima-border-color-01);
+$border-color-02: var(--minima-border-color-02);
+$border-color-03: var(--minima-border-color-03);
+
+$table-text-color: var(--minima-table-text-color);
+$table-zebra-color: var(--minima-table-zebra-color);
+$table-header-bg-color: var(--minima-table-header-bg-color);
+$table-header-border: var(--minima-table-header-border);
+$table-border-color: var(--minima-table-border-color);
+
+// 4. Mixins utilitários
+@mixin media-query($device) {
+  @media screen and (max-width: $device) {
+    @content;
+  }
+}
+
+@mixin relative-font-size($ratio) {
+  font-size: #{$ratio}rem;
+}

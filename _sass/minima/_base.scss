@@ -1,3 +1,5 @@
+@use "tokens" as *;
+
 html {
   font-size: $base-font-size;
   scroll-behavior: smooth;
