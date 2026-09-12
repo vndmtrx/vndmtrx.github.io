@@ -3,7 +3,6 @@ spring-boot:
   slug: "spring-boot"
   url: "/tutoriais/spring-boot/"
   icon: "fas fa-leaf"
-  status: "Em andamento"
   total_planned: 17
   repo: "https://github.com/vndmtrx/estudos_springboot"
   description: "Construção progressiva de uma API backend moderna de produção com Spring Boot e Java 26, explorando arquitetura de software, 12-Factor App, persistência avançada com Postgres 18, contratos OpenAPI, resiliência, observabilidade e Kubernetes."
@@ -42,7 +41,6 @@ k8sbox:
   slug: "k8sbox"
   url: "/tutoriais/k8sbox/"
   icon: "fas fa-dharmachakra"
-  status: "Em andamento"
   total_planned: 24
   repo: "https://github.com/vndmtrx/k8s-in-a-box"
   description: "Construção de um cluster Kubernetes multinodo e altamente disponível rodando localmente em máquinas virtuais Debian no Proxmox/KVM, dissecando control plane, workers, CNI e storage."
@@ -97,7 +95,6 @@ conteineres:
   slug: "conteineres"
   url: "/tutoriais/conteineres/"
   icon: "fas fa-box-open"
-  status: "Em andamento"
   description: "Uma imersão completa no universo dos contêineres: da pré-história do chroot e namespaces do kernel Linux até o uso moderno de Docker, Docker Compose, Podman e arquitetura OCI."
 
 openssh:
@@ -105,7 +102,6 @@ openssh:
   slug: "openssh"
   url: "/tutoriais/openssh/"
   icon: "fas fa-terminal"
-  status: "Concluída"
   description: "Guia profundo sobre o protocolo mais essencial da infraestrutura: geração segura de chaves ed25519/GPG, túneis e port forwarding, eliminação do TOFU com Autoridade Certificadora (CA) e autenticação centralizada com LDAP e SSSD."
 
 elixir:
@@ -113,7 +109,6 @@ elixir:
   slug: "elixir"
   url: "/tutoriais/elixir/"
   icon: "fas fa-tint"
-  status: "Em andamento"
   description: "Anotações e conceitos práticos sobre a linguagem Elixir e a máquina virtual BEAM: imutabilidade, pattern matching expressivo e organização modular de projetos com Umbrella apps."
 
 engsoftware:
@@ -121,7 +116,6 @@ engsoftware:
   slug: "engsoftware"
   url: "/tutoriais/engsoftware/"
   icon: "fas fa-code-branch"
-  status: "Planejada"
   total_planned: 28
   description: "Condensação dos fundamentos e a espinha dorsal da Engenharia de Software moderna, alinhada às Áreas de Conhecimento do SWEBOK v4.0. Um guia prático, referencial de campo e mapa mental de autoestudo através da construção do Sistema de Gestão e Controle de Frotas (SGCF)."
   future_parts:
