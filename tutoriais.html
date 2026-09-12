@@ -22,9 +22,6 @@ permalink: /tutoriais/
           <div class="series-card-icon">
             <i class="{{ serie.icon | default: 'fas fa-book' }}" aria-hidden="true"></i>
           </div>
-          <span class="series-status-badge {% if serie.status == 'Concluída' %}status-completed{% else %}status-ongoing{% endif %}">
-            {{ serie.status }}
-          </span>
         </div>
 
         <h3 class="series-card-title">
@@ -47,31 +44,4 @@ permalink: /tutoriais/
       </div>
     {%- endfor -%}
   </div>
-</section>
-
-{%- assign standalone_tutorials = "" -%}
-<section class="standalone-tutorials-section" style="margin-top: 3.5rem;">
-  <h2 class="hub-section-title">
-    <i class="fas fa-wrench" aria-hidden="true"></i> Guias Práticos & Tutoriais Avulsos
-  </h2>
-
-  {%- assign tutorial_posts = site.posts | where: "category", "Tutoriais" | sort: "date" | reverse -%}
-  <ul class="post-list">
-    {%- for post in tutorial_posts -%}
-      {%- unless post.series -%}
-      <li style="margin-bottom: 1.8rem;">
-        <span class="post-meta">{{ post.date | date: date_format }}</span>
-        <h3>
-          <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
-        </h3>
-        {%- if post.subtitle -%}
-        <p class="post-subtitle">{{ post.subtitle | escape }}</p>
-        {%- endif -%}
-        {%- if site.minima.show_excerpts -%}
-        {{ post.excerpt }}
-        {%- endif -%}
-      </li>
-      {%- endunless -%}
-    {%- endfor -%}
-  </ul>
 </section>

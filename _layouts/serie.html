@@ -21,11 +21,6 @@ layout: base
         <i class="{{ serie_data.icon | default: 'fas fa-book' }}" aria-hidden="true"></i>
       </div>
       <div class="series-header-meta">
-        {%- if serie_data.status -%}
-        <span class="series-status-badge {% if serie_data.status == 'Concluída' %}status-completed{% else %}status-ongoing{% endif %}">
-          {{ serie_data.status }}
-        </span>
-        {%- endif -%}
         <span class="series-count-badge">
           {{ serie_posts.size }}{% if serie_data.total_planned %} de {{ serie_data.total_planned }}{% endif %} capítulos
         </span>
