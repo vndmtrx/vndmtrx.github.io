@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://vndmtrx.github.io/sitemap.xml
