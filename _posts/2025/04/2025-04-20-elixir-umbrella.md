@@ -9,6 +9,7 @@ modified_date: 2026-05-10 10:26:00 GMT-3
 permalink: /posts/elixir-umbrella/
 tags: [Programação, Programação Funcional, Elixir]
 series: Aprendendo Elixir
+category: Tutoriais
 ---
 
 Neste segundo post da série *Aprendendo Elixir* [^1], vamos explorar como organizar projetos maiores usando arquitetura modular com uma estrutura guarda-chuva (chamada *Umbrella* pelo ecossistema Elixir). A proposta é dividir o sistema em múltiplas aplicações menores, focadas e coesas, que podem ser desenvolvidas, testadas e integradas dentro de um mesmo repositório sob o comando do Mix. Esse modelo segue o princípio de separação de responsabilidades, facilitando a manutenção e a escalabilidade do código.

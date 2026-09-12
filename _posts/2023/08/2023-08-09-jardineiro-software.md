@@ -7,6 +7,7 @@ author:
 date: 2023-08-09 10:43:00 GMT-3
 permalink: /posts/jardineiro-software/
 tags: [Programação, Análise de Sistemas]
+category: Ensaios
 ---
 
 Há alguns anos eu estava pensando sobre o que realmente é desenvolvimento de software. Existem dezenas de metáforas clássicas na computação tentando definir nossa profissão. David Gries dizia que escrever software é uma ciência; Donald Knuth defendia que é uma arte; Watts Humphrey tratava como processo; Alistair Cockburn comparava a um jogo; Eric Raymond a um grande bazar; e Fred Brooks dizia que é como agricultura, caçar lobisomens ou afundar em um poço de piche. Até P. J. Plauger e Kent Beck compararam a dirigir um carro, ainda que tenham chegado a conclusões opostas.

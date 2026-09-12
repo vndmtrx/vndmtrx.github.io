@@ -9,6 +9,7 @@ permalink: /posts/conteineres-fundamentos/
 tags: [Docker, Podman, Contêineres, Linux, DevOps, Infraestrutura]
 series: Contêineres de Cabo a Rabo
 published: false
+category: Tutoriais
 ---
 
 Você já rodou `docker run` centenas de vezes. Digita o comando, aperta enter, um punhado de letrinhas corre pelo terminal e, em questão de meio segundo, você tem uma aplicação inteira rodando em um ambiente isolado com rede, disco e variáveis próprias. Mas se eu te perguntar exatamente o que o kernel Linux fez naquele exato instante de meio segundo, você sabe responder?

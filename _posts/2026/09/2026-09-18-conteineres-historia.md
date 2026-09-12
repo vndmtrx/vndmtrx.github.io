@@ -9,6 +9,7 @@ permalink: /posts/conteineres-historia/
 tags: [Docker, Contêineres, Linux, História, DevOps, Infraestrutura]
 series: Contêineres de Cabo a Rabo
 published: false
+category: Artigos
 ---
 
 Tenho um amigo que usa Slackware no trabalho. Não por nostalgia, não por teimosia, não por falta de opção. Por escolha técnica deliberada, com a convicção serena de quem conhece o sistema até a raiz e não quer camadas de abstração que ele não pediu. É o tipo de pessoa que abre um `man 8 chroot` por lazer, tem opinião formada sobre hierarquia de processo em *BSD e consegue passar horas discutindo as diferenças filosóficas entre o modelo de jails do FreeBSD e o isolamento de processos do OpenBSD. Um entusiasta no sentido mais verdadeiro da palavra: aquele que estuda porque gosta, e não porque a certificação exige.

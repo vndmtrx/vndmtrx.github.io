@@ -9,6 +9,7 @@ modified_date: 2026-09-02 13:57:00 GMT-3
 permalink: /posts/openssh-sssd-ldap/
 tags: [SSH, SSSD, LDAP, Debian]
 series: OpenSSH na Prática
+category: Tutoriais
 ---
 
 No post anterior sobre Certificados SSH, encerramos com uma confissão honesta: certificados resolvem brilhantemente a **autenticação** e a **autorização** na camada do protocolo, mas não criam contas de usuário no sistema operacional por mágica. Você ainda precisava de "algo" para garantir que as role accounts (`deploy`, `db_admin`, `db_readonly`) existissem no `/etc/passwd` de cada servidor. Naquele momento, eu mencionei "LDAP/SSSD" quase como um feitiço sussurrado no final da frase, prometendo que o assunto renderia um post dedicado.

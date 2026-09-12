@@ -9,6 +9,7 @@ modified_date: 2026-09-02 13:57:00 GMT-3
 permalink: /posts/elixir-introducao/
 tags: [Programação, Programação Funcional, Elixir]
 series: Aprendendo Elixir
+category: Tutoriais
 ---
 
 Este post inaugura uma série intitulada *Aprendendo Elixir*, na qual registro minha jornada de aprendizado com essa linguagem. Minha ideia aqui é descrever meu aprendizado (e escrever sobre isso é uma forma de consolidar esse processo). Ao longo dos próximos módulos, iremos construir uma base sólida em Elixir por meio de projetos práticos, cada um introduzindo novos conceitos e boas práticas da programação funcional. Espero que este conteúdo te ajude tanto quanto está me ajudando.

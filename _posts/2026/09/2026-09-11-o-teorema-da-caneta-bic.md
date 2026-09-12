@@ -7,6 +7,7 @@ author:
 date: 2026-09-11 16:20:00 GMT-3
 permalink: /posts/o-teorema-da-caneta-bic/
 tags: [Sociedade, Política, Filosofia, Trabalho, Crônica]
+category: Crônicas
 ---
 
 Existe uma regra não escrita sobre a sobrevivência em repartição pública: nunca abra o grupo de WhatsApp do trabalho antes da segunda xícara de café. Se você cometer essa imprudência com o estômago vazio, corre o risco sério de descobrir que o seu colega de sala encontrou uma justificativa no livro de Samuel para passar pano em escândalo financeiro antes mesmo das nove da manhã.

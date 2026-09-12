@@ -8,6 +8,7 @@ date: 2025-04-28 20:28:00 GMT-3
 permalink: /posts/elixir-patterns/
 tags: [Programação, Programação Funcional, Elixir, Patterns]
 series: Aprendendo Elixir
+category: Tutoriais
 ---
 
 Se tivéssemos que apontar uma única característica que define como é programar em Elixir [^1], seria o **pattern matching**. Esse recurso da linguagem vai muito além da atribuição tradicional que conhecemos em outras linguagens: ele molda a forma como pensamos e estruturamos o código.
