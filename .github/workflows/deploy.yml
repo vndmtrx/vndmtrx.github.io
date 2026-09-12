@@ -30,7 +30,7 @@ jobs:
         id: pages
         uses: actions/configure-pages@v6
       - name: Cache Jekyll
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             .jekyll-cache
