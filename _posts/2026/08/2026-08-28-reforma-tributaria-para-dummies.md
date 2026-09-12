@@ -7,7 +7,7 @@ author:
 date: 2026-08-28 06:38:00 GMT-3
 modified_date: 2026-09-02 13:57:00 GMT-3
 permalink: /posts/reforma-tributaria-python/
-tags: [Python, Impostos, Opinião, Programação, Sociedade]
+tags: [Python, Programação, Sociedade, Opinião]
 category: Artigos
 ---
 

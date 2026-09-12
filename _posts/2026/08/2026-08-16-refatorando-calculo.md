@@ -7,7 +7,7 @@ author:
 date: 2026-08-16 14:18:00 GMT-3
 modified_date: 2026-08-16 20:09:00 GMT-3
 permalink: /posts/refatorando-calculo/
-tags: [Matemática, Cálculo, Educação, Opinião]
+tags: [Educação, Faculdade, Matemática, Opinião]
 category: Ensaios
 ---
 

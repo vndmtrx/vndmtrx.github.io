@@ -6,7 +6,7 @@ author:
   - "Eduardo N. S. R."
 date: 2025-04-28 20:28:00 GMT-3
 permalink: /posts/elixir-patterns/
-tags: [Programação, Programação Funcional, Elixir, Patterns]
+tags: [Programação, Programação Funcional, Elixir, Engenharia de Software]
 series: Aprendendo Elixir
 category: Tutoriais
 ---

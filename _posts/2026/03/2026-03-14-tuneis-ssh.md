@@ -6,7 +6,7 @@ author:
   - "Eduardo N. S. R."
 date: 2026-03-14 21:16:00 GMT-3
 permalink: /posts/tuneis-ssh/
-tags: [SSH, Túneis]
+tags: [SSH, Redes, Segurança, Infraestrutura]
 series: OpenSSH na Prática
 category: Tutoriais
 ---

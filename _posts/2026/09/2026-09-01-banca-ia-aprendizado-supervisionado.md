@@ -6,7 +6,7 @@ author:
   - "Eduardo N. S. R."
 date: 2026-09-01 14:37:00 GMT-3
 permalink: /posts/banca-ia-aprendizado-supervisionado/
-tags: [Inteligência Artificial, Machine Learning, Algoritmos, Faculdade, Opinião]
+tags: [Inteligência Artificial, Machine Learning, Algoritmos, Opinião]
 category: Ensaios
 ---
 

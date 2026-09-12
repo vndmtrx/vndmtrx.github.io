@@ -7,7 +7,7 @@ author:
 date: 2025-09-11 23:13:00 GMT-3
 modified_date: 2026-05-10 10:26:00 GMT-3
 permalink: /posts/ssh-gpg-github/
-tags: [SSH, GPG, Git, Github]
+tags: [SSH, Git, Segurança, DevOps]
 series: OpenSSH na Prática
 category: Tutoriais
 ---

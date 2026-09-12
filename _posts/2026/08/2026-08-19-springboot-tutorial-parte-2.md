@@ -7,7 +7,7 @@ author:
 date: 2026-08-19 16:31:00 GMT-3
 modified_date: 2026-09-02 13:57:00 GMT-3
 permalink: /posts/spring-boot-tutorial-parte-2-projeto-base/
-tags: [Spring Boot, Java, Maven, DevOps]
+tags: [Spring Boot, Java, Engenharia de Software, DevOps]
 series: Spring Boot Tutorial
 category: Tutoriais
 ---

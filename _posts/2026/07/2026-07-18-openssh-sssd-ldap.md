@@ -7,7 +7,7 @@ author:
 date: 2026-07-18 21:57:00 GMT-3
 modified_date: 2026-09-02 13:57:00 GMT-3
 permalink: /posts/openssh-sssd-ldap/
-tags: [SSH, SSSD, LDAP, Debian]
+tags: [SSH, Linux, Segurança, Infraestrutura]
 series: OpenSSH na Prática
 category: Tutoriais
 ---

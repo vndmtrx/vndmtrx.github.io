@@ -7,7 +7,7 @@ author:
 date: 2026-05-09 19:24:00 GMT-3
 modified_date: 2026-05-10 10:26:00 GMT-3
 permalink: /posts/certificados-ssh/
-tags: [SSH, Certificados]
+tags: [SSH, Segurança, Linux, Infraestrutura]
 series: OpenSSH na Prática
 category: Tutoriais
 ---

@@ -6,7 +6,7 @@ author:
   - "Eduardo N. S. R."
 date: 2026-08-21 18:57:00 GMT-3
 permalink: /posts/12-factor-app-pesadelos-e-pratica/
-tags: [DevOps, Arquitetura, 12-Factor, SysAdmin, Engenharia de Software]
+tags: [DevOps, Engenharia de Software, Arquitetura, Infraestrutura]
 category: Artigos
 ---
 
