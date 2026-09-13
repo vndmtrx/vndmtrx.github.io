@@ -4,9 +4,8 @@ title: '🏷️ Tags'
 permalink: /tags/
 ---
 
-<p style="margin-bottom: 1.5rem; opacity: 0.85;">
-    Navegue pelos artigos do blog por tema. Clique em qualquer tag para visualizar a página com todos os posts
-    relacionados.
+<p class="hub-intro">
+    Navegue pelos artigos do blog por tema. Clique em qualquer tag para visualizar a página com todos os posts relacionados.
 </p>
 
 {%- capture tag_strings -%}
@@ -18,15 +17,15 @@ permalink: /tags/
 {%- endcapture -%}
 {%- assign sorted_tag_items = tag_strings | split: ":::" | sort -%}
 
-<div class="tag-cloud">
+<nav class="tag-cloud" aria-label="Nuvem de tags">
     {%- for item in sorted_tag_items -%}
     {%- assign parts = item | strip | split: "###" -%}
     {%- assign tag = parts[1] -%}
-    {%- assign tag_slug = tag | slugify -%}
+    {%- assign tag_slug = tag | slugify: "latin" -%}
     <a href="{{ '/tags/' | append: tag_slug | append: '/' | relative_url }}" class="tag-pill">
         <i class="fas fa-tag" aria-hidden="true" style="font-size: 0.8rem;"></i>
         <span>{{- tag -}}</span>
         <span class="tag-count">({{ site.tags[tag].size }})</span>
     </a>
     {%- endfor -%}
-</div>
+</nav>
