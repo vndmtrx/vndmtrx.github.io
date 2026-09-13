@@ -6,4 +6,4 @@ permalink: /tutoriais/openssh/
 ---
 
 > [!NOTE] Série Completa
-> Quatro partes cobrindo desde geração de chaves criptográficas até infraestrutura de chaves públicas com CA e autenticação LDAP via SSSD.
+> Série de posts cobrindo vários aspectos operacionais do OpenSSH, desde autenticação via chaves até autenticação via LDAP, entre outros.
