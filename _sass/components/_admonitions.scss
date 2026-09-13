@@ -1,0 +1,78 @@
+/* ==========================================================================
+   Callouts (GFM Admonitions) - Paleta Editorial
+   ========================================================================== */
+@use "base/variables" as v;
+
+.markdown-alert {
+  padding: 0.75rem 1rem;
+  margin: 1.25rem 0 1.25rem;
+  color: inherit;
+  border-left: 0.25rem solid;
+  border-radius: 0 var(--pico-border-radius) var(--pico-border-radius) 0;
+  font-style: normal;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.markdown-alert > :first-child { margin-top: 0; }
+.markdown-alert > :last-child { margin-bottom: 0; }
+.markdown-alert p { font-size: 0.9rem; line-height: 1.55; margin-bottom: 0.45rem; }
+.markdown-alert code { font-size: 0.82rem; }
+.markdown-alert .markdown-alert-title {
+  display: flex; align-items: center; gap: 0.45rem;
+  font-weight: 600; font-size: 0.88rem; line-height: 1; margin-bottom: 0.45rem;
+}
+.markdown-alert .markdown-alert-title svg { flex-shrink: 0; width: 15px; height: 15px; fill: currentColor; }
+
+/* Tema Claro */
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--accent-blue);
+  background-color: rgba(v.$theme-light-cyan, 0.07);
+  .markdown-alert-title { color: var(--accent-blue); }
+}
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--accent-green);
+  background-color: rgba(v.$theme-light-green, 0.07);
+  .markdown-alert-title { color: var(--accent-green); }
+}
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--accent-purple);
+  background-color: rgba(v.$theme-light-purple, 0.07);
+  .markdown-alert-title { color: var(--accent-purple); }
+}
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--accent-orange);
+  background-color: rgba(v.$theme-light-orange, 0.07);
+  .markdown-alert-title { color: var(--accent-orange); }
+}
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--accent-red);
+  background-color: rgba(v.$theme-light-red, 0.07);
+  .markdown-alert-title { color: var(--accent-red); }
+}
+
+/* Tema Escuro */
+html[data-theme="dark"] .markdown-alert.markdown-alert-note {
+  border-left-color: var(--accent-blue);
+  background-color: rgba(v.$theme-cyan, 0.1);
+  .markdown-alert-title { color: var(--accent-blue); }
+}
+html[data-theme="dark"] .markdown-alert.markdown-alert-tip {
+  border-left-color: var(--accent-green);
+  background-color: rgba(v.$theme-green, 0.1);
+  .markdown-alert-title { color: var(--accent-green); }
+}
+html[data-theme="dark"] .markdown-alert.markdown-alert-important {
+  border-left-color: var(--accent-purple);
+  background-color: rgba(v.$theme-purple, 0.1);
+  .markdown-alert-title { color: var(--accent-purple); }
+}
+html[data-theme="dark"] .markdown-alert.markdown-alert-warning {
+  border-left-color: var(--accent-yellow);
+  background-color: rgba(v.$theme-yellow, 0.1);
+  .markdown-alert-title { color: var(--accent-yellow); }
+}
+html[data-theme="dark"] .markdown-alert.markdown-alert-caution {
+  border-left-color: var(--accent-red);
+  background-color: rgba(v.$theme-red, 0.1);
+  .markdown-alert-title { color: var(--accent-red); }
+}
