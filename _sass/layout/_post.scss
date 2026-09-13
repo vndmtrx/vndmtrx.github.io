@@ -1,0 +1,231 @@
+/* Ajustes de Layout para o Blog */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main.container, .site-footer .container {
+  max-width: 860px; /* Largura idêntica ao layout antigo */
+  --pico-spacing: 30px;
+  padding-left: var(--pico-spacing); /* Exato mesmo respiro lateral do Minima */
+  padding-right: var(--pico-spacing);
+}
+
+main.container {
+  padding-top: var(--pico-spacing);
+  padding-bottom: var(--pico-spacing);
+  flex: 1 0 auto;
+}
+
+/* Remover o visual de Card padrão do Pico para listagens e páginas de leitura para que o texto flua limpo */
+article:not(.grid article):not(.serie-hero):not(.chapter-card) {
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  padding: 0;
+  margin-bottom: 2.75rem;
+
+  > header, > footer {
+    background-color: transparent;
+    padding-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+    /* Deixamos o padding-bottom intacto para manter o respiro da linha divisória do Pico CSS */
+  }
+}
+
+/* Evitar margem de bloco inflada no final do conteúdo antes do rodapé */
+main.container > section {
+  margin-bottom: 0;
+}
+
+/* Linha divisória exclusiva para a página de leitura do Post */
+.post-header {
+  border-bottom: 1px solid var(--pico-muted-border-color);
+  padding-bottom: var(--pico-spacing);
+  margin-bottom: var(--pico-spacing);
+}
+
+/* Justificar o texto apenas do conteúdo do post e páginas, sem afetar o cabeçalho */
+article .e-content p,
+article .post-content p,
+.post-excerpt p,
+.category-desc,
+.hub-intro,
+.serie-description,
+.footer-col p {
+  text-align: justify;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+
+/* Destaque Tipográfico Vertical Japonês (Página Sobre) */
+.jp-float {
+  float: right;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-size: clamp(2.5rem, 7vw, 4.5rem);
+  margin: 0 0 1rem 1.5rem;
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--pico-h1-color);
+  opacity: 0.85;
+}
+
+/* Títulos e Subtítulos nas Listagens de Posts */
+.post-list-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.25;
+  margin-top: 0.25rem;
+  margin-bottom: 0.35rem;
+  color: var(--pico-h1-color);
+}
+
+.post-list-title a {
+  text-decoration: none;
+  color: var(--pico-primary);
+  transition: color 0.2s ease;
+}
+
+.post-list-title a:hover {
+  text-decoration: underline;
+  color: var(--pico-primary-hover);
+}
+
+/* Título Principal do Post e Páginas (H1) */
+.post-title {
+  font-weight: 500;
+  font-size: clamp(1.65rem, 5.5vw, 2.35rem);
+  letter-spacing: -0.5px;
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.post-subtitle {
+  font-size: 1.15rem;
+  font-weight: 300;
+  opacity: 0.9;
+  line-height: 1.4;
+  margin-top: 0;
+  margin-bottom: 0.65rem;
+  color: var(--pico-muted-color);
+  font-style: normal;
+}
+
+/* Metadados de Postagem (Data, Leitura) */
+.post-meta {
+  font-size: 0.85rem;
+  color: var(--pico-muted-color);
+}
+
+/* 2. Tabelas */
+article table {
+  --pico-font-size: 0.85em;
+  font-size: var(--pico-font-size);
+  line-height: 1.5;
+  margin-bottom: var(--pico-typography-spacing-vertical);
+}
+article table th,
+article table td {
+  padding: calc(var(--pico-spacing) * 0.4) calc(var(--pico-spacing) * 0.7);
+}
+article table th { font-weight: 600; }
+@media (max-width: 576px) {
+  article table { --pico-font-size: 0.81em; }
+  article table th, article table td { padding: calc(var(--pico-spacing) * 0.35) calc(var(--pico-spacing) * 0.6); }
+}
+
+/* 3. Blocos de Código e KBD */
+article code, article pre { font-weight: 400; font-size: 0.8rem; tab-size: 4; -moz-tab-size: 4; }
+article code {
+  padding: 0.1em 0.3em;
+  background-color: rgba(128, 128, 128, 0.05);
+  border: 1px solid var(--pico-muted-border-color);
+  border-radius: 4px;
+  color: inherit;
+}
+article div.highlight,
+article figure.highlight,
+article pre:not(.highlight) {
+  border-radius: var(--pico-border-radius);
+  border: 1px solid var(--pico-muted-border-color);
+  background-color: var(--pico-code-background-color);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+article div.highlight pre, article figure.highlight pre {
+  background-color: transparent; border: none; box-shadow: none; margin: 0; padding: 12px 16px; font-size: 0.8rem; line-height: 1.5;
+}
+article pre code {
+  padding: 0; background-color: transparent; border: none;
+}
+html[data-theme="dark"] article div.highlight,
+html[data-theme="dark"] article figure.highlight,
+html[data-theme="dark"] article pre:not(.highlight) {
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.35);
+}
+article del, article s {
+  color: var(--pico-muted-color);
+  opacity: 0.75;
+}
+
+ul.task-list {
+  list-style: none;
+  padding-left: 0.25rem;
+
+  li.task-list-item input[type="checkbox"] {
+    margin-right: 0.45rem;
+    vertical-align: middle;
+  }
+}
+
+article kbd {
+  font-family: var(--pico-font-family-monospace);
+  font-size: 0.78em;
+  padding: 0.15em 0.45em;
+  border-radius: 4px;
+  border: 1px solid var(--pico-muted-border-color);
+  background-color: var(--pico-card-background-color);
+  color: var(--pico-color);
+  box-shadow: 0 1.5px 0 var(--pico-muted-border-color);
+  white-space: nowrap;
+  vertical-align: baseline;
+  font-weight: 500;
+}
+html[data-theme="dark"] article kbd {
+  background-color: var(--pico-card-background-color);
+  color: var(--pico-color);
+  box-shadow: 0 1.5px 0 rgba(0, 0, 0, 0.6);
+}
+
+/* 4. Tipografia do Post e Citações */
+article hr {
+  border: 0; border-top: 1px solid var(--pico-muted-border-color); margin: 2.25rem 0;
+}
+article blockquote {
+  font-size: 0.95rem; line-height: 1.6; color: var(--pico-color);
+  background-color: rgba(128, 128, 128, 0.04);
+  border-left: 3px solid var(--pico-primary);
+  border-radius: 0 var(--pico-border-radius) var(--pico-border-radius) 0;
+  padding: 0.75rem 1.15rem; margin: 1.5rem 0;
+}
+html[data-theme="dark"] article blockquote { background-color: rgba(255, 255, 255, 0.03); }
+
+/* 6. Notas de Rodapé (Footnotes) */
+sup[id^="fnref"] {
+  line-height: 0; vertical-align: baseline; position: relative; top: -0.4em; font-size: 0.75em;
+}
+sup[id^="fnref"] a.footnote { padding: 0 0.15em; font-weight: 600; text-decoration: none; }
+.footnotes {
+  font-size: 0.85rem; line-height: 1.6; border-top: 1px solid var(--pico-muted-border-color);
+  margin-top: 2.5rem; padding-top: 1.25rem;
+}
+.footnotes ol { margin-left: 1.5rem; padding-left: 0; }
+.footnotes li { margin-bottom: 0.5rem; }
+.footnotes li p { font-size: inherit; line-height: inherit; margin-bottom: 0.25rem; }
+.footnotes .reversefootnote {
+  font-size: 0.9em; text-decoration: none; margin-left: 0.25rem; opacity: 0.75;
+}
