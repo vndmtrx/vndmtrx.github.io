@@ -5,42 +5,27 @@ nav_title: '📚 Trilhas'
 permalink: /tutoriais/
 ---
 
-{%- assign date_format = site.minima.date_format | default: "%d/%m/%Y" -%}
+{%- assign date_format = site.blog.date_format | default: "%d/%m/%Y" -%}
 
 <p class="hub-intro">
   Séries temáticas de estudo e projetos estruturados passo a passo cobrindo desenvolvimento de software, infraestrutura, automação, Linux e arquitetura de sistemas.
 </p>
 
-<section class="series-hub-section">
-  <div class="series-grid">
-    {%- for item in site.data.series -%}
-      {%- assign key = item[0] -%}
-      {%- assign serie = item[1] -%}
-      {%- assign serie_posts = site.posts | where: "series", serie.title -%}
-      <div class="series-card">
-        <div class="series-card-header">
-          <div class="series-card-icon">
-            <i class="{{ serie.icon | default: 'fas fa-book' }}" aria-hidden="true"></i>
-          </div>
-          <h3 class="series-card-title">
-            <a href="{{ serie.url | relative_url }}">{{ serie.title }}</a>
-          </h3>
-        </div>
-
-        <div class="series-card-counter">
-          <i class="fas fa-bookmark" aria-hidden="true"></i>
-          {{ serie_posts.size }}{% if serie.total_planned %} de {{ serie.total_planned }}{% endif %} capítulos publicados
-        </div>
-
-        <p class="series-card-desc">{{ serie.description }}</p>
-
-        <div class="series-card-footer">
-          <a href="{{ serie.url | relative_url }}" class="series-card-btn">
-            <span>Acessar Trilha</span>
-            <i class="fas fa-arrow-right" aria-hidden="true"></i>
-          </a>
-        </div>
-      </div>
-    {%- endfor -%}
-  </div>
+<section class="grid">
+  {%- for item in site.data.series -%}
+    {%- assign key = item[0] -%}
+    {%- assign serie = item[1] -%}
+    {%- assign serie_posts = site.posts | where: "series", serie.title -%}
+    {%- capture track_badge -%}
+      {{ serie_posts.size }}{% if serie.total_planned %} de {{ serie.total_planned }}{% endif %} capítulos
+    {%- endcapture -%}
+    {% include card.html
+      url=serie.url
+      title=serie.title
+      icon=serie.icon
+      badge=track_badge
+      description=serie.description
+      action_text="Acessar Trilha"
+    %}
+  {%- endfor -%}
 </section>
