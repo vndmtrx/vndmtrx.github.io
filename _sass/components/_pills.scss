@@ -1,0 +1,98 @@
+/* ==========================================================================
+   Nuvem de Tags e Pílulas de Taxonomia
+   ========================================================================== */
+@use "sass:color";
+@use "base/variables" as v;
+
+/* Container da Nuvem de Tags */
+.tag-cloud {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: flex-start !important; /* Anula o justify-content: space-between nativo da tag nav do Pico */
+  gap: 0.65rem 0.55rem !important;
+  align-items: center;
+  margin-top: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+/* Pílulas (Pills) Base */
+.category-pill, .tag-pill {
+  border-radius: 50px !important;
+  padding: 0.32rem 0.8rem !important;
+  font-size: 0.88rem !important;
+  line-height: 1.2 !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+  text-decoration: none !important;
+  transition: all 0.2s ease;
+}
+
+/* Cores específicas da Categoria (Laranja Quente Centralizado) */
+.category-pill {
+  color: var(--accent-orange, v.$theme-light-orange) !important;
+  background-color: rgba(v.$theme-light-orange, 0.08) !important;
+  border: 1px solid rgba(v.$theme-light-orange, 0.28) !important;
+
+  &:hover {
+    background-color: rgba(v.$theme-light-orange, 0.16) !important;
+    border-color: var(--accent-orange, v.$theme-light-orange) !important;
+    color: color.scale(v.$theme-light-orange, $lightness: -15%) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(v.$theme-light-orange, 0.15);
+  }
+}
+
+html[data-theme="dark"] .category-pill {
+  background-color: rgba(v.$theme-orange, 0.12) !important;
+  border-color: rgba(v.$theme-orange, 0.32) !important;
+  color: var(--accent-orange, v.$theme-orange) !important;
+
+  &:hover {
+    background-color: rgba(v.$theme-orange, 0.22) !important;
+    border-color: var(--accent-orange, v.$theme-orange) !important;
+    color: color.scale(v.$theme-orange, $lightness: 25%) !important;
+  }
+}
+
+/* Cores específicas das Tags (Fundo sutil, Borda suave, Texto Primário) */
+.tag-pill {
+  color: var(--pico-primary) !important;
+  background-color: rgba(128, 128, 128, 0.08) !important;
+  border: 1px solid rgba(128, 128, 128, 0.22) !important;
+
+  .tag-count {
+    font-size: 0.8em;
+    opacity: 0.75;
+    font-weight: 500;
+  }
+
+  &:hover {
+    background-color: rgba(128, 128, 128, 0.16) !important;
+    border-color: var(--pico-primary) !important;
+    color: var(--pico-primary-hover) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  }
+}
+
+html[data-theme="dark"] .tag-pill {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.12) !important;
+    border-color: var(--pico-primary) !important;
+    color: var(--pico-primary-hover) !important;
+  }
+}
+
+/* Container das Pílulas nos Posts */
+.post-taxonomies {
+  margin-top: var(--pico-spacing);
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
