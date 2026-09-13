@@ -1,0 +1,136 @@
+/* ==========================================================================
+   Syntax Highlighting (Rouge) - Paleta Editorial Centralizada
+   ========================================================================== */
+@use "base/variables" as v;
+
+/* Tema Claro */
+.highlight {
+  .err   { color: #ffffff; background-color: v.$theme-light-red; border-radius: 2px; } // Error
+  .c     { color: v.$theme-light-muted; font-style: italic; } // Comment
+  .cm    { color: v.$theme-light-muted; font-style: italic; } // Comment.Multiline
+  .cp    { color: v.$theme-light-purple; } // Comment.Preproc
+  .c1    { color: v.$theme-light-muted; font-style: italic; } // Comment.Single
+  .cs    { color: v.$theme-light-muted; font-style: italic; } // Comment.Special
+  .gd    { color: v.$theme-light-red; background-color: rgba(v.$theme-light-red, 0.1); } // Generic.Deleted
+  .gd .x { color: v.$theme-light-red; }
+  .ge    { font-style: italic; } // Generic.Emph
+  .gh    { color: v.$theme-light-fg; font-weight: 600; } // Generic.Heading
+  .gi    { color: v.$theme-light-green; background-color: rgba(v.$theme-light-green, 0.1); } // Generic.Inserted
+  .gi .x { color: v.$theme-light-green; }
+  .go    { color: v.$theme-light-muted; } // Generic.Output
+  .gp    { color: v.$theme-light-muted; } // Generic.Prompt
+  .gr    { color: v.$theme-light-red; } // Generic.Error
+  .gs    { font-weight: bold; } // Generic.Strong
+  .gt    { color: v.$theme-light-red; } // Generic.Traceback
+  .gu    { color: v.$theme-light-muted; } // Generic.Subheading
+  .k     { color: v.$theme-light-red; } // Keyword
+  .kc    { color: v.$theme-light-red; } // Keyword.Constant
+  .kd    { color: v.$theme-light-cyan; } // Keyword.Declaration
+  .kp    { color: v.$theme-light-red; } // Keyword.Pseudo
+  .kr    { color: v.$theme-light-red; } // Keyword.Reserved
+  .kt    { color: v.$theme-light-cyan; } // Keyword.Type
+  .n     { color: v.$theme-light-fg; }
+  .na    { color: v.$theme-light-green; } // Name.Attribute
+  .nb    { color: v.$theme-light-cyan; } // Name.Builtin
+  .bp    { color: v.$theme-light-muted; } // Name.Builtin.Pseudo
+  .nc    { color: v.$theme-light-cyan; } // Name.Class
+  .ne    { color: v.$theme-light-red; } // Name.Exception
+  .nf    { color: v.$theme-light-green; } // Name.Function
+  .ni    { color: v.$theme-light-cyan; } // Name.Entity
+  .nn    { color: v.$theme-light-fg; } // Name.Namespace
+  .no    { color: v.$theme-light-purple; } // Name.Constant
+  .nt    { color: v.$theme-light-red; } // Name.Tag
+  .nv    { color: v.$theme-light-orange; } // Name.Variable
+  .vc    { color: v.$theme-light-orange; } // Name.Variable.Class
+  .vg    { color: v.$theme-light-orange; } // Name.Variable.Global
+  .vi    { color: v.$theme-light-orange; } // Name.Variable.Instance
+  .o     { color: v.$theme-light-red; } // Operator
+  .ow    { color: v.$theme-light-red; } // Operator.Word
+  .m     { color: v.$theme-light-purple; } // Literal.Number
+  .mf    { color: v.$theme-light-purple; } // Literal.Number.Float
+  .mh    { color: v.$theme-light-purple; } // Literal.Number.Hex
+  .mi    { color: v.$theme-light-purple; } // Literal.Number.Integer
+  .il    { color: v.$theme-light-purple; } // Literal.Number.Integer.Long
+  .mo    { color: v.$theme-light-purple; } // Literal.Number.Oct
+  .s     { color: v.$theme-light-yellow; } // Literal.String
+  .s1    { color: v.$theme-light-yellow; } // Literal.String.Single
+  .s2    { color: v.$theme-light-yellow; } // Literal.String.Double
+  .sb    { color: v.$theme-light-yellow; } // Literal.String.Backtick
+  .sc    { color: v.$theme-light-yellow; } // Literal.String.Char
+  .sd    { color: v.$theme-light-muted; font-style: italic; } // Literal.String.Doc
+  .se    { color: v.$theme-light-purple; } // Literal.String.Escape
+  .sh    { color: v.$theme-light-yellow; } // Literal.String.Heredoc
+  .si    { color: v.$theme-light-orange; } // Literal.String.Interpol
+  .sr    { color: v.$theme-light-green; } // Literal.String.Regex
+  .ss    { color: v.$theme-light-purple; } // Literal.String.Symbol
+  .sx    { color: v.$theme-light-yellow; } // Literal.String.Other
+  .w     { color: v.$theme-light-border; } // Text.Whitespace
+  .lineno, .gl { color: v.$theme-light-muted; } // Line Number
+  .hll   { background-color: rgba(v.$theme-light-yellow, 0.12); } // Marked-lines
+}
+
+/* Tema Escuro */
+html[data-theme="dark"] .highlight {
+  .err   { color: #ffffff; background-color: v.$theme-dark-red; border-radius: 2px; } // Error
+  .c     { color: v.$theme-dark-muted; font-style: italic; } // Comment
+  .c1    { color: v.$theme-dark-muted; font-style: italic; } // Comment.Single
+  .cm    { color: v.$theme-dark-muted; font-style: italic; } // Comment.Multiline
+  .cp    { color: v.$theme-dark-purple; } // Comment.Preproc
+  .cs    { color: v.$theme-dark-muted; font-style: italic; }  // Comment.Special
+  .gd    { color: v.$theme-dark-red; background-color: rgba(v.$theme-dark-red, 0.12); } // Generic.Deleted
+  .gd .x { color: v.$theme-dark-red; }
+  .ge    { font-style: italic; } // Generic.Emph
+  .gh    { color: v.$theme-dark-fg; font-weight: 600; } // Generic.Heading
+  .gi    { color: v.$theme-dark-green; background-color: rgba(v.$theme-dark-green, 0.12); } // Generic.Inserted
+  .gi .x { color: v.$theme-dark-green; }
+  .go    { color: v.$theme-dark-muted; } // Generic.Output
+  .gp    { color: v.$theme-dark-muted; } // Generic.Prompt
+  .gr    { color: v.$theme-dark-red; } // Generic.Error
+  .gs    { font-weight: bold; } // Generic.Strong
+  .gt    { color: v.$theme-dark-red; } // Generic.Traceback
+  .gu    { color: v.$theme-dark-muted; } // Generic.Subheading
+  .k     { color: v.$theme-dark-red; } // Keyword
+  .kc    { color: v.$theme-dark-red; } // Keyword.Constant
+  .kd    { color: v.$theme-dark-cyan; } // Keyword.Declaration
+  .kp    { color: v.$theme-dark-red; } // Keyword.Pseudo
+  .kr    { color: v.$theme-dark-red; } // Keyword.Reserved
+  .kt    { color: v.$theme-dark-cyan; } // Keyword.Type
+  .n     { color: v.$theme-dark-fg; }
+  .na    { color: v.$theme-dark-green; } // Name.Attribute
+  .nb    { color: v.$theme-dark-cyan; } // Name.Builtin
+  .bp    { color: v.$theme-dark-muted; } // Name.Builtin.Pseudo
+  .nc    { color: v.$theme-dark-cyan; } // Name.Class
+  .ne    { color: v.$theme-dark-red; } // Name.Exception
+  .nf    { color: v.$theme-dark-green; } // Name.Function
+  .ni    { color: v.$theme-dark-cyan; } // Name.Entity
+  .nn    { color: v.$theme-dark-fg; } // Name.Namespace
+  .no    { color: v.$theme-dark-purple; } // Name.Constant
+  .nt    { color: v.$theme-dark-red; } // Name.Tag
+  .nv    { color: v.$theme-dark-orange; } // Name.Variable
+  .vc    { color: v.$theme-dark-orange; } // Name.Variable.Class
+  .vg    { color: v.$theme-dark-orange; } // Name.Variable.Global
+  .vi    { color: v.$theme-dark-orange; } // Name.Variable.Instance
+  .o     { color: v.$theme-dark-red; } // Operator
+  .ow    { color: v.$theme-dark-red; } // Operator.Word
+  .m     { color: v.$theme-dark-purple; } // Literal.Number
+  .mf    { color: v.$theme-dark-purple; } // Literal.Number.Float
+  .mh    { color: v.$theme-dark-purple; } // Literal.Number.Hex
+  .mi    { color: v.$theme-dark-purple; } // Literal.Number.Integer
+  .il    { color: v.$theme-dark-purple; } // Literal.Number.Integer.Long
+  .mo    { color: v.$theme-dark-purple; } // Literal.Number.Oct
+  .s     { color: v.$theme-dark-yellow; } // Literal.String
+  .s1    { color: v.$theme-dark-yellow; } // Literal.String.Single
+  .s2    { color: v.$theme-dark-yellow; } // Literal.String.Double
+  .sb    { color: v.$theme-dark-yellow; } // Literal.String.Backtick
+  .sc    { color: v.$theme-dark-yellow; } // Literal.String.Char
+  .sd    { color: v.$theme-dark-muted; font-style: italic; } // Literal.String.Doc
+  .se    { color: v.$theme-dark-purple; } // Literal.String.Escape
+  .sh    { color: v.$theme-dark-yellow; } // Literal.String.Heredoc
+  .si    { color: v.$theme-dark-orange; } // Literal.String.Interpol
+  .sr    { color: v.$theme-dark-green; } // Literal.String.Regex
+  .ss    { color: v.$theme-dark-purple; } // Literal.String.Symbol
+  .sx    { color: v.$theme-dark-yellow; } // Literal.String.Other
+  .w     { color: v.$theme-dark-border; } // Text.Whitespace
+  .lineno, .gl { color: v.$theme-dark-muted; } // Line Number
+  .hll   { background-color: rgba(v.$theme-dark-yellow, 0.12); } // Marked-lines
+}

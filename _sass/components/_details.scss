@@ -1,0 +1,68 @@
+/* ==========================================================================
+   Details & Summary (Exercícios e Respostas)
+   ========================================================================== */
+
+/* Remove a linha de baixo padrão do Pico e adiciona nossa caixa arredondada */
+article details {
+  margin: 1.25rem 0 1.75rem 0 !important;
+  padding: 0.6rem 1rem !important;
+  border: 1px solid rgba(128, 128, 128, 0.22) !important;
+  border-radius: var(--pico-border-radius) !important;
+  background-color: rgba(128, 128, 128, 0.04);
+  transition: all 0.2s ease;
+}
+
+/* Quando aberto, escurece levemente o fundo e as bordas */
+article details[open] {
+  background-color: rgba(128, 128, 128, 0.07);
+  border-color: rgba(128, 128, 128, 0.35) !important;
+}
+
+/* Estilo do título "Ver resposta" */
+article details summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--pico-primary) !important;
+  user-select: none;
+  outline: none;
+  padding: 0.25rem 0;
+  border: none;
+  transition: color 0.15s ease;
+  
+  /* Restaura o ícone padrão do navegador na esquerda */
+  list-style: disclosure-closed inside;
+}
+
+/* Esconde a seta padrão (chevron) do Pico CSS que fica na direita */
+article details summary::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Suporte Safari para a seta na esquerda */
+article details summary::-webkit-details-marker {
+  display: list-item;
+}
+
+article details summary:hover {
+  color: var(--pico-primary-hover) !important;
+}
+
+/* Linha tracejada separando o sumário da resposta quando aberto */
+article details[open] summary {
+  margin-bottom: 0.75rem;
+  border-bottom: 1px dashed rgba(128, 128, 128, 0.25);
+  padding-bottom: 0.5rem;
+  list-style: disclosure-open inside;
+}
+
+/* Ajustes finos nos conteúdos de dentro */
+article details .highlight,
+article details pre {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+article details > *:last-child {
+  margin-bottom: 0.25rem;
+}

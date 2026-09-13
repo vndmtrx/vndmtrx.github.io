@@ -112,7 +112,7 @@ elixir:
   description: "Anotações e conceitos práticos sobre a linguagem Elixir e a máquina virtual BEAM: imutabilidade, pattern matching expressivo e organização modular de projetos com Umbrella apps."
 
 engsoftware:
-  title: "Engenharia de Software Essencial"
+  title: "Engenharia de Software"
   slug: "engsoftware"
   url: "/tutoriais/engsoftware/"
   icon: "fas fa-code-branch"

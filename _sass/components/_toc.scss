@@ -1,0 +1,52 @@
+/* ==========================================================================
+   Table of Contents (TOC - Kramdown Native)
+   ========================================================================== */
+
+#markdown-toc {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  padding-left: 1.25rem;
+  margin: 0.75rem 0 0.5rem 0;
+
+  li {
+    margin-bottom: 0.4rem;
+    color: var(--pico-muted-color);
+
+    &::marker {
+      color: var(--pico-primary);
+    }
+  }
+
+  a {
+    text-decoration: none;
+    color: var(--pico-color);
+    transition: color 0.15s ease;
+
+    &:hover {
+      color: var(--pico-primary);
+      text-decoration: underline;
+    }
+  }
+
+  ul, ol {
+    padding-left: 1.25rem;
+    margin-top: 0.35rem;
+    margin-bottom: 0.35rem;
+    font-size: 0.88rem;
+  }
+}
+
+.toc-box {
+  border: 1px solid var(--pico-muted-border-color);
+  border-radius: var(--pico-border-radius);
+  background-color: var(--pico-card-background-color);
+  padding: 0.85rem 1.25rem;
+  margin: 1.5rem 0 2rem 0;
+
+  summary {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--pico-h1-color);
+    cursor: pointer;
+  }
+}

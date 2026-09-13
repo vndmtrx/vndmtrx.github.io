@@ -1,0 +1,323 @@
+/* ==========================================================================
+   Séries e Trilhas (Páginas de Tutorial e Capítulos)
+   ========================================================================== */
+
+/* Link de Voltar */
+.serie-back-nav {
+  margin-bottom: 1.25rem;
+}
+
+.serie-back-nav .back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--pico-primary);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.serie-back-nav .back-link:hover {
+  color: var(--pico-primary-hover);
+  text-decoration: none;
+}
+
+.serie-back-nav .back-link i {
+  font-size: 0.85rem;
+  transition: transform 0.2s ease;
+}
+
+.serie-back-nav .back-link:hover i {
+  transform: translateX(-3px);
+}
+
+/* Hero / Cabeçalho da Trilha */
+.serie-hero {
+  background-color: var(--pico-card-background-color, var(--pico-background-color));
+  border: 1px solid var(--pico-muted-border-color);
+  border-radius: 14px;
+  padding: 1.8rem 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+}
+
+.serie-hero > header {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  background: transparent;
+  border-bottom: none;
+  padding: 0;
+  margin-bottom: 1.25rem;
+}
+
+[data-theme="dark"] .serie-hero {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.serie-hero-icon {
+  width: 3.8rem;
+  height: 3.8rem;
+  min-width: 3.8rem;
+  min-height: 3.8rem;
+  border-radius: 12px;
+  background-color: rgba(128, 128, 128, 0.08);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.serie-hero-icon i {
+  font-size: 1.55rem;
+  color: var(--pico-primary);
+}
+
+[data-theme="dark"] .serie-hero-icon {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.serie-hero hgroup {
+  margin-bottom: 0 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex-grow: 1;
+}
+
+.serie-hero h1 {
+  font-size: 1.75rem !important;
+  font-weight: 600 !important;
+  margin: 0 !important;
+  line-height: 1.25 !important;
+  color: var(--pico-h1-color) !important;
+}
+
+.serie-hero-badges {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.serie-badge {
+  font-size: 0.78rem;
+  font-weight: 500;
+  border-radius: 50px;
+  padding: 0.15rem 0.65rem;
+  letter-spacing: 0.2px;
+  text-decoration: none !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  line-height: 1.4;
+}
+
+.serie-badge-count {
+  background-color: rgba(128, 128, 128, 0.08);
+  color: var(--pico-muted-color);
+}
+
+[data-theme="dark"] .serie-badge-count {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.serie-badge-repo {
+  background-color: rgba(128, 128, 128, 0.08);
+  color: var(--pico-color) !important;
+  border: 1px solid var(--pico-muted-border-color);
+  transition: all 0.2s ease;
+}
+
+.serie-badge-repo:hover {
+  border-color: var(--pico-primary);
+  color: var(--pico-primary) !important;
+}
+
+.serie-hero-desc {
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: var(--pico-muted-color);
+  margin: 0;
+  text-align: justify;
+}
+
+/* Seção de Capítulos */
+.serie-chapters-section {
+  margin-top: 2.25rem;
+  margin-bottom: 2.5rem;
+}
+
+.serie-chapters-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.35rem !important;
+  font-weight: 600 !important;
+  margin-top: 0 !important;
+  margin-bottom: 1.25rem !important;
+  color: var(--pico-h1-color) !important;
+}
+
+.serie-chapters-header i {
+  color: var(--pico-primary);
+}
+
+/* Lista / Timeline de Capítulos */
+.serie-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.chapter-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.15rem;
+  background-color: var(--pico-card-background-color, var(--pico-background-color));
+  border: 1px solid var(--pico-muted-border-color);
+  border-radius: 12px;
+  padding: 1.15rem 1.4rem;
+  margin-bottom: 0;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.chapter-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--pico-primary);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="dark"] .chapter-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="dark"] .chapter-card:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+  border-color: var(--pico-primary);
+}
+
+/* Número do Capítulo */
+.chapter-number {
+  width: 2.25rem;
+  height: 2.25rem;
+  min-width: 2.25rem;
+  min-height: 2.25rem;
+  border-radius: 50%;
+  background-color: var(--pico-primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+[data-theme="dark"] .chapter-number {
+  color: #111;
+}
+
+.chapter-content {
+  flex-grow: 1;
+}
+
+.chapter-meta {
+  font-size: 0.8rem;
+  color: var(--pico-muted-color);
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.chapter-meta .status-published {
+  color: #16a34a;
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+[data-theme="dark"] .chapter-meta .status-published {
+  color: #4ade80;
+}
+
+.chapter-meta .status-pending {
+  color: var(--pico-muted-color);
+  font-weight: 500;
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
+.chapter-title {
+  font-size: 1.15rem !important;
+  font-weight: 600 !important;
+  margin: 0 0 0.25rem 0 !important;
+  line-height: 1.3 !important;
+}
+
+.chapter-title a {
+  color: var(--pico-h1-color) !important;
+  text-decoration: none !important;
+  transition: color 0.2s ease;
+}
+
+.chapter-title a:hover {
+  color: var(--pico-primary) !important;
+}
+
+.chapter-subtitle {
+  font-size: 0.88rem;
+  color: var(--pico-muted-color);
+  margin: 0;
+  line-height: 1.45;
+}
+
+/* Capítulo Futuro / Em Breve */
+.chapter-card.chapter-pending {
+  opacity: 0.65;
+  border-style: dashed;
+}
+
+.chapter-card.chapter-pending .chapter-number {
+  background-color: rgba(128, 128, 128, 0.15);
+  color: var(--pico-muted-color);
+}
+
+.chapter-card.chapter-pending:hover {
+  opacity: 0.9;
+  border-style: solid;
+}
+
+/* Banner de Série em Posts Individuais (Series Notice) */
+.series-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  margin: 1.5rem 0 2rem 0;
+  padding: 0.85rem 1.15rem;
+  border-radius: var(--pico-border-radius);
+  background-color: rgba(128, 128, 128, 0.06);
+  border: 1px solid rgba(128, 128, 128, 0.2);
+  border-left: 4px solid var(--pico-primary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.series-notice .series-notice-icon {
+  color: var(--pico-primary);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.series-notice .series-notice-content a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

@@ -1,17 +1,16 @@
 ---
 layout: base
 ---
-<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
-
-  <header class="post-header">
+<article class="h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post-header text-center">
     <h1 class="post-title p-name" itemprop="name headline">{{ page.title | escape }}</h1>
     {%- if page.subtitle -%}
     <p class="post-subtitle">{{ page.subtitle | escape }}</p>
     {%- endif -%}
     <div class="post-meta">
-      {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+      {%- assign date_format = site.blog.date_format | default: "%b %-d, %Y" -%}
       {% assign pdate = page.date | date_to_xmlschema %}
-      <div class="post-dates">
+      <div>
         <span class="meta-item" title="Publicado em">
           <span class="meta-icon" aria-hidden="true">📅</span>
           <time class="dt-published" datetime="{{ pdate }}" itemprop="datePublished">
@@ -67,7 +66,7 @@ layout: base
     </div>
   </header>
 
-  <div class="post-content e-content" itemprop="articleBody">
+  <div class="e-content" itemprop="articleBody">
     {%- if page.series -%}
     {%- assign series_data = nil -%}
     {%- for s_entry in site.data.series -%}
