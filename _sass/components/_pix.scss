@@ -2,11 +2,9 @@
    Modal do PIX (Restauração do Minima)
    ========================================================================== */
 
-/* Body lock when modal is open (Trava para mobile/iOS) */
-html.pix-modal-open,
+/* Body lock when modal is open */
 body.pix-modal-open {
   overflow: hidden;
-  height: 100%;
 }
 
 /* Modal Overlay & Backdrop */
@@ -269,14 +267,25 @@ html[data-theme="dark"] .pix-modal-header .pix-modal-badge {
     }
   }
 
+  .post-pix-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0;
+  }
+
   .post-pix-btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
-    padding: 0.55rem 1.1rem;
+    padding: 0.6rem 1.25rem;
+    margin: 0;
     font-size: 0.875rem;
     font-weight: 600;
-    color: #ffffff;
+    color: var(--pico-primary-inverse);
     background-color: var(--pico-primary);
     border: none;
     border-radius: 50px;
@@ -288,7 +297,7 @@ html[data-theme="dark"] .pix-modal-header .pix-modal-badge {
     &:hover {
       background-color: var(--pico-primary-hover);
       transform: translateY(-1px);
-      color: #fff;
+      color: var(--pico-primary-inverse);
       text-decoration: none;
     }
 

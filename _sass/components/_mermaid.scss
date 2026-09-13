@@ -1,0 +1,185 @@
+/* ==========================================================================
+   Diagramas Mermaid.js - Integração Editorial com Design System
+   ========================================================================== */
+
+.mermaid-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2.5rem 0;
+  padding: 1.25rem 1rem;
+  background-color: var(--pico-card-background-color);
+  border: 1px solid var(--pico-muted-border-color);
+  border-radius: var(--pico-border-radius);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    border-color: rgba(128, 128, 128, 0.35);
+  }
+
+  .mermaid {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    * {
+      hyphens: manual !important;
+      -webkit-hyphens: manual !important;
+      word-break: normal !important;
+    }
+
+    svg {
+      max-width: 100%;
+      height: auto;
+      font-family: var(--pico-font-family-monospace), monospace !important;
+    }
+
+    /* Arredondamento harmônico nos nós do flowchart */
+    .node rect,
+    .node polygon {
+      rx: 8px !important;
+      ry: 8px !important;
+    }
+
+    .node .label,
+    .node foreignObject,
+    .node .nodeLabel {
+      text-align: left !important;
+      line-height: 1.5;
+    }
+
+    .node.key .label,
+    .node.key foreignObject,
+    .node.key .nodeLabel {
+      text-align: center !important;
+    }
+
+    .node ul {
+      text-align: left !important;
+      margin: 0.4rem 0 0.1rem 0 !important;
+      padding-left: 1.2rem !important;
+      display: block !important;
+    }
+
+    .node li {
+      text-align: left !important;
+      margin-bottom: 0.25rem;
+      line-height: 1.4;
+    }
+
+    /* Badge VS */
+    .node.vs .label,
+    .node.vs foreignObject,
+    .node.vs .nodeLabel {
+      text-align: center !important;
+      font-weight: 700 !important;
+      font-size: 0.82rem !important;
+      letter-spacing: 1.5px !important;
+    }
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Cores Semânticas dos Nós (Suporte aos Modos Claro & Escuro)
+   -------------------------------------------------------------------------- */
+
+/* TEMA CLARO */
+:root:not([data-theme="dark"]),
+[data-theme="light"] {
+  .mermaid {
+    .node.vs circle,
+    .node.vs rect {
+      fill: #e2e8f0 !important;
+      stroke: #64748b !important;
+      stroke-width: 2px !important;
+    }
+    .node.vs .label,
+    .node.vs span {
+      color: #1e293b !important;
+    }
+    .node.key rect {
+      fill: #f1f5f9 !important;
+      stroke: #64748b !important;
+      stroke-width: 1.5px !important;
+    }
+    .node.neutral rect {
+      fill: #ffffff !important;
+      stroke: var(--pico-muted-border-color) !important;
+      stroke-width: 1.5px !important;
+    }
+    .node.failure rect {
+      fill: #fef2f2 !important;
+      stroke: var(--accent-red) !important;
+      stroke-width: 1.5px !important;
+    }
+    .node.failure .label,
+    .node.failure span {
+      color: #991b1b !important;
+    }
+    .node.success rect {
+      fill: #f0fdf4 !important;
+      stroke: var(--accent-green) !important;
+      stroke-width: 1.5px !important;
+    }
+    .node.success .label,
+    .node.success span {
+      color: #166534 !important;
+    }
+  }
+}
+
+/* TEMA ESCURO */
+[data-theme="dark"] {
+  .mermaid {
+    .node.vs circle,
+    .node.vs rect {
+      fill: #363337 !important;
+      stroke: #64748b !important;
+      stroke-width: 2px !important;
+    }
+    .node.vs .label,
+    .node.vs span {
+      color: #fcfcfa !important;
+    }
+    .node.key rect {
+      fill: #363337 !important;
+      stroke: #78dce8 !important;
+      stroke-width: 1.5px !important;
+    }
+    .node.key .label,
+    .node.key span {
+      color: #fcfcfa !important;
+    }
+    .node.neutral rect {
+      fill: #221f22 !important;
+      stroke: var(--pico-muted-border-color) !important;
+      stroke-width: 1.5px !important;
+    }
+    .node.neutral .label,
+    .node.neutral span {
+      color: #fcfcfa !important;
+    }
+    .node.failure rect {
+      fill: #3a1d28 !important;
+      stroke: var(--accent-red) !important;
+      stroke-width: 1.5px !important;
+    }
+    .node.failure .label,
+    .node.failure span {
+      color: #ffb4c8 !important;
+    }
+    .node.success rect {
+      fill: #1d3322 !important;
+      stroke: var(--accent-green) !important;
+      stroke-width: 1.5px !important;
+    }
+    .node.success .label,
+    .node.success span {
+      color: #c9f5a2 !important;
+    }
+  }
+}
