@@ -19,7 +19,7 @@ Placeholder to allow defining custom head, in principle, you can add anything he
   (function () {
     var saved = localStorage.getItem('theme');
     if (!saved) {
-      saved = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'classic';
+      saved = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
     }
     document.documentElement.setAttribute('data-theme', saved);
   })();
@@ -31,7 +31,7 @@ Placeholder to allow defining custom head, in principle, you can add anything he
     "M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z";
 
   function getActiveTheme() {
-    return document.documentElement.getAttribute('data-theme') || 'classic';
+    return document.documentElement.getAttribute('data-theme') || 'light';
   }
 
   function setIcon(theme) {
@@ -39,17 +39,17 @@ Placeholder to allow defining custom head, in principle, you can add anything he
     const icon = document.getElementById('theme-icon');
     if (!path || !icon) return;
 
-    if (theme === 'classic') {
+    if (theme === 'light') {
       path.setAttribute('d', ICON_DARK);
-      icon.style.color = '#8fb3ff';
+      icon.style.color = '';
     } else {
       path.setAttribute('d', ICON_LIGHT);
-      icon.style.color = '#f5c542';
+      icon.style.color = '';
     }
   }
 
   function toggleTheme() {
-    var next = getActiveTheme() === 'dark' ? 'classic' : 'dark';
+    var next = getActiveTheme() === 'dark' ? 'light' : 'dark';
     localStorage.setItem('theme', next);
     document.documentElement.setAttribute('data-theme', next);
     setIcon(next);
