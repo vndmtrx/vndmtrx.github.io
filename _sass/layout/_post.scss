@@ -220,8 +220,8 @@ sup[id^="fnref"] {
 }
 sup[id^="fnref"] a.footnote { padding: 0 0.15em; font-weight: 600; text-decoration: none; }
 .footnotes {
-  font-size: 0.85rem; line-height: 1.6; border-top: 1px solid var(--pico-muted-border-color);
-  margin-top: 2.5rem; padding-top: 1.25rem;
+  font-size: 0.85rem; line-height: 1.6; border-top: none;
+  margin-top: 0.5rem; padding-top: 0;
 }
 .footnotes ol { margin-left: 1.5rem; padding-left: 0; }
 .footnotes li { margin-bottom: 0.5rem; }
