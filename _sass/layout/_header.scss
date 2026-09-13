@@ -1,0 +1,272 @@
+/* ==========================================================================
+   Cabeçalho Clássico (Restaurado do Minima)
+   ========================================================================== */
+
+.site-header {
+  position: relative;
+  width: 100%;
+  min-height: calc(30px * 1.865);
+  background-color: var(--pico-background-color);
+  border-top: 5px solid var(--pico-muted-border-color);
+  border-bottom: 1px solid var(--pico-muted-border-color);
+  z-index: 100;
+  padding: 0 !important;
+}
+
+.site-header-wrapper {
+  max-width: 860px !important;
+  padding-left: 30px !important;
+  padding-right: 30px !important;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: calc(30px * 1.865);
+}
+
+.site-title {
+  font-size: 1.625rem;
+  font-weight: 300;
+  letter-spacing: -0.5px;
+  color: var(--pico-h1-color) !important;
+  text-decoration: none !important;
+  margin: 0;
+  padding: 10px 0;
+}
+
+.site-title strong {
+  font-weight: 300;
+}
+
+.site-header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+}
+
+/* Botão Apoie (Pix) - Pill Original */
+.pix-nav-btn {
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  box-sizing: border-box;
+  gap: 0.25rem;
+  padding: 0 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1;
+  color: #d45200 !important;
+  background-color: rgba(245, 158, 11, 0.12) !important;
+  border: 1px solid rgba(245, 158, 11, 0.35) !important;
+  border-radius: 50px !important;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all ease-in-out 0.2s;
+  vertical-align: middle;
+  float: none;
+  margin: 0;
+}
+
+.pix-nav-btn:hover {
+  background-color: rgba(245, 158, 11, 0.2) !important;
+  border-color: rgba(245, 158, 11, 0.5) !important;
+  color: #b34500 !important;
+}
+
+[data-theme="dark"] .pix-nav-btn {
+  color: #fbbf24 !important;
+  background-color: rgba(245, 158, 11, 0.16) !important;
+  border-color: rgba(245, 158, 11, 0.4) !important;
+}
+
+[data-theme="dark"] .pix-nav-btn:hover {
+  background-color: rgba(245, 158, 11, 0.26) !important;
+  border-color: rgba(245, 158, 11, 0.65) !important;
+  color: #fef3c7 !important;
+}
+
+/* Botão Alternar Tema - Botão Flutuante (FAB) */
+.theme-toggle-btn {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 1000;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0 !important;
+  border-radius: 50% !important;
+  border: 1px solid var(--pico-muted-border-color) !important;
+  background-color: rgba(252, 252, 250, 0.88) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--accent-blue, #009eb3) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  line-height: 1;
+
+  &:hover {
+    transform: translateY(-2px) scale(1.06);
+    background-color: var(--pico-card-background-color) !important;
+    border-color: var(--accent-blue, #009eb3) !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+  }
+
+  &:active {
+    transform: scale(0.94);
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease;
+  }
+}
+
+[data-theme="dark"] .theme-toggle-btn {
+  background-color: rgba(45, 42, 46, 0.88) !important;
+  border-color: var(--pico-muted-border-color) !important;
+  color: var(--accent-yellow, #ffd866) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+
+  &:hover {
+    background-color: var(--pico-card-background-color) !important;
+    border-color: var(--accent-yellow, #ffd866) !important;
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.65);
+  }
+}
+
+@media (max-width: 576px) {
+  .theme-toggle-btn {
+    bottom: 1.25rem;
+    right: 1.25rem;
+    width: 38px;
+    height: 38px;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+
+/* Navegação e Hamburger Menu (Mobile/Desktop) */
+.site-nav {
+  position: relative;
+}
+
+.site-nav label[for="nav-trigger"],
+.site-nav #nav-trigger {
+  display: none;
+}
+
+.site-nav .nav-items {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 0.5rem;
+}
+
+.site-nav .nav-item {
+  color: var(--pico-h1-color) !important;
+  font-size: 0.95rem;
+  text-decoration: none !important;
+  padding: 7px 12px;
+  border-radius: 5px;
+  transition: background-color 0.15s ease;
+}
+
+.site-nav .nav-item:hover {
+  background-color: var(--pico-code-background-color);
+  text-decoration: none;
+}
+
+@media screen and (min-width: 601px) {
+  .site-header-right .site-nav {
+    margin-left: -8px; /* Compensa o padding-left do primeiro nav-item para equilibrar o gap visual */
+  }
+  .site-header-right .site-nav .nav-items {
+    gap: 0; /* Remove gap extra no desktop */
+  }
+  .site-header-right .site-nav .nav-item {
+    white-space: nowrap;
+    margin-right: 0;
+    padding: 5px 8px; /* Padding menor no desktop para aproximar as palavras */
+  }
+}
+
+/* Modo Mobile - Ocultar nav-items e mostrar botão Hamburger */
+@media screen and (max-width: 600px) {
+  .site-nav {
+    position: static; /* Permite que o dropdown caia da borda do header */
+  }
+
+  .site-nav label[for="nav-trigger"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    border: 1px solid var(--pico-muted-border-color);
+    border-radius: 5px;
+    background-color: var(--pico-background-color);
+  }
+
+  .site-nav .menu-icon {
+    display: block;
+    width: 20px;
+    height: 20px;
+    position: relative;
+  }
+
+  .site-nav .menu-icon::before {
+    content: "☰";
+    font-size: 1.25rem;
+    line-height: 20px;
+    color: var(--pico-color);
+    display: block;
+    text-align: center;
+  }
+
+  .site-nav .nav-items {
+    display: none;
+    position: absolute;
+    top: calc(100% + 5px);
+    right: 0;
+    width: 200px;
+    flex-direction: column;
+    background-color: var(--pico-background-color);
+    border: 1px solid var(--pico-muted-border-color);
+    border-radius: 5px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    padding: 8px;
+    z-index: 50;
+  }
+
+  .site-nav .nav-item {
+    display: block;
+    text-align: right;
+    margin: 0;
+    padding: 10px 12px;
+  }
+
+  /* Quando o checkbox invisível for marcado (clique no hamburger) */
+  .site-nav #nav-trigger:checked ~ .nav-items {
+    display: flex;
+  }
+
+  .site-nav #nav-trigger:checked ~ label[for="nav-trigger"] .menu-icon::before {
+    content: "✕";
+    font-size: 1.5rem;
+  }
+}
