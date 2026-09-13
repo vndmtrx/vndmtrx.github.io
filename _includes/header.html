@@ -1,21 +1,16 @@
 <header class="site-header">
 
-  <div class="wrapper site-header-wrapper">
+  <div class="site-header-wrapper">
     {%- assign default_paths = site.pages | map: "path" -%}
-    {%- assign page_paths = site.minima.nav_pages | default: default_paths -%}
+    {%- assign page_paths = site.blog.nav_pages | default: default_paths -%}
     {%- assign page_titles = site.pages | map: 'title' | compact %}
-    <a class="site-title" rel="author" href="{{ '/' | relative_url }}">{{ site.title | escape }}</a>
+    
+    <a class="site-title" rel="author" href="{{ '/' | relative_url }}"><strong>{{ site.title | escape }}</strong></a>
 
     <div class="site-header-right">
       <button type="button" class="pix-nav-btn" onclick="openPixModal()" title="Apoie ☕" aria-label="Apoie">
         <span class="pix-nav-icon">☕</span>
         <span class="pix-nav-text">Apoie</span>
-      </button>
-
-      <button type="button" class="theme-toggle-btn theme-toggle" id="theme-toggle" title="Alternar tema" aria-label="Alternar tema">
-        <svg id="theme-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
-          <path id="theme-icon-path"></path>
-        </svg>
       </button>
 
       {%- unless page_titles == empty %}
@@ -25,7 +20,9 @@
             <span class="menu-icon"></span>
           </label>
 
-          {% include nav-items.html paths = page_paths %}
+          <div class="nav-items">
+            {% include nav-items.html paths = page_paths %}
+          </div>
         </nav>
       {%- endunless %}
     </div>
