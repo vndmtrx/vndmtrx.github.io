@@ -1,0 +1,20 @@
+@use "syntax";
+
+// Base e Tipografia (Design Tokens, Escala, Variáveis)
+@use "base/variables";
+@use "base/typography";
+
+// Componentes Reutilizáveis
+@use "components/pills";
+@use "components/admonitions";
+@use "components/pagination";
+@use "components/pix";
+@use "components/series";
+@use "components/details";
+@use "components/toc";
+@use "components/cards";
+
+// Layout Estrutural da Página
+@use "layout/header";
+@use "layout/post";
+@use "layout/footer";
