@@ -42,6 +42,7 @@
     if (modal) {
       modal.classList.add('is-active');
       modal.setAttribute('aria-hidden', 'false');
+      document.documentElement.classList.add('pix-modal-open');
       document.body.classList.add('pix-modal-open');
     }
   }
@@ -51,6 +52,7 @@
     if (modal) {
       modal.classList.remove('is-active');
       modal.setAttribute('aria-hidden', 'true');
+      document.documentElement.classList.remove('pix-modal-open');
       document.body.classList.remove('pix-modal-open');
     }
   }

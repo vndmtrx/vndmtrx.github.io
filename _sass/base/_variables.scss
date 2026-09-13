@@ -1,0 +1,137 @@
+/* ==========================================================================
+   Design Tokens & Cores - Paleta Editorial (Dark & Light)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Cores de Destaque - Tema Escuro (Luminosas / Pastéis para Fundo Escuro)
+   -------------------------------------------------------------------------- */
+$theme-dark-red:        #ff6188;
+$theme-dark-orange:     #fc9867;
+$theme-dark-yellow:     #ffd866;
+$theme-dark-green:      #a9dc76;
+$theme-dark-cyan:       #78dce8;
+$theme-dark-purple:     #ab9df2;
+
+// Aliases para compatibilidade
+$theme-red:             $theme-dark-red;
+$theme-orange:          $theme-dark-orange;
+$theme-yellow:          $theme-dark-yellow;
+$theme-green:           $theme-dark-green;
+$theme-cyan:            $theme-dark-cyan;
+$theme-purple:          $theme-dark-purple;
+
+/* Tons Neutros Tema Escuro */
+$theme-dark-bg:         #2d2a2e;
+$theme-dark-panel:      #363337;
+$theme-dark-code:       #221f22;
+$theme-dark-fg:         #fcfcfa;
+$theme-dark-muted:      #939293;
+$theme-dark-border:     #403e41;
+
+/* Tons Neutros Tema Claro (Clean & Neutro) */
+$theme-light-bg:        #ffffff;
+$theme-light-panel:     #f8f9fa;
+$theme-light-code:      #f1f3f5;
+$theme-light-fg:        #212529;
+$theme-light-muted:     #6c757d;
+$theme-light-border:    #dee2e6;
+
+$theme-light-red:       #d62850;
+$theme-light-orange:    #c8551b;
+$theme-light-yellow:    #9c6f00; // Dourado escuro de alto contraste para leitura sobre branco
+$theme-light-green:     #46851b;
+$theme-light-cyan:      #007a8a; // Ciano profundo para palavras-chave e builtins
+$theme-light-purple:    #7048c4;
+
+/* --------------------------------------------------------------------------
+   Mapeamento de Variáveis Semânticas para Pico CSS & Blog
+   -------------------------------------------------------------------------- */
+
+/* TEMA CLARO */
+:root:not([data-theme="dark"]),
+[data-theme="light"] {
+  color-scheme: light;
+
+  /* Superfícies e Tipografia */
+  --pico-background-color: #{$theme-light-bg};
+  --pico-color: #{$theme-light-fg};
+  --pico-muted-color: #{$theme-light-muted};
+  --pico-muted-border-color: #{$theme-light-border};
+
+  --pico-card-background-color: #{$theme-light-panel};
+  --pico-card-border-color: #{$theme-light-border};
+  --pico-card-sectioning-background-color: #{$theme-light-code};
+
+  --pico-code-background-color: #{$theme-light-code};
+  --pico-code-color: #{$theme-light-fg};
+
+  /* Títulos */
+  --pico-h1-color: #{$theme-light-fg};
+  --pico-h2-color: #{$theme-light-fg};
+  --pico-h3-color: #{$theme-light-fg};
+  --pico-h4-color: #{$theme-light-fg};
+  --pico-h5-color: #{$theme-light-fg};
+  --pico-h6-color: #{$theme-light-fg};
+
+  /* Destaque Primário */
+  --pico-primary: #{$theme-light-cyan};
+  --pico-primary-background: #{$theme-light-cyan};
+  --pico-primary-border: #{$theme-light-cyan};
+  --pico-primary-hover: #007d8f;
+  --pico-primary-hover-background: #007d8f;
+  --pico-primary-focus: rgba(0, 158, 179, 0.25);
+  --pico-primary-inverse: #ffffff;
+  --pico-text-selection-color: rgba(0, 158, 179, 0.18);
+
+  /* Variáveis de Destaque para Componentes */
+  --accent-red: #{$theme-light-red};
+  --accent-orange: #{$theme-light-orange};
+  --accent-yellow: #{$theme-light-yellow};
+  --accent-green: #{$theme-light-green};
+  --accent-blue: #{$theme-light-cyan};
+  --accent-purple: #{$theme-light-purple};
+}
+
+/* TEMA ESCURO */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Superfícies e Tipografia */
+  --pico-background-color: #{$theme-dark-bg};
+  --pico-color: #{$theme-dark-fg};
+  --pico-muted-color: #{$theme-dark-muted};
+  --pico-muted-border-color: #{$theme-dark-border};
+
+  --pico-card-background-color: #{$theme-dark-panel};
+  --pico-card-border-color: #{$theme-dark-border};
+  --pico-card-sectioning-background-color: #{$theme-dark-code};
+
+  --pico-code-background-color: #{$theme-dark-code};
+  --pico-code-color: #{$theme-dark-fg};
+
+  /* Títulos */
+  --pico-h1-color: #{$theme-dark-fg};
+  --pico-h2-color: #{$theme-dark-fg};
+  --pico-h3-color: #{$theme-dark-fg};
+  --pico-h4-color: #{$theme-dark-fg};
+  --pico-h5-color: #{$theme-dark-fg};
+  --pico-h6-color: #{$theme-dark-fg};
+
+  /* Destaque Primário */
+  --pico-primary: #{$theme-cyan};
+  --pico-primary-background: #{$theme-cyan};
+  --pico-primary-border: #{$theme-cyan};
+  --pico-primary-hover: #a2e8f2;
+  --pico-primary-hover-background: #a2e8f2;
+  --pico-primary-focus: rgba(120, 220, 232, 0.28);
+  --pico-primary-inverse: #{$theme-dark-bg};
+  --pico-text-selection-color: rgba(120, 220, 232, 0.25);
+
+  /* Variáveis de Destaque para Componentes */
+  --accent-red: #{$theme-red};
+  --accent-orange: #{$theme-orange};
+  --accent-yellow: #{$theme-yellow};
+  --accent-green: #{$theme-green};
+  --accent-blue: #{$theme-cyan};
+  --accent-purple: #{$theme-purple};
+}

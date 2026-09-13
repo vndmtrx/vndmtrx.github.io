@@ -13,80 +13,44 @@ permalink: /categorias/
 {%- assign ensaios_posts = site.posts | where: "category", "Ensaios" -%}
 {%- assign cronicas_posts = site.posts | where: "category", "Crônicas" -%}
 
-<div class="categories-grid">
-  <div class="category-card">
-    <div class="category-card-header">
-      <div class="category-title-group">
-        <div class="category-icon-box">🛠️</div>
-        <h3 class="category-title">
-          <a href="{{ '/categorias/tutoriais/' | relative_url }}">Tutoriais</a>
-        </h3>
-      </div>
-      <span class="category-count-badge">{{ tutoriais_posts.size }} posts</span>
-    </div>
-    <p class="category-desc">
-      Passo a passo prático, guias de configuração de ambiente, código de ponta a ponta e roteiros técnicos para implementação no mundo real.
-    </p>
-    <a href="{{ '/categorias/tutoriais/' | relative_url }}" class="category-link">
-      <span>Ver publicações</span>
-      <i class="fas fa-arrow-right" aria-hidden="true"></i>
-    </a>
-  </div>
+<section class="grid">
+  {% capture tutoriais_badge %}{{ tutoriais_posts.size }} posts{% endcapture %}
+  {% include card.html
+    url="/categorias/tutoriais/"
+    title="Tutoriais"
+    icon="🛠️"
+    badge=tutoriais_badge
+    description="Passo a passo prático, guias de configuração de ambiente, código de ponta a ponta e roteiros técnicos para implementação no mundo real."
+    action_text="Ver publicações"
+  %}
 
-  <div class="category-card">
-    <div class="category-card-header">
-      <div class="category-title-group">
-        <div class="category-icon-box">📰</div>
-        <h3 class="category-title">
-          <a href="{{ '/categorias/artigos/' | relative_url }}">Artigos</a>
-        </h3>
-      </div>
-      <span class="category-count-badge">{{ artigos_posts.size }} posts</span>
-    </div>
-    <p class="category-desc">
-      Análises técnicas aprofundadas sobre arquitetura de sistemas, protocolos, segurança da informação, história da tecnologia e boas práticas de engenharia.
-    </p>
-    <a href="{{ '/categorias/artigos/' | relative_url }}" class="category-link">
-      <span>Ver publicações</span>
-      <i class="fas fa-arrow-right" aria-hidden="true"></i>
-    </a>
-  </div>
+  {% capture artigos_badge %}{{ artigos_posts.size }} posts{% endcapture %}
+  {% include card.html
+    url="/categorias/artigos/"
+    title="Artigos"
+    icon="📰"
+    badge=artigos_badge
+    description="Análises técnicas aprofundadas sobre arquitetura de sistemas, protocolos, segurança da informação, história da tecnologia e boas práticas de engenharia."
+    action_text="Ver publicações"
+  %}
 
-  <div class="category-card">
-    <div class="category-card-header">
-      <div class="category-title-group">
-        <div class="category-icon-box">💡</div>
-        <h3 class="category-title">
-          <a href="{{ '/categorias/ensaios/' | relative_url }}">Ensaios</a>
-        </h3>
-      </div>
-      <span class="category-count-badge">{{ ensaios_posts.size }} posts</span>
-    </div>
-    <p class="category-desc">
-      Textos reflexivos, conceituais e filosóficos explorando inteligência artificial, cultura open source, matemática aplicada e os bastidores do desenvolvimento.
-    </p>
-    <a href="{{ '/categorias/ensaios/' | relative_url }}" class="category-link">
-      <span>Ver publicações</span>
-      <i class="fas fa-arrow-right" aria-hidden="true"></i>
-    </a>
-  </div>
+  {% capture ensaios_badge %}{{ ensaios_posts.size }} posts{% endcapture %}
+  {% include card.html
+    url="/categorias/ensaios/"
+    title="Ensaios"
+    icon="💡"
+    badge=ensaios_badge
+    description="Textos reflexivos, conceituais e filosóficos explorando inteligência artificial, cultura open source, matemática aplicada e os bastidores do desenvolvimento."
+    action_text="Ver publicações"
+  %}
 
-  <div class="category-card">
-    <div class="category-card-header">
-      <div class="category-title-group">
-        <div class="category-icon-box">☕</div>
-        <h3 class="category-title">
-          <a href="{{ '/categorias/cronicas/' | relative_url }}">Crônicas</a>
-        </h3>
-      </div>
-      <span class="category-count-badge">{{ cronicas_posts.size }} posts</span>
-    </div>
-    <p class="category-desc">
-      Pausas do código com narrativas cotidianas, causos de escritório, observações sobre comportamento humano e pitadas de bom humor.
-    </p>
-    <a href="{{ '/categorias/cronicas/' | relative_url }}" class="category-link">
-      <span>Ver publicações</span>
-      <i class="fas fa-arrow-right" aria-hidden="true"></i>
-    </a>
-  </div>
-</div>
+  {% capture cronicas_badge %}{{ cronicas_posts.size }} posts{% endcapture %}
+  {% include card.html
+    url="/categorias/cronicas/"
+    title="Crônicas"
+    icon="☕"
+    badge=cronicas_badge
+    description="Pausas do código com narrativas cotidianas, causos de escritório, observações sobre comportamento humano e pitadas de bom humor."
+    action_text="Ver publicações"
+  %}
+</section>

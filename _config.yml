@@ -33,16 +33,17 @@ plugins:
 gfm_admonitions:
   inject_css: false
 
-sass:
-  quiet_deps: true
+#sass:
+#  quiet_deps: true
 
 kramdown:
   input: GFM
   smart_quotes: ["apos", "apos", "quot", "quot"]
+  toc_levels: 2..3
 
 pagination:
   enabled: true
-  per_page: 3
+  per_page: 5
   permalink: '/page/:num/'
   title: ':title - Página :num'
   limit: 0
@@ -68,9 +69,8 @@ autopages:
     slugify:
       mode: 'latin'
 
-# Configurações do tema (originalmente Minima)
-minima:
-  skin: auto
+# Configurações do blog (antigo bloco do minima)
+blog:
   nav_pages:
     - categorias.html
     - tutoriais.html

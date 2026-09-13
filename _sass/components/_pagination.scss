@@ -1,0 +1,50 @@
+/* Paginação (Pager) */
+.pager {
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.pagination {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.pagination li {
+  display: inline-block;
+  margin: 0 2px;
+}
+
+.pagination li a,
+.pagination li div {
+  display: inline-block;
+  min-width: 41px;
+  padding: 10px 12px;
+  text-align: center;
+  box-sizing: border-box;
+  text-decoration: none !important;
+  color: var(--pico-color);
+  border: 1px solid transparent;
+  border-radius: var(--pico-border-radius);
+  transition: all 0.2s ease;
+}
+
+.pagination li a {
+  color: var(--pico-primary);
+}
+
+.pagination li a:hover {
+  border-color: var(--pico-primary);
+  background-color: var(--pico-form-element-background);
+}
+
+.pagination li div.current-page {
+  font-weight: bold;
+  color: var(--pico-h1-color);
+}
+
+.pagination li div.pager-edge {
+  color: var(--pico-muted-color);
+}

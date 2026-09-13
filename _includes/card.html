@@ -1,0 +1,29 @@
+<article>
+  <header>
+    <span class="category-icon">
+      {%- if include.icon contains "fa-" or include.icon contains "fab " or include.icon contains "fas " or include.icon contains "far " -%}
+        <i class="{{ include.icon }}" aria-hidden="true"></i>
+      {%- else -%}
+        {{ include.icon | default: "📁" }}
+      {%- endif -%}
+    </span>
+    <hgroup>
+      <h3>
+        <a href="{{ include.url | relative_url }}">{{ include.title }}</a>
+      </h3>
+      {%- assign badge_text = include.badge | default: include.count -%}
+      {%- if badge_text and badge_text != "" -%}
+        <small>{{ badge_text | strip }}</small>
+      {%- endif -%}
+    </hgroup>
+  </header>
+
+  <p>{{ include.description | default: include.desc }}</p>
+
+  <footer>
+    <a href="{{ include.url | relative_url }}">
+      <span>{{ include.action_text | default: "Ver publicações" }}</span>
+      <i class="fas fa-arrow-right" aria-hidden="true"></i>
+    </a>
+  </footer>
+</article>

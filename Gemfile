@@ -11,3 +11,8 @@ gem "jekyll-paginate-v2", "~> 3.0"
 gem "jekyll-gfm-admonitions", "~> 1.4"
 gem "kramdown-parser-gfm", "~> 1.1"
 gem "webrick", "~> 1.9"
+
+group :test do
+  gem "html-proofer", "~> 5.0"
+end
+

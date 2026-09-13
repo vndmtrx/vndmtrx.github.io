@@ -3,10 +3,31 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   {%- seo -%}
-  <link rel="stylesheet" href="{{ '/assets/css/open-props.min.css' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/css/pico.min.css' | relative_url }}">
   <link id="main-stylesheet" rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
   {%- feed_meta -%}
 
+  {%- if page.math -%}
+    <link rel="stylesheet" href="{{ '/assets/katex/katex.min.css' | relative_url }}">
+    <script defer src="{{ '/assets/katex/katex.min.js' | relative_url }}"></script>
+    <script defer src="{{ '/assets/katex/auto-render.min.js' | relative_url }}" onload="renderKatexMath();"></script>
+    <script>
+      function renderKatexMath() {
+        if (document.body && typeof renderMathInElement === 'function') {
+          renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+          });
+        }
+      }
+      document.addEventListener('DOMContentLoaded', renderKatexMath);
+    </script>
+  {%- endif -%}
 
   {%- include custom-head.html -%}
   

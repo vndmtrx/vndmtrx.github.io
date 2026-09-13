@@ -6,7 +6,7 @@ permalink: /about/
 ---
 
 ### **エドワード**
-{: .jp-float}
+{: .jp-float aria-hidden="true"}
 
 Dizem que ele nasceu onde o sinal de internet ainda é lenda e o céu tem cheiro de poeira e relâmpago, numa terra de horizontes retos e conexões tortas. Filho de Goiás e da interwebs, cresceu entre pasto seco, protocolos de rede e a certeza de que o mundo funciona melhor quando se entende os próprios logs.
 
