@@ -1,0 +1,173 @@
+/* ==========================================================================
+   Grades e Cards Semânticos (Pico CSS)
+   ========================================================================== */
+
+/* Ajuste fino da Grade para 2 Colunas */
+.grid {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+}
+
+/* Card Semântico (<article> dentro de .grid) */
+.grid article {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+  height: 100%;
+  border-radius: 14px;
+  border: 1px solid var(--pico-muted-border-color);
+  background-color: var(--pico-card-background-color, var(--pico-background-color));
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+  padding: 1.5rem 1.6rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  position: relative;
+}
+
+.grid article:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+  border-color: var(--pico-primary);
+}
+
+[data-theme="dark"] .grid article {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .grid article:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  border-color: var(--pico-primary);
+}
+
+/* Cabeçalho do Card (<header>) */
+.grid article > header {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  background: transparent;
+  border-bottom: none;
+  padding: 0;
+  margin-bottom: 1.15rem;
+}
+
+/* Caixa de Ícone no Cabeçalho */
+.grid article .category-icon {
+  width: 3.4rem;
+  height: 3.4rem;
+  min-width: 3.4rem;
+  min-height: 3.4rem;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background-color: rgba(128, 128, 128, 0.08);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.grid article .category-icon i {
+  font-size: 1.4rem;
+  color: var(--pico-primary);
+}
+
+[data-theme="dark"] .grid article .category-icon {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+/* Grupo de Título e Quantidade (<hgroup>) */
+.grid article > header hgroup {
+  margin-bottom: 0 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex-grow: 1;
+}
+
+/* Título (<h3> dentro de <header>) */
+.grid article > header h3 {
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  margin: 0 !important;
+  line-height: 1.25 !important;
+  color: var(--pico-h1-color) !important;
+}
+
+.grid article > header h3 a {
+  color: inherit !important;
+  text-decoration: none !important;
+  transition: color 0.2s ease;
+}
+
+.grid article > header h3 a:hover {
+  color: var(--pico-primary) !important;
+}
+
+/* Badge de Contagem (<small> dentro de <hgroup>) */
+.grid article > header hgroup small {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--pico-muted-color);
+  background-color: rgba(128, 128, 128, 0.08);
+  border-radius: 50px;
+  padding: 0.15rem 0.6rem;
+  letter-spacing: 0.2px;
+  align-self: flex-start;
+  display: inline-block;
+  line-height: 1.4;
+}
+
+[data-theme="dark"] .grid article > header hgroup small {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+/* Descrição (<p>) */
+.grid article > p {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--pico-muted-color);
+  margin: 0 0 1.5rem 0;
+  flex-grow: 1;
+}
+
+/* Rodapé do Card (<footer>) */
+.grid article > footer {
+  background: transparent;
+  border-top: none;
+  padding: 0;
+  margin-top: auto;
+}
+
+.grid article > footer a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--pico-primary) !important;
+  text-decoration: none !important;
+  transition: color 0.2s ease;
+}
+
+.grid article > footer a:hover {
+  color: var(--pico-primary-hover) !important;
+  text-decoration: none !important;
+}
+
+.grid article > footer a i {
+  font-size: 0.85rem;
+  transition: transform 0.2s ease;
+}
+
+.grid article:hover > footer a i,
+.grid article > footer a:hover i {
+  transform: translateX(4px);
+}
