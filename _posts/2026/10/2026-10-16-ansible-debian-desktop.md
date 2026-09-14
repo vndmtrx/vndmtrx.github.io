@@ -83,96 +83,7 @@ fi
 
 O `pipx` cria um ambiente virtual isolado para o Ansible dentro de `~/.local/share/pipx/venvs/ansible` e expõe apenas os executáveis necessários na minha pasta `~/.local/bin`. A raiz do sistema operacional continua intocada, o Ansible ganha acesso total aos seus módulos modernos e eu não corro o menor risco de quebrar o Python do sistema.
 
-## Day-0 e Day-1: A fundação com Ventoy e Calamares
-
-Antes de o Ansible entrar em cena no Day-2 para orquestrar o espaço de usuário, existe uma etapa fundamental que a maioria das pessoas negligencia: como a máquina nasce.
-
-Se a sua partição raiz for criada com escolhas ruins de particionamento, alinhamento de blocos ou criptografia mal calibrada, nenhum playbook do mundo vai consertar o estrago depois.
-
-Quem acompanhou o artigo sobre {% include post-ref.html slug="otimizacao-boot-luks" text="otimização do boot criptografado com LUKS" %} deve lembrar da via-crúcis que enfrentei para consertar a quente uma instalação antiga do Debian: matar keyslots fora de ordem na unha, redimensionar partições ext4 em produção, desativar partição física de swap e reconfigurar crypttab no braço. O instalador padrão do Debian havia deixado a máquina em LUKS1 com milhões de iterações de hash, e tentar converter um sistema rodando para LUKS2 com Btrfs é pedir para ter dor de cabeça.
-
-Na época, eu prometi que traria uma solução definitiva. Pois bem: em vez de fazer cirurgias pós-parto no sistema operacional, a resposta é eliminar todos esses "erros" de fábrica diretamente no parto da máquina através de uma instalação 100% declarativa e automatizada.
-
-A minha estratégia divide a construção da estação de trabalho em duas fronteiras muito bem delimitadas:
-1. **Day-0 / Day-1 (Calamares + Ventoy):** Baixo nível, particionamento Btrfs com subvolumes estruturados, criptografia LUKS2 otimizada para o estágio inicial do GRUB (PBKDF2 em 500ms), parâmetros de kernel para NVMe sem filas intermediárias, zswap e entrega do repositório no `$HOME`.
-2. **Day-2 (Ansible via `pipx`):** Espaço de usuário idempotente, dotfiles, runtimes de desenvolvimento, Flatpaks, contêineres e configurações atômicas do GNOME.
-
-Para não depender do instalador texto padrão e nem fazer particionamento manual no `fdisk` a cada formatação, utilizo a imagem Live oficial do Debian com o instalador **Calamares** [^11] plugado em um pendrive com **Ventoy** [^12] [^13].
-
-A estrutura no pendrive de dados (`exFAT`) organiza a ISO e os manifestos declarativos de automação:
-
-```text
-/mnt/ventoy/
-├── debian-live-13.7.0-amd64-gnome.iso
-└── scripts/
-    ├── apply-calamares.sh
-    ├── ansible-debian-desktop/        <-- Clone local do repo
-    └── calamares/
-        ├── settings.conf
-        └── modules/
-            ├── locale.conf
-            ├── keyboard.conf
-            ├── users.conf
-            ├── partition.conf
-            ├── fstab.conf
-            └── shellprocess-ansible.conf
-```
-
-### As decisões de baixo nível: Btrfs, LUKS2 e NVMe
-
-Cada arquivo dessa árvore resolve um gargalo histórico de desempenho e usabilidade:
-
-* **Btrfs com subvolumes `@` dedicados [^14]:** Separação estrita entre raiz (`/@`), dados do usuário (`/@home`), auditoria do Journald (`/@log`) e snapshots (`/@snapshots`). O isolamento de `/@log` é vital: se você precisar fazer um rollback atômico do sistema operacional após um incidente, o histórico de logs do sistema não é apagado junto com a raiz antiga.
-* **LUKS2 com PBKDF2 em 500ms [^15]:** O padrão moderno do LUKS2 utiliza a função de derivação Argon2id. Ela é excepcional contra ataques de força bruta em GPU, mas exige tanta memória que o estágio inicial do GRUB leva vários segundos mastigando CPU em *single-core* apenas para descriptografar o cabeçalho. Ao calibrar o PBKDF2 para 500 milissegundos no módulo `partition.conf`, a descriptografia no boot ocorre em frações de segundo.
-* **NVMe em modo direto no `crypttab`:** A inclusão das flags `no-read-workqueue,no-write-workqueue,discard` instrui o subsistema dm-crypt a despachar operações de I/O diretamente para as filas de hardware do SSD NVMe, eliminando filas intermediárias de software do kernel.
-* **Zero swap em disco e compressão em RAM:** Eliminação total de partições físicas de swap no SSD. Toda a paginação de memória é realizada diretamente na memória RAM com compressão em tempo real via algoritmo `zstd`, garantindo máxima responsividade e zero desgaste de I/O no NVMe.
-* **Escalonador NVMe `none` e boot limpo:** Uma regra de `udev` força o bypass de escalonadores em software (`bfq`, `mq-deadline`), entregando as requisições direto às filas PCIe. Além disso, removo o `splash`, reduzo o `GRUB_TIMEOUT=1`, mascaro o `plymouth-quit-wait.service` e desativo o `NetworkManager-wait-online.service`.
-
-### O script mestre de preparação da mídia
-
-No meu computador de trabalho, o script `setup-ventoy.sh` formata o pendrive Ventoy, despeja todos os manifestos de configuração e sincroniza a cópia local do repositório Ansible:
-
-```bash
-#!/usr/bin/env bash
-set -euo pipefail
-
-echo "==> Montando partição de dados do Ventoy (/dev/sda1)..."
-sudo mkdir -p /mnt/ventoy
-sudo mount /dev/sda1 /mnt/ventoy 2>/dev/null || true
-
-echo "==> Criando árvore de diretórios..."
-sudo mkdir -p /mnt/ventoy/scripts/calamares/modules
-
-# Injetor auxiliar executado dentro do Debian Live
-sudo tee /mnt/ventoy/scripts/apply-calamares.sh > /dev/null << 'EOF'
-#!/usr/bin/env bash
-set -euo pipefail
-
-VENTOY_DEV=$(blkid -L Ventoy || echo "/dev/disk/by-label/Ventoy")
-mkdir -p /mnt/ventoy
-mount "$VENTOY_DEV" /mnt/ventoy 2>/dev/null || true
-
-echo "Injetando configurações customizadas no Debian Live..."
-sudo cp -r /mnt/ventoy/scripts/calamares/modules/* /etc/calamares/modules/
-sudo cp /mnt/ventoy/scripts/calamares/settings.conf /etc/calamares/settings.conf
-
-echo "Iniciando Calamares em modo verbose..."
-sudo calamares -d
-EOF
-sudo chmod +x /mnt/ventoy/scripts/apply-calamares.sh
-```
-*Trecho de abertura do script mestre populando a mídia do Ventoy.*
-
-Dentro da configuração do Calamares, o módulo `shellprocess-ansible.conf` executa no ambiente `chroot` antes do primeiro boot, cuidando de injetar as flags do `crypttab`, as regras de sysctl, os repositórios oficiais e já copiando a pasta do repositório para `~/du/dev/github/ansible-debian-desktop`, com permissões corrigidas para o UID 1000 e um par de chaves SSH `id_ed25519` novo já gerado.
-
-Quando a instalação gráfica do Calamares termina, reinicio o computador, digito a senha do disco, logo no GNOME e rodo:
-
-```bash
-cd ~/du/dev/github/ansible-debian-desktop
-./bootstrap.sh
-```
-
-A fundação de hardware e armazenamento já nasceu perfeita. O Ansible assume a partir daqui.
+Além disso, transformei o meu `bootstrap.sh` em um painel de diagnóstico da máquina antes de disparar o playbook: ele checa se deixei instaladores manuais esperando na pasta de Downloads, confere versões de runtimes instaladas no host e cronometra o tempo exato do provisionamento.
 
 ## O fim da era dos disquetes: firmware e BIOS via fwupd no Debian
 
@@ -680,6 +591,78 @@ Se o meu laptop cair no chão hoje ou o SSD sofrer uma falha catastrófica, o im
 Quando retorno, meu terminal está configurado com ferramentas modernas (`eza`, `btop`, `tailspin`, `fzf`), o firewall e o OpenSSH estão ativos com regras restritivas, os contêineres Docker e o ambiente de virtualização KVM estão operacionais, o Java 26 e o Elixir 1.20 estão prontos para compilar código, o pCloud e o Tailscale estão sincronizando e as minhas doze extensões do GNOME 48 estão exatamente nas mesmas posições de tela de sempre.
 
 Se você também já passou pela fase de compilar distros no braço e hoje só quer paz de espírito e estabilidade, recomendo fortemente fazer o mesmo exercício. Dá trabalho construir a primeira vez? Dá um trabalhão tremendo. Mas a sensação de ver o terminal subir o seu ambiente de trabalho perfeito do zero com um único comando é uma das coisas mais gratificantes que a cultura DevOps pode proporcionar.
+
+## Bônus para viciados em automação: o Day-0 com Ventoy e Calamares
+
+Até aqui, exploramos a orquestração do espaço de usuário com o Ansible no Day-2. Mas para quem é viciado em automação de verdade (e não suporta a ideia de ter que particionar disco na mão), fica a pergunta: como a máquina nasce antes do Ansible assumir?
+
+Se a sua partição raiz for criada com escolhas ruins de particionamento, alinhamento de blocos ou criptografia mal calibrada, nenhum playbook do mundo vai consertar o estrago depois.
+
+Quem acompanhou o artigo sobre {% include post-ref.html slug="otimizacao-boot-luks" text="otimização do boot criptografado com LUKS" %} deve lembrar da via-crúcis que enfrentei para consertar a quente uma instalação antiga do Debian: matar keyslots fora de ordem na unha, redimensionar partições a quente e reconfigurar crypttab no braço. O instalador padrão do Debian havia deixado a máquina em LUKS1 com milhões de iterações de hash, e tentar converter um sistema rodando para LUKS2 com Btrfs é pedir para ter dor de cabeça.
+
+A resposta para eliminar esses "erros" de fábrica diretamente no parto da máquina é dividir o provisionamento em duas fronteiras bem delimitadas:
+1. **Day-0 / Day-1 (Calamares + Ventoy):** Baixo nível, particionamento Btrfs com subvolumes estruturados, criptografia LUKS2 otimizada para o estágio inicial do GRUB (PBKDF2 em 500ms), parâmetros de kernel para NVMe sem filas intermediárias, zswap e entrega do repositório no `$HOME`.
+2. **Day-2 (Ansible via `pipx`):** Espaço de usuário idempotente, dotfiles, runtimes de desenvolvimento, Flatpaks, contêineres e configurações atômicas do GNOME.
+
+> [!NOTE] A Inspiração no cloud-init e o Porquê do Ventoy
+> Quem trabalha com infraestrutura em nuvem sabe como o *cloud-init* é libertador: você define um manifesto declarativo e a máquina virtual já nasce com partições alinhadas, chaves SSH injetadas e pacotes essenciais prontos. Eu queria exatamente essa mesma previsibilidade e padronização para o meu computador físico desde o primeiro minuto de vida, sem o trabalho de manter servidores PXE ou compilar ISOs customizadas. A união do Ventoy com o Calamares foi a forma mais simples e elegante que encontrei para trazer a experiência de um "cloud-init no bare metal" para o meu dia a dia.
+
+Para não depender do instalador texto padrão e nem fazer particionamento manual no `fdisk` a cada formatação, utilizo a imagem Live oficial do Debian com o instalador **Calamares** [^11] plugado em um pendrive com **Ventoy** [^12] [^13].
+
+A estrutura no pendrive de dados (`exFAT`) organiza a ISO e os manifestos declarativos de automação:
+
+```text
+/mnt/ventoy/
+├── debian-live-13.7.0-amd64-gnome.iso
+└── scripts/
+    ├── apply-calamares.sh
+    ├── ansible-debian-desktop/        <-- Clone local do repo
+    └── calamares/
+        ├── settings.conf
+        └── modules/
+            ├── locale.conf
+            ├── keyboard.conf
+            ├── users.conf
+            ├── partition.conf
+            ├── fstab.conf
+            └── shellprocess-ansible.conf
+```
+
+### As decisões de baixo nível: Btrfs, LUKS2 e NVMe
+
+Cada arquivo dessa árvore resolve um gargalo histórico de desempenho e usabilidade:
+
+* **Btrfs com subvolumes `@` dedicados [^14]:** Separação estrita entre raiz (`/@`), dados do usuário (`/@home`), auditoria do Journald (`/@log`) e snapshots (`/@snapshots`). O isolamento de `/@log` é vital: se você precisar fazer um rollback atômico do sistema operacional após um incidente, o histórico de logs do sistema não é apagado junto com a raiz antiga.
+* **LUKS2 com PBKDF2 em 500ms [^15]:** O padrão moderno do LUKS2 utiliza a função de derivação Argon2id. Ela é excepcional contra ataques de força bruta em GPU, mas exige tanta memória que o estágio inicial do GRUB leva vários segundos mastigando CPU em *single-core* apenas para descriptografar o cabeçalho. Ao calibrar o PBKDF2 para 500 milissegundos no módulo `partition.conf`, a descriptografia no boot ocorre em frações de segundo.
+* **NVMe em modo direto no `crypttab`:** A inclusão das flags `no-read-workqueue,no-write-workqueue,discard` instrui o subsistema dm-crypt a despachar operações de I/O diretamente para as filas de hardware do SSD NVMe, eliminando filas intermediárias de software do kernel.
+* **Zero swap em disco e compressão em RAM:** Eliminação total de partições físicas de swap no SSD. Toda a paginação de memória é realizada diretamente na memória RAM com compressão em tempo real via algoritmo `zstd`, garantindo máxima responsividade e zero desgaste de I/O no NVMe.
+* **Escalonador NVMe `none` e boot limpo:** Uma regra de `udev` força o bypass de escalonadores em software (`bfq`, `mq-deadline`), entregando as requisições direto às filas PCIe. Além disso, removo o `splash`, reduzo o `GRUB_TIMEOUT=1`, mascaro o `plymouth-quit-wait.service` e desativo o `NetworkManager-wait-online.service`.
+
+> [!NOTE] Do zram ao zswap: Por que mudamos e como fica a performance?
+> Quem leu o artigo de otimização de boot deve lembrar que usamos o pacote `zram-tools` criando `/dev/zram0`. Para um sistema que já está rodando em produção, o **zram** é imbatível na praticidade porque você instala via APT e resolve o problema a quente sem encostar no bootloader.
+> 
+> Já em uma instalação do zero (Day-0), o **zswap** é arquiteturalmente superior:
+> * **Zero daemons no userspace:** O zswap é um módulo nativo do kernel (`zswap.enabled=1`). Ele já sobe operando no primeiro estágio de boot sem depender de daemons do systemd ou de criar drivers de bloco virtuais.
+> * **Performance e latência:** Enquanto o zram precisa emular um dispositivo de disco em memória, o zswap intercepta as páginas diretamente na árvore de gerenciamento de memória do kernel. Casado com o alocador `zsmalloc` (que agrupa páginas comprimidas para eliminar fragmentação de RAM) e o algoritmo `zstd`, a compressão e a recuperação de dados ocorrem em nanossegundos com menor overhead de CPU.
+
+### O fluxo operacional do Day-0
+
+Para automatizar toda essa preparação de mídia, criei o script `setup-ventoy.sh` (disponível na raiz do repositório parceiro). Ele monta a partição de dados do pendrive, despeja os manifestos do Calamares e sincroniza a cópia local do repositório Ansible.
+
+Dentro da configuração do Calamares, o módulo `shellprocess-ansible.conf` executa no ambiente `chroot` antes do primeiro boot, cuidando de injetar as flags do `crypttab`, as regras de sysctl, os repositórios oficiais e já copiando a pasta do repositório para `~/du/dev/github/ansible-debian-desktop`, com permissões corrigidas para o UID 1000 e um par de chaves SSH `id_ed25519` novo já gerado.
+
+O processo de instalação vira um passeio no parque:
+1. **Boot pelo Ventoy:** Inicialização da mídia Live no notebook selecionando a ISO do Debian.
+2. **Injeção do Calamares:** Execução do script auxiliar no Live para carregar os módulos no instalador.
+3. **Instalação Gráfica:** Teclado ABNT2, localização e usuário já vêm pré-selecionados. Basta marcar "Apagar disco", "Criptografar sistema" e definir a senha mestra.
+4. **Primeiro Boot e Transição para o Day-2:**
+
+```bash
+cd ~/du/dev/github/ansible-debian-desktop
+./bootstrap.sh
+```
+
+A fundação de hardware e armazenamento já nasceu perfeita. O Ansible assume a partir daqui.
 
 ## Referências
 
