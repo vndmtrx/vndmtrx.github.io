@@ -632,6 +632,8 @@ Por fim: **swap em disco para quem tem RAM de sobra é puro desperdício**. Se v
 
 Agora o notebook finalmente se comporta como um computador moderno: seguro quando desligado, rápido quando ligado, e sem me fazer perder um minuto de vida olhando pra tela preta.
 
+Consertar tudo isso em um sistema já rodando foi uma excelente jornada de aprendizado, mas convenhamos: ter que matar keyslots na unha, redimensionar partições a quente e caçar configurações herdadas pós-instalação dá trabalho demais. A solução definitiva de verdade não é ficar fazendo cirurgia corretiva depois que a máquina nasce torta, mas garantir que ela já nasça calibrada desde o particionamento e com provisionamento automatizado: e é exatamente sobre essa arquitetura de instalação que vamos conversar em breve no {% include post-ref.html slug="ansible-debian-desktop" text="guia de automação do Debian com Ansible" %}.
+
 ## Colinha rápida para a próxima formatação
 
 Para não ter que caçar comandos espalhados pelo artigo quando eu formatar o notebook novamente, estruturei o roteiro executivo consolidado no padrão **Análise -> Atuação -> Verificação**:

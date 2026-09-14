@@ -83,7 +83,96 @@ fi
 
 O `pipx` cria um ambiente virtual isolado para o Ansible dentro de `~/.local/share/pipx/venvs/ansible` e expõe apenas os executáveis necessários na minha pasta `~/.local/bin`. A raiz do sistema operacional continua intocada, o Ansible ganha acesso total aos seus módulos modernos e eu não corro o menor risco de quebrar o Python do sistema.
 
-Além disso, transformei o meu `bootstrap.sh` em um painel de diagnóstico da máquina antes de disparar o playbook: ele checa se deixei instaladores manuais esperando na pasta de Downloads, confere versões de runtimes instaladas no host e cronometra o tempo exato do provisionamento.
+## Day-0 e Day-1: A fundação com Ventoy e Calamares
+
+Antes de o Ansible entrar em cena no Day-2 para orquestrar o espaço de usuário, existe uma etapa fundamental que a maioria das pessoas negligencia: como a máquina nasce.
+
+Se a sua partição raiz for criada com escolhas ruins de particionamento, alinhamento de blocos ou criptografia mal calibrada, nenhum playbook do mundo vai consertar o estrago depois.
+
+Quem acompanhou o artigo sobre {% include post-ref.html slug="otimizacao-boot-luks" text="otimização do boot criptografado com LUKS" %} deve lembrar da via-crúcis que enfrentei para consertar a quente uma instalação antiga do Debian: matar keyslots fora de ordem na unha, redimensionar partições ext4 em produção, desativar partição física de swap e reconfigurar crypttab no braço. O instalador padrão do Debian havia deixado a máquina em LUKS1 com milhões de iterações de hash, e tentar converter um sistema rodando para LUKS2 com Btrfs é pedir para ter dor de cabeça.
+
+Na época, eu prometi que traria uma solução definitiva. Pois bem: em vez de fazer cirurgias pós-parto no sistema operacional, a resposta é eliminar todos esses "erros" de fábrica diretamente no parto da máquina através de uma instalação 100% declarativa e automatizada.
+
+A minha estratégia divide a construção da estação de trabalho em duas fronteiras muito bem delimitadas:
+1. **Day-0 / Day-1 (Calamares + Ventoy):** Baixo nível, particionamento Btrfs com subvolumes estruturados, criptografia LUKS2 otimizada para o estágio inicial do GRUB (PBKDF2 em 500ms), parâmetros de kernel para NVMe sem filas intermediárias, zswap e entrega do repositório no `$HOME`.
+2. **Day-2 (Ansible via `pipx`):** Espaço de usuário idempotente, dotfiles, runtimes de desenvolvimento, Flatpaks, contêineres e configurações atômicas do GNOME.
+
+Para não depender do instalador texto padrão e nem fazer particionamento manual no `fdisk` a cada formatação, utilizo a imagem Live oficial do Debian com o instalador **Calamares** [^11] plugado em um pendrive com **Ventoy** [^12] [^13].
+
+A estrutura no pendrive de dados (`exFAT`) organiza a ISO e os manifestos declarativos de automação:
+
+```text
+/mnt/ventoy/
+├── debian-live-13.7.0-amd64-gnome.iso
+└── scripts/
+    ├── apply-calamares.sh
+    ├── ansible-debian-desktop/        <-- Clone local do repo
+    └── calamares/
+        ├── settings.conf
+        └── modules/
+            ├── locale.conf
+            ├── keyboard.conf
+            ├── users.conf
+            ├── partition.conf
+            ├── fstab.conf
+            └── shellprocess-ansible.conf
+```
+
+### As decisões de baixo nível: Btrfs, LUKS2 e NVMe
+
+Cada arquivo dessa árvore resolve um gargalo histórico de desempenho e usabilidade:
+
+* **Btrfs com subvolumes `@` dedicados [^14]:** Separação estrita entre raiz (`/@`), dados do usuário (`/@home`), auditoria do Journald (`/@log`) e snapshots (`/@snapshots`). O isolamento de `/@log` é vital: se você precisar fazer um rollback atômico do sistema operacional após um incidente, o histórico de logs do sistema não é apagado junto com a raiz antiga.
+* **LUKS2 com PBKDF2 em 500ms [^15]:** O padrão moderno do LUKS2 utiliza a função de derivação Argon2id. Ela é excepcional contra ataques de força bruta em GPU, mas exige tanta memória que o estágio inicial do GRUB leva vários segundos mastigando CPU em *single-core* apenas para descriptografar o cabeçalho. Ao calibrar o PBKDF2 para 500 milissegundos no módulo `partition.conf`, a descriptografia no boot ocorre em frações de segundo.
+* **NVMe em modo direto no `crypttab`:** A inclusão das flags `no-read-workqueue,no-write-workqueue,discard` instrui o subsistema dm-crypt a despachar operações de I/O diretamente para as filas de hardware do SSD NVMe, eliminando filas intermediárias de software do kernel.
+* **Zero swap em disco e compressão em RAM:** Eliminação total de partições físicas de swap no SSD. Toda a paginação de memória é realizada diretamente na memória RAM com compressão em tempo real via algoritmo `zstd`, garantindo máxima responsividade e zero desgaste de I/O no NVMe.
+* **Escalonador NVMe `none` e boot limpo:** Uma regra de `udev` força o bypass de escalonadores em software (`bfq`, `mq-deadline`), entregando as requisições direto às filas PCIe. Além disso, removo o `splash`, reduzo o `GRUB_TIMEOUT=1`, mascaro o `plymouth-quit-wait.service` e desativo o `NetworkManager-wait-online.service`.
+
+### O script mestre de preparação da mídia
+
+No meu computador de trabalho, o script `setup-ventoy.sh` formata o pendrive Ventoy, despeja todos os manifestos de configuração e sincroniza a cópia local do repositório Ansible:
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "==> Montando partição de dados do Ventoy (/dev/sda1)..."
+sudo mkdir -p /mnt/ventoy
+sudo mount /dev/sda1 /mnt/ventoy 2>/dev/null || true
+
+echo "==> Criando árvore de diretórios..."
+sudo mkdir -p /mnt/ventoy/scripts/calamares/modules
+
+# Injetor auxiliar executado dentro do Debian Live
+sudo tee /mnt/ventoy/scripts/apply-calamares.sh > /dev/null << 'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+
+VENTOY_DEV=$(blkid -L Ventoy || echo "/dev/disk/by-label/Ventoy")
+mkdir -p /mnt/ventoy
+mount "$VENTOY_DEV" /mnt/ventoy 2>/dev/null || true
+
+echo "Injetando configurações customizadas no Debian Live..."
+sudo cp -r /mnt/ventoy/scripts/calamares/modules/* /etc/calamares/modules/
+sudo cp /mnt/ventoy/scripts/calamares/settings.conf /etc/calamares/settings.conf
+
+echo "Iniciando Calamares em modo verbose..."
+sudo calamares -d
+EOF
+sudo chmod +x /mnt/ventoy/scripts/apply-calamares.sh
+```
+*Trecho de abertura do script mestre populando a mídia do Ventoy.*
+
+Dentro da configuração do Calamares, o módulo `shellprocess-ansible.conf` executa no ambiente `chroot` antes do primeiro boot, cuidando de injetar as flags do `crypttab`, as regras de sysctl, os repositórios oficiais e já copiando a pasta do repositório para `~/du/dev/github/ansible-debian-desktop`, com permissões corrigidas para o UID 1000 e um par de chaves SSH `id_ed25519` novo já gerado.
+
+Quando a instalação gráfica do Calamares termina, reinicio o computador, digito a senha do disco, logo no GNOME e rodo:
+
+```bash
+cd ~/du/dev/github/ansible-debian-desktop
+./bootstrap.sh
+```
+
+A fundação de hardware e armazenamento já nasceu perfeita. O Ansible assume a partir daqui.
 
 ## O fim da era dos disquetes: firmware e BIOS via fwupd no Debian
 
@@ -604,3 +693,8 @@ Se você também já passou pela fase de compilar distros no braço e hoje só q
 [^8]: **gnome-extensions-cli (gext)** {*GitHub Repository*} ([Link](https://github.com/essembeh/gnome-extensions-cli))
 [^9]: **Ansible Variable Precedence: Where Should I Put A Variable?** {*Ansible Documentation*} ([Link](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html#understanding-variable-precedence))
 [^10]: **Linux Vendor Firmware Service (LVFS) & fwupd** {*Linux Foundation*} ([Link](https://fwupd.org/))
+[^11]: **Calamares - The Universal Installer Framework** {*Calamares Team*} ([Link](https://calamares.io/))
+[^12]: **Ventoy - A New Bootable USB Solution** {*Ventoy Project*} ([Link](https://www.ventoy.net/))
+[^13]: **Ventoy User Manual: Partition Layout and Documentation Guide** {*Ventoy Project*} ([Link](https://www.ventoy.net/en/doc_start.html))
+[^14]: **Btrfs Documentation: Subvolumes and Sysadmin Guide** {*Btrfs Wiki*} ([Link](https://btrfs.readthedocs.io/))
+[^15]: **LUKS2 and Cryptsetup Performance Optimization** {*GitLab Cryptsetup Wiki*} ([Link](https://gitlab.com/cryptsetup/cryptsetup/-/wikis/FrequentlyAskedQuestions))
