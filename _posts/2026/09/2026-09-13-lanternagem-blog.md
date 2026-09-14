@@ -5,6 +5,7 @@ subtitle: "Como joguei fora o tema padrão do GitHub Pages, eliminei CDNs extern
 author:
   - "Eduardo N. S. R."
 date: 2026-09-13 20:00:00 GMT-3
+modified_date: 2026-09-14 00:02:00 GMT-3
 permalink: /posts/lanternagem-blog/
 tags: [Web, CSS, Jekyll, Minimalismo]
 category: Artigos
