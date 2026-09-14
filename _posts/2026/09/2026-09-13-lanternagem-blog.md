@@ -353,7 +353,7 @@ Criamos um include inteligente no arquivo `_includes/head.html` que injeta os sc
 
 Se o artigo que você está lendo é uma crônica ou um tutorial de Linux, a variável `page.math` não existe e o Jekyll nem sequer inclui essas tags no HTML compilado; zero scripts adicionais são trafegados.
 
-E na pasta de fontes da biblioteca, aplicamos a mesma faxina: deletamos todos os formatos legados `.ttf` e `.woff`, deixando estritamente os vinte arquivos `.woff2` necessários para símbolos AMS e alfabetos gregos. A pasta de fontes despencou de 1.2 MB para meros 250 KB, garantindo a renderização instantânea de fórmulas como a transformada de Fourier:
+E na pasta de fontes da biblioteca, aplicamos a mesma faxina: deletamos todos os formatos legados `.ttf` e `.woff`, deixando estritamente os vinte arquivos `.woff2` necessários para símbolos AMS e alfabetos gregos. A pasta de fontes despencou de 1.2 MB para meros 250 KB, garantindo a renderização instantânea de fórmulas matemáticas como esta:
 
 $$
 \mathcal{F}\{f\}(\omega) = \frac{1}{\sqrt{2\pi}} \int_{-\infty}^{\infty} f(t) e^{-i\omega t} \, dt
