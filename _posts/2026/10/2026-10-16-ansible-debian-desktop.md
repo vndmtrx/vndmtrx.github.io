@@ -4,7 +4,7 @@ title: "Do Zero ao Desktop Perfeito: Automatizando o Debian 13 Trixie com Ansibl
 subtitle: "Como transformar a sofrência de formatar a máquina em algo idempotente"
 author:
   - "Eduardo N. S. R."
-date: 2026-09-14 14:45:00 GMT-3
+date: 2026-10-16 14:45:00 GMT-3
 permalink: /posts/ansible-debian-desktop/
 tags: [Linux, Debian, Ansible, DevOps]
 published: false
@@ -84,6 +84,183 @@ fi
 O `pipx` cria um ambiente virtual isolado para o Ansible dentro de `~/.local/share/pipx/venvs/ansible` e expõe apenas os executáveis necessários na minha pasta `~/.local/bin`. A raiz do sistema operacional continua intocada, o Ansible ganha acesso total aos seus módulos modernos e eu não corro o menor risco de quebrar o Python do sistema.
 
 Além disso, transformei o meu `bootstrap.sh` em um painel de diagnóstico da máquina antes de disparar o playbook: ele checa se deixei instaladores manuais esperando na pasta de Downloads, confere versões de runtimes instaladas no host e cronometra o tempo exato do provisionamento.
+
+## O fim da era dos disquetes: firmware e BIOS via fwupd no Debian
+
+Quem usou Linux nos anos 2000 ou 2010 certamente guarda um trauma indelével: atualizar a BIOS da placa-mãe ou o firmware de um SSD.
+
+A rotina era um pesadelo de masoquismo. Você precisava caçar uma imagem de FreeDOS na internet, gravar em um pendrive com comandos arriscados no `dd`, rezar para a BIOS reconhecer a partição FAT16 e torcer para a luz não piscar enquanto o utilitário DOS de trinta anos atrás gravava a ROM. Em laptops corporativos mais recentes, o calvário era ainda pior: você era obrigado a manter uma partição com Windows instalado exclusivamente para rodar os executáveis de atualização dos fabricantes.
+
+Hoje isso é coisa do passado graças ao **LVFS (Linux Vendor Firmware Service)** e ao **`fwupd`** [^10].
+
+O `fwupd` é um daemon de código aberto adotado em massa pela indústria (Dell, Lenovo, HP, System76, Logitech, Samsung, Kingston, entre outras). Ele permite consultar, baixar e gravar firmwares criptograficamente assinados para UEFI/BIOS, controladoras NVMe, módulos TPM, dongles sem fio e docks Thunderbolt diretamente pelo terminal do Linux.
+
+No dia a dia ou logo após a formatação, o fluxo completo de inspeção e atualização de hardware resume-se a quatro passos simples:
+
+```bash
+# 1. Consulta todos os dispositivos da máquina suportados pelo daemon
+fwupdmgr get-devices
+
+# 2. Atualiza os metadados e assinaturas criptográficas do LVFS
+fwupdmgr refresh
+
+# 3. Verifica se há atualizações de firmware disponíveis para o seu hardware
+fwupdmgr get-updates
+
+# 4. Aplica as atualizações de firmware nos componentes
+fwupdmgr update
+```
+*Fluxo interativo de consulta e atualização de firmwares de baixo nível via LVFS.*
+
+Quando você roda `fwupdmgr update`, o utilitário cuida de toda a orquestração de baixo nível. Para periféricos e SSDs, a gravação ocorre em tempo de execução. Para a BIOS/UEFI da placa-mãe, o `fwupd` prepara um *UEFI Capsule* na partição ESP e agenda a gravação limpa no próximo reboot do sistema, exatamente com a mesma segurança e validação do utilitário oficial do fabricante.
+
+### A pegadinha da partição ESP e a flag msftdata
+
+Só que a vida real de quem roda Debian puro adora pregar peças nos detalhes mais obscuros.
+
+Quando fui rodar o `fwupd` no meu laptop de trabalho (um **Dell Precision 3581** rodando Debian 13 Trixie), o utilitário devolveu um alerta intrigante logo no primeiro comando:
+
+```text
+AVISO: Partição ESP de UEFI pode não estar configurada corretamente
+Veja https://github.com/fwupd/fwupd/wiki/PluginFlag:esp-not-valid para mais informações.
+```
+
+A partição `/boot/efi` estava montada e o sistema inicializava perfeitamente pelo GRUB. Por que raios o `fwupd` estava reclamando da ESP?
+
+Fui inspecionar a tabela GPT do disco NVMe com o `lsblk` e o `parted` para entender o que estava acontecendo por baixo dos panos:
+
+```bash
+$ lsblk -o NAME,PARTTYPE,PARTTYPENAME,MOUNTPOINT /dev/nvme0n1
+NAME                                          PARTTYPE                             PARTTYPENAME         MOUNTPOINT
+nvme0n1
+├─nvme0n1p1                                   ebd0a0a2-b9e5-4433-87c0-68b6b72699c7 Microsoft basic data /boot/efi
+├─nvme0n1p2                                   0fc63daf-8483-4772-8e79-3d69d8477de4 Linux filesystem     /boot
+└─nvme0n1p3                                   0fc63daf-8483-4772-8e79-3d69d8477de4 Linux filesystem
+  └─luks-3b178ff7-0814-4c48-930f-6be10151a95c                                                          /home
+```
+*Inspeção dos GUIDs de partição revelando a flag incorreta na partição EFI.*
+
+O mistério foi desvendado na hora: a partição `/dev/nvme0n1p1` montada em `/boot/efi` havia sido criada com o Partition Type GUID de dados básicos da Microsoft (`ebd0a0a2-b9e5-4433-87c0-68b6b72699c7` / `msftdata`), em vez do identificador padrão oficial de Partição de Sistema EFI (`c12a7328-f81f-11d2-ba4b-00a0c93ec93b` / `ESP`).
+
+O kernel Linux e o GRUB leem partições FAT32 em `msftdata` sem reclamar, mas os padrões de segurança do `fwupd` recusam-se a gravar cápsulas de firmware UEFI em partições sem a flag `esp` explícita para evitar corrupção em discos com múltiplos sistemas operacionais.
+
+A correção na mão é instantânea:
+
+```bash
+# 1. Ajusta a flag ESP na partição 1 da tabela GPT
+sudo parted /dev/nvme0n1 set 1 esp on
+
+# 2. Notifica o subsistema de blocos do udev
+sudo udevadm trigger --subsystem-match=block
+
+# 3. Reinicia o daemon fwupd para renovar o cache
+sudo systemctl restart fwupd
+```
+*Procedimento de ajuste da flag ESP e renovação dos caches do daemon.*
+
+Com a partição validada como `EFI System` (`PARTTYPE=c12a7328-f81f-11d2-ba4b-00a0c93ec93b`), o comando `sudo fwupdmgr refresh --force` rodou limpo e encontrou de imediato uma **atualização crítica de BIOS** para o Dell Precision 3581, saltando da versão **1.30.0** para a **1.31.0** via NVRAM Capsule:
+
+```text
+Dell Inc. Precision 3581
+│
+└─System Firmware:
+  │   ID do dispositivo:   9e15a3990c8ca81f180eef4d731b9aaee5b6ec6c
+  │   Resumo:              UEFI System Resource Table device (updated via NVRAM)
+  │   Versão atual:        1.30.0
+  │   Versão mínima:       1.30.0
+  │   Fornecedor:          Dell (DMI:Dell Inc.)
+  │   Estado:              Sucesso
+  │
+  └─Atualização do sistema Precision 3581:
+        Nova versão:       1.31.0
+        ID remoto:         lvfs
+        Resumo:            Firmware for the Dell Precision 3581
+        Urgência:          Crítica
+        Tamanho:           27,4 MB
+```
+*Identificação da atualização de BIOS homologada no catálogo oficial do LVFS.*
+
+### Automação resiliente da partição ESP no Ansible
+
+Se esse problema aconteceu uma vez na instalação manual, ele certamente se repetiria em qualquer reinstalação futura. Por isso, a task `00-base.yaml` foi desenhada para inspecionar dinamicamente o ponto de montagem `/boot/efi`, extrair o disco base (`/dev/nvme0n1` ou `/dev/sda`), o índice da partição e aplicar a flag `esp` de forma 100% idempotente:
+
+{% raw %}
+```yaml
+- name: Identifica dispositivo montado em /boot/efi
+  ansible.builtin.set_fact:
+    efi_device_path: "{{ (ansible_mounts | selectattr('mount', 'equalto', '/boot/efi') | map(attribute='device') | first | default('')) }}"
+
+- name: Gerenciamento da flag ESP na partição EFI
+  when: efi_device_path != ''
+  block:
+    - name: Extrai disco base e número da partição EFI
+      ansible.builtin.set_fact:
+        efi_disk: "{{ efi_device_path | regex_replace('p?[0-9]+$', '') }}"
+        efi_part_num: "{{ efi_device_path | regex_search('[0-9]+$') | int }}"
+
+    - name: Garante que a partição EFI possua a flag esp ativa
+      community.general.parted:
+        device: "{{ efi_disk }}"
+        number: "{{ efi_part_num }}"
+        flags:
+          - esp
+        state: present
+      register: efi_flag_res
+      become: true
+
+    - name: Recarrega subsistema de blocos do udev e reinicia fwupd se a flag foi alterada
+      when: efi_flag_res.changed
+      become: true
+      block:
+        - name: Notifica subsistema de blocos do udev
+          ansible.builtin.command: udevadm trigger --subsystem-match=block
+          changed_when: true
+
+        - name: Reinicia serviço fwupd
+          ansible.builtin.systemd_service:
+            name: fwupd
+            state: restarted
+
+- name: Atualiza metadados do fwupd (LVFS)
+  ansible.builtin.command: fwupdmgr refresh --force
+  changed_when: false
+  become: true
+  when: atualiza_firmware | default(false) | bool
+
+- name: Aplica atualizações de firmware pendentes
+  ansible.builtin.command: fwupdmgr update -y
+  register: fwupd_result
+  failed_when:
+    - fwupd_result.rc != 0
+    - "'No updatable devices' not in fwupd_result.stderr"
+    - "'nothing to do' not in fwupd_result.stderr | lower"
+    - "'no updates' not in fwupd_result.stdout | lower"
+  changed_when:
+    - "'Successfully installed firmware' in fwupd_result.stdout or 'An update requires a reboot' in fwupd_result.stdout"
+  become: true
+  when: atualiza_firmware | default(false) | bool
+```
+{% endraw %}
+*Detecção dinâmica do dispositivo EFI e atualização condicional no Ansible.*
+
+> [!TIP] Prudência com Firmware em Automação
+> Atualizar firmware é uma operação que grava na memória Flash da placa-mãe e exige que o computador esteja conectado à tomada para evitar desligamento acidental. Por isso, a flag `atualiza_firmware` vem desativada por padrão: o pacote e a partição ESP ficam devidamente ajustados, mas você só dispara a gravação no Ansible quando estiver com a máquina conectada na energia e preparado para reiniciar o sistema caso um novo UEFI Capsule seja agendado.
+
+### Os limites da automação: onde o Ansible para e o Day-0 começa
+
+Diante do sucesso de ajustar a flag da ESP de forma dinâmica no playbook, você deve estar aí se perguntando: *"Mas e aquela otimização toda da semana passada no LUKS, Dudu? Não dá pra colocar no Ansible também?"*.
+
+Afinal, a tentação clássica de quem se apaixona por automação é querer enfiar o mundo dentro do playbook: automatizar a eliminação de partições físicas de swap antigas, o redimensionamento a quente do sistema de arquivos para recuperar gigabytes para a raiz (`/`), ou a calibração das iterações de PBKDF2 nos keyslots do cabeçalho criptográfico.
+
+A resposta curta e direta é: **porque você tem amor à sua sanidade e aos seus dados**.
+
+Existe uma fronteira de arquitetura crucial que separa **operações destrutivas de ciclo de vida inicial de máquina (Day-0/Day-1)** de **gerenciamento contínuo de estado idempotente (Day-2)**. O Ansible é rei absoluto no Day-2. Mas no momento em que você tenta enfiar particionamento destrutivo de baixo nível (`parted rm`, `resize2fs`, `cryptsetup resize`) em um playbook que roda periodicamente, você transforma uma ferramenta de padronização em uma roleta-russa digital.
+
+Mexer em slots criptográficos de disco e recalibrar chaves do LUKS exige digitação de senhas mestras no TTY e validação humana a cada etapa. Um parâmetro errado de partição ou uma execução acidental em uma máquina com layout de disco ligeiramente diferente deixaria o SSD completamente inacessível e ininicializável antes mesmo do café esfriar.
+
+Toda essa cirurgia de baixo nível pertence à fase de instalação assistida e hardware tuning da máquina, exatamente como mostrei na semana passada no post sobre a {% include post-ref.html slug="otimizacao-boot-luks" text="otimização do boot criptografado com LUKS" %}.
+
+O que cabe ao Ansible nessa camada de armazenamento e disco é garantir a manutenção contínua e a saúde do hardware: manter os parâmetros de kernel em dia, validar flags de inicialização e assegurar que o timer nativo de descarte de blocos do SSD (`fstrim.timer`) esteja permanentemente ativo no systemd.
 
 ## O segredo mais bem guardado da distribuição: o extrepo
 
@@ -415,8 +592,6 @@ Quando retorno, meu terminal está configurado com ferramentas modernas (`eza`, 
 
 Se você também já passou pela fase de compilar distros no braço e hoje só quer paz de espírito e estabilidade, recomendo fortemente fazer o mesmo exercício. Dá trabalho construir a primeira vez? Dá um trabalhão tremendo. Mas a sensação de ver o terminal subir o seu ambiente de trabalho perfeito do zero com um único comando é uma das coisas mais gratificantes que a cultura DevOps pode proporcionar.
 
----
-
 ## Referências
 
 [^1]: **PEP 668 – Marking Python base environments as "externally managed"** {*Python Software Foundation*} ([Link](https://peps.python.org/pep-0668/))
@@ -428,3 +603,4 @@ Se você também já passou pela fase de compilar distros no braço e hoje só q
 [^7]: **SDKMAN! The Software Development Kit Manager** {*SDKMAN! Team*} ([Link](https://sdkman.io/))
 [^8]: **gnome-extensions-cli (gext)** {*GitHub Repository*} ([Link](https://github.com/essembeh/gnome-extensions-cli))
 [^9]: **Ansible Variable Precedence: Where Should I Put A Variable?** {*Ansible Documentation*} ([Link](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html#understanding-variable-precedence))
+[^10]: **Linux Vendor Firmware Service (LVFS) & fwupd** {*Linux Foundation*} ([Link](https://fwupd.org/))
