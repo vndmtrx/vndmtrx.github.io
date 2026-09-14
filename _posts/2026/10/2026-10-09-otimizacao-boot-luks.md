@@ -385,13 +385,13 @@ Com o swap rodando liso na memória, sobrou um elefante na sala: os **34,2 GB** 
 
 A beleza da arquitetura de armazenamento do Linux moderno é que você não precisa dar boot por Live USB nem desmontar partição nenhuma pra fazer essa expansão. Dá pra redimensionar tudo com o sistema montado e rodando a quente.
 
-Primeiro, instalei as ferramentas de particionamento e invoquei o `parted` no disco físico:
+Primeiro, instalei o `parted` e invoquei o utilitário no disco físico:
 
 ```bash
-sudo apt update && sudo apt install cloud-guest-utils parted -y
+sudo apt update && sudo apt install parted -y
 sudo parted /dev/nvme0n1
 ```
-*Instalação de utilitários de disco e abertura do particionador interativo.*
+*Abertura do particionador interativo no disco NVMe.*
 
 Dentro do `parted`, consultei a tabela GPT, deletei a finada partição 3 e estiquei a partição 2 até o limite físico do disco:
 
@@ -631,6 +631,176 @@ Quinto: **hardware moderno pede caminho direto**. Filas assíncronas de software
 Por fim: **swap em disco para quem tem RAM de sobra é puro desperdício**. Se você não usa hibernação profunda, manter dezenas de gigabytes de swap criptografado no NVMe só adiciona overhead no bootloader, atraso no kernel e desgaste desnecessário dos chips de memória. O `zram` entrega a flexibilidade que o subsistema de memória precisa com latência de nanossegundos e zero I/O de disco.
 
 Agora o notebook finalmente se comporta como um computador moderno: seguro quando desligado, rápido quando ligado, e sem me fazer perder um minuto de vida olhando pra tela preta.
+
+## Colinha rápida para a próxima formatação
+
+Para não ter que caçar comandos espalhados pelo artigo quando eu formatar o notebook novamente, estruturei o roteiro executivo consolidado no padrão **Análise -> Atuação -> Verificação**:
+
+<details markdown="1">
+<summary>Ver colinha de comandos (Cheat Sheet)</summary>
+
+### 1. Otimizar as flags do disco no crypttab
+
+* **Análise (identificar UUID da partição raiz e flags atuais):**
+```bash
+# Inspeciona UUIDs das partições e pontos de montagem
+lsblk -o NAME,FSTYPE,UUID,MOUNTPOINTS
+
+# Consulta as opções atuais no crypttab
+cat /etc/crypttab
+```
+*Inspeção dos identificadores de bloco e parâmetros vigentes do dm-crypt.*
+
+* **Atuação (adicionar discard e desativar filas de trabalho síncronas no NVMe):**
+```bash
+# Formato esperado no /etc/crypttab:
+# luks-<UUID_RAIZ> UUID=<UUID_RAIZ> none luks,discard,no-read-workqueue,no-write-workqueue
+
+# Injeção automática das flags na linha ativa do crypttab
+sudo sed -i -E 's/(luks,initramfs|luks)/\1,discard,no-read-workqueue,no-write-workqueue/' /etc/crypttab
+```
+*Aplicação das flags de performance e TRIM para o SSD.*
+
+* **Verificação:**
+```bash
+cat /etc/crypttab
+```
+*Conferência do arquivo com as novas flags gravadas.*
+
+### 2. Desativar o swap em disco e calar os hooks de resume
+
+* **Análise (levantar swap ativa, fstab e linha do kernel):**
+```bash
+swapon --show
+cat /etc/fstab | grep swap
+cat /etc/default/grub | grep GRUB_CMDLINE_LINUX_DEFAULT
+```
+*Mapeamento de todas as referências ao swap legado no sistema.*
+
+* **Atuação (desativar swap, limpar arquivos e desabilitar resume no initramfs):**
+```bash
+# 1. Desativa a swap ativa imediatamente
+sudo swapoff -a
+
+# 2. Remove as linhas de swap do fstab e do crypttab
+sudo sed -i '/swap/d' /etc/fstab
+sudo sed -i '/swap/d' /etc/crypttab
+
+# 3. Remove qualquer parâmetro "resume=..." do GRUB
+sudo sed -i -E 's/resume=[^ "]+//g' /etc/default/grub
+
+# 4. Desativa explicitamente os hooks de resume no initramfs
+echo "RESUME=none" | sudo tee /etc/initramfs-tools/conf.d/resume
+
+# 5. Regera todas as imagens do initramfs e atualiza o menu do GRUB
+sudo update-initramfs -u -k all
+sudo update-grub
+```
+*Expurgo total de dependências de swap físico e hibernação.*
+
+* **Verificação:**
+```bash
+cat /etc/initramfs-tools/conf.d/resume
+swapon --show  # deve retornar vazio
+```
+*Garantia de que nenhum swap de disco está em execução.*
+
+### 3. Instalar e habilitar o zram
+
+* **Análise (conferir memória RAM total disponível):**
+```bash
+free -h
+```
+*Consulta da capacidade física de memória do host.*
+
+* **Atuação (instalar o gerenciador automático de zram):**
+```bash
+sudo apt update && sudo apt install zram-tools -y
+```
+*Instalação e ativação imediata do daemon de zram.*
+
+* **Verificação:**
+```bash
+swapon --show
+zramctl
+```
+*Conferência do dispositivo /dev/zram0 com algoritmo de compressão zstd ativo.*
+
+### 4. Reivindicar o espaço da partição swap para a raiz a quente
+
+* **Análise (identificar mapeador ativo da raiz e tabela GPT):**
+```bash
+# Identifica o dispositivo mapper montado em /
+findmnt -no SOURCE /
+
+# Inspeciona a numeração exata das partições no NVMe
+sudo parted /dev/nvme0n1 print
+```
+*Mapeamento do disco para redimensionamento sem risco.*
+
+* **Atuação (remover partição 3, esticar partição 2 e expandir LUKS/ext4 online):**
+```bash
+# Instala o parted se ainda não estiver presente
+sudo apt install parted -y
+
+# Exclui a finada partição 3 e estende a partição 2 até o limite do disco
+sudo parted /dev/nvme0n1 rm 3
+sudo parted /dev/nvme0n1 resizepart 2 100%
+
+# Descobre o mapper raiz e expande o container LUKS e o ext4 montado
+MAPPER_ROOT=$(findmnt -no SOURCE /)
+sudo cryptsetup resize "${MAPPER_ROOT##*/}"
+sudo resize2fs "$MAPPER_ROOT"
+```
+*Expansão instantânea do disco a quente sem necessidade de Live USB.*
+
+* **Verificação:**
+```bash
+lsblk /dev/nvme0n1
+df -h /
+```
+*Conferência do novo espaço total incorporado na partição raiz.*
+
+### 5. Desativar gargalos do userspace
+
+* **Análise (checar status dos serviços de retenção):**
+```bash
+systemctl status plymouth-quit-wait.service NetworkManager-wait-online.service
+```
+*Identificação do estado atual dos serviços de splash e sincronização de rede.*
+
+* **Atuação (mascarar plymouth e desativar retenção de rede):**
+```bash
+sudo systemctl mask plymouth-quit-wait.service
+sudo systemctl disable NetworkManager-wait-online.service
+```
+*Desativação de timeouts desnecessários no boot.*
+
+* **Verificação:**
+```bash
+systemctl is-enabled plymouth-quit-wait.service NetworkManager-wait-online.service
+```
+*Confirmação de que os serviços estão mascarados ou desabilitados.*
+
+### 6. Validação final pós-reboot (TRIM, Benchmark e Tempos)
+
+* **Execução e Verificação pós-reinicialização:**
+```bash
+# 1. Valida o descarte de blocos (TRIM) de ponta a ponta
+sudo fstrim -av
+
+# 2. Mede taxa de leitura sequencial através da criptografia
+MAPPER_ROOT=$(findmnt -no SOURCE /)
+sudo hdparm -Tt "$MAPPER_ROOT"
+sudo dd if="$MAPPER_ROOT" of=/dev/null bs=1M count=4096 status=progress
+
+# 3. Audita os tempos de inicialização da máquina
+systemd-analyze
+systemd-analyze critical-chain
+```
+*Medição final de estabilidade, vazão de dados e tempo do boot frio.*
+
+</details>
 
 ## Referências
 
