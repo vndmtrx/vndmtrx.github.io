@@ -652,10 +652,18 @@ Para automatizar toda essa preparação de mídia, criei o script `setup-ventoy.
 Dentro da configuração do Calamares, o módulo `shellprocess-ansible.conf` executa no ambiente `chroot` antes do primeiro boot, cuidando de injetar as flags do `crypttab`, as regras de sysctl, os repositórios oficiais e já copiando a pasta do repositório para `~/du/dev/github/ansible-debian-desktop`, com permissões corrigidas para o UID 1000 e um par de chaves SSH `id_ed25519` novo já gerado.
 
 O processo de instalação vira um passeio no parque:
-1. **Boot pelo Ventoy:** Inicialização da mídia Live no notebook selecionando a ISO do Debian.
-2. **Injeção do Calamares:** Execução do script auxiliar no Live para carregar os módulos no instalador.
-3. **Instalação Gráfica:** Teclado ABNT2, localização e usuário já vêm pré-selecionados. Basta marcar "Apagar disco", "Criptografar sistema" e definir a senha mestra.
-4. **Primeiro Boot e Transição para o Day-2:**
+
+1. **Boot pelo Ventoy:** Inicialização da mídia Live no notebook selecionando a ISO oficial do Debian GNOME.
+2. **Injeção do Calamares no Live:** Abra o terminal dentro da sessão Live para montar a partição de dados do pendrive e disparar o instalador já pré-configurado:
+
+```bash
+sudo mkdir -p /mnt/ventoy && sudo mount -L Ventoy /mnt/ventoy
+sudo /mnt/ventoy/scripts/apply-calamares.sh
+```
+*O script copia os módulos para `/etc/calamares/` e abre o Calamares com todo o particionamento Btrfs e hooks prontos.*
+
+3. **Instalação Gráfica:** Teclado ABNT2, fuso horário e usuário já vêm pré-selecionados na interface. Na etapa de particionamento, basta marcar **"Apagar disco"**, **"Criptografar sistema"** e definir a senha mestra.
+4. **Primeiro Boot e Transição para o Day-2:** Ao reiniciar no SSD recém-instalado, faça login no GNOME e dispare o Ansible:
 
 ```bash
 cd ~/du/dev/github/ansible-debian-desktop
