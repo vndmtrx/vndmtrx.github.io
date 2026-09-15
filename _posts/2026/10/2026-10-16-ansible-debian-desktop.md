@@ -676,10 +676,13 @@ sudo ~/ventoy/scripts/apply-calamares.sh
 ```bash
 cd ~/du/dev/github/ansible-debian-desktop
 
-# Opcional: restaura chaves SSH, GPG, chaveiro GNOME e atalhos se houver backup no pendrive
+# 1. Aplica as otimizações de baixo nível de NVMe, zswap e sysctl
+sudo ./post-install.sh
+
+# 2. Opcional: restaura chaves SSH, GPG, chaveiro GNOME e atalhos se houver backup no pendrive
 ./restore.sh /media/$USER/Ventoy/backup
 
-# Dispara o provisionamento completo do ambiente
+# 3. Dispara o provisionamento completo do ambiente
 ./bootstrap.sh
 ```
 
