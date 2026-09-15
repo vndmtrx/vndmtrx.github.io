@@ -609,25 +609,20 @@ A resposta para eliminar esses "erros" de fábrica diretamente no parto da máqu
 
 Para não depender do instalador texto padrão e nem fazer particionamento manual no `fdisk` a cada formatação, utilizo a imagem Live oficial do Debian com o instalador **Calamares** [^11] plugado em um pendrive com **Ventoy** [^12] [^13].
 
-A estrutura no pendrive de dados (`exFAT`) organiza a ISO, os manifestos declarativos do Calamares e os pacotes de backup:
+A estrutura no pendrive de dados (`exFAT`) organiza a ISO, o script injetor e os pacotes de backup:
 
 ```text
 /mnt/ventoy/
 ├── debian-live-13.7.0-amd64-gnome.iso
 ├── backup/                            <-- Backups cifrados (.tar.bz2.gpg)
 └── scripts/
-    ├── apply-calamares.sh
-    ├── ansible-debian-desktop/        <-- Clone local do repo
-    └── calamares/
-        ├── settings.conf
-        └── modules/
-            ├── locale.conf
-            ├── keyboard.conf
-            ├── users.conf
-            ├── partition.conf
-            ├── fstab.conf
-            ├── shellprocess-ansible-copy.conf
-            └── shellprocess-ansible.conf
+    ├── apply-calamares.sh             <-- Injetor modular (compara hash MD5)
+    ├── post-install.sh                <-- Otimizador pós-instalação idempotente
+    ├── modules/                       <-- Módulos declarativos do Calamares
+    │   ├── fstab.conf
+    │   ├── partition.conf
+    │   └── users.conf
+    └── ansible-debian-desktop/        <-- Clone local do repositório
 ```
 
 ### As decisões de baixo nível: Btrfs, LUKS2 e NVMe
@@ -661,13 +656,19 @@ Dentro do instalador Calamares:
 O processo de instalação vira um passeio no parque:
 
 1. **Boot pelo Ventoy:** Inicialização da mídia Live no notebook selecionando a ISO oficial do Debian GNOME.
-2. **Injeção do Calamares no Live:** Abra o terminal dentro da sessão Live para montar a partição de dados do pendrive e disparar o instalador já pré-configurado:
+2. **Montagem do Ventoy e Injeção do Calamares no Live:** Ao inicializar a ISO Live, o Ventoy utiliza o subsistema *device-mapper* para mapear a imagem, o que impede a montagem padrão com lock exclusivo em `/dev/sda1`. Para acessar a pasta `scripts/` do pendrive sem conflito, monte a partição via *loop device* desacoplado em modo somente leitura e dispare o injetor:
 
 ```bash
-sudo mkdir -p /mnt/ventoy && sudo mount -L Ventoy /mnt/ventoy
-sudo /mnt/ventoy/scripts/apply-calamares.sh
+# 1. Cria o loop device desacoplado (ele imprimirá o dispositivo criado, ex: /dev/loop5)
+sudo losetup -r -f --show /dev/sda1
+
+# 2. Monta em ~/ventoy e roda o injetor (substitua /dev/loopX pelo dispositivo exibido acima)
+mkdir -p ~/ventoy
+sudo mount -o ro /dev/loopX ~/ventoy
+sudo ~/ventoy/scripts/apply-calamares.sh
 ```
-*O script copia os módulos para `/etc/calamares/` e abre o Calamares com todo o particionamento Btrfs e hooks prontos.*
+*Dica: ou execute tudo em uma única linha: `mkdir -p ~/ventoy && sudo mount -o ro $(sudo losetup -r -f --show /dev/sda1) ~/ventoy && sudo ~/ventoy/scripts/apply-calamares.sh`.*
+*O script injeta os parâmetros de Btrfs, subvolumes e LUKS2 (PBKDF2 500ms) nos módulos oficiais do Calamares e executa as otimizações de baixo nível via post-install.sh idempotente.*
 
 3. **Instalação Gráfica:** Teclado ABNT2, fuso horário e usuário já vêm pré-selecionados na interface. Na etapa de particionamento, basta marcar **"Apagar disco"**, **"Criptografar sistema"** e definir a senha mestra.
 4. **Primeiro Boot e Transição para o Day-2:** Ao reiniciar no SSD recém-instalado, você tem a opção de restaurar suas chaves e configs antes do provisionamento com o `./restore.sh` e em seguida disparar o Ansible:
