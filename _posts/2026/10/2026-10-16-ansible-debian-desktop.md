@@ -646,12 +646,10 @@ Cada arquivo dessa árvore resolve um gargalo histórico de desempenho e usabili
 
 Para automatizar toda essa preparação de mídia, criei o script declarativo `setup-ventoy.sh` (disponível na raiz do repositório [vndmtrx/ansible-debian-desktop](https://github.com/vndmtrx/ansible-debian-desktop/blob/main/setup-ventoy.sh), pronto para baixar e rodar).
 
-Ele monta a partição de dados do pendrive, compara os hashes MD5 dos manifestos para gravar apenas o que foi alterado (criando backups `.old` se necessário), sincroniza a cópia do repositório e copia os backups criptografados locais de `~/du/backups/` para `/mnt/ventoy/backup/` sem sobrescrever nada.
-
-Dentro do instalador Calamares:
-1. O módulo `shellprocess@ansible_copy` roda fora do chroot (`dontChroot: true`) e copia o repositório diretamente para `~/du/dev/github/ansible-debian-desktop` na partição instalada, ajustando permissões para o usuário (UID 1000).
-2. O módulo `shellprocess@ansible` roda dentro do chroot (`dontChroot: false`), injeta as flags NVMe no `crypttab`, as regras de sysctl e instala dependências mínimas de bootstrap.
-3. Os módulos nativos do Calamares (`initramfs`, `grubcfg` e `bootloader`) assumem em seguida para gerar o kernel e bootloader de forma nativa e limpa.
+A orquestração do instalador divide-se de forma limpa:
+1. **Calamares Declarativo:** Os módulos em `modules/` cuidam exclusivamente do particionamento, subvolumes Btrfs, credenciais e LUKS2 otimizado (PBKDF2 500ms), sem riscos de quebra na UI do instalador.
+2. **Otimizador `post-install.sh`:** Um script Bash puro e 100% idempotente é acionado logo após a instalação (ou no primeiro boot), injetando as flags NVMe no `crypttab`, zswap com compressão zstd no GRUB, sysctl de alta performance e pacotes mínimos de bootstrap (`pipx`, `git`, `curl`, `sudo`).
+3. **Entrega do Repositório:** O repositório Ansible é copiado para `~/du/dev/github/ansible-debian-desktop` com propriedade e permissões ajustadas para o usuário final (UID 1000).
 
 O processo de instalação vira um passeio no parque:
 
