@@ -619,9 +619,11 @@ A estrutura no pendrive de dados (`exFAT`) organiza a ISO, o script injetor e os
     ├── apply-calamares.sh             <-- Injetor modular (compara hash MD5)
     ├── post-install.sh                <-- Otimizador pós-instalação idempotente
     ├── modules/                       <-- Módulos declarativos do Calamares
-    │   ├── fstab.conf
-    │   ├── partition.conf
-    │   └── users.conf
+    │   ├── fstab.conf                 <-- Subvolumes Btrfs e flags síncronas
+    │   ├── partition.conf             <-- LUKS2 PBKDF2 500ms
+    │   ├── users.conf                 <-- Grupos e usuário padrão
+    │   ├── shellprocess@grubcrypt.conf<-- Ativa cryptodisk e módulos no GRUB
+    │   └── shellprocess@initramfs.conf<-- Atualização do initramfs
     └── ansible-debian-desktop/        <-- Clone local do repositório
 ```
 
