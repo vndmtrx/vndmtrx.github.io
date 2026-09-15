@@ -609,11 +609,12 @@ A resposta para eliminar esses "erros" de fábrica diretamente no parto da máqu
 
 Para não depender do instalador texto padrão e nem fazer particionamento manual no `fdisk` a cada formatação, utilizo a imagem Live oficial do Debian com o instalador **Calamares** [^11] plugado em um pendrive com **Ventoy** [^12] [^13].
 
-A estrutura no pendrive de dados (`exFAT`) organiza a ISO e os manifestos declarativos de automação:
+A estrutura no pendrive de dados (`exFAT`) organiza a ISO, os manifestos declarativos do Calamares e os pacotes de backup:
 
 ```text
 /mnt/ventoy/
 ├── debian-live-13.7.0-amd64-gnome.iso
+├── backup/                            <-- Backups cifrados (.tar.bz2.gpg)
 └── scripts/
     ├── apply-calamares.sh
     ├── ansible-debian-desktop/        <-- Clone local do repo
@@ -625,6 +626,7 @@ A estrutura no pendrive de dados (`exFAT`) organiza a ISO e os manifestos declar
             ├── users.conf
             ├── partition.conf
             ├── fstab.conf
+            ├── shellprocess-ansible-copy.conf
             └── shellprocess-ansible.conf
 ```
 
@@ -647,9 +649,14 @@ Cada arquivo dessa árvore resolve um gargalo histórico de desempenho e usabili
 
 ### O fluxo operacional do Day-0
 
-Para automatizar toda essa preparação de mídia, criei o script `setup-ventoy.sh` (disponível na raiz do repositório parceiro). Ele monta a partição de dados do pendrive, despeja os manifestos do Calamares e sincroniza a cópia local do repositório Ansible.
+Para automatizar toda essa preparação de mídia, criei o script declarativo `setup-ventoy.sh` (disponível na raiz do repositório [vndmtrx/ansible-debian-desktop](https://github.com/vndmtrx/ansible-debian-desktop/blob/main/setup-ventoy.sh), pronto para baixar e rodar).
 
-Dentro da configuração do Calamares, o módulo `shellprocess-ansible.conf` executa no ambiente `chroot` antes do primeiro boot, cuidando de injetar as flags do `crypttab`, as regras de sysctl, os repositórios oficiais e já copiando a pasta do repositório para `~/du/dev/github/ansible-debian-desktop`, com permissões corrigidas para o UID 1000 e um par de chaves SSH `id_ed25519` novo já gerado.
+Ele monta a partição de dados do pendrive, compara os hashes MD5 dos manifestos para gravar apenas o que foi alterado (criando backups `.old` se necessário), sincroniza a cópia do repositório e copia os backups criptografados locais de `~/du/backups/` para `/mnt/ventoy/backup/` sem sobrescrever nada.
+
+Dentro do instalador Calamares:
+1. O módulo `shellprocess@ansible_copy` roda fora do chroot (`dontChroot: true`) e copia o repositório diretamente para `~/du/dev/github/ansible-debian-desktop` na partição instalada, ajustando permissões para o usuário (UID 1000).
+2. O módulo `shellprocess@ansible` roda dentro do chroot (`dontChroot: false`), injeta as flags NVMe no `crypttab`, as regras de sysctl e instala dependências mínimas de bootstrap.
+3. Os módulos nativos do Calamares (`initramfs`, `grubcfg` e `bootloader`) assumem em seguida para gerar o kernel e bootloader de forma nativa e limpa.
 
 O processo de instalação vira um passeio no parque:
 
@@ -663,10 +670,15 @@ sudo /mnt/ventoy/scripts/apply-calamares.sh
 *O script copia os módulos para `/etc/calamares/` e abre o Calamares com todo o particionamento Btrfs e hooks prontos.*
 
 3. **Instalação Gráfica:** Teclado ABNT2, fuso horário e usuário já vêm pré-selecionados na interface. Na etapa de particionamento, basta marcar **"Apagar disco"**, **"Criptografar sistema"** e definir a senha mestra.
-4. **Primeiro Boot e Transição para o Day-2:** Ao reiniciar no SSD recém-instalado, faça login no GNOME e dispare o Ansible:
+4. **Primeiro Boot e Transição para o Day-2:** Ao reiniciar no SSD recém-instalado, você tem a opção de restaurar suas chaves e configs antes do provisionamento com o `./restore.sh` e em seguida disparar o Ansible:
 
 ```bash
 cd ~/du/dev/github/ansible-debian-desktop
+
+# Opcional: restaura chaves SSH, GPG, chaveiro GNOME e atalhos se houver backup no pendrive
+./restore.sh /media/$USER/Ventoy/backup
+
+# Dispara o provisionamento completo do ambiente
 ./bootstrap.sh
 ```
 
