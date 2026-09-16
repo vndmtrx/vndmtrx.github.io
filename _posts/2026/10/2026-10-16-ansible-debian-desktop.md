@@ -52,6 +52,9 @@ O sistema operacional cuida dos drivers, do kernel e dos serviços essenciais. O
 > [!NOTE] Em Casa de Ferreiro, Espeto de Pau
 > Tá bom, confesso: minha regra sagrada de purismo às vezes parece aquele clássico "faça o que eu digo, não faça o que eu faço". No papel, o discurso de manter a raiz intocada é lindo e austero. Na prática do dia a dia, meu `$HOME` tem Flatpaks do Flathub para utilitários gráficos, AppImages soltos rodando sem a menor cerimônia e binários compilados na mão no `~/.local/bin`. O segredo da minha paz de espírito não é o celibato digital absoluto, mas manter o estrago estritamente contido no espaço de usuário sem poluir o sistema operacional raiz.
 
+> [!NOTE] Meus Caminhos, Minhas Regras
+> Você vai notar ao longo do código que utilizo caminhos como `~/du/dev/` e `~/du/conf/`. Essa é a minha convenção pessoal de organização no `$HOME`. O repositório centralizou todos esses caminhos como variáveis em `sistema/defaults/main.yaml`, permitindo que você personalize ou adapte facilmente a estrutura para o seu próprio padrão de pastas.
+
 E adivinha? O próprio Debian moderno agora concorda comigo e adotou essa mesma postura na marra.
 
 Quando fui rodar o meu playbook antigo de automação, a primeira surpresa foi tomar uma porta na cara do interpretador Python: `externally-managed-environment` [^1].
@@ -85,182 +88,19 @@ O `pipx` cria um ambiente virtual isolado para o Ansible dentro de `~/.local/sha
 
 Além disso, transformei o meu `bootstrap.sh` em um painel de diagnóstico da máquina antes de disparar o playbook: ele checa se deixei instaladores manuais esperando na pasta de Downloads, confere versões de runtimes instaladas no host e cronometra o tempo exato do provisionamento.
 
-## O fim da era dos disquetes: firmware e BIOS via fwupd no Debian
+## Os limites da automação: onde o Ansible para e o Day-0 começa
 
-Quem usou Linux nos anos 2000 ou 2010 certamente guarda um trauma indelével: atualizar a BIOS da placa-mãe ou o firmware de um SSD.
+Diante do poder do Ansible, a tentação clássica de quem se apaixona por automação é querer enfiar o mundo inteiro dentro do playbook: automatizar a eliminação de partições físicas de swap antigas, o redimensionamento a quente do sistema de arquivos para recuperar gigabytes para a raiz (`/`), a calibração das iterações de PBKDF2 nos keyslots do LUKS ou até o disparo de atualizações de firmware de baixo nível via `fwupd`.
 
-A rotina era um pesadelo de masoquismo. Você precisava caçar uma imagem de FreeDOS na internet, gravar em um pendrive com comandos arriscados no `dd`, rezar para a BIOS reconhecer a partição FAT16 e torcer para a luz não piscar enquanto o utilitário DOS de trinta anos atrás gravava a ROM. Em laptops corporativos mais recentes, o calvário era ainda pior: você era obrigado a manter uma partição com Windows instalado exclusivamente para rodar os executáveis de atualização dos fabricantes.
+A resposta curta e direta para não fazer isso é: **porque você tem amor à sua sanidade e aos seus dados**.
 
-Hoje isso é coisa do passado graças ao **LVFS (Linux Vendor Firmware Service)** e ao **`fwupd`** [^10].
-
-O `fwupd` é um daemon de código aberto adotado em massa pela indústria (Dell, Lenovo, HP, System76, Logitech, Samsung, Kingston, entre outras). Ele permite consultar, baixar e gravar firmwares criptograficamente assinados para UEFI/BIOS, controladoras NVMe, módulos TPM, dongles sem fio e docks Thunderbolt diretamente pelo terminal do Linux.
-
-No dia a dia ou logo após a formatação, o fluxo completo de inspeção e atualização de hardware resume-se a quatro passos simples:
-
-```bash
-# 1. Consulta todos os dispositivos da máquina suportados pelo daemon
-fwupdmgr get-devices
-
-# 2. Atualiza os metadados e assinaturas criptográficas do LVFS
-fwupdmgr refresh
-
-# 3. Verifica se há atualizações de firmware disponíveis para o seu hardware
-fwupdmgr get-updates
-
-# 4. Aplica as atualizações de firmware nos componentes
-fwupdmgr update
-```
-*Fluxo interativo de consulta e atualização de firmwares de baixo nível via LVFS.*
-
-Quando você roda `fwupdmgr update`, o utilitário cuida de toda a orquestração de baixo nível. Para periféricos e SSDs, a gravação ocorre em tempo de execução. Para a BIOS/UEFI da placa-mãe, o `fwupd` prepara um *UEFI Capsule* na partição ESP e agenda a gravação limpa no próximo reboot do sistema, exatamente com a mesma segurança e validação do utilitário oficial do fabricante.
-
-### A pegadinha da partição ESP e a flag msftdata
-
-Só que a vida real de quem roda Debian puro adora pregar peças nos detalhes mais obscuros.
-
-Quando fui rodar o `fwupd` no meu laptop de trabalho (um **Dell Precision 3581** rodando Debian 13 Trixie), o utilitário devolveu um alerta intrigante logo no primeiro comando:
-
-```text
-AVISO: Partição ESP de UEFI pode não estar configurada corretamente
-Veja https://github.com/fwupd/fwupd/wiki/PluginFlag:esp-not-valid para mais informações.
-```
-
-A partição `/boot/efi` estava montada e o sistema inicializava perfeitamente pelo GRUB. Por que raios o `fwupd` estava reclamando da ESP?
-
-Fui inspecionar a tabela GPT do disco NVMe com o `lsblk` e o `parted` para entender o que estava acontecendo por baixo dos panos:
-
-```bash
-$ lsblk -o NAME,PARTTYPE,PARTTYPENAME,MOUNTPOINT /dev/nvme0n1
-NAME                                          PARTTYPE                             PARTTYPENAME         MOUNTPOINT
-nvme0n1
-├─nvme0n1p1                                   ebd0a0a2-b9e5-4433-87c0-68b6b72699c7 Microsoft basic data /boot/efi
-├─nvme0n1p2                                   0fc63daf-8483-4772-8e79-3d69d8477de4 Linux filesystem     /boot
-└─nvme0n1p3                                   0fc63daf-8483-4772-8e79-3d69d8477de4 Linux filesystem
-  └─luks-3b178ff7-0814-4c48-930f-6be10151a95c                                                          /home
-```
-*Inspeção dos GUIDs de partição revelando a flag incorreta na partição EFI.*
-
-O mistério foi desvendado na hora: a partição `/dev/nvme0n1p1` montada em `/boot/efi` havia sido criada com o Partition Type GUID de dados básicos da Microsoft (`ebd0a0a2-b9e5-4433-87c0-68b6b72699c7` / `msftdata`), em vez do identificador padrão oficial de Partição de Sistema EFI (`c12a7328-f81f-11d2-ba4b-00a0c93ec93b` / `ESP`).
-
-O kernel Linux e o GRUB leem partições FAT32 em `msftdata` sem reclamar, mas os padrões de segurança do `fwupd` recusam-se a gravar cápsulas de firmware UEFI em partições sem a flag `esp` explícita para evitar corrupção em discos com múltiplos sistemas operacionais.
-
-A correção na mão é instantânea:
-
-```bash
-# 1. Ajusta a flag ESP na partição 1 da tabela GPT
-sudo parted /dev/nvme0n1 set 1 esp on
-
-# 2. Notifica o subsistema de blocos do udev
-sudo udevadm trigger --subsystem-match=block
-
-# 3. Reinicia o daemon fwupd para renovar o cache
-sudo systemctl restart fwupd
-```
-*Procedimento de ajuste da flag ESP e renovação dos caches do daemon.*
-
-Com a partição validada como `EFI System` (`PARTTYPE=c12a7328-f81f-11d2-ba4b-00a0c93ec93b`), o comando `sudo fwupdmgr refresh --force` rodou limpo e encontrou de imediato uma **atualização crítica de BIOS** para o Dell Precision 3581, saltando da versão **1.30.0** para a **1.31.0** via NVRAM Capsule:
-
-```text
-Dell Inc. Precision 3581
-│
-└─System Firmware:
-  │   ID do dispositivo:   9e15a3990c8ca81f180eef4d731b9aaee5b6ec6c
-  │   Resumo:              UEFI System Resource Table device (updated via NVRAM)
-  │   Versão atual:        1.30.0
-  │   Versão mínima:       1.30.0
-  │   Fornecedor:          Dell (DMI:Dell Inc.)
-  │   Estado:              Sucesso
-  │
-  └─Atualização do sistema Precision 3581:
-        Nova versão:       1.31.0
-        ID remoto:         lvfs
-        Resumo:            Firmware for the Dell Precision 3581
-        Urgência:          Crítica
-        Tamanho:           27,4 MB
-```
-*Identificação da atualização de BIOS homologada no catálogo oficial do LVFS.*
-
-### Automação resiliente da partição ESP no Ansible
-
-Se esse problema aconteceu uma vez na instalação manual, ele certamente se repetiria em qualquer reinstalação futura. Por isso, a task `00-base.yaml` foi desenhada para inspecionar dinamicamente o ponto de montagem `/boot/efi`, extrair o disco base (`/dev/nvme0n1` ou `/dev/sda`), o índice da partição e aplicar a flag `esp` de forma 100% idempotente:
-
-{% raw %}
-```yaml
-- name: Identifica dispositivo montado em /boot/efi
-  ansible.builtin.set_fact:
-    efi_device_path: "{{ (ansible_mounts | selectattr('mount', 'equalto', '/boot/efi') | map(attribute='device') | first | default('')) }}"
-
-- name: Gerenciamento da flag ESP na partição EFI
-  when: efi_device_path != ''
-  block:
-    - name: Extrai disco base e número da partição EFI
-      ansible.builtin.set_fact:
-        efi_disk: "{{ efi_device_path | regex_replace('p?[0-9]+$', '') }}"
-        efi_part_num: "{{ efi_device_path | regex_search('[0-9]+$') | int }}"
-
-    - name: Garante que a partição EFI possua a flag esp ativa
-      community.general.parted:
-        device: "{{ efi_disk }}"
-        number: "{{ efi_part_num }}"
-        flags:
-          - esp
-        state: present
-      register: efi_flag_res
-      become: true
-
-    - name: Recarrega subsistema de blocos do udev e reinicia fwupd se a flag foi alterada
-      when: efi_flag_res.changed
-      become: true
-      block:
-        - name: Notifica subsistema de blocos do udev
-          ansible.builtin.command: udevadm trigger --subsystem-match=block
-          changed_when: true
-
-        - name: Reinicia serviço fwupd
-          ansible.builtin.systemd_service:
-            name: fwupd
-            state: restarted
-
-- name: Atualiza metadados do fwupd (LVFS)
-  ansible.builtin.command: fwupdmgr refresh --force
-  changed_when: false
-  become: true
-  when: atualiza_firmware | default(false) | bool
-
-- name: Aplica atualizações de firmware pendentes
-  ansible.builtin.command: fwupdmgr update -y
-  register: fwupd_result
-  failed_when:
-    - fwupd_result.rc != 0
-    - "'No updatable devices' not in fwupd_result.stderr"
-    - "'nothing to do' not in fwupd_result.stderr | lower"
-    - "'no updates' not in fwupd_result.stdout | lower"
-  changed_when:
-    - "'Successfully installed firmware' in fwupd_result.stdout or 'An update requires a reboot' in fwupd_result.stdout"
-  become: true
-  when: atualiza_firmware | default(false) | bool
-```
-{% endraw %}
-*Detecção dinâmica do dispositivo EFI e atualização condicional no Ansible.*
-
-> [!TIP] Prudência com Firmware em Automação
-> Atualizar firmware é uma operação que grava na memória Flash da placa-mãe e exige que o computador esteja conectado à tomada para evitar desligamento acidental. Por isso, a flag `atualiza_firmware` vem desativada por padrão: o pacote e a partição ESP ficam devidamente ajustados, mas você só dispara a gravação no Ansible quando estiver com a máquina conectada na energia e preparado para reiniciar o sistema caso um novo UEFI Capsule seja agendado.
-
-### Os limites da automação: onde o Ansible para e o Day-0 começa
-
-Diante do sucesso de ajustar a flag da ESP de forma dinâmica no playbook, você deve estar aí se perguntando: *"Mas e aquela otimização toda da semana passada no LUKS, Dudu? Não dá pra colocar no Ansible também?"*.
-
-Afinal, a tentação clássica de quem se apaixona por automação é querer enfiar o mundo dentro do playbook: automatizar a eliminação de partições físicas de swap antigas, o redimensionamento a quente do sistema de arquivos para recuperar gigabytes para a raiz (`/`), ou a calibração das iterações de PBKDF2 nos keyslots do cabeçalho criptográfico.
-
-A resposta curta e direta é: **porque você tem amor à sua sanidade e aos seus dados**.
-
-Existe uma fronteira de arquitetura crucial que separa **operações destrutivas de ciclo de vida inicial de máquina (Day-0/Day-1)** de **gerenciamento contínuo de estado idempotente (Day-2)**. O Ansible é rei absoluto no Day-2. Mas no momento em que você tenta enfiar particionamento destrutivo de baixo nível (`parted rm`, `resize2fs`, `cryptsetup resize`) em um playbook que roda periodicamente, você transforma uma ferramenta de padronização em uma roleta-russa digital.
+Existe uma fronteira de arquitetura crucial que separa **operações de ciclo de vida inicial e hardware tuning da máquina (Day-0/Day-1)** de **gerenciamento contínuo de estado idempotente do espaço de usuário (Day-2)**. O Ansible é rei absoluto no Day-2. Mas no momento em que você tenta enfiar particionamento destrutivo de baixo nível (`parted rm`, `resize2fs`, `cryptsetup resize`) ou gravação de memória Flash da placa-mãe em um playbook que roda periodicamente, você transforma uma ferramenta de padronização em uma roleta-russa digital.
 
 Mexer em slots criptográficos de disco e recalibrar chaves do LUKS exige digitação de senhas mestras no TTY e validação humana a cada etapa. Um parâmetro errado de partição ou uma execução acidental em uma máquina com layout de disco ligeiramente diferente deixaria o SSD completamente inacessível e ininicializável antes mesmo do café esfriar.
 
-Toda essa cirurgia de baixo nível pertence à fase de instalação assistida e hardware tuning da máquina, exatamente como mostrei na semana passada no post sobre a {% include post-ref.html slug="otimizacao-boot-luks" text="otimização do boot criptografado com LUKS" %}.
+Toda essa cirurgia de baixo nível pertence à fase de instalação assistida e hardware tuning da máquina, exatamente como detalhei no {% include post-ref.html slug="otimizacao-boot-luks" text="artigo de otimização do boot criptografado com LUKS" %}.
 
-O que cabe ao Ansible nessa camada de armazenamento e disco é garantir a manutenção contínua e a saúde do hardware: manter os parâmetros de kernel em dia, validar flags de inicialização e assegurar que o timer nativo de descarte de blocos do SSD (`fstrim.timer`) esteja permanentemente ativo no systemd.
+O que cabe ao Ansible nessa camada de base é garantir a manutenção contínua e a saúde do ambiente: manter parâmetros de kernel idempotentes, validar permissões e assegurar que o timer nativo de descarte de blocos do SSD (`fstrim.timer`) esteja permanentemente ativo no systemd.
 
 ## O segredo mais bem guardado da distribuição: o extrepo
 
@@ -541,29 +381,29 @@ Instalar a extensão é apenas cinquenta por cento do caminho. A outra metade, m
 
 Eu não quero ter que abrir o aplicativo de extensões para configurar a altura do Dash to Panel, definir que o `Alt+Tab` deve alternar apenas entre janelas do workspace atual ou reconfigurar atalhos de maximização (`Super+Up`).
 
-A solução definitiva para isso é o **dconf**. Todas as configurações do GNOME e das extensões ficam armazenadas no banco de dados binário do GSettings. O que fiz foi exportar a árvore completa de configurações do meu ambiente ideal para um template Jinja2 parametrizado chamado `gnome-desktop.dconf.j2`.
+A solução definitiva para isso é o **dconf**. Todas as configurações do GNOME e das extensões ficam armazenadas no banco de dados binário do GSettings. O que fiz foi exportar as seções específicas de interesse (extensões, botões de janelas e atalhos de teclado) para um template Jinja2 parametrizado chamado `gnome-desktop.dconf.j2`.
 
 {% raw %}
 ```yaml
-- name: Aplica template com todas as configurações do GNOME e Extensões
+- name: Aplica template com as configurações selecionadas do GNOME e Extensões
   ansible.builtin.template:
     src: gnome-desktop.dconf.j2
     dest: "{{ ansible_env.HOME }}/.config/gnome-desktop.dconf"
     mode: '0644'
   register: dconf_template_res
 
-- name: Carrega configurações atômicas no dconf
+- name: Carrega configurações atômicas no dconf por seções
   ansible.builtin.command:
-    cmd: dconf load /
+    cmd: dconf load /org/gnome/
     stdin: "{{ lookup('file', ansible_env.HOME ~ '/.config/gnome-desktop.dconf') }}"
   when: dconf_template_res.changed
 ```
 {% endraw %}
 *Restauração instantânea de centenas de preferências de janelas, atalhos e extensões.*
 
-Em vez de disparar dezenas de comandos `gsettings set` que levam minutos para executar e deixam o terminal lento, o comando `dconf load /` lê o arquivo gerado pelo template e injeta o estado completo do desktop em menos de cem milissegundos.
+Em vez de disparar dezenas de comandos `gsettings set` que levam minutos para executar e deixam o terminal lento, o comando `dconf load /org/gnome/` lê o arquivo gerado pelo template e injeta o estado delimitado das preferências em menos de cem milissegundos, mantendo o escopo estritamente restrito às árvores de extensões (`/org/gnome/shell/extensions/`), preferências de botões de janela (`/org/gnome/desktop/wm/preferences/`) e atalhos de teclado (`/org/gnome/desktop/wm/keybindings/`, `/org/gnome/shell/keybindings/`), sem poluir o restante do sistema ou sobrescrever configurações indesejadas como tema ou comportamento de mosaico.
 
-E a cereja no topo do bolo: para garantir que qualquer ajuste fino feito no dia a dia não se perca, criei um utilitário em Bash chamado `salvar-extensoes` em `~/.local/bin/salvar-extensoes`. Se eu mexer nas cores do painel ou trocar um atalho de teclado no futuro, basta rodar esse comando no terminal: ele extrai o estado atual do `dconf` e salva cópias carimbadas com data e hora dentro de `~/du/conf/`.
+E a cereja no topo do bolo: para garantir que qualquer ajuste fino feito no dia a dia não se perca, criei um utilitário em Bash chamado `salvar-extensoes` em `~/.local/bin/salvar-extensoes`. Se eu mexer na posição de um ícone da barra ou trocar um atalho de teclado no futuro, basta rodar esse comando no terminal: ele extrai exclusivamente essas seções delimitadas do `dconf` e salva cópias carimbadas com data e hora dentro de `~/du/conf/`.
 
 Para finalizar a personalização visual com um toque nostálgico, o playbook armazena e aplica automaticamente o lendário papel de parede **Bliss** do Windows XP, renderizado a partir de uma digitalização em altíssima definição de 600 DPI, sincronizado simultaneamente para os modos claro e escuro do GNOME 48.
 
@@ -626,12 +466,12 @@ Cada ajuste de Day-0 resolve um gargalo histórico de desempenho e usabilidade a
 * **Calibração de Boot LUKS (PBKDF2 em 500ms no Slot 0):** O instalador padrão calibra a derivação de chave com mais de 5 a 6 milhões de iterações, fazendo o GRUB (que roda em single-core sem aceleração criptográfica de hardware) demorar até 50 segundos para abrir o disco. Recriar a senha no **Slot 0** com `--iter-time 500` (~1.4M iterações) despenca o tempo de descriptografia no bootloader para menos de 10 segundos.
 * **NVMe em modo direto no `crypttab`:** A inclusão das flags `no-read-workqueue,no-write-workqueue,discard` instrui o subsistema dm-crypt a despachar operações de I/O diretamente para as filas de hardware do SSD NVMe, eliminando filas intermediárias de software do kernel.
 * **GRUB com suporte a cryptodisk:** Habilita `GRUB_ENABLE_CRYPTODISK=y` e pré-carrega os módulos `luks`, `crypto`, `gcry_rijndael`, `gcry_sha256` e `btrfs` na imagem EFI, garantindo que a descriptografia do disco funcione desde o primeiro estágio de boot.
-* **Eliminação do swap em disco:** Desativa e remove a partição de swap criptografada criada pelo instalador, limpando `/etc/fstab`, `/etc/crypttab` e o parâmetro `resume=` do GRUB — exatamente como fizemos no {% include post-ref.html slug="otimizacao-boot-luks" text="artigo de otimização de boot" %}.
+* **Eliminação do swap em disco:** Desativa e remove a partição de swap criptografada criada pelo instalador, limpando `/etc/fstab`, `/etc/crypttab` e o parâmetro `resume=` do GRUB, exatamente como fizemos no {% include post-ref.html slug="otimizacao-boot-luks" text="artigo de otimização de boot" %}.
 * **Redimensionamento da raiz a quente:** Deleta a partição de swap morta, expande a partição raiz até o limite do disco e redimensiona o container LUKS e o filesystem (ext4 ou btrfs) online, reivindicando os ~34 GB desperdiçados.
 * **Swap comprimido em RAM (zram):** O `zram-tools` cria um dispositivo de bloco comprimido (`/dev/zram0`) diretamente na memória RAM usando o algoritmo `zstd`. Toda a paginação ocorre com latência de nanossegundos e zero I/O no NVMe. Diferente do `zswap` (que é uma camada de cache que depende de um swap em disco como *backing store*), o `zram` é auto-contido: ele **é** o dispositivo de swap, sem precisar de partição nenhuma no SSD.
 * **Escalonador NVMe `none` e boot limpo:** Uma regra de `udev` força o bypass de escalonadores em software (`bfq`, `mq-deadline`), entregando as requisições direto às filas PCIe. Além disso, remove o `splash`, reduz o `GRUB_TIMEOUT=1`, mascara o `plymouth-quit-wait.service` e desativa o `NetworkManager-wait-online.service` (e, para garantir que pacotes futuros nunca os reativem por acidente, o Ansible aplica um *enforcement* idempotente nesses serviços de userspace durante a etapa Day-2).
 
-Todos os comandos detalhados para aplicar essa sequência manualmente estão documentados na [colinha executiva do artigo de boot LUKS]({% post_url 2026/10/2026-10-09-otimizacao-boot-luks %}#colinha-rapida-para-a-proxima-formatacao).
+Todos os comandos detalhados para aplicar essa sequência manualmente estão documentados na {% include post-ref.html slug="otimizacao-boot-luks" text="colinha executiva do artigo de boot LUKS" anchor="colinha-rapida-para-a-proxima-formatacao" %}.
 
 ### O fluxo operacional do Day-0
 
@@ -641,7 +481,7 @@ O processo de instalação:
 
 1. **Boot pelo Ventoy:** Inicialização da mídia Live no notebook selecionando a ISO oficial do Debian GNOME.
 2. **Instalação Gráfica padrão:** Execute o Calamares [^11] normalmente. Na etapa de particionamento, marque **"Apagar disco"** e **"Criptografar sistema"** e defina a senha mestra.
-3. **Primeiro Boot — Otimizações e Provisionamento:** Ao reiniciar no SSD recém-instalado, monte o pendrive, copie o repositório e aplique as otimizações de baixo nível da colinha:
+3. **Primeiro Boot: Otimizações e Provisionamento:** Ao reiniciar no SSD recém-instalado, monte o pendrive, copie o repositório e aplique as otimizações de baixo nível da colinha:
 
 ```bash
 # 1. Copiar repositório e backups do pendrive
