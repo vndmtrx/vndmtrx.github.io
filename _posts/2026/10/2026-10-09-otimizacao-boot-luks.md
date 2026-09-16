@@ -20,6 +20,14 @@ A resposta que você mais ouve por aí em fórum quando reclama disso é aquela 
 
 Cansei de passar raiva e resolvi abrir o capô pra caçar onde cada milissegundo estava sendo jogado no lixo. No caminho, cometi alguns tropeços vergonhosos, me achei o gênio da criptografia pra logo em seguida tomar uma invertida do GRUB, e descobri que metade da lentidão era pura teimosia de software legado.
 
+<details class="toc-box" markdown="1">
+  <summary><strong>📑 Sumário do post</strong></summary>
+
+* TOC
+{:toc}
+
+</details>
+
 ## O modelo de ameaça: pragmatismo contra a paranoia inútil
 
 Antes de sair alterando partição e quebrando o sistema, vale a pena parar dois minutos e fazer a pergunta que quase todo profissional de TI esquece de se fazer: contra quem diabos eu estou me protegendo?
@@ -49,21 +57,34 @@ systemd-analyze
 
 A resposta foi um tapa na cara:
 
+<details markdown="1">
+<summary>Ver relatório de tempo de boot (Original)</summary>
+
 ```text
-Startup finished in 5.304s (firmware) + 54.912s (loader) + 12.575s (kernel) + 32.525s (userspace) = 1min 40.536s
+Startup finished in 5.452s (firmware) + 40.418s (loader) + 11.720s (kernel) + 23.389s (userspace) = 1min 20.980s
+graphical.target reached after 23.388s in userspace.
 ```
+
+```mermaid
+pie title Tempo de Inicialização (Componentes)
+    "Firmware" : 5.45
+    "Loader (GRUB/LUKS)" : 40.42
+    "Kernel" : 11.72
+    "Userspace (Serviços)" : 23.39
+```
+</details>
 
 Olha a distribuição dessa vergonha:
 
-1. **`loader: 54.912s`**: Quase um minuto inteiro gasto exclusivamente dentro do GRUB, antes mesmo do kernel Linux ter a chance de fazer qualquer coisa.
-2. **`kernel: 12.575s`**: Doze segundos e meio de kernel e *initramfs* em um NVMe. Péssimo.
-3. **`userspace: 32.525s`**: Mais de trinta segundos do sistema operacional já com a raiz montada, enquanto serviços sofriam pra terminar de carregar.
+1. **`loader: 40.418s`**: Quarenta segundos inteiros gastos exclusivamente dentro do GRUB, antes mesmo do kernel Linux ter a chance de fazer qualquer coisa.
+2. **`kernel: 11.720s`**: Quase doze segundos de kernel e *initramfs* em um NVMe. Péssimo.
+3. **`userspace: 23.389s`**: Mais de vinte e três segundos do sistema operacional já com a raiz montada, enquanto serviços sofriam pra terminar de carregar.
 
 A culpa não era de uma coisa só. O sistema inteiro estava conspirando em camadas diferentes pra testar minha sanidade.
 
 ## O primeiro tropeço: mapeando o terreno no NVMe
 
-O alvo prioritário era óbvio: os 55 segundos do `loader`. O GRUB estava sofrendo pra ler o container LUKS (*Linux Unified Key Setup*), e a ferramenta mandatória pra inspecionar esses metadados é o `cryptsetup` [^2].
+O alvo prioritário era óbvio: os 40 segundos do `loader`. O GRUB estava sofrendo pra ler o container LUKS (*Linux Unified Key Setup*), e a ferramenta mandatória pra inspecionar esses metadados é o `cryptsetup` [^2].
 
 E aqui entra a minha primeira presepada do dia. Na pressa e na arrogância de quem acha que digita mais rápido do que pensa, fui direto no disco cru:
 
@@ -158,11 +179,11 @@ Reiniciei o notebook com aquele sorrisinho de canto de boca de quem acabou de re
 
 Digito a senha no GRUB. Tela preta. Espero. Espero mais um pouco. E mais um pouco.
 
-O sistema finalmente subiu. Rodei o `systemd-analyze` com o coração acelerado e dei de cara com isso: tempo de `loader` cravado em **42.810 segundos**.
+O sistema finalmente subiu. Rodei o `systemd-analyze` com o coração acelerado e dei de cara com isso: tempo de `loader` cravado em **40.410 segundos**.
 
-De 54.9s pra 42.8s. Uma queda ridícula de 12 segundos.
+De 40.4s pra 40.4s. Uma queda ridícula de milissegundos.
 
-Eu cortei mais de quatro milhões de iterações e ganhei míseros doze segundos? A sensação de palhaço foi instantânea. O que diabos estava acontecendo?
+Eu cortei mais de quatro milhões de iterações e ganhei míseros milissegundos? A sensação de palhaço foi instantânea. O que diabos estava acontecendo?
 
 Foi aí que tomei a rasteira mais genial da arquitetura do GRUB: **ele testa os keyslots em ordem estritamente linear (0 -> 1 -> 2 -> ... -> 7)**.
 
@@ -171,20 +192,29 @@ Pensa comigo no que eu acabei de fazer. Eu apaguei o Slot 0 e botei minha senha 
 Quando eu digitava minha senha no GRUB, o coitado do bootloader fazia exatamente isso:
 
 ```mermaid
-flowchart TD
-    KEY["<b>Teclado:</b> Senha digitada"]
-    S0["<b>1. Testar Slot 0:</b> Vazio<br>Pula direto para o próximo"]
-    S1["<b>2. Testar Slot 1:</b> Arquivo de chave (5M iterações)<ul><li>O GRUB não sabe que é um keyfile!</li><li>Aplica a senha digitada e calcula 5 MILHÕES de hashes em single-core</li><li>Falha após ~30 segundos jogados fora!</li></ul>"]
-    S2["<b>3. Testar Slot 2:</b> Minha senha real (1,4M iterações)<ul><li>Aplica a senha no Slot 2</li><li>Calcula mais 1,4 milhão de hashes...</li><li>Sucesso após ~10 segundos!</li></ul>"]
+sequenceDiagram
+    participant T as Teclado
+    participant G as GRUB
+    participant S0 as Slot 0
+    participant S1 as Slot 1
+    participant S2 as Slot 2
 
-    KEY --> S0
-    S0 --> S1
-    S1 --> S2
+    T->>G: Senha digitada
+    G->>S0: Testar senha
+    S0-->>G: Vazio — pula
+    Note right of S0: ~0s
 
-    class KEY key;
-    class S0 neutral;
-    class S1 failure;
-    class S2 success;
+    G->>S1: Testar senha
+    Note right of S1: Keyfile (5M iter)<br/>O GRUB não sabe<br/>que é um arquivo!
+    activate S1
+    S1--xG: FALHA após ~30s
+    deactivate S1
+
+    G->>S2: Testar senha
+    Note right of S2: Senha real (1.4M iter)
+    activate S2
+    S2-->>G: SUCESSO após ~10s
+    deactivate S2
 ```
 
 O GRUB pegava a senha humana do teclado, jogava no Slot 1 (que era um keyfile binário), calculava cinco milhões de hashes até perceber que não batia, descartava com erro e só aí ia pro Slot 2 calcular mais 1,4 milhão!
@@ -218,13 +248,13 @@ Reboot na máquina.
 
 Prompt do GRUB. Digito a senha. Enter. Duas piscadas de cursor, menos de dez segundos e a lista do kernel pulou na tela.
 
-Rodei o `systemd-analyze`: o tempo de `loader` desabou de **54.912s** para **18.792 segundos**.
+Rodei o `systemd-analyze`: o tempo de `loader` desabou de **40.418s** para **21.987 segundos**.
 
-Considerando que 5 segundos são o tempo de menu do GRUB (`GRUB_TIMEOUT=5`) e uns 3 segundos foram minha lentidão humana pra digitar, o tempo real de descriptografia despencou de quase 50 segundos para menos de 10s. Uma redução de mais de 63% apenas respeitando a ordem da fila e parando de fritar a CPU com iterações desnecessárias.
+Considerando que 5 segundos são o tempo de menu do GRUB (`GRUB_TIMEOUT=5`) e uns 3 segundos foram minha lentidão humana pra digitar, o tempo real de descriptografia despencou para algo muito mais razoável. Uma redução drástica apenas respeitando a ordem da fila e parando de fritar a CPU com iterações desnecessárias.
 
 ## O pipeline do NVMe: adeus workqueues e TRIM liberado
 
-Resolvido o bootloader, olhei pro segundo culpado: os **12.575 segundos de kernel**.
+Resolvido o bootloader, olhei pro segundo culpado: os **11.720 segundos de kernel**.
 
 Em um NVMe rápido, doze segundos é tempo demais pro kernel acordar e montar o sistema de arquivos.
 
@@ -522,14 +552,40 @@ Essa é a velocidade real da cifra quando você elimina as filas intermediárias
 
 ## O purgatório do userspace: Plymouth, GNOME Keyring e o Wi-Fi
 
-Faltava a última trincheira: os mais de trinta segundos do **userspace (32.525s)**.
+Faltava a última trincheira: os mais de vinte e três segundos do **userspace (23.076s)**.
 
 Rodei a cadeia crítica pra ver quem estava segurando a fila:
 
-```bash
-systemd-analyze critical-chain
+<details markdown="1">
+<summary>Ver relatório de tempo de boot (Intermediário)</summary>
+
+```text
+Startup finished in 5.457s (firmware) + 21.987s (loader) + 6.051s (kernel) + 23.076s (userspace) = 56.572s 
+graphical.target reached after 23.076s in userspace.
+
+The time when unit became active or started is printed after the "@" character.
+The time the unit took to start is printed after the "+" character.
+
+graphical.target @23.076s
+└─power-profiles-daemon.service @22.984s +90ms
+  └─multi-user.target @22.981s
+    └─plymouth-quit-wait.service @2.496s +20.483s
+      └─systemd-user-sessions.service @2.455s +38ms
+        └─network.target @2.451s
+          └─NetworkManager.service @1.713s +738ms
+            └─dbus.service @1.663s +38ms
+              └─basic.target @1.619s
+                └─sockets.target @1.616s
 ```
-*Mapeando os serviços que estavam travando a inicialização do userspace.*
+
+```mermaid
+pie title Tempo de Inicialização (Componentes)
+    "Firmware" : 5.46
+    "Loader (GRUB/LUKS)" : 21.99
+    "Kernel" : 6.05
+    "Userspace (Serviços)" : 23.08
+```
+</details>
 
 Três aberrações saltaram aos olhos.
 
@@ -572,47 +628,56 @@ A culpa não era do Wayland; a culpa era minha. O comportamento é amplamente do
 
 Para o meu modelo de ameaça (a máquina desligada na mochila em caso de furto físico), o autologin faz todo o sentido: se a máquina ligou e a senha do LUKS foi digitada com sucesso, eu já estou fisicamente no controle do teclado, e pedir senha de novo no desktop seria só atrito inútil. O problema é que o ecossistema do GNOME cobra o preço desse atalho: aplicativos de background tentam consultar credenciais salvas via D-Bus síncrono. Como o chaveiro está bloqueado, as chamadas bloqueiam a thread principal da interface até dar timeout ou abrir prompt de senha. Saber disso evita gastar horas caçando fantasmas de renderização gráfica.
 
-## O placar final: de 100 para 34 segundos
+## O placar final: Antes e Depois
 
-Depois de caçar cada uma dessas picuinhas, dei o reboot definitivo pra medir o resultado final com boot frio.
+Depois de caçar cada uma dessas picuinhas, dei o reboot definitivo pra medir o resultado final com boot frio. A diferença no uso diário é brutal. A máquina liga, eu digito a senha do disco e em instantes o desktop já está pronto pra usar, sem engasgo e sem enrolação.
 
-A diferença no uso diário é brutal. A máquina liga, eu digito a senha do disco e em instantes o desktop já está pronto pra usar, sem engasgo e sem enrolação.
+<details markdown="1">
+<summary>Ver Comparativo Final (1m 20s vs 35s)</summary>
 
-O comparativo de ponta a ponta:
-
-| Camada do Sistema | Baseline Inicial | Pós-Keyslot (Slot 0) | Pós-Userspace | Pós-zram (Final) | Redução Total |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Firmware (UEFI)** | 6.969s | 5.308s | 5.298s | 5.317s | -1.652s (-24%) |
-| **Loader (GRUB + LUKS)** | 48.464s | 18.792s | 18.011s | 19.049s | **-29.415s (-61%)** |
-| **Kernel** | 12.575s | 8.873s | 8.716s | **5.957s** | **-6.618s (-53%)** |
-| **Userspace** | 32.525s | 27.234s | 4.146s | **4.279s** | **-28.246s (-87%)** |
-| **Tempo Total** | **1min 40.536s** | **1min 00.209s** | **36.172s** | **34.604s** | **-65.932s (-65%)** |
-
-Lembrando que desses 19 segundos do loader final, 5 segundos são timeout fixo de menu do GRUB e cerca de 3 a 4 segundos são o tempo de reação dos meus dedos digitando a senha. A descriptografia pura em si caiu de quase 50 segundos para menos de 10 segundos.
-
-E o userspace, que antes se arrastava por mais de meio minuto com o Plymouth travando tudo, agora entrega a sessão gráfica em pouco mais de 4 segundos:
-
+### Antes da Otimização (O Pesadelo)
 ```text
-graphical.target @4.278s
-└─power-profiles-daemon.service @4.196s +82ms
-  └─multi-user.target @4.194s
-    └─docker.service @3.021s +1.172s
-      └─containerd.service @2.835s +184ms
-        └─network.target @2.831s
-          └─NetworkManager.service @2.282s +548ms
-            └─network-pre.target @2.279s
-              └─ufw.service @1.665s +610ms
-                └─local-fs.target @1.649s
-                  └─run-user-1000-gvfs.mount @3.680s
-                    └─run-user-1000.mount @3.079s
-                      └─local-fs-pre.target @644ms
-                        └─lvm2-monitor.service @547ms +96ms
-                          └─systemd-journald.socket @537ms
-                            └─-.mount @482ms
-                              └─-.slice @482ms
+Startup finished in 5.452s (firmware) + 40.418s (loader) + 11.720s (kernel) + 23.389s (userspace) = 1min 20.980s 
+graphical.target reached after 23.388s in userspace.
+```
+```mermaid
+pie title Boot Original (1min 20s)
+    "Firmware" : 5.45
+    "Loader (GRUB/LUKS)" : 40.42
+    "Kernel" : 11.72
+    "Userspace (Serviços)" : 23.39
 ```
 
-Uma economia líquida de mais de um minuto a cada inicialização da máquina, cravando o boot frio completo com Full Disk Encryption em 34 segundos.
+### Depois da Otimização (O Veredito)
+```text
+Startup finished in 5.493s (firmware) + 21.812s (loader) + 6.015s (kernel) + 2.540s (userspace) = 35.862s 
+graphical.target reached after 2.539s in userspace.
+
+The time when unit became active or started is printed after the "@" character.
+The time the unit took to start is printed after the "+" character.
+
+graphical.target @2.539s
+└─power-profiles-daemon.service @2.506s +32ms
+  └─multi-user.target @2.503s
+    └─cups-browsed.service @2.503s
+      └─cups.service @2.451s +50ms
+        └─network.target @2.449s
+          └─NetworkManager.service @1.716s +732ms
+```
+```mermaid
+pie title Boot Otimizado (35s)
+    "Firmware" : 5.49
+    "Loader (GRUB/LUKS)" : 21.81
+    "Kernel" : 6.02
+    "Userspace (Serviços)" : 2.54
+```
+</details>
+
+Lembrando que desses 21 segundos do loader final, 5 segundos são timeout fixo de menu do GRUB e cerca de 3 a 4 segundos são o tempo de reação dos meus dedos digitando a senha. A descriptografia pura em si caiu de quase 40 segundos para menos de 10 segundos.
+
+E o userspace, que antes se arrastava por mais de vinte e três segundos com o Plymouth travando tudo, agora entrega a sessão gráfica em **ridículos 2,5 segundos**!
+
+Uma economia líquida de incríveis 45 segundos a cada inicialização da máquina, cravando o boot frio completo com *Full Disk Encryption* na casa dos 35 segundos.
 
 ## Lições de engenharia pra não esquecer
 
@@ -632,175 +697,290 @@ Por fim: **swap em disco para quem tem RAM de sobra é puro desperdício**. Se v
 
 Agora o notebook finalmente se comporta como um computador moderno: seguro quando desligado, rápido quando ligado, e sem me fazer perder um minuto de vida olhando pra tela preta.
 
-Consertar tudo isso em um sistema já rodando foi uma excelente jornada de aprendizado, mas convenhamos: ter que matar keyslots na unha, redimensionar partições a quente e caçar configurações herdadas pós-instalação dá trabalho demais. A boa notícia é que todas essas otimizações — do swap ao sysctl, do GRUB ao resize do disco — podem ser condensadas em um script idempotente que roda no primeiro boot após uma instalação padrão do Debian, eliminando o trabalho manual de cirurgia corretiva: e é exatamente sobre essa arquitetura de provisionamento automatizado que vamos conversar em breve no {% include post-ref.html slug="ansible-debian-desktop" text="guia de automação do Debian com Ansible" %}.
+Consertar tudo isso em um sistema já rodando foi uma excelente jornada de aprendizado, mas convenhamos: ter que caçar comandos espalhados dá trabalho demais se você não tiver um roteiro claro e seguro. A boa notícia é que todas essas etapas — da calibração do LUKS (Slot 0 em 500ms) à eliminação do swap, do resize online do disco ao sysctl, udev e zram — formam a fundação exata de baixo nível (Day-0/Day-1) que aplico manualmente no primeiro boot do sistema recém-instalado antes de entregar a orquestração do espaço de usuário para o Ansible no Day-2, como detalhado no {% include post-ref.html slug="ansible-debian-desktop" text="guia de automação do Debian com Ansible" %}.
 
 ## Colinha rápida para a próxima formatação
 
-Para não ter que caçar comandos espalhados pelo artigo quando eu formatar o notebook novamente, estruturei o roteiro executivo consolidado no padrão **Análise -> Atuação -> Verificação**:
+Para não ter que caçar comandos espalhados pelo artigo quando eu formatar o notebook novamente, estruturei o roteiro executivo consolidado no padrão **Diagnóstico -> Atuação -> Conferência**. Os comandos refletem o caminho final correto após todos os tropeços documentados acima. A ordem está otimizada: o swap sai primeiro para que as etapas seguintes só precisem tratar da partição raiz.
 
-<details markdown="1">
+<details markdown="1" open>
 <summary>Ver colinha de comandos (Cheat Sheet)</summary>
 
-### 1. Otimizar as flags do disco no crypttab
+### 0. Diagnóstico geral do sistema
 
-* **Análise (identificar UUID da partição raiz e flags atuais):**
+Levantar o mapa completo antes de mexer em qualquer coisa:
+
 ```bash
-# Inspeciona UUIDs das partições e pontos de montagem
-lsblk -o NAME,FSTYPE,UUID,MOUNTPOINTS
+# Layout de partições, UUIDs e pontos de montagem
+lsblk -o NAME,FSTYPE,SIZE,UUID,MOUNTPOINTS
 
-# Consulta as opções atuais no crypttab
+# Tempos de boot atuais (baseline)
+systemd-analyze
+systemd-analyze critical-chain
+
+# Cabeçalhos LUKS — anotar iterações e slots ativos
+cryptsetup luksDump /dev/nvme0n1p2
+cryptsetup luksDump /dev/nvme0n1p3
+
+# Configurações atuais de disco e boot
 cat /etc/crypttab
-```
-*Inspeção dos identificadores de bloco e parâmetros vigentes do dm-crypt.*
+cat /etc/fstab
+grep GRUB_CMDLINE_LINUX_DEFAULT /etc/default/grub
 
-* **Atuação (adicionar discard e desativar filas de trabalho síncronas no NVMe):**
+# Swap e serviços de retenção
+swapon --show
+free -h
+systemctl status plymouth-quit-wait.service
+systemctl status NetworkManager-wait-online.service
+```
+
+Com tudo anotado, seguir as etapas na ordem.
+
+---
+
+### 1. Desativar swap em disco e calar os hooks de resume
+
+* **Atuação:**
+
 ```bash
-# Formato esperado no /etc/crypttab:
-# luks-<UUID_RAIZ> UUID=<UUID_RAIZ> none luks,discard,no-read-workqueue,no-write-workqueue
+# Desliga a swap ativa
+swapoff -a
 
-# Injeção automática das flags na linha ativa do crypttab
-sudo sed -i -E 's/(luks,initramfs|luks)/\1,discard,no-read-workqueue,no-write-workqueue/' /etc/crypttab
+# Edita os três arquivos com nano:
+
+# remover a linha do swap
+nano /etc/fstab
+
+# remover a entrada luks-17c81b89...
+nano /etc/crypttab
+
+# tirar resume=... e splash da CMDLINE
+nano /etc/default/grub
+
+# Cala o hook de resume do initramfs
+echo "RESUME=none" > /etc/initramfs-tools/conf.d/resume
+
+# setar RESUME=none
+nano /etc/initramfs-tools/initramfs.conf
+
+# O update-grub é seguro agora (só reescreve o grub.cfg)
+update-grub
+
+# Reinicia pra liberar o device-mapper da swap e limpar o /proc/cmdline
+reboot
 ```
-*Aplicação das flags de performance e TRIM para o SSD.*
 
-* **Verificação:**
+Após o reboot, regerar o initramfs com tudo limpo:
+
 ```bash
-cat /etc/crypttab
+update-initramfs -u -k all
 ```
-*Conferência do arquivo com as novas flags gravadas.*
 
-### 2. Desativar o swap em disco e calar os hooks de resume
+* **Conferência:**
 
-* **Análise (levantar swap ativa, fstab e linha do kernel):**
 ```bash
 swapon --show
-cat /etc/fstab | grep swap
-cat /etc/default/grub | grep GRUB_CMDLINE_LINUX_DEFAULT
+cat /proc/cmdline
 ```
-*Mapeamento de todas as referências ao swap legado no sistema.*
+*`swapon` vazio e nenhum `resume=` no cmdline.*
 
-* **Atuação (desativar swap, limpar arquivos e desabilitar resume no initramfs):**
+---
+
+### 2. Calibrar a senha do LUKS no Slot 0 (PBKDF2 em 500ms)
+
+Agora só na raiz (`p2`), pois a swap já morreu.
+
+* **Atuação:**
+
 ```bash
-# 1. Desativa a swap ativa imediatamente
-sudo swapoff -a
+# Mata o Slot 0 pesado usando o keyfile como autorização
+cryptsetup luksKillSlot /dev/nvme0n1p2 0 --key-file /crypto_keyfile.bin
 
-# 2. Remove as linhas de swap do fstab e do crypttab
-sudo sed -i '/swap/d' /etc/fstab
-sudo sed -i '/swap/d' /etc/crypttab
-
-# 3. Remove qualquer parâmetro "resume=..." do GRUB
-sudo sed -i -E 's/resume=[^ "]+//g' /etc/default/grub
-
-# 4. Desativa explicitamente os hooks de resume no initramfs
-echo "RESUME=none" | sudo tee /etc/initramfs-tools/conf.d/resume
-
-# 5. Regera todas as imagens do initramfs e atualiza o menu do GRUB
-sudo update-initramfs -u -k all
-sudo update-grub
+# Recria a senha humana direto no Slot 0, calibrada em 500ms
+cryptsetup luksAddKey /dev/nvme0n1p2 --key-file /crypto_keyfile.bin --iter-time 500 -S 0
 ```
-*Expurgo total de dependências de swap físico e hibernação.*
+*A senha humana fica no primeiro slot que o GRUB testa. Sem desvio, sem fila.*
 
-* **Verificação:**
+* **Conferência:**
+
 ```bash
-cat /etc/initramfs-tools/conf.d/resume
-swapon --show  # deve retornar vazio
+cryptsetup luksDump /dev/nvme0n1p2 | grep -A 4 "Key Slot"
 ```
-*Garantia de que nenhum swap de disco está em execução.*
+*Slot 0 deve mostrar ~1.400.000 iterações. Slot 1 (keyfile) intocado.*
 
-### 3. Instalar e habilitar o zram
+---
 
-* **Análise (conferir memória RAM total disponível):**
+### 3. Flags de performance no crypttab (NVMe + TRIM)
+
+Agora o crypttab só tem a linha da raiz.
+
+* **Atuação — editar `/etc/crypttab` com `nano`:**
+
 ```bash
-free -h
+nano /etc/crypttab
+# Adicione ao final das opções: ,no-read-workqueue,no-write-workqueue
 ```
-*Consulta da capacidade física de memória do host.*
 
-* **Atuação (instalar o gerenciador automático de zram):**
+O formato final da linha deve ficar assim (mantendo o `keyscript` original do Debian):
+
+```text
+luks-<UUID> UUID=<UUID> /crypto_keyfile.bin luks,discard,no-read-workqueue,no-write-workqueue,keyscript=/bin/cat
+```
+
+Regerar o initramfs com as novas flags:
+
 ```bash
-sudo apt update && sudo apt install zram-tools -y
-```
-*Instalação e ativação imediata do daemon de zram.*
+update-initramfs -u -k all
 
-* **Verificação:**
+# Reinicia para pegar o novo initramfs e as flags do crypttab
+reboot
+```
+
+* **Conferência:**
+
+```bash
+cat /etc/crypttab
+```
+*A linha da raiz deve ter `discard,no-read-workqueue,no-write-workqueue`.*
+
+---
+
+### 4. Instalar o zram (swap comprimido na RAM)
+
+* **Atuação:**
+
+```bash
+apt update && apt install zram-tools -y
+```
+
+* **Conferência:**
+
 ```bash
 swapon --show
 zramctl
 ```
-*Conferência do dispositivo /dev/zram0 com algoritmo de compressão zstd ativo.*
+*Deve aparecer `/dev/zram0` com compressão `zstd` e prioridade 100.*
 
-### 4. Reivindicar o espaço da partição swap para a raiz a quente
+---
 
-* **Análise (identificar mapeador ativo da raiz e tabela GPT):**
+### 5. Expandir a partição raiz no espaço da swap morta
+
+* **Atuação:**
+
 ```bash
-# Identifica o dispositivo mapper montado em /
-findmnt -no SOURCE /
+apt install parted -y
 
-# Inspeciona a numeração exata das partições no NVMe
-sudo parted /dev/nvme0n1 print
-```
-*Mapeamento do disco para redimensionamento sem risco.*
+# Remove a partição 3 e estica a 2 até o fim do disco
+parted /dev/nvme0n1 rm 3
+parted /dev/nvme0n1 resizepart 2 100%
 
-* **Atuação (remover partição 3, esticar partição 2 e expandir LUKS/ext4 online):**
-```bash
-# Instala o parted se ainda não estiver presente
-sudo apt install parted -y
-
-# Exclui a finada partição 3 e estende a partição 2 até o limite do disco
-sudo parted /dev/nvme0n1 rm 3
-sudo parted /dev/nvme0n1 resizepart 2 100%
-
-# Descobre o mapper raiz e expande o container LUKS e o ext4 montado
+# Expande o LUKS e o ext4 a quente
 MAPPER_ROOT=$(findmnt -no SOURCE /)
-sudo cryptsetup resize "${MAPPER_ROOT##*/}"
-sudo resize2fs "$MAPPER_ROOT"
+cryptsetup resize "${MAPPER_ROOT##*/}"
+resize2fs "$MAPPER_ROOT"
 ```
-*Expansão instantânea do disco a quente sem necessidade de Live USB.*
 
-* **Verificação:**
+*O `resize2fs` vai avisar "on-line resizing required" — é normal. As linhas `old_desc_blocks`/`new_desc_blocks` e o número final de blocos confirmam que o resize funcionou.*
+
+* **Conferência:**
+
 ```bash
 lsblk /dev/nvme0n1
 df -h /
+fstrim -av
+
+# Confere o tamanho real alinhado (LUKS vs ext4) em GiB:
+echo "LUKS: $(( $(blockdev --getsize64 "$MAPPER_ROOT") / 1024 / 1024 / 1024 )) GiB"
+echo "ext4: $(( $(dumpe2fs -h "$MAPPER_ROOT" 2>/dev/null | awk -F: '/Block count/{print $2}') * 4096 / 1024 / 1024 / 1024 )) GiB"
 ```
-*Conferência do novo espaço total incorporado na partição raiz.*
+*A partição 2 deve ocupar o disco todo. O TRIM deve passar pelo LUKS. Os valores em GiB do contêiner e do ext4 devem bater (a diferença de ~15G para o `df -h` é o overhead de inodes, superblocos e journal do ext4).*
 
-### 5. Desativar gargalos do userspace
+---
 
-* **Análise (checar status dos serviços de retenção):**
+### 6. Limpar gargalos do userspace (Plymouth + rede)
+
+* **Atuação:**
+
 ```bash
-systemctl status plymouth-quit-wait.service NetworkManager-wait-online.service
+# Mascara o Plymouth (nunca mais sobe)
+systemctl mask plymouth-quit-wait.service
+
+# Desativa a espera de rede no boot
+systemctl disable NetworkManager-wait-online.service
+
+# Atualiza o GRUB (splash já foi removido na etapa 1)
+update-grub
 ```
-*Identificação do estado atual dos serviços de splash e sincronização de rede.*
 
-* **Atuação (mascarar plymouth e desativar retenção de rede):**
+* **Conferência:**
+
 ```bash
-sudo systemctl mask plymouth-quit-wait.service
-sudo systemctl disable NetworkManager-wait-online.service
+systemctl is-enabled plymouth-quit-wait.service
+systemctl is-enabled NetworkManager-wait-online.service
 ```
-*Desativação de timeouts desnecessários no boot.*
+*Devem retornar `masked` e `disabled`.*
 
-* **Verificação:**
+---
+
+### 7. Configurar Sysctl NVMe (Swappiness e Caches)
+
+* **Atuação:**
+
 ```bash
-systemctl is-enabled plymouth-quit-wait.service NetworkManager-wait-online.service
+cat <<EOF > /etc/sysctl.d/99-nvme-performance.conf
+# Reduz uso do swap em disco (irrelevante agora com zram puro)
+vm.swappiness = 100
+# Prioriza manter o cache de arquivos na RAM
+vm.vfs_cache_pressure = 50
+EOF
+sysctl --system
 ```
-*Confirmação de que os serviços estão mascarados ou desabilitados.*
 
-### 6. Validação final pós-reboot (TRIM, Benchmark e Tempos)
+---
 
-* **Execução e Verificação pós-reinicialização:**
+### 8. Desativar Scheduler em Software para NVMe (udev)
+
+* **Atuação:**
+
 ```bash
-# 1. Valida o descarte de blocos (TRIM) de ponta a ponta
-sudo fstrim -av
+cat <<EOF > /etc/udev/rules.d/60-nvme-scheduler.rules
+# Entrega as operacoes de I/O diretamente para a fila PCIe do hardware NVMe
+ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{queue/scheduler}="none"
+EOF
+udevadm control --reload-rules
+udevadm trigger --type=devices --action=change
+```
 
-# 2. Mede taxa de leitura sequencial através da criptografia
-MAPPER_ROOT=$(findmnt -no SOURCE /)
-sudo hdparm -Tt "$MAPPER_ROOT"
-sudo dd if="$MAPPER_ROOT" of=/dev/null bs=1M count=4096 status=progress
+* **Conferência:**
 
-# 3. Audita os tempos de inicialização da máquina
+```bash
+cat /sys/block/nvme0n1/queue/scheduler
+```
+*Deve mostrar `[none] bfq mq-deadline` (o `none` entre colchetes).*
+
+---
+
+### 9. Validação final pós-reboot
+
+```bash
+reboot
+```
+
+Após reiniciar:
+```bash
+# Tempos de boot
 systemd-analyze
 systemd-analyze critical-chain
+
+# TRIM de ponta a ponta
+fstrim -av
+
+# Benchmark de leitura através do LUKS
+MAPPER_ROOT=$(findmnt -no SOURCE /)
+hdparm -Tt "$MAPPER_ROOT"
+dd if="$MAPPER_ROOT" of=/dev/null bs=1M count=4096 status=progress
 ```
-*Medição final de estabilidade, vazão de dados e tempo do boot frio.*
+*Meta: boot total abaixo de 35s, leitura sequencial acima de 1.8 GB/s.*
 
 </details>
 
