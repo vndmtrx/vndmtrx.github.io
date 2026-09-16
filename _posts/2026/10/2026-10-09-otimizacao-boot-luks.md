@@ -201,7 +201,7 @@ sequenceDiagram
 
     T->>G: Senha digitada
     G->>S0: Testar senha
-    S0-->>G: Vazio — pula
+    S0-->>G: Vazio (pula)
     Note right of S0: ~0s
 
     G->>S1: Testar senha
@@ -251,6 +251,9 @@ Prompt do GRUB. Digito a senha. Enter. Duas piscadas de cursor, menos de dez seg
 Rodei o `systemd-analyze`: o tempo de `loader` desabou de **40.418s** para **21.987 segundos**.
 
 Considerando que 5 segundos são o tempo de menu do GRUB (`GRUB_TIMEOUT=5`) e uns 3 segundos foram minha lentidão humana pra digitar, o tempo real de descriptografia despencou para algo muito mais razoável. Uma redução drástica apenas respeitando a ordem da fila e parando de fritar a CPU com iterações desnecessárias.
+
+> [!WARNING] O Trade-off da Calibração Rápida (500ms)
+> Reduzir a calibração do PBKDF2 para 500ms é uma troca consciente de custo computacional por agilidade diária no boot. Isso é perfeitamente seguro contra furto de oportunidade **desde que você utilize uma senha ou passphrase longa e com alta entropia** (16+ caracteres ou 4+ palavras aleatórias). Se o seu padrão é usar senhas curtas (ex: 8 dígitos simples), não reduza o tempo de iteração, pois rigs modernos de GPU quebram senhas fracas com PBKDF2 reduzido com muito mais facilidade.
 
 ## O pipeline do NVMe: adeus workqueues e TRIM liberado
 
@@ -415,6 +418,9 @@ Com o swap rodando liso na memória, sobrou um elefante na sala: os **34,2 GB** 
 
 A beleza da arquitetura de armazenamento do Linux moderno é que você não precisa dar boot por Live USB nem desmontar partição nenhuma pra fazer essa expansão. Dá pra redimensionar tudo com o sistema montado e rodando a quente.
 
+> [!IMPORTANT] Contexto de Day-0 vs Sistemas em Produção
+> Redimensionar tabelas GPT, containers LUKS e sistemas de arquivos a quente funciona perfeitamente no Linux moderno, mas exige responsabilidade: se faltar energia ou o sistema travar durante a gravação dos novos superblocos, a recuperação do container pode ser desastrosa. No meu caso, o notebook estava conectado à tomada e a máquina havia acabado de ser formatada (um cenário Day-0/Day-1 onde, se houvesse qualquer falha, bastava reinstalar do zero). Se você for aplicar essa operação em uma máquina com dados de trabalho consolidados, **faça backup completo antes de tocar no particionador**.
+
 Primeiro, instalei o `parted` e invoquei o utilitário no disco físico:
 
 ```bash
@@ -423,7 +429,7 @@ sudo parted /dev/nvme0n1
 ```
 *Abertura do particionador interativo no disco NVMe.*
 
-Dentro do `parted`, consultei a tabela GPT, deletei a finada partição 3 e estiquei a partição 2 até o limite físico do disco:
+Dentro do `parted`, consultei a tabela GPT, marquei a flag correta da partição EFI, deletei a finada partição 3 e estiquei a partição 2 até o limite físico do disco:
 
 ```text
 (parted) print
@@ -437,10 +443,13 @@ Number  Start   End    Size    File system  Name  Flags
  2      317MB   475GB  475GB                root
  3      475GB   512GB  36,7GB
 
+(parted) set 1 esp on
 (parted) rm 3
 (parted) resizepart 2 100%
 (parted) quit
 ```
+
+O comando `set 1 esp on` é um detalhe crucial de Day-0: caso o instalador tenha criado a partição EFI com a flag genérica `msftdata` em vez de marcá-la formalmente como EFI System Partition, utilitários como o `fwupd` (Linux Vendor Firmware Service) falham ao localizar o ponto de cápsula de firmware para atualizar a BIOS UEFI. Com a flag cravada, a partição fica em conformidade total.
 
 A partição `/dev/nvme0n1p2` agora ocupava o restante inteiro do NVMe (476,6 GB úteis). Mas o container criptográfico e o sistema de arquivos continuavam enxergando apenas os 442 GB antigos.
 
@@ -697,7 +706,7 @@ Por fim: **swap em disco para quem tem RAM de sobra é puro desperdício**. Se v
 
 Agora o notebook finalmente se comporta como um computador moderno: seguro quando desligado, rápido quando ligado, e sem me fazer perder um minuto de vida olhando pra tela preta.
 
-Consertar tudo isso em um sistema já rodando foi uma excelente jornada de aprendizado, mas convenhamos: ter que caçar comandos espalhados dá trabalho demais se você não tiver um roteiro claro e seguro. A boa notícia é que todas essas etapas — da calibração do LUKS (Slot 0 em 500ms) à eliminação do swap, do resize online do disco ao sysctl, udev e zram — formam a fundação exata de baixo nível (Day-0/Day-1) que aplico manualmente no primeiro boot do sistema recém-instalado antes de entregar a orquestração do espaço de usuário para o Ansible no Day-2, como detalhado no {% include post-ref.html slug="ansible-debian-desktop" text="guia de automação do Debian com Ansible" %}.
+Consertar tudo isso em um sistema já rodando foi uma excelente jornada de aprendizado, mas convenhamos: ter que caçar comandos espalhados dá trabalho demais se você não tiver um roteiro claro e seguro. A boa notícia é que todas essas etapas, da calibração do LUKS (Slot 0 em 500ms) à eliminação do swap, do resize online do disco ao sysctl, udev e zram, formam a fundação exata de baixo nível (Day-0/Day-1) que aplico manualmente no primeiro boot do sistema recém-instalado antes de entregar a orquestração do espaço de usuário para o Ansible no Day-2, como detalhado no {% include post-ref.html slug="ansible-debian-desktop" text="guia de automação do Debian com Ansible" %}.
 
 ## Colinha rápida para a próxima formatação
 
@@ -718,7 +727,7 @@ lsblk -o NAME,FSTYPE,SIZE,UUID,MOUNTPOINTS
 systemd-analyze
 systemd-analyze critical-chain
 
-# Cabeçalhos LUKS — anotar iterações e slots ativos
+# Cabeçalhos LUKS: anotar iterações e slots ativos
 cryptsetup luksDump /dev/nvme0n1p2
 cryptsetup luksDump /dev/nvme0n1p3
 
@@ -735,8 +744,6 @@ systemctl status NetworkManager-wait-online.service
 ```
 
 Com tudo anotado, seguir as etapas na ordem.
-
----
 
 ### 1. Desativar swap em disco e calar os hooks de resume
 
@@ -784,8 +791,6 @@ cat /proc/cmdline
 ```
 *`swapon` vazio e nenhum `resume=` no cmdline.*
 
----
-
 ### 2. Calibrar a senha do LUKS no Slot 0 (PBKDF2 em 500ms)
 
 Agora só na raiz (`p2`), pois a swap já morreu.
@@ -808,13 +813,11 @@ cryptsetup luksDump /dev/nvme0n1p2 | grep -A 4 "Key Slot"
 ```
 *Slot 0 deve mostrar ~1.400.000 iterações. Slot 1 (keyfile) intocado.*
 
----
-
 ### 3. Flags de performance no crypttab (NVMe + TRIM)
 
 Agora o crypttab só tem a linha da raiz.
 
-* **Atuação — editar `/etc/crypttab` com `nano`:**
+* **Atuação (editar `/etc/crypttab` com `nano`):**
 
 ```bash
 nano /etc/crypttab
@@ -843,8 +846,6 @@ cat /etc/crypttab
 ```
 *A linha da raiz deve ter `discard,no-read-workqueue,no-write-workqueue`.*
 
----
-
 ### 4. Instalar o zram (swap comprimido na RAM)
 
 * **Atuação:**
@@ -861,14 +862,15 @@ zramctl
 ```
 *Deve aparecer `/dev/zram0` com compressão `zstd` e prioridade 100.*
 
----
-
 ### 5. Expandir a partição raiz no espaço da swap morta
 
 * **Atuação:**
 
 ```bash
 apt install parted -y
+
+# Garante as flags corretas na partição EFI (boot, esp)
+parted /dev/nvme0n1 set 1 esp on
 
 # Remove a partição 3 e estica a 2 até o fim do disco
 parted /dev/nvme0n1 rm 3
@@ -880,7 +882,7 @@ cryptsetup resize "${MAPPER_ROOT##*/}"
 resize2fs "$MAPPER_ROOT"
 ```
 
-*O `resize2fs` vai avisar "on-line resizing required" — é normal. As linhas `old_desc_blocks`/`new_desc_blocks` e o número final de blocos confirmam que o resize funcionou.*
+*O `resize2fs` vai avisar "on-line resizing required" (isso é normal). As linhas `old_desc_blocks`/`new_desc_blocks` e o número final de blocos confirmam que o resize funcionou.*
 
 * **Conferência:**
 
@@ -894,8 +896,6 @@ echo "LUKS: $(( $(blockdev --getsize64 "$MAPPER_ROOT") / 1024 / 1024 / 1024 )) G
 echo "ext4: $(( $(dumpe2fs -h "$MAPPER_ROOT" 2>/dev/null | awk -F: '/Block count/{print $2}') * 4096 / 1024 / 1024 / 1024 )) GiB"
 ```
 *A partição 2 deve ocupar o disco todo. O TRIM deve passar pelo LUKS. Os valores em GiB do contêiner e do ext4 devem bater (a diferença de ~15G para o `df -h` é o overhead de inodes, superblocos e journal do ext4).*
-
----
 
 ### 6. Limpar gargalos do userspace (Plymouth + rede)
 
@@ -920,23 +920,19 @@ systemctl is-enabled NetworkManager-wait-online.service
 ```
 *Devem retornar `masked` e `disabled`.*
 
----
-
 ### 7. Configurar Sysctl NVMe (Swappiness e Caches)
 
 * **Atuação:**
 
 ```bash
 cat <<EOF > /etc/sysctl.d/99-nvme-performance.conf
-# Reduz uso do swap em disco (irrelevante agora com zram puro)
+# Swappiness com zram: 100 força compressão antecipada em pouca RAM; para 32GB+ de RAM, 30 a 60 equilibra o uso sem sobrecarga de CPU
 vm.swappiness = 100
 # Prioriza manter o cache de arquivos na RAM
 vm.vfs_cache_pressure = 50
 EOF
 sysctl --system
 ```
-
----
 
 ### 8. Desativar Scheduler em Software para NVMe (udev)
 
@@ -957,8 +953,6 @@ udevadm trigger --type=devices --action=change
 cat /sys/block/nvme0n1/queue/scheduler
 ```
 *Deve mostrar `[none] bfq mq-deadline` (o `none` entre colchetes).*
-
----
 
 ### 9. Validação final pós-reboot
 
