@@ -601,7 +601,7 @@ Se a sua partição raiz for criada com escolhas ruins de particionamento, alinh
 Quem acompanhou o artigo sobre {% include post-ref.html slug="otimizacao-boot-luks" text="otimização do boot criptografado com LUKS" %} deve lembrar da via-crúcis que enfrentei para consertar a quente uma instalação antiga do Debian: matar keyslots fora de ordem na unha, redimensionar partições a quente e reconfigurar crypttab no braço. O instalador padrão do Debian havia deixado a máquina em LUKS1 com milhões de iterações de hash, e tentar converter um sistema rodando para LUKS2 com Btrfs é pedir para ter dor de cabeça.
 
 A resposta para eliminar esses "erros" de fábrica diretamente no parto da máquina é dividir o provisionamento em duas fronteiras bem delimitadas:
-1. **Day-0 / Day-1 (Calamares + Ventoy):** Baixo nível, particionamento Btrfs com subvolumes estruturados, criptografia LUKS2 otimizada para o estágio inicial do GRUB (PBKDF2 em 500ms), parâmetros de kernel para NVMe sem filas intermediárias, zram e entrega do repositório no `$HOME`.
+1. **Day-0 / Day-1 (Instalação Padrão + Ajustes de Baixo Nível):** Instalação padrão via Calamares na ISO oficial do Debian Live (com disco cifrado e ext4 padrão), seguida pelas calibrações manuais de baixo nível no primeiro boot: calibração de PBKDF2 do LUKS (Slot 0 em 500ms), eliminação do swap em disco, redimensionamento da raiz a quente, parâmetros de kernel para NVMe sem filas intermediárias, ativação do zram e limpeza do boot.
 2. **Day-2 (Ansible via `pipx`):** Espaço de usuário idempotente, dotfiles, runtimes de desenvolvimento, Flatpaks, contêineres e configurações atômicas do GNOME.
 
 > [!NOTE] A Inspiração no cloud-init e o Porquê do Ventoy
@@ -621,14 +621,17 @@ A estrutura no pendrive de dados (`exFAT`) organiza a ISO, o repositório e os p
 
 ### As decisões de baixo nível: NVMe, LUKS e zram
 
-Cada otimização do `post-install.sh` resolve um gargalo histórico de desempenho e usabilidade:
+Cada ajuste de Day-0 resolve um gargalo histórico de desempenho e usabilidade antes do Ansible assumir o sistema operacional:
 
+* **Calibração de Boot LUKS (PBKDF2 em 500ms no Slot 0):** O instalador padrão calibra a derivação de chave com mais de 5 a 6 milhões de iterações, fazendo o GRUB (que roda em single-core sem aceleração criptográfica de hardware) demorar até 50 segundos para abrir o disco. Recriar a senha no **Slot 0** com `--iter-time 500` (~1.4M iterações) despenca o tempo de descriptografia no bootloader para menos de 10 segundos.
 * **NVMe em modo direto no `crypttab`:** A inclusão das flags `no-read-workqueue,no-write-workqueue,discard` instrui o subsistema dm-crypt a despachar operações de I/O diretamente para as filas de hardware do SSD NVMe, eliminando filas intermediárias de software do kernel.
 * **GRUB com suporte a cryptodisk:** Habilita `GRUB_ENABLE_CRYPTODISK=y` e pré-carrega os módulos `luks`, `crypto`, `gcry_rijndael`, `gcry_sha256` e `btrfs` na imagem EFI, garantindo que a descriptografia do disco funcione desde o primeiro estágio de boot.
 * **Eliminação do swap em disco:** Desativa e remove a partição de swap criptografada criada pelo instalador, limpando `/etc/fstab`, `/etc/crypttab` e o parâmetro `resume=` do GRUB — exatamente como fizemos no {% include post-ref.html slug="otimizacao-boot-luks" text="artigo de otimização de boot" %}.
 * **Redimensionamento da raiz a quente:** Deleta a partição de swap morta, expande a partição raiz até o limite do disco e redimensiona o container LUKS e o filesystem (ext4 ou btrfs) online, reivindicando os ~34 GB desperdiçados.
 * **Swap comprimido em RAM (zram):** O `zram-tools` cria um dispositivo de bloco comprimido (`/dev/zram0`) diretamente na memória RAM usando o algoritmo `zstd`. Toda a paginação ocorre com latência de nanossegundos e zero I/O no NVMe. Diferente do `zswap` (que é uma camada de cache que depende de um swap em disco como *backing store*), o `zram` é auto-contido: ele **é** o dispositivo de swap, sem precisar de partição nenhuma no SSD.
-* **Escalonador NVMe `none` e boot limpo:** Uma regra de `udev` força o bypass de escalonadores em software (`bfq`, `mq-deadline`), entregando as requisições direto às filas PCIe. Além disso, removo o `splash`, reduzo o `GRUB_TIMEOUT=1`, mascaro o `plymouth-quit-wait.service` e desativo o `NetworkManager-wait-online.service`.
+* **Escalonador NVMe `none` e boot limpo:** Uma regra de `udev` força o bypass de escalonadores em software (`bfq`, `mq-deadline`), entregando as requisições direto às filas PCIe. Além disso, remove o `splash`, reduz o `GRUB_TIMEOUT=1`, mascara o `plymouth-quit-wait.service` e desativa o `NetworkManager-wait-online.service` (e, para garantir que pacotes futuros nunca os reativem por acidente, o Ansible aplica um *enforcement* idempotente nesses serviços de userspace durante a etapa Day-2).
+
+Todos os comandos detalhados para aplicar essa sequência manualmente estão documentados na [colinha executiva do artigo de boot LUKS]({% post_url 2026/10/2026-10-09-otimizacao-boot-luks %}#colinha-rapida-para-a-proxima-formatacao).
 
 ### O fluxo operacional do Day-0
 
@@ -638,7 +641,7 @@ O processo de instalação:
 
 1. **Boot pelo Ventoy:** Inicialização da mídia Live no notebook selecionando a ISO oficial do Debian GNOME.
 2. **Instalação Gráfica padrão:** Execute o Calamares [^11] normalmente. Na etapa de particionamento, marque **"Apagar disco"** e **"Criptografar sistema"** e defina a senha mestra.
-3. **Primeiro Boot — Otimizações e Provisionamento:** Ao reiniciar no SSD recém-instalado, monte o pendrive, copie o repositório e aplique as otimizações:
+3. **Primeiro Boot — Otimizações e Provisionamento:** Ao reiniciar no SSD recém-instalado, monte o pendrive, copie o repositório e aplique as otimizações de baixo nível da colinha:
 
 ```bash
 # 1. Copiar repositório e backups do pendrive
@@ -646,18 +649,18 @@ mkdir -p ~/du/dev/github ~/du/backups
 cp -r /media/$USER/Ventoy/scripts/ansible-debian-desktop ~/du/dev/github/
 cp -p /media/$USER/Ventoy/backup/* ~/du/backups/ 2>/dev/null || true
 
-# 2. Aplicar otimizações de NVMe, GRUB, zram e sysctl
-cd ~/du/dev/github/ansible-debian-desktop
-sudo ./post-install.sh
+# 2. Aplicar calibrações de baixo nível (conforme colinha do post de LUKS)
+# (Slot 0 com iter-time 500, flags crypttab, expurgo do swap, resize da raiz, zram e udev)
 
 # 3. Opcional: restaurar chaves SSH, GPG, chaveiro GNOME e atalhos
+cd ~/du/dev/github/ansible-debian-desktop
 ./restore.sh
 
 # 4. Disparar o provisionamento completo do ambiente
 ./bootstrap.sh
 ```
 
-A fundação de hardware e armazenamento fica otimizada. O Ansible assume a partir daqui.
+A fundação de hardware e armazenamento fica calibrada. O Ansible assume a partir daqui.
 
 ## Referências
 
