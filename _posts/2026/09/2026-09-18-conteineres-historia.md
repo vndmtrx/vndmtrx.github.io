@@ -4,11 +4,10 @@ title: "A História dos Contêineres"
 subtitle: "De uma chamada de sistema dos anos 70 a uma palestra de cinco minutos que mudou a indústria"
 author:
   - "Eduardo N. S. R."
-date: 2026-09-18 14:00:00 GMT-3
+date: 2026-09-18 14:08:00 GMT-3
 permalink: /posts/conteineres-historia/
 tags: [Docker, Contêineres, Linux, História]
 series: Contêineres de Cabo a Rabo
-published: false
 category: Artigos
 ---
 
