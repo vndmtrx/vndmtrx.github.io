@@ -518,31 +518,30 @@ Cada ajuste de Day-0 resolve um gargalo histórico de desempenho e usabilidade a
 
 Todos os comandos detalhados para aplicar essa sequência manualmente estão documentados na {% include post-ref.html slug="otimizacao-boot-luks" text="colinha executiva do artigo de boot LUKS" anchor="colinha-rapida-para-a-proxima-formatacao" %}.
 
-### O fluxo operacional do Day-0
+### O fluxo operacional pós-instalação
 
-Para automatizar toda essa preparação de mídia, criei o script declarativo `setup-ventoy.sh` (disponível na raiz do repositório [vndmtrx/ansible-debian-desktop](https://github.com/vndmtrx/ansible-debian-desktop/blob/main/setup-ventoy.sh), pronto para baixar e rodar).
+O processo de preparação e primeiro boot:
 
-O processo de instalação:
-
-1. **Boot pelo Ventoy:** Inicialização da mídia Live no notebook selecionando a ISO oficial do Debian GNOME.
+1. **Boot pela mídia de instalação:** Inicialização da mídia Live no notebook selecionando a ISO oficial do Debian GNOME.
 2. **Instalação Gráfica padrão:** Execute o Calamares [^11] normalmente. Na etapa de particionamento, marque **"Apagar disco"** e **"Criptografar sistema"** e defina a senha mestra.
-3. **Primeiro Boot: Otimizações e Provisionamento:** Ao reiniciar no SSD recém-instalado, monte o pendrive, copie o repositório e aplique as otimizações de baixo nível da colinha:
+3. **Primeiro Boot: Otimizações e Provisionamento:** Ao reiniciar no SSD recém-instalado, clone o repositório e execute o script automatizado de Day-0 / Day-1:
 
 ```bash
-# 1. Copiar repositório e backups do pendrive
-mkdir -p ~/du/dev/github ~/du/backups
-cp -r /media/$USER/Ventoy/scripts/ansible-debian-desktop ~/du/dev/github/
-cp -p /media/$USER/Ventoy/backup/* ~/du/backups/ 2>/dev/null || true
+# 1. Instalar git e clonar repositório
+sudo apt update && sudo apt install -y git
+mkdir -p ~/du/dev/github
+cd ~/du/dev/github
+git clone https://github.com/vndmtrx/ansible-debian-desktop.git
+cd ansible-debian-desktop
 
 # 2. Aplicar calibrações de baixo nível automatizadas (Day-0 / Day-1)
 # (Slot 0 com iter-time 500, flags crypttab, expurgo do swap, expansão online da raiz para 100%, zram e initramfs)
-cd ~/du/dev/github/ansible-debian-desktop
 sudo ./setup-day0.sh
 
-# 3. Opcional: restaurar chaves SSH, GPG, chaveiro GNOME e atalhos
+# 3. Opcional: restaurar chaves SSH, GPG, chaveiro GNOME e dotfiles
 ./restore.sh
 
-# 4. Disparar o provisionamento completo do ambiente
+# 4. Disparar o provisionamento completo do ambiente (Ansible Day-2)
 ./bootstrap.sh
 ```
 
