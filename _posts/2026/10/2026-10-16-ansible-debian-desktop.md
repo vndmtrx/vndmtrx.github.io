@@ -20,9 +20,9 @@ Quase todo profissional de tecnologia já tentou resolver essa dor escrevendo o 
 
 Se nós exigimos infraestrutura como código, testes rigorosos e garantia matemática de idempotência para os servidores e clusters que gerenciamos no trabalho, por que raios tratamos o nosso computador pessoal como uma colcha de retalhos artesanal?
 
-Depois da enésima vez em que me vi num domingo à noite caçando atalho do GNOME no DuckDuckGo, cansei dessa palhaçada (e de pagar esse pedágio voluntário de masoquismo). Uns anos atrás decidi que se o computador precisa de mim pra fazer funcionar a barra de tarefas, quem está errado sou eu. Peguei o **Debian 13 (Trixie)** e dei uma bela repaginada em um playbook antigo meu de instalação: você clona o repositório, roda um único comando no terminal e, poucos minutos depois, tem um desktop completo, seguro, afinado para desenvolvimento e com zero intervenção humana.
+Depois da enésima vez em que me vi num domingo à noite caçando atalho do GNOME no DuckDuckGo, cansei dessa palhaçada (e de pagar esse pedágio voluntário de masoquismo). Uns anos atrás decidi que se o computador precisa de mim pra fazer funcionar a barra de tarefas, quem está errado sou eu. Com a chegada do **Debian 13 (Trixie)**, peguei meu playbook antigo e decidi transformar o repositório no blueprint definitivo para a atualização e formatação do meu notebook: toda vez que sai uma versão nova do Debian (ou quando resolvo limpar a casa do zero), o processo precisa ser 100% automatizado, determinístico e executável com um único comando, entregando um desktop pronto, seguro, afinado para desenvolvimento e com zero intervenção humana.
 
-Pois bem. Cá estamos para contar os bastidores técnicos, as minhas escolhas, os meus tropeços e a filosofia por trás dessa automação.
+Pois bem. Cá estamos para contar os bastidores técnicos, a criação do nosso ambiente de testes com IA em VM, as minhas escolhas, os meus tropeços e a filosofia por trás dessa automação.
 
 ## A virtude da preguiça e a blindagem do Debian
 
@@ -421,6 +421,51 @@ Para atingir esse nível de confiança operacional, passei por um processo minuc
 * **Separação estrita de precedência de variáveis:** todas as variáveis que tenho interesse em customizar (versões de linguagens, listas de pacotes extras, preferências de extensões) foram centralizadas em `sistema/defaults/main.yaml` (nível 2 de precedência no Ansible) [^9]. Já os caminhos internos de infraestrutura e diretórios imutáveis vivem protegidos em `sistema/vars/main.yaml` (nível 16).
 
 O resultado prático é um playbook tão confiável que não o utilizo apenas quando formato a máquina: posso colocá-lo para rodar periodicamente ou após atualizações de sistema para garantir que nenhuma configuração saiu do lugar.
+
+## O laboratório de testes: Validando o ciclo completo com KVM e Pair Programming com IA
+
+Construir uma automação desse porte no papel é fácil; o teste de fogo é garantir que ela funcione perfeitamente em uma máquina recém-formatada, sem que você precise formatar o seu próprio notebook de trabalho dezenas de vezes para descobrir bugs.
+
+Para transformar o repositório em um ciclo de desenvolvimento e validação contínua de verdade, criei um ambiente de **Testbed Automatizado** baseado em **KVM/Libvirt**, orquestrado por scripts na raiz do projeto e desenvolvido em regime de *pair programming* com o meu assistente de IA (**Google Antigravity**):
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ 1. setup-testbed-vm.sh  --> Criação da VM KVM (UEFI/qcow2)  │
+└──────────────────────────────┬──────────────────────────────┘
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│ 2. Snapshot 'base-clean'--> Ponto de restauração limpo (2s) │
+└──────────────────────────────┬──────────────────────────────┘
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│ 3. test-e2e-vm.sh       --> Orquestração E2E Day-0 a Day-2: │
+│    • Sonda de porta TCP 22 & Injeção de chaves SSH          │
+│    • Calibração de baixo nível (PBKDF2, zram, swap e resize)│
+│    • Reboot & carregamento do kernel otimizado              │
+│    • Espelhamento do repo & pacotes locais (tar pipe)       │
+│    • Execução do Ansible (bootstrap.sh) & Auditoria         │
+└─────────────────────────────────────────────────────────────┘
+```
+
+A graça dessa suíte de testes está nos desafios práticos de engenharia que tivemos que contornar para tornar o ciclo 100% autônomo e repetível:
+
+### 1. Snapshots instantâneos com suporte a UEFI
+Para não precisar instalar a ISO do Debian a cada novo teste, o orquestrador gerencia snapshots do Libvirt (`base-clean`). Se o snapshot já existe, ele reverte a VM para o estado limpo pós-instalação em menos de dois segundos. Como máquinas virtuais modernas usam UEFI (OVMF) com NVRAM, implementamos o fallback automático para snapshots de disco (`--disk-only`), contornando limitações de snapshots de memória interna.
+
+### 2. A pegadinha do OpenSSH moderno e contenção de travas
+No Debian 13 (Trixie), o `sshd` implementa penalidades ativas contra ataques de força bruta: se um script tentar conexões repetitivas com falha de autenticação em um curto espaço de tempo, o daemon bloqueia o IP temporariamente (`drop connection penalty: failed authentication`). Substituímos o polling cego por uma checagem pura de socket TCP no Bash (`/dev/tcp/${VM_IP}/22`), injetando a chave SSH via `sshpass` de primeira e configurando o `sudo` sem senha.
+
+Além disso, tratamos a clássica disputa de travas do APT no primeiro boot do GNOME: o daemon do **PackageKit** (`packagekitd`) entra em segundo plano para checar atualizações e segura o arquivo `/var/lib/dpkg/lock-frontend`. O orquestrador detecta a disputa, pausa o daemon de forma limpa e injeta a flag `-o DPkg::Lock::Timeout=120` em todas as operações de pacotes.
+
+### 3. Detecção dinâmica de armazenamento e isolamento
+O script de Day-0 do testbed foi desenhado para ser agnóstico: ele inspeciona o ponto de montagem da raiz com `findmnt` e `lsblk`. Se o disco estiver criptografado com LUKS, ele descobre o nome do mapper (`/dev/mapper/luks-*`), calibra o Keyslot 0 em 500ms e expande o container criptografado. Se for uma partição direta sem criptografia (`/dev/vda2`), ele pula a etapa do LUKS e expande o sistema de arquivos diretamente, sem quebrar a execução.
+
+### 4. Refinamento visual: ícones em Squircle e CLI Moderna
+Durante as validações na VM, aproveitamos para refinar a experiência do usuário até os mínimos detalhes:
+* **Padronização dos ícones do Antigravity:** Criamos ícones SVG no formato *squircle* com fundo branco e sombra suave (alinhados ao padrão visual de extensões e do Trayscale no GNOME 48), diferenciando com clareza o **Antigravity 2.0 Standalone** (monocromático) do **Antigravity IDE** (colorido oficial).
+* **Stack de CLI Moderna:** Garantimos a instalação nativa de utilitários de alta velocidade escritos em Rust e Go (`eza`, `batcat`, `fdfind`, `dust`, `duf`, `procs`, `tailspin` e `btop`), parametrizando aliases de forma segura sem conflitar com ferramentas padrão do sistema.
+
+Rodar o `./test-e2e-vm.sh` na máquina host, ver a VM inicializar a frio, aplicar todas as calibrações de baixo nível, reiniciar em segundos e concluir o playbook do Ansible com `failed=0` e `changed=0` na segunda passagem foi a prova definitiva de que o ambiente estava pronto para assumir o notebook real.
 
 ## O poder da máquina descartável
 
