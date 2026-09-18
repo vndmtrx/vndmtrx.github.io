@@ -534,11 +534,12 @@ mkdir -p ~/du/dev/github ~/du/backups
 cp -r /media/$USER/Ventoy/scripts/ansible-debian-desktop ~/du/dev/github/
 cp -p /media/$USER/Ventoy/backup/* ~/du/backups/ 2>/dev/null || true
 
-# 2. Aplicar calibrações de baixo nível (conforme colinha do post de LUKS)
-# (Slot 0 com iter-time 500, flags crypttab, expurgo do swap, resize da raiz, zram e udev)
+# 2. Aplicar calibrações de baixo nível automatizadas (Day-0 / Day-1)
+# (Slot 0 com iter-time 500, flags crypttab, expurgo do swap, expansão online da raiz para 100%, zram e initramfs)
+cd ~/du/dev/github/ansible-debian-desktop
+sudo ./setup-day0.sh
 
 # 3. Opcional: restaurar chaves SSH, GPG, chaveiro GNOME e atalhos
-cd ~/du/dev/github/ansible-debian-desktop
 ./restore.sh
 
 # 4. Disparar o provisionamento completo do ambiente
