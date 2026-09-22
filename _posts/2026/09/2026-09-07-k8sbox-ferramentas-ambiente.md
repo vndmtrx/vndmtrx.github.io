@@ -304,9 +304,9 @@ A engrenagem é simples e elegante: um arquivo de configuração (`config.mk`), 
 k8s-in-a-box/
 ├── config.mk                        <-- Escolha da topologia
 ├── configs/
-│   ├── hosts-nano.yml               <-- 5 VMs (~6GB RAM)
-│   ├── hosts-mini.yml               <-- 6 VMs (~10GB RAM)
-│   └── hosts-completo.yml           <-- 9 VMs (~19GB RAM)
+│   ├── hosts-nano.yml               <-- 5 VMs (~6.5GB RAM)
+│   ├── hosts-mini.yml               <-- 6 VMs (~11GB RAM)
+│   └── hosts-completo.yml           <-- 9 VMs (~19.5GB RAM)
 └── inventario/
     └── hosts.yml -> ../configs/hosts-mini.yml  <-- Symlink ativo
 ```
@@ -377,7 +377,7 @@ all:
         kubox:
           ansible_host: 172.24.0.254
           fqdn: kubox.k8sbox.local
-          memory: 384
+          memory: 1024
           cpus: 1
           autostart: false
 ```
@@ -392,9 +392,9 @@ Comparando as três topologias em números:
 
 | Configuração | LBs | Managers | Workers | NFS | kubox | Total VMs | RAM Estimada |
 |:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| `nano` | 1 | 1 | 1 | 1 | 1 | 5 | ~6 GB |
-| `mini` | 1 | 1 | 2 | 1 | 1 | 6 | ~10 GB |
-| `completo` | 2 | 3 | 2 | 1 | 1 | 9 | ~19 GB |
+| `nano` | 1 | 1 | 1 | 1 | 1 | 5 | ~6.5 GB |
+| `mini` | 1 | 1 | 2 | 1 | 1 | 6 | ~11 GB |
+| `completo` | 2 | 3 | 2 | 1 | 1 | 9 | ~19.5 GB |
 
 A configuração `completo` é a única que viabiliza testes reais de alta disponibilidade: com três managers, o `etcd` forma *quorum* e tolera a perda de um nó. Com dois load balancers, o Keepalived faz failover do VIP. Mas ela exige quase 20 GB de RAM livre no host, o que nem todo mundo tem à disposição.
 
