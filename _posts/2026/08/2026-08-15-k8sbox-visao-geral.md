@@ -106,9 +106,9 @@ Você escolhe o tamanho do cluster que cabe no seu hardware e o projeto se adapt
 
 | Configuração | LBs | Managers | Workers | Total VMs | Recursos Estimados | Cenário Recomendado |
 |--------------|-----|----------|---------|-----------|--------------------|---------------------|
-| `nano` | 1 | 1 | 1 | 5 VMs | ~6 GB RAM, 6 vCPUs | Testes rápidos em laptops modestos |
-| `mini` (Padrão) | 1 | 1 | 2 | 6 VMs | ~10 GB RAM, 9 vCPUs | Estudos gerais e multi-pod |
-| `completo` | 2 | 3 | 2 | 9 VMs | ~19 GB RAM, 18 vCPUs | Alta disponibilidade real e *failover* |
+| `nano` | 1 | 1 | 1 | 5 VMs | ~6.5 GB RAM, 6 vCPUs | Testes rápidos em laptops modestos |
+| `mini` (Padrão) | 1 | 1 | 2 | 6 VMs | ~11 GB RAM, 9 vCPUs | Estudos gerais e multi-pod |
+| `completo` | 2 | 3 | 2 | 9 VMs | ~19.5 GB RAM, 18 vCPUs | Alta disponibilidade real e *failover* |
 
 > [!NOTE] Nota
 > O total de VMs inclui sempre o servidor NFS e a máquina de gestão `kubox`. No dia a dia da série, utilizaremos a configuração `mini` como referência padrão, pois ela já permite validar o balanceamento de carga entre múltiplos nós de trabalho sem sobrecarregar a máquina hospedeira.
