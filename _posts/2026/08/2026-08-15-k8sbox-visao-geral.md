@@ -5,7 +5,7 @@ subtitle: "Por que construir um cluster Kubernetes na mão?"
 author:
   - "Eduardo N. S. R."
 date: 2026-08-15 14:30:00 GMT-3
-modified_date: 2026-09-02 13:57:00 GMT-3
+modified_date: 2026-09-23 14:30:00 GMT-3
 permalink: /posts/k8sbox-visao-geral/
 tags: [Kubernetes, Ansible, DevOps, Infraestrutura]
 series: Kubernetes in a Box
@@ -14,8 +14,10 @@ category: Tutoriais
 
 Se você trabalha com infraestrutura, nuvem ou DevOps, as chances de você já ter digitado `kubeadm init` ou subido um cluster em nuvem gerenciada (EKS, GKE, AKS) com dois cliques são de praticamente cem por cento. Essas ferramentas são incríveis para o dia a dia de trabalho porque ninguém em sã consciência quer passar quatro horas configurando certificados e manifestos na mão para subir um ambiente de homologação. O problema começa quando algo quebra nos bastidores e você não faz a menor ideia do que está acontecendo por baixo do capô.
 
-> [!NOTE] Nota da Série
+> [!NOTE] Nota da Série e Contexto de Laboratório
 > Este post inaugura a série **"Kubernetes in a Box"**, onde vamos dissecar e construir, do zero e de forma totalmente reproduzível via Ansible, um cluster Kubernetes completo, com alta disponibilidade, armazenamento persistente, rede moderna e observabilidade. Todo o código do projeto está disponível no repositório parceiro [vndmtrx/k8s-in-a-box](https://github.com/vndmtrx/k8s-in-a-box).
+>
+> **Aviso de escopo:** as decisões de arquitetura e parâmetros deste projeto foram pensadas sob medida para a nossa realidade de laboratório local em estações Linux com Vagrant e KVM/Libvirt. Elas priorizam aprendizado profundo e reprodutibilidade rápida sobre convenções corporativas de produção. O cluster foi originalmente projetado em versões anteriores e recentemente atualizado para o **Kubernetes v1.37.0**.
 
 Há algum tempo, eu mantinha um projeto de estudos chamado `vagrant-k8s-cluster` [^2], onde eu subia máquinas virtuais locais e deixava o `kubeadm` fazer a mágica dele. Funcionava perfeitamente, mas aquilo sempre me deixava com uma pulga atrás da orelha. O `kubeadm` gerava dezenas de certificados, subia um `etcd`, configurava o *control plane*, gerava *kubeconfigs*, e no final me entregava um comando de *join*. Mas o que exatamente estava acontecendo ali dentro? Como os certificados se conversavam? Como o *control plane* encontrava o `etcd`? Como o nó decidia quem tinha autoridade para fazer o quê?
 
@@ -143,12 +145,14 @@ Para garantir que cada conceito seja absorvido com calma e na ordem certa de dep
   -> O cluster pronto em ação: aplicações não-root, escalabilidade
      automática (VPA + HPA) e validação final com Sonobuoy da CNCF.
 
-[ BLOCO 4: EXTRAS E DEEP-DIVES (Posts E1 ao E4) ]
+[ BLOCO 4: EXTRAS E DEEP-DIVES (Posts E1 ao E5) ]
   -> Mergulhos aprofundados opcionais: política de SELinux, CNI Canal,
-     runtime containerd e acesso remoto via túneis SSH.
+     runtime containerd, acesso remoto via túneis SSH e o fechamento
+     "E agora, produção?": o meme clássico da TV, o abismo entre o lab
+     e a vida real, e o spoiler da futura série sobre produção resiliente.
 ```
 
-Essa separação garante que quem deseja apenas o cluster base funcional pode seguir os dois primeiros blocos e ter um ambiente totalmente operacional. Quem quiser ir além e dominar a operação e segurança avançada terá os blocos subsequentes como guia.
+Essa separação garante que quem deseja apenas o cluster base funcional pode seguir os dois primeiros blocos e ter um ambiente totalmente operacional. Quem quiser ir além e dominar a operação, a segurança avançada e a ponte estratégica para levar essas lições a um ambiente corporativo resiliente terá os blocos subsequentes como guia.
 
 ## A filosofia de diagnóstico e troubleshooting
 

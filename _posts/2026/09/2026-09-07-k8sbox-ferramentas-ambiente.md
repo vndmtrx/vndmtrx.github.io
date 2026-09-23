@@ -5,6 +5,7 @@ subtitle: "Do terminal vazio ao cluster virtual em duas placas de rede"
 author:
   - "Eduardo N. S. R."
 date: 2026-09-07 11:33:00 GMT-3
+modified_date: 2026-09-23 14:30:00 GMT-3
 permalink: /posts/k8sbox-ferramentas-ambiente/
 tags: [Kubernetes, Ansible, DevOps, Infraestrutura]
 series: Kubernetes in a Box
@@ -13,8 +14,10 @@ category: Tutoriais
 
 Na Parte 1 desta série, gastamos o post inteiro falando sobre *por que* construir um cluster Kubernetes na mão e *o que* pretendemos montar. Conceitos, diagramas, motivação. Agora é hora de sujar as mãos de verdade: vamos configurar o computador hospedeiro, dissecar linha por linha como o Vagrant lê nosso inventário Ansible para criar máquinas virtuais e resolver o problema mais traiçoeiro de qualquer laboratório local de Kubernetes: fazer a rede funcionar direito.
 
-> [!NOTE] Nota da Série
-> Este post faz parte da série **"Kubernetes in a Box"**. Todo o código-fonte está disponível no repositório parceiro [vndmtrx/k8s-in-a-box](https://github.com/vndmtrx/k8s-in-a-box). Nesta parte, não usamos nenhuma *role* do Ansible ainda. Tudo gira em torno da infraestrutura do hospedeiro: `Vagrantfile`, `Makefile` e `config.mk`.
+> [!NOTE] Nota da Série e Contexto de Laboratório
+> Este post faz parte da série **"Kubernetes in a Box"**, onde dissecamos e construímos, do zero e de forma totalmente reproduzível via Ansible, um cluster Kubernetes completo, com alta disponibilidade, armazenamento persistente, rede moderna e observabilidade. Todo o código do projeto está disponível no repositório parceiro [vndmtrx/k8s-in-a-box](https://github.com/vndmtrx/k8s-in-a-box).
+>
+> **Aviso de escopo:** as decisões de arquitetura e parâmetros deste projeto foram pensadas sob medida para a nossa realidade de laboratório local em estações Linux com Vagrant e KVM/Libvirt. Elas priorizam aprendizado profundo e reprodutibilidade rápida sobre convenções corporativas de produção. O cluster foi originalmente projetado em versões anteriores e recentemente atualizado para o **Kubernetes v1.37.0**.
 
 Se você já perdeu horas tentando entender por que as VMs do Vagrant conseguiam pingar a internet mas não se enxergavam entre si, ou por que um `vagrant up` subia seis máquinas idênticas com a mesma rota padrão apontando pro lugar errado, esse post é pra você. Vamos resolver cada um desses problemas, explicar as decisões por trás de cada linha de configuração e, no final, ter um ambiente local completamente funcional com VMs prontas para receber o cluster nas próximas partes.
 
@@ -45,10 +48,17 @@ Verificando dependências do host...
   - KVM (/dev/kvm): OK
   - Conexão Libvirt (virsh): OK
   - Vagrant Libvirt Plugin: OK
+  - Porta 6443 (Conflitos locais): LIVRE
 Tudo OK! Pronto para iniciar o provisionamento.
 ```
 
 Se alguma linha aparecer como `NÃO ENCONTRADO` ou `SEM PERMISSÃO`, o comando aborta a execução e te diz exatamente o que falta. Sem surpresas no meio do provisionamento.
+
+> [!WARNING] Atenção com Recursos de Hardware (Memória, Disco e Portas)
+> Antes de disparar a criação das máquinas virtuais, atente-se a três pontos práticos:
+> * **Memória RAM no limite:** a configuração padrão (`mini`) aloca ~11 GB de RAM para as VMs. Se o seu computador tiver 16 GB no total, feche abas pesadas do navegador e IDEs vorazes antes de subir o cluster para evitar que o *OOM Killer* do Linux derrube uma VM no meio do caminho. Para máquinas com recursos mais modestos, use sem medo a configuração `nano` (~6.5 GB de RAM).
+> * **Espaço em Disco:** o download da imagem base do AlmaLinux 10 e a criação dos discos virtuais das VMs exigem espaço livre considerável. Garanta pelo menos 25 a 30 GB disponíveis no seu sistema de arquivos antes de começar.
+> * **Conflito de Portas:** se você utiliza Docker Desktop, Minikube ou outro cluster local na máquina hospedeira, certifique-se de que serviços locais não estejam disputando a porta `6443` ou interferindo nas pontes de rede do Libvirt.
 
 ## Por que KVM e não VirtualBox
 
@@ -212,6 +222,9 @@ A `eth0` é a rede de gerenciamento do Vagrant. Ela existe porque o Vagrant prec
 
 A `eth1` é a rede privada `172.24.0.0/24`, que é o verdadeiro sistema circulatório do laboratório. Todo tráfego do `etcd`, do `kube-apiserver`, dos pods e dos serviços transita por essa interface.
 
+> [!NOTE] O Gateway 172.24.0.1 e a ponte de rede do Libvirt
+> O IP `172.24.0.1` é a ponta da interface de ponte virtual (*bridge*) mantida pelo Libvirt no computador hospedeiro (`k8sbox_mgmt`). É ele quem recebe e roteia os pacotes da `eth1`. Se o seu host tiver regras customizadas de iptables/nftables ou redes virtuais antigas colidindo nessa mesma faixa, certifique-se de que o host responde com `ping 172.24.0.1` antes de prosseguir.
+
 ### A guerra dos gateways via nmcli
 
 Aqui entra o trecho mais importante do Vagrantfile: o provisionamento de rede via shell que resolve a prioridade entre as interfaces. Esse script foi resultado de bastante experimentação, especialmente na migração do AlmaLinux 9 para o 10, onde o comportamento do NetworkManager [^7] mudou significativamente.
@@ -332,6 +345,9 @@ O `make status` mostra qual configuração está ativa em qualquer momento:
 $ make status
 Configuração ativa: mini
 ```
+
+> [!NOTE] Cuidado com Sistemas de Arquivos sem suporte a Symlinks
+> O mecanismo de alternância de topologia baseia-se em links simbólicos do Linux (`ln -s`). Se você clonar o repositório em partições formatadas como NTFS ou FAT (cenário comum ao compartilhar pastas em dual-boot com Windows), a criação do symlink pode falhar silenciosamente. Mantenha o projeto sempre em partições Linux nativas (`ext4`, `btrfs`, `xfs`).
 
 ### Anatomia de um inventário
 
