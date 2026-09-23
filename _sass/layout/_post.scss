@@ -146,11 +146,16 @@ article table th { font-weight: 600; }
 /* 3. Blocos de Código e KBD */
 article code, article pre { font-weight: 400; font-size: 0.8rem; tab-size: 4; -moz-tab-size: 4; }
 article code {
+  display: inline;
   padding: 0.1em 0.3em;
   background-color: rgba(128, 128, 128, 0.05);
   border: 1px solid var(--pico-muted-border-color);
   border-radius: 4px;
   color: inherit;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 article div.highlight,
 article figure.highlight,
@@ -166,7 +171,13 @@ article div.highlight pre, article figure.highlight pre {
   background-color: transparent; border: none; box-shadow: none; margin: 0; padding: 12px 16px; font-size: 0.8rem; line-height: 1.5;
 }
 article pre code {
-  padding: 0; background-color: transparent; border: none;
+  display: block;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  word-break: normal;
+  overflow-wrap: normal;
+  white-space: pre;
 }
 html[data-theme="dark"] article div.highlight,
 html[data-theme="dark"] article figure.highlight,
