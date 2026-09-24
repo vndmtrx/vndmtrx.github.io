@@ -1,7 +1,7 @@
 ---
 name: k8sbox-series
 description: >
-  Convenções, metadados e diretrizes da série "Kubernetes in a Box" (24 posts) do blog vndmtrx.github.io. Use quando o usuário pedir para escrever, rascunhar ou revisar posts desta série sobre infraestrutura e Kubernetes the hard way.
+  Convenções, metadados e diretrizes da série "Kubernetes in a Box" (25 posts) do blog vndmtrx.github.io. Use quando o usuário pedir para escrever, rascunhar ou revisar posts desta série sobre infraestrutura e Kubernetes the hard way.
 ---
 
 # Skill: Série Kubernetes in a Box
@@ -27,7 +27,7 @@ Diretrizes técnicas e estruturais para os posts da série **Kubernetes in a Box
 
 ## 2. Roteiro e Ementa sob Demanda
 
-O roteiro detalhado dos 24 posts (Cluster Base, Integração, Operações e Extras) está em [references/roteiro.md](references/roteiro.md).
+O roteiro detalhado dos 25 posts (Cluster Base, Integração, Operações e Extras) está em [references/roteiro.md](references/roteiro.md).
 
 > [!TIP] Eficiência de Tokens
 > **NÃO leia o roteiro inteiro.** Ao redigir ou revisar a Parte X, consulte exclusivamente o bloco da Parte X em `references/roteiro.md` utilizando `view_file` com slice de linhas (`StartLine`/`EndLine`).

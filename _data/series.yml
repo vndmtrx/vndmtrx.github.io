@@ -41,12 +41,10 @@ k8sbox:
   slug: "k8sbox"
   url: "/tutoriais/k8sbox/"
   icon: "fas fa-dharmachakra"
-  total_planned: 24
+  total_planned: 25
   repo: "https://github.com/vndmtrx/k8s-in-a-box"
   description: "Construção de um cluster Kubernetes multinodo e altamente disponível rodando localmente em máquinas virtuais Debian no Proxmox/KVM, dissecando control plane, workers, CNI e storage."
   future_parts:
-    - part: 3
-      title: "O Inventário Ansible e as Variáveis do Cluster"
     - part: 4
       title: "Preparação do Sistema Base"
     - part: 5
@@ -89,6 +87,8 @@ k8sbox:
       title: "Container Runtime Alternativo (containerd)"
     - part: E4
       title: "Acesso Remoto com Túneis SSH"
+    - part: E5
+      title: "E agora, produção? (Entre o Laboratório e a Vida Real)"
 
 conteineres:
   title: "Contêineres de Cabo a Rabo"
