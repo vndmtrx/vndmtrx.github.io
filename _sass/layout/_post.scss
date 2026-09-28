@@ -121,17 +121,23 @@ article .post-content p,
 }
 
 /* 2. Tabelas Responsivas */
-article table {
-  display: block;
+.table-wrapper {
   width: 100%;
   max-width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  margin-bottom: var(--pico-typography-spacing-vertical);
+}
+
+article table {
+  display: table;
+  width: 100%;
+  min-width: 100%;
+  border-collapse: collapse;
   --pico-font-size: 0.85em;
   font-size: var(--pico-font-size);
   line-height: 1.5;
-  margin-bottom: var(--pico-typography-spacing-vertical);
-  border-collapse: collapse;
+  margin-bottom: 0;
 }
 article table th,
 article table td {
