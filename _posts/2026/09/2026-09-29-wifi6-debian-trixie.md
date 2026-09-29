@@ -548,5 +548,5 @@ Agora, se formos honestos na ponta do lápis (e a nossa fatura de energia elétr
 [^4]: **Location Aware Regulatory (LAR) in Linux Wireless** {*Kernel.org cfg80211*} ([Link](https://wireless.docs.kernel.org/en/latest/en/developers/regulatory/processing_rules.html))
 [^5]: **802.11ax (Wi-Fi 6) High Efficiency Physical Layer Overview** {*IEEE Standards Association*} ([Link](https://standards.ieee.org/ieee/802.11ax/6618/))
 [^6]: **dnsmasq: A lightweight DHCP and caching DNS server** {*Simon Kelley / The Kape*} ([Link](https://thekelleys.org.uk/dnsmasq/doc.html))
-[^7]: **Intel Wi-Fi on Linux: The LAR Nightmare** {*Tildearrow*} ([Link](https://tildearrow.org/?p=post&mid=72))
+[^7]: **making hostapd LAR-friendly (on Intel 5GHz wireless cards)** {*Tildearrow*} ([Link](https://tildearrow.org/?p=post&month=7&year=2022&item=lar))
 [^8]: **MediaTek (mt76): Linux wireless driver support for MT7921/MT7922** {*Linux Wireless Documentation*} ([Link](https://wireless.docs.kernel.org/en/latest/en/users/drivers/mediatek.html))
