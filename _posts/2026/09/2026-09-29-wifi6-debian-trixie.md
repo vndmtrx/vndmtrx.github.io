@@ -530,52 +530,6 @@ A inspeção em campo trouxe resultados ainda mais interessantes:
 * **Simetria física em 286 Mbps:** O monitor de enlace do aparelho registrou velocidade física simétrica: 286 Mbps de download e 286 Mbps de upload no enlace PHY do Wi-Fi 6 (MIMO 2x2 em 20 MHz).
 * **Proteção mandatória (`MFPR`):** O smartphone identificou a rede como Wi-Fi 6 (802.11ax) com fabricante Intel Corporate e as flags `[RSN-SAE-CCMP-128][ESS][MFPR][MFPC][SAE]`. A presença da flag `MFPR` (*Management Frame Protection Required*) atesta que o aparelho móvel assumiu o modo estrito de segurança, descartando qualquer pacote não autenticado.
 
-## Exercícios
-
-Para fixar a dinâmica de diagnóstico de adaptadores sem fio e auditoria de rádio no Linux, execute os desafios práticos abaixo no seu terminal.
-
-**1. Auditoria de capacidades de emissão e restrições regulatórias do adaptador**
-
-Como você pode inspecionar diretamente pelo kernel se o seu adaptador sem fio possui suporte oficial ao modo AP e quais frequências estão livres da trava `NO-IR`?
-
-<details markdown="1">
-<summary>Ver resposta</summary>
-
-Para verificar os modos suportados pela interface física e inspecionar as frequências autorizadas para transmissão ativa, execute:
-
-```bash
-# 1. Verificar se a interface aceita operar como Access Point (modo AP)
-iw phy phy0 info | grep -A 8 "Supported interface modes"
-
-# 2. Listar frequências autorizadas e filtrar bloqueios de emissão ativa (NO-IR)
-iw phy phy0 info | grep -E "Frequencies:|disabled|NO-IR"
-```
-
-*Se a saída de modos contiver `AP`, a placa possui suporte via nl80211. Frequências marcadas com `NO-IR` só podem ser utilizadas para escuta passiva ou conexão como cliente (STA).*
-
-</details>
-
-**2. Inspeção de telemetria e estado de clientes em tempo real**
-
-Como você pode monitorar clientes associados ao seu ponto de acesso em tempo real sem derrubar o serviço ou consultar logs estáticos?
-
-<details markdown="1">
-<summary>Ver resposta</summary>
-
-Utilize o socket de controle do `hostapd_cli` em modo interativo ou passe comandos diretos no terminal:
-
-```bash
-# Listar todos os clientes associados e suas flags de capacidades
-sudo hostapd_cli all_sta
-
-# Alternativamente, consultar a camada física do subsistema de rádio no kernel
-sudo iw dev wlp0s20f3 station dump
-```
-
-*A saída do `station dump` revela a modulação real (MCS), o número de fluxos espaciais (NSS) e a intensidade do sinal em dBm da estação conectada.*
-
-</details>
-
 ## Conclusão: no fim das contas, valeu a pena?
 
 O que começou como uma simples curiosidade prática, querendo saber se dava pra subir um ponto de acesso Wi-Fi 6 no Debian pro celular sem depender de mágicas quebradas de interface gráfica, acabou virando uma expedição arqueológica pelo subsistema de rede do Linux e pelas idiossincrasias do microcódigo da Intel.
