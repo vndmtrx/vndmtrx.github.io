@@ -8,7 +8,6 @@ date: 2026-10-02 14:00:00 GMT-3
 permalink: /posts/conteineres-pratica/
 tags: [Docker, Contêineres, Linux, DevOps]
 series: Contêineres de Cabo a Rabo
-published: false
 category: Tutoriais
 ---
 
@@ -23,21 +22,7 @@ Também vamos explorar a arquitetura revolucionária sem daemons do Podman, apre
 > [!NOTE] Nota da Série
 > Este post fecha a série **"Contêineres de Cabo a Rabo"**. Se você caiu de paraquedas aqui, recomendo conferir o {% include post-ref.html slug="conteineres-historia" text="Post Zero: A História dos Contêineres" %} para entender a evolução do conceito e a {% include post-ref.html slug="conteineres-fundamentos" text="Parte 1: Fundamentos e Anatomia" %} para ver o que o kernel faz por baixo do capô. Compreender como o sistema operacional manipula chamadas de sistema, limites de recursos e montagens torna as decisões práticas que tomaremos aqui infinitamente mais claras e intuitivas.
 
-## Estrutura do Post
-
-Para guiar o seu estudo prático pelas ferramentas e padrões de produção, estruturei este post nos seguintes tópicos:
-
-| Seção | Foco Principal |
-| :--- | :--- |
-| [Docker na Prática: A Anatomia de uma Imagem](#docker-na-prática-a-anatomia-de-uma-imagem) | Instruções do Dockerfile, camadas OCI, CMD vs ENTRYPOINT e builds multi-stage |
-| [Ciclo de Vida e Operação de Contêineres](#ciclo-de-vida-e-operação-de-contêineres) | Estados de execução, sinais de encerramento, inspeção e estratégias de volumes |
-| [Redes no Docker: Como Contêineres se Conversam](#redes-no-docker-como-contêineres-se-conversam) | Drivers bridge, host e macvlan, resolução por DNS e pontes veth no kernel |
-| [Docker Compose: Orquestrando Stacks Locais](#docker-compose-orquestrando-stacks-locais) | Stacks declarativas completas, dependências com healthcheck e isolamento de rede |
-| [Podman: A Revolução Sem Daemon e Sem Root](#podman-a-revolução-sem-daemon-e-sem-root) | Arquitetura fork/exec, contêineres rootless nativos e a criação de Pods locais |
-| [Segurança de Contêineres: O Que Pode Dar Errado](#segurança-de-contêineres-o-que-pode-dar-errado) | Scanners de vulnerabilidades, vazamento de segredos, capabilities e o perigo do docker.sock |
-| [Exercícios](#exercícios) | Desafios práticos com volumes, redes compostas e auditoria Trivy |
-| [O Caminho para a Orquestração](#o-caminho-para-a-orquestração) | Os limites do Docker Compose e a transição natural para clusters Kubernetes |
-| [Referências](#referências) | Documentações oficiais, guias de segurança e benchmarks da indústria |
+{% include toc.html %}
 
 ## Docker na Prática: A Anatomia de uma Imagem
 
