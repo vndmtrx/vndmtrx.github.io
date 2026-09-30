@@ -8,7 +8,6 @@ date: 2026-10-09 17:01:00 GMT-3
 permalink: /posts/otimizacao-boot-luks/
 tags: [Linux, Debian, Segurança, Performance]
 mermaid: true
-published: false
 category: Artigos
 ---
 
@@ -20,13 +19,7 @@ A resposta que você mais ouve por aí em fórum quando reclama disso é aquela 
 
 Cansei de passar raiva e resolvi abrir o capô pra caçar onde cada milissegundo estava sendo jogado no lixo. No caminho, cometi alguns tropeços vergonhosos, me achei o gênio da criptografia pra logo em seguida tomar uma invertida do GRUB, e descobri que metade da lentidão era pura teimosia de software legado.
 
-<details class="toc-box" markdown="1">
-  <summary><strong>📑 Sumário do post</strong></summary>
-
-* TOC
-{:toc}
-
-</details>
+{% include toc.html %}
 
 ## O modelo de ameaça: pragmatismo contra a paranoia inútil
 
