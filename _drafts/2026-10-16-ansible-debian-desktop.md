@@ -7,7 +7,6 @@ author:
 date: 2026-10-16 14:45:00 GMT-3
 permalink: /posts/ansible-debian-desktop/
 tags: [Linux, Debian, Ansible, DevOps]
-published: false
 category: Tutoriais
 ---
 
@@ -23,6 +22,8 @@ Se nós exigimos infraestrutura como código, testes rigorosos e garantia matem�
 Depois da enésima vez em que me vi num domingo à noite caçando atalho do GNOME no DuckDuckGo, cansei dessa palhaçada (e de pagar esse pedágio voluntário de masoquismo). Uns anos atrás decidi que se o computador precisa de mim pra fazer funcionar a barra de tarefas, quem está errado sou eu. Com a chegada do **Debian 13 (Trixie)**, peguei meu playbook antigo e decidi transformar o repositório no blueprint definitivo para a atualização e formatação do meu notebook: toda vez que sai uma versão nova do Debian (ou quando resolvo limpar a casa do zero), o processo precisa ser 100% automatizado, determinístico e executável com um único comando, entregando um desktop pronto, seguro, afinado para desenvolvimento e com zero intervenção humana.
 
 Pois bem. Cá estamos para contar os bastidores técnicos, a criação do nosso ambiente de testes com IA em VM, as minhas escolhas, os meus tropeços e a filosofia por trás dessa automação.
+
+{% include toc.html %}
 
 ## A virtude da preguiça e a blindagem do Debian
 
