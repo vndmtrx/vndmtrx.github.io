@@ -19,11 +19,7 @@ A minha dúvida era bem prática: tenho um computador rodando Debian Trixie, con
 
 A resposta curta é sim, dá pra fazer. A resposta longa é que o processo virou uma caça aos motivos de o rádio simplesmente se recusar a emitir sinal, esbarrando em microcódigo da Intel, travas regulatórias e mensagens crípticas no `dmesg`.
 
-<details class="toc-box" markdown="1">
-  <summary><strong>Sumário & Índice de Seções (TOC)</strong></summary>
-* TOC
-{:toc}
-</details>
+{% include toc.html %}
 
 ## O ponto de partida: o hardware da máquina
 
