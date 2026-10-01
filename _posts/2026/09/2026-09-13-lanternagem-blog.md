@@ -27,13 +27,7 @@ Tomei coragem, abri o terminal e decretei a reforma geral. Foram dias de faxina 
 
 Se acomode na cadeira e pegue um café. A jornada teve tropeços divertidos, algumas teimosias e muita escovação de bytes.
 
-<details class="toc-box" markdown="1" open>
-  <summary><strong>Sumário & Índice de Seções (TOC)</strong></summary>
-
-* TOC
-{:toc}
-
-</details>
+{% include toc.html open=true %}
 
 ## O inventário do caos: a herança maldita do Minima e do Open Props
 
