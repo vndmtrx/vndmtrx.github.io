@@ -82,6 +82,7 @@ Evite blocos monótonos de IA (3 a 5 frases):
 - **Código Inline:** \`comando\`, \`flag\`, \`arquivo\` (nunca em títulos).
 - **Estrangeirismos:** *termo em inglês* (*runtime*, *page cache*, *slop*).
 - **Callouts:** `> [!TIP] Dica`, `> [!NOTE] Nota`, `> [!WARNING] Atenção`, `> [!IMPORTANT] Importante`, `> [!CAUTION] Aviso Crítico`.
+- **Sumário & Índice (TOC):** Em posts longos, insira `{% include toc.html %}` ao final da introdução, imediatamente antes do primeiro cabeçalho `##`. Se precisar de um título customizado ou deixá-lo aberto por padrão: `{% include toc.html title="Título Customizado" open=true %}`. Em ensaios curtos ou crônicas, dispense o TOC.
 - **Footnotes:** `[^1]: **Título** {*Fonte*} ([Link](url))` exclusivamente na seção final `## Referências`.
 - **Diagramas Mermaid, Box-Drawing e Exercícios:** Consulte o guia detalhado em [formatacao-avancada.md](references/formatacao-avancada.md).
 
