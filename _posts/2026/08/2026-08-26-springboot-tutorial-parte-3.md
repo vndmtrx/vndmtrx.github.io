@@ -23,6 +23,8 @@ Quem vive de infraestrutura já viu esse filme repetidas vezes. Aplicação que 
 
 Por isso, nesta parte a gente faz o oposto do impulso: constrói a primeira fatia de domínio da `tarefas-api` em camadas separadas, com o banco parametrizado no padrão 12-Factor e com testes em cada fronteira importante. O controller, por ora, vai continuar rústico de propósito, e o refinamento fica para um próximo momento.
 
+{% include toc.html %}
+
 ## Da casca vazia ao domínio: o quarteto de camadas
 
 Na Parte 2, tínhamos apenas uma casca operacional: a aplicação subia, lia perfis de ambiente (`dev` e `prod`) e respondia o `/api/status` através de um `StatusController` que devolvia um Record isolado. Naquele cenário, o controller resolvia tudo sozinho em três linhas. E fazia sentido: não havia banco, não havia regras de negócio, não havia estado a preservar.
