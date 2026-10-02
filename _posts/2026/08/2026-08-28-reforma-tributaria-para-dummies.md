@@ -20,6 +20,8 @@ Pois bem. Cá estamos. Eu peguei a Emenda Constitucional 132/2023, a Lei Complem
 > [!NOTE] Disclaimer
 > Os cálculos abaixo usam alíquotas e margens simplificadas para fins didáticos. O objetivo não é ser um simulador contábil complexo, mas demonstrar a *mecânica real* de cada sistema. O código Python completo e executável com todas as simulações está disponível no [Gist](https://gist.github.com/vndmtrx/ae9626557a0fec313b3d8fc1cf49648d). Rode, mude os números e tire suas próprias conclusões.
 
+{% include toc.html %}
+
 ## A bagunça que a gente chama de sistema tributário
 
 Antes da reforma, o Brasil tinha cinco tributos diferentes incidindo sobre o consumo de bens e serviços. Cinco. Cada um com legislação própria, regras próprias, exceções próprias e um ecossistema jurídico inteiro dedicado a brigar sobre como interpretar cada vírgula.
