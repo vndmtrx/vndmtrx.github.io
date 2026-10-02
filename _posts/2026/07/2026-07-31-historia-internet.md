@@ -18,26 +18,7 @@ A ideia desse post é contar essa história de uma forma razoavelmente acessíve
 > [!NOTE] Nota de Mea Culpa
 > Ok, admito que no fim das contas a história não ficou tão breve assim. Quando comecei a juntar as peças, percebi que resumir seis décadas de evolução sem perder os detalhes importantes ia exigir bem mais do que um post rápido. Tive um trabalho considerável de pesquisa para compilar, organizar e cruzar dezenas de fontes em uma linha do tempo única, tentando entregar tudo de forma direta pra você (claro, com uma ajudinha de IA para ajudar a localizar fontes e organizar as ideias). Aliás, não deixe de conferir as referências no final.
 
-## Linha do Tempo e Estrutura do Post
-
-Para ajudar a guiar a leitura por essa jornada mais longa, organizei os principais marcos da internet em ordem cronológica. Você pode usar a tabela abaixo para navegar diretamente para a seção ou período que mais te interessar:
-
-| Seção | Período / Década |
-| :--- | :--- |
-| [As Raízes da Internet: Comutação de Pacotes e a Guerra Fria](#as-raízes-da-internet-comutação-de-pacotes-e-a-guerra-fria) | Anos 60 |
-| [ARPANET: A Primeira Rede](#arpanet-a-primeira-rede) | 1969 - Anos 70 |
-| [O Surgimento do TCP/IP](#o-surgimento-do-tcpip) | 1974 - 1983 |
-| [A Internet Chega ao Brasil](#a-internet-chega-ao-brasil) | 1988 - 1995 |
-| [A World Wide Web](#a-world-wide-web) | 1989 - 1993 |
-| [Os Primeiros Buscadores](#os-primeiros-buscadores) | 1990 - 1998 |
-| [A Guerra dos Navegadores](#a-guerra-dos-navegadores) | 1994 - Anos 2000 |
-| [A Bolha Pontocom (e o seu estouro)](#a-bolha-pontocom-e-o-seu-estouro) | 1995 - 2002 |
-| [A Web 2.0 e o Conteúdo Gerado pelo Usuário](#a-web-20-e-o-conteúdo-gerado-pelo-usuário) | Anos 2000 |
-| [O Fenômeno das Redes Sociais](#o-fenômeno-das-redes-sociais) | 1997 - Presente |
-| [Smartphones e a Revolução Mobile](#smartphones-e-a-revolução-mobile) | 2007 - Presente |
-| [A Computação em Nuvem](#a-computação-em-nuvem) | 2003 - Presente |
-| [O Surgimento do Streaming](#o-surgimento-do-streaming) | 1999 - Presente |
-| [A Internet das Coisas](#a-internet-das-coisas) | 1999 - Presente |
+{% include toc.html title="Linha do Tempo & Sumário das Fases" %}
 
 
 ## As Raízes da Internet: Comutação de Pacotes e a Guerra Fria
