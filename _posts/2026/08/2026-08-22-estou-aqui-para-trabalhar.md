@@ -24,6 +24,8 @@ Dizer que "não se está ali para fazer amigos" é, na melhor das hipóteses, um
 > [!NOTE] Disclaimer
 > Este é um post sobre relações humanas no ambiente de trabalho, e relações humanas são, por essência, um tema sensível. Ele é também um ensaio de opinião baseado em experiências pessoais do autor. Não há nomes reais, não há identificação de setores, cargos ou instituições. Se alguém se reconhecer nas descrições, o autor gentilmente lembra que não colocou nome nenhum ali, de modo que o reconhecimento é responsabilidade exclusiva de quem se reconheceu. Os eventos descritos são reais, com as liberdades cronológicas que o autor se reserva o direito de tomar. Se o tom parecer desproporcional, o autor registra que vive o desproporcional de segunda a sexta, das oito às dezoito, há vários anos. Escrever sobre é o menor dos exageros (embora quem pratica o desproporcional exija, com uma pontualidade admirável, que quem sofre mantenha a compostura).
 
+{% include toc.html %}
+
 ## O ecossistema que ninguém mostra na entrevista
 
 Christophe Dejours, o psiquiatra francês que dedicou décadas estudando o sofrimento psíquico no trabalho, tem uma tese que deveria ser leitura obrigatória em todo processo seletivo: o trabalho não é apenas atividade produtiva, é um *palco de subjetividade* onde a identidade pessoal se constrói, se confirma ou se destroi [^1]. Quando alguém diz que "está ali só para trabalhar", está, sem perceber, negando a existência do palco onde passa a maior parte da própria vida acordada.
