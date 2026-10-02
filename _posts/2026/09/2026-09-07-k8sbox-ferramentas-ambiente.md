@@ -21,6 +21,8 @@ Na Parte 1 desta série, gastamos o post inteiro falando sobre *por que* constru
 
 Se você já perdeu horas tentando entender por que as VMs do Vagrant conseguiam pingar a internet mas não se enxergavam entre si, ou por que um `vagrant up` subia seis máquinas idênticas com a mesma rota padrão apontando pro lugar errado, esse post é pra você. Vamos resolver cada um desses problemas, explicar as decisões por trás de cada linha de configuração e, no final, ter um ambiente local completamente funcional com VMs prontas para receber o cluster nas próximas partes.
 
+{% include toc.html %}
+
 ## O que você precisa ter instalado
 
 Antes de qualquer coisa, seu hospedeiro Linux precisa de cinco ferramentas. Essas são as únicas instalações manuais que você vai fazer em todo o processo: tudo o que acontece *dentro* das VMs (chaves SSH, configuração de rede, pacotes, provisionamento) é gerenciado automaticamente pelo Vagrantfile e pelo Ansible quando você roda `make up`.
