@@ -31,6 +31,8 @@ Cada um daqueles doze fatores não era teoria acadêmica descolada da realidade.
 
 Vamos dissecar cada um dos doze fatores. Mas não do jeito asséptico dos manuais acadêmicos: vamos ver o princípio técnico e os pesadelos reais que acontecem quando você decide ignorá-lo
 
+{% include toc.html %}
+
 ## I. Base de Código: Uma base de código rastreada, muitos deploys
 
 O princípio é direto: deve haver uma única base de código rastreada em controle de versão (Git) para cada aplicação, e essa mesma base dá origem a múltiplos deploys (desenvolvimento local, homologação, produção). Se múltiplos serviços compartilham o mesmo código, esse código compartilhado deve ser extraído para uma biblioteca e versionado via gerenciador de dependências, nunca copiado e colado.
