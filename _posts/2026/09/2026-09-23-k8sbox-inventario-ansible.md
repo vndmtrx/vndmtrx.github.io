@@ -24,6 +24,8 @@ No **k8s-in-a-box**, tomamos uma direção oposta. Toda a inteligência da infra
 
 Sabe quantos arquivos de automação ou manifestos de pods estáticos precisaram ser reescritos para suportar essa nova versão em todo o cluster? Apenas um.
 
+{% include toc.html %}
+
 ## O arquivo de configuração do Ansible e suas decisões
 
 > [!NOTE] Mas Dudu, a gente não ia falar de Kubernetes?!
