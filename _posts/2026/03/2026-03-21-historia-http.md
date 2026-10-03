@@ -15,6 +15,8 @@ A história do protocolo HTTP e da World Wide Web está intimamente ligada, desd
 
 A ideia básica do WWW e do HTTP era juntar tecnologias emergentes dos computadores, redes de comunicação e hipertexto em algo poderoso e fácil de usar como sistema de troca de informações, como uma grande teia de páginas, artigos, relatórios, ligados entre si. Daí o nome World Wide Web, ou em bom português: Grande Teia Global.
 
+{% include toc.html %}
+
 ## Como tudo começou?
 
 A primeira proposta para a WWW (que na época, foi chamada inicialmente de Mesh) foi feita pelo cientista Tim Berners-Lee [^12], em março de 1989 e no fim de 1990 ele e sua equipe já tinham desenvolvido o primeiro servidor web e o primeiro navegador para consumir esse conteúdo. O primeiro site criado estava no endereço info.cern.ch [^1] e ainda pode ser acessado nos dias de hoje. Construída em cima dos novos protocolos de rede TCP e IP, a WWW consistia de 4 blocos principais:
