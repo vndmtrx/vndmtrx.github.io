@@ -35,6 +35,8 @@ Ele jura de pés juntos que não tem partido, que abomina a política e que suas
 
 Em menos de três minutos, ele já estava na arena digital: dedos frenéticos no teclado, pontuação errática, caixa alta para simular autoridade moral e aquele tom condescendente de quem se julga o último adulto sóbrio numa creche de funcionários públicos iludidos.
 
+{% include toc.html %}
+
 ## A teologia freestyle de Josafá e o aviso ignorado de Samuel
 
 O primeiro número circense do colega foi nos brindar com um tratado improvisado sobre regimes políticos no Antigo Testamento.
