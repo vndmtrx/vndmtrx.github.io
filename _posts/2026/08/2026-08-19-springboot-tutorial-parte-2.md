@@ -28,6 +28,8 @@ Neste momento da série, dois desses fatores nos interessam diretamente:
 
 Com esses princípios em mente, vamos inicializar nosso projeto e estruturar sua gestão de perfis e configurações.
 
+{% include toc.html %}
+
 ## A inicialização do projeto com Maven e Spring Initializr
 
 A forma mais limpa e padronizada de iniciar um projeto Spring Boot é através do **Spring Initializr** [^2]. 
