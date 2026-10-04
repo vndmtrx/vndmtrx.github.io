@@ -21,6 +21,8 @@ Para colocar ordem na minha própria cabeça e criar uma bússola de apresentaç
 > [!NOTE] Disclaimer
 > Este texto é o meu ensaio pessoal de preparação para a arguição da banca. O foco aqui não é a demonstração formal de teoremas, mas a intuição por trás das decisões de engenharia e os motivos que levaram a comunidade a criar cada uma dessas abordagens.
 
+{% include toc.html %}
+
 ## O desafio da síntese: escolher as brigas certas
 
 Vinte minutos passam como um estalar de dedos quando você está falando em público. Se você gastar cinco minutos deduzindo uma regressão linear, faltará tempo para explicar por que o Q-Learning se diferencia do SARSA ou como o truque do kernel salvou as máquinas de vetores de suporte.
