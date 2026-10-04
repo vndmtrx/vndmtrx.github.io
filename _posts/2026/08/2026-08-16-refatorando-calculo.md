@@ -20,6 +20,8 @@ Aí, esses dias, eu esbarrei em um artigo de 2018 chamado *"Simplifying and Refa
 > [!NOTE] Disclaimer
 > Este post reflete a minha experiência pessoal com o ensino de cálculo e a leitura do artigo. Não sou matemático, não pretendo ser, e se eu errar alguma tecnicalidade aqui, fiquem à vontade para me corrigir nos comentários.
 
+{% include toc.html %}
+
 ## Dívida técnica, mas na matemática
 
 O artigo começa com uma analogia que me acertou em cheio, justamente porque vem do mundo do software. Bartlett compara o estado atual do ensino de cálculo com *code debt*, a dívida técnica que se acumula quando novas funcionalidades são adicionadas a um programa sem reorganizar o que já existia. No código, isso significa duplicação, confusão sobre qual é a "forma certa" de fazer algo e um sistema que só fica mais difícil de manter com o tempo.
