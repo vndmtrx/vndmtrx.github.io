@@ -25,6 +25,8 @@ Como forma de acalmar meus próprios nervos e criar uma bússola prática para a
 > [!NOTE] Disclaimer
 > Este texto reflete as anotações de alguém que passou o fim de semana tentando digerir leituras densas de IA para não passar vergonha na aula. Não domino nenhum detalhe formal desses papers, e estou usando a escrita justamente para organizar a minha intuição antes da apresentação.
 
+{% include toc.html %}
+
 ## A angústia do primeiro grupo avaliador
 
 Avaliar colegas quando você mesmo teve apenas sábado e domingo de leitura intensiva para absorver uma montanha de teoria é um exercício de pura empatia. Se você exige cada detalhe formal do livro, você se torna o hipócrita pedante que finge ter nascido sabendo o que leu quarenta e oito horas atrás, entre jogar fazendinha no *Palia* e assistir *Boku no Hero* no *Crunchyroll*, para ir aliviando a cabeça de tempos em tempos, tipo se levantar para relaxar as pernas; se você não cobra nada e só balança a cabeça concordando com tudo, a dinâmica perde qualquer propósito.
