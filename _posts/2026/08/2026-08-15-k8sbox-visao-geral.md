@@ -25,6 +25,8 @@ A resposta para essas perguntas não está nos instaladores automáticos. Ela es
 
 A proposta aqui é construir o conhecimento de forma estritamente progressiva. Vamos começar do hardware virtual até chegar num cluster completo, seguro e validado pelo teste de conformidade oficial da CNCF [^6].
 
+{% include toc.html %}
+
 ## A ilusão da conveniência e o valor do Hard Way
 
 Ferramentas como `kubeadm`, `k3s`, `k0s`, `minikube` ou `kind` são fantásticas para o que se propõem. Eu mesmo uso no meu cotidiano. Mas quando o seu objetivo é o **estudo profundo**, a conveniência excessiva vira um obstáculo pedagógico.
