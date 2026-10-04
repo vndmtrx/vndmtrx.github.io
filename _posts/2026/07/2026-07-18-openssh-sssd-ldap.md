@@ -22,6 +22,8 @@ A ferramenta que vai costurar tudo isso é o **SSSD (System Security Services Da
 
 Se o post anterior era sobre criar a "carteira de identidade criptográfica" (certificados) dos seus usuários, este é sobre colocar o "porteiro biométrico" na entrada de cada servidor: um porteiro que consulta a base central de identidades em tempo real e já sabe de antemão qual é a chave pública de cada pessoa.
 
+{% include toc.html %}
+
 ## O cenário: onde paramos e para onde vamos
 
 Recapitulando rapidamente o que já tínhamos configurado:
