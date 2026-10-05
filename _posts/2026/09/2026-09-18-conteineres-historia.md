@@ -30,6 +30,8 @@ A conversa que se seguiu foi a inspiração direta para essa série. Porque o qu
 > [!NOTE] Nota da Série
 > Este post abre a série **"Contêineres de Cabo a Rabo"**, que explora os contêineres desde a história até a prática avançada. Se você já conhece bem a linha do tempo e quer ir direto ao mecanismo interno, pule para a {% include post-ref.html slug="conteineres-fundamentos" text="Parte 1: Fundamentos e Anatomia" %}. Se quiser entender as ferramentas do dia a dia, vai para a {% include post-ref.html slug="conteineres-pratica" text="Parte 2: Contêineres na Prática" %}.
 
+{% include toc.html %}
+
 ## O que o Docker realmente fez
 
 Solomon Hykes não inventou o isolamento de processos. Não inventou namespaces, não inventou cgroups, não inventou sistemas de arquivos em camadas.
