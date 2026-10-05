@@ -18,6 +18,8 @@ Sempre tive afinidade com linguagens funcionais. Meu primeiro contato foi ainda 
 
 Agora, com Elixir, sinto um misto desses mundos: a elegância e concisão da sintaxe, combinadas com o poder do paradigma funcional. Recursos como o operador `|>` (*pipe*) e o *pattern matching* moldam a forma de pensar, e vou abordar cada um deles com calma ao longo da série.
 
+{% include toc.html %}
+
 ## Entendendo o Elixir e sua proposta
 
 Antes de sair instalando pacotes e compilando código, vale entender por que o Elixir é tão interessante e o que ele traz para a mesa.
