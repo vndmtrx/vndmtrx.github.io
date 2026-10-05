@@ -4,11 +4,10 @@ title: "Fundamentos e Anatomia de Contêineres"
 subtitle: "De namespaces a cgroups v2: tudo que o kernel faz quando você digita docker run"
 author:
   - "Eduardo N. S. R."
-date: 2026-09-25 14:00:00 GMT-3
+date: 2026-10-05 11:26:00 GMT-3
 permalink: /posts/conteineres-fundamentos/
 tags: [Docker, Contêineres, Linux, DevOps]
 series: Contêineres de Cabo a Rabo
-published: false
 category: Tutoriais
 ---
 
@@ -23,21 +22,7 @@ Este conhecimento também é o alicerce fundamental para a nossa série sobre cr
 > [!NOTE] Nota da Série
 > Este post é a Parte 1 da série **"Contêineres de Cabo a Rabo"**. Se você quer entender como chegamos até aqui, leia primeiro o {% include post-ref.html slug="conteineres-historia" text="Post Zero: A História dos Contêineres" %}. Aqui vamos dissecar a anatomia interna dos contêineres e explorar as três tecnologias fundamentais do kernel Linux: *namespaces*, *cgroups* e *union filesystems*, fechando com a construção de um mini-contêiner do zero em apenas 50 linhas de shell script. Na Parte 2, vamos subir o nível para as ferramentas de produção: Dockerfiles avançados, Docker Compose, arquitetura sem daemon do Podman, segurança e o caminho para a orquestração.
 
-## Estrutura do Post
-
-Para facilitar o estudo e permitir que você use este texto como guia de consulta rápida, dividi a anatomia dos contêineres em tópicos estruturados. A tabela a seguir lista o roteiro do post:
-
-| Seção | Tema Principal |
-| :--- | :--- |
-| [Contêiner Não é VM: A Distinção que Muda Tudo](#contêiner-não-é-vm-a-distinção-que-muda-tudo) | Comparativo real entre hipervisores e isolamento de processos |
-| [Namespaces: Os Muros de Isolamento do Kernel](#namespaces-os-muros-de-isolamento-do-kernel) | Como fatiar a visão de processos, rede, montagens e usuários |
-| [Cgroups: O Guarda de Recursos](#cgroups-o-guarda-de-recursos) | Limites de memória, CPU e processos com a hierarquia unificada v2 |
-| [Union Filesystems: Imagens em Camadas](#union-filesystems-imagens-em-camadas) | Anatomia do OverlayFS, Copy-on-Write e montagens na mão |
-| [A Especificação OCI e o Ecossistema de Runtimes](#a-especificação-oci-e-o-ecossistema-de-runtimes) | Runtimes de alto e baixo nível: dockerd, containerd, runc e crun |
-| [Grand Finale: Construindo um Mini-Contêiner do Zero](#grand-finale-construindo-um-mini-contêiner-do-zero) | Script bash executável integrando namespaces, cgroups e OverlayFS |
-| [Exercícios](#exercícios) | Desafios práticos para consolidar namespaces, cgroups e OverlayFS |
-| [O Que Vem na Parte 2](#o-que-vem-na-parte-2) | O passo seguinte: ferramentas, ciclo de vida e orquestração |
-| [Referências](#referências) | Documentação oficial, papers e especificações do kernel |
+{% include toc.html %}
 
 ## Contêiner Não é VM: A Distinção que Muda Tudo
 
@@ -182,9 +167,9 @@ meu-servidor-producao
 
 # Criar namespace UTS e trocar o nome localmente
 $ sudo unshare --uts bash
-$ hostname container-temporario
+$ hostname conteiner-temporario
 $ hostname
-container-temporario
+conteiner-temporario
 
 # Sair da sessão isolada e conferir o host original
 $ exit
@@ -486,7 +471,7 @@ $ sudo umount /tmp/experimento-overlay/unificado
 ```
 *A camada base permaneceu imutável; toda e qualquer alteração foi gravada exclusivamente dentro do diretório de escrita.*
 
-Quando você roda `docker rm meu-container`, tudo o que o Docker precisa fazer em disco é deletar o diretório `upperdir` correspondente. As camadas da imagem base nunca foram alteradas, e por isso podem ser compartilhadas concorrentemente por centenas de contêineres sem risco de corrupção cruzada.
+Quando você roda `docker rm meu-conteiner`, tudo o que o Docker precisa fazer em disco é deletar o diretório `upperdir` correspondente. As camadas da imagem base nunca foram alteradas, e por isso podem ser compartilhadas concorrentemente por centenas de contêineres sem risco de corrupção cruzada.
 
 > [!TIP] Inspecionando Camadas pelo Docker
 > Se quiser visualizar a pilha de camadas de qualquer imagem sem montá-las manualmente, use `docker image inspect <imagem> --format='{% raw %}{{json .RootFS.Layers}}{% endraw %}'`. A saída é uma lista de hashes SHA256 representando cada camada em ordem de empilhamento. Para um contêiner em execução, `docker inspect <contêiner> --format='{% raw %}{{json .GraphDriver.Data}}{% endraw %}'` revela os caminhos físicos exatos do `LowerDir`, `UpperDir`, `WorkDir` e `MergedDir` no sistema de arquivos do hospedeiro.
@@ -613,11 +598,11 @@ Abaixo está o código de um script em Bash funcional com cerca de 50 linhas út
 
 ```bash
 #!/bin/bash
-# mini-container.sh: Um motor de contêineres funcional em ~50 linhas de shell script
-# Uso: sudo ./mini-container.sh
+# mini-conteiner.sh: Um motor de contêineres funcional em ~50 linhas de shell script
+# Uso: sudo ./mini-conteiner.sh
 set -euo pipefail
 
-CONTAINER_DIR="/tmp/mini-container-lab"
+CONTAINER_DIR="/tmp/mini-conteiner-lab"
 ALPINE_VERSION="3.20"
 ALPINE_ARCH="x86_64"
 ALPINE_URL="https://dl-cdn.alpinelinux.org/alpine/v${ALPINE_VERSION}/releases/${ALPINE_ARCH}/alpine-minirootfs-${ALPINE_VERSION}.0-${ALPINE_ARCH}.tar.gz"
@@ -640,13 +625,19 @@ mount -t overlay overlay \
     "${CONTAINER_DIR}/merged"
 
 echo "==> [4/6] Configurando limites de recursos via Cgroup v2 (${CGROUP_NAME})..."
+# Garante que os controladores de memória e processos estejam delegáveis aos subdiretórios
+echo "+memory +pids" > /sys/fs/cgroup/cgroup.subtree_control 2>/dev/null || true
 CGROUP_PATH="/sys/fs/cgroup/${CGROUP_NAME}"
 mkdir -p "${CGROUP_PATH}"
 echo "${MEMORY_LIMIT}" > "${CGROUP_PATH}/memory.max"
 echo "${PIDS_LIMIT}" > "${CGROUP_PATH}/pids.max"
 
 echo "==> [5/6] Preparando arquivos de configuração (DNS)..."
-cp /etc/resolv.conf "${CONTAINER_DIR}/merged/etc/resolv.conf" 2>/dev/null || true
+mkdir -p "${CONTAINER_DIR}/merged/etc"
+cat << 'EOF' > "${CONTAINER_DIR}/merged/etc/resolv.conf"
+nameserver 1.1.1.1
+nameserver 8.8.8.8
+EOF
 
 echo "==> [6/6] Inicializando processo isolado em novos Namespaces..."
 echo "     Ambiente pronto! Digite 'exit' para sair e liberar os recursos."
@@ -690,15 +681,21 @@ O primeiro bloco prepara as quatro pastas exigidas pelo driver OverlayFS. O segu
 
 No terceiro passo, o script realiza a montagem do OverlayFS. O diretório `merged` passa a ser a nossa visão consolidada, enquanto a pasta `upper` acolherá qualquer arquivo modificado pelo usuário durante o teste.
 
-No quarto passo, o script fala diretamente com o subsistema cgroups v2 do kernel: cria uma pasta correspondente ao grupo de controle do contêiner e grava os limites de cem megabytes de RAM e cinquenta identificadores de processo.
+No quarto passo, o script fala diretamente com o subsistema cgroups v2 do kernel: habilita os controladores para delegação aos subgrupos em `cgroup.subtree_control`, cria a pasta correspondente ao grupo de controle do contêiner e grava os limites de cem megabytes de RAM e cinquenta identificadores de processo.
 
-O quinto passo cuida da configuração básica de rede, copiando as definições de servidores DNS de `/etc/resolv.conf` para dentro do ambiente montado.
+O quinto passo cuida da configuração básica de rede, gravando diretamente servidores de DNS públicos em `/etc/resolv.conf` para evitar conflitos com o resolvedor local em stub (`127.0.0.53`) do *systemd-resolved*.
 
 No sexto passo, a grande mágica se concretiza: o utilitário `unshare` dispara novas instâncias de todos os seis namespaces essenciais. No namespace privado de montagem recém-criado, o script monta os pseudo-sistemas de arquivos `/proc`, `/sys` e `/dev` (garantindo que o `/proc` reflita exclusivamente a tabela de processos do novo contêiner e que essas montagens desapareçam do hospedeiro assim que o namespace for encerrado). Antes de entregar o terminal ao usuário, o shell grava o seu próprio identificador de processo dentro do arquivo `cgroup.procs` daquele cgroup, garantindo que os limites de hardware passem a valer imediatamente. Em seguida, a chamada `exec chroot` substitui o processo atual pelo `/bin/sh` assumindo rigorosamente o PID 1.
 
 Ao digitar `exit`, a rotina de encerramento entra em ação: desmonta o ponto OverlayFS e remove o diretório do cgroup, devolvendo o sistema operacional hospedeiro exatamente ao estado em que se encontrava.
 
-> [!NOTE] Nota Operacional
+> [!NOTE] Nota Operacional: chroot versus pivot_root
+> Em nosso laboratório didático, utilizamos o comando `chroot` pela simplicidade e legibilidade do script em 50 linhas. Runtimes de produção da especificação OCI (como `runc` e `crun`) utilizam a chamada de sistema `pivot_root`, que move atomicamente o novo sistema de arquivos para a raiz do namespace `MNT` e descarta a raiz antiga, impedindo qualquer tentativa de fuga (*container breakout*). Da mesma forma, motores de contêiner evitam bind mounts diretos de `/dev`, criando em vez disso instâncias isoladas de `devpts` e nós mínimos de dispositivos (`null`, `zero`, `random`, `urandom`).
+
+> [!NOTE] Nota sobre Propagação de Montagens
+> Em distribuições modernas com `systemd`, o sistema de arquivos raiz herda a flag de propagação compartilhada (`shared`). Ao isolar namespaces de montagem com `unshare --mount`, o kernel cria uma cópia privada dos pontos existentes, mas se você criar montagens novas que não devam ser propagadas para o hospedeiro, motores de produção executam internamente `mount --make-rprivate /` antes de montar `/proc` e `/sys`. No nosso laboratório, a chamada `unshare` garante que o `/proc` remountado viva estritamente dentro da visão do processo bifurcado.
+
+> [!NOTE] Nota Operacional: Permissões de Execução
 > Para executar o script em sua plenitude, rode-o com `sudo` para permitir a execução de `mount` e a configuração de cgroups no sistema. Se você preferir uma abordagem sem privilégios administrativos no seu usuário diário, utilize ferramentas como o Podman, que orquestram esses mesmos passos combinando *User Namespaces* com ferramentas auxiliares como o `crun`.
 
 ## Exercícios
@@ -770,7 +767,7 @@ A regra do OverlayFS estabelece que as camadas passadas no parâmetro `lowerdir`
 
 **4. Investigando o Mini-Contêiner a Partir do Hospedeiro**
 
-Execute o script `mini-container.sh`. Enquanto o terminal interno estiver ativo aguardando comandos, abra outro terminal comum no seu hospedeiro e execute os seguintes passos de investigação:
+Execute o script `mini-conteiner.sh`. Enquanto o terminal interno estiver ativo aguardando comandos, abra outro terminal comum no seu hospedeiro e execute os seguintes passos de investigação:
 
 1. Localize o processo do contêiner com `ps aux | grep mini-conteiner`.
 2. Compare a lista de namespaces de `/proc/<PID>/ns/` do processo localizado com os namespaces do processo 1 do host.
