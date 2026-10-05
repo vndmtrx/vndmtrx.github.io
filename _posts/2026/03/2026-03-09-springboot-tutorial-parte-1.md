@@ -23,6 +23,8 @@ A inspiração para esta série vem do clássico [Flask Mega Tutorial](https://b
 
 E para construir uma catedral que fique de pé, precisamos cavar fundações sólidas. Por isso, começaremos pelo terminal.
 
+{% include toc.html %}
+
 ## O alicerce do host: Debian Trixie e SDKMAN
 
 A escolha do sistema operacional de trabalho não precisa ser um dogma, mas precisa ser consistente. Por aqui, utilizo o **Debian GNU/Linux 13 (Trixie)** como distribuição padrão para infraestrutura e desenvolvimento. Ele entrega uma base estável, enxuta e previsível.
