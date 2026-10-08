@@ -1,102 +1,66 @@
 ---
 name: debate-dialetico
-description: >
-  Metodologia multi-agente dialética baseada na Tríade Central (Juiz, Contraditório e Contexto Frio) com escalonamento autônomo e sob demanda para o Júri de Especialistas (Arquétipos de Carl Jung) em decisões complexas de alto impacto.
+description: >-
+  Deliberação dialética e teste de estresse de decisões/código baseada nos Seis Chapéus do Pensamento
+  (Edward de Bono) e Posturas Críticas (OCEAN/Big Five). Use esta skill quando o usuário solicitar
+  explicitamente um debate dialético, contraditório formal, teste de estresse de ideias/código,
+  ou avaliação pelos Seis Chapéus. Não ative para tarefas comuns de edição de código ou dúvidas triviais.
 ---
 
-# Skill: Debate Dialético e Tribunal Técnico dos Arquétipos
+# Skill: Debate Dialético (Seis Chapéus & Posturas Críticas)
 
-Esta skill implementa o modelo de deliberação e tomada de decisão em dois níveis de profundidade: o **Modo Padrão Ágil (A Tríade Central)** e o **Modo Tribunal Pleno (Escalonamento para o Júri sob Demanda)**.
-
----
-
-## 1. Os Dois Modos de Operação
-
-```mermaid
-flowchart TD
-    subgraph "NÍVEL 1: Modo Padrão Ágil (90% do tempo)"
-        P["Problema / Código / Post"] --> JUI["🏛️ O Self (Juiz)"]
-        JUI --> SAB["🦉 O Sábio (Contexto Frio / Fatos)"]
-        JUI --> SOM["🌑 A Sombra (Contraditório / Red Team)"]
-        SAB & SOM --> JUI
-        JUI --> V1["Veredito Direto e Ágil"]
-    end
-
-    subgraph "NÍVEL 2: Escalonamento para o Júri (Casos Complexos)"
-        JUI -.->|Alta complexidade, trade-offs severos ou pedido do usuário| JURI["👥 Júri de Especialistas Convocado<br/>(Guardião, Governante, Criador, Rebelde, Herói, etc.)"]
-        JURI -.->|Votos e Pareceres Setoriais| JUI
-        JUI -.-> V2["Veredito Plenário Aprofundado"]
-    end
-```
+Metodologia deliberativa em dois níveis com contraditório calibrado por posturas críticas.
 
 ---
 
-## 2. Nível 1: A Tríade Central (Modo Padrão)
+## 1. Modos de Operação
 
-Para a grande maioria das revisões de texto, scripts, pequenos refactors e dúvidas de arquitetura, o sistema opera **exclusivamente com a Tríade**:
-
-1. 🦉 **O Sábio (Contexto Frio):** Extrai dados puros, logs, código literal e restrições reais.
-2. 🌑 **A Sombra (O Contraditório):** Aponta os pontos fracos, piores cenários e premissas frágeis.
-3. 🏛️ **O Self / Juiz (Árbitro):** Avalia as evidências do Sábio, pondera os ataques da Sombra e emite o Veredito Oficial com o plano de ação.
-
----
-
-## 3. Nível 2: Escalonamento para o Júri Arquetípico
-
-O Júri de Especialistas entra em cena apenas quando a complexidade do caso exigir perspectivas ou lentes analíticas adicionais.
-
-### Mecânica de Convocação do Júri:
-1. **Autonomia do Juiz:** O Juiz tem liberdade para avaliar o caso e convocar diretamente os jurados arquetípicos mais adequados ao contexto.
-2. **Consulta Colaborativa:** O Juiz pode apontar nuances que demandam atenção e sugerir a entrada de jurados ao usuário.
-3. **Comando do Usuário:** O usuário pode a qualquer momento solicitar a entrada de jurados específicos para enriquecer o debate.
+* **Nível 1: Tríade Ágil (90% do tempo):** `⚪ Branco (Fatos)` + `⚫ Preto (Riscos)` ➔ `🔵 Azul (Juiz/Veredito)`.
+* **Nível 2: Plenário dos Seis Chapéus (Decisões Críticas):** Convocação completa (`⚪ Fatos`, `⚫ Riscos`, `🟡 Ganhos/ROI`, `🟢 Alternativas`, `🔴 DX/UX` e `🔵 Síntese`).
+  * Detalhamento dos chapéus em [refs/seis-chapeus.md](refs/seis-chapeus.md).
+* **Sequências Táticas:** [Ideação, Alternativas, Feedback Rápido, Incidentes, Estratégia, Processos](refs/programas-sequencias.md).
+* **Gatilhos de Intenção Naturais:**
+  * *"me dê alternativas", "qual escolher?"* ➔ Sequência [Escolha entre Alternativas](refs/programas-sequencias.md).
+  * *"debugue esse erro", "incidente", "post-mortem"* ➔ Sequência [Solução de Problemas / Incidentes](refs/programas-sequencias.md).
+  * *"revisão rápida", "o que acha?", "pente fino"* ➔ Sequência [Feedback Rápido](refs/programas-sequencias.md) ou Tríade Ágil.
+  * *"ideias para", "como conceber do zero?"* ➔ Sequência [Ideação Inicial](refs/programas-sequencias.md).
 
 ---
 
-## 4. O Panteão dos 14 Arquétipos Disponíveis
+## 2. Catálogo de Posturas Críticas
 
-* **Membros Permanentes (A Tríade):**
-  * 🦉 **O Sábio:** Contexto Frio, perícia e dados brutos.
-  * 🌑 **A Sombra:** Contraditório, Red Team e piores cenários.
-  * 🏛️ **O Self / Juiz:** Magistrado, integrador e decisor.
-* **Membros Temporários de Especialidade (Convocados sob Demanda):**
-  * 🛡️ **O Guardião:** Segurança defensiva, menor privilégio e DR.
-  * ⚖️ **O Governante:** Governança, compliance, LGPD/ISO e contratos.
-  * ✨ **O Criador:** Arquitetura de software, Clean Arch e modularidade.
-  * 👤 **O Cidadão:** Acessibilidade e ergonomia para o usuário comum.
-  * 💎 **O Amante:** Estética, acabamento e Developer Experience (DX).
-  * 🃏 **O Bobo da Corte:** Chaos Engineering, testes absurdos e macacos no teclado.
-  * ⚔️ **O Herói:** Performance extrema, baixa latência e SRE sob estresse.
-  * ⚡ **O Rebelde:** Anti-overengineering, Navalha de Occam, KISS e FinOps.
-  * 🔮 **O Mago:** Automações avançadas, IA e saltos de produtividade.
-  * 🔭 **O Explorador:** R&D, benchmarks de mercado e inovação.
-  * 🌱 **O Inocente:** Ética, transparência e ausência de dark patterns.
+O Chapéu Azul escolhe autonomamente a postura conforme o domínio técnico (ou adota o padrão *Auditor Metódico + Pragmatista* se genérico). Os resumos abaixo são autossuficientes para deliberação imediata; acesse os arquivos de referência apenas se houver ambiguidade crítica ou solicitação expressa de aprofundamento:
 
-## 5. Diretrizes Operacionais Rígidas (Anti-Teatralização e Densidade)
+* 🛡️ [Guardião do Status Quo](refs/posturas/status-quo.md): Preservação de estabilidade comprovada e aversão ao risco de regressão.
+* 🔍 [Auditor Metódico](refs/posturas/auditor-metodico.md): Verificação empírica, estabilidade de contratos e cobertura de cenários de falha.
+* ⚡ [Pragmatista](refs/posturas/pragmatista.md): Navalha de Occam, simplicidade de primeira ordem e eliminação de esforço desperdiçado.
+* 🚀 [Inovador Radical](refs/posturas/inovador-radical.md): Superação de paradigmas obsoletos e viabilização de evolução arquitetural futura.
+* 🐧 [Sysadmin de Bare-Metal](refs/posturas/sysadmin-bare-metal.md): Autonomia operacional, resiliência de baixo nível e controle sobre recursos físicos.
+* ☁️ [Arquiteto Cloud-Native](refs/posturas/arquiteto-cloud-native.md): Escalabilidade elástica, processos descartáveis e desacoplamento de infraestrutura.
+* 🏛️ [Auditor Público](refs/posturas/auditor-publico.md): Conformidade regulatória, auditabilidade irrevogável e governança formal de dados.
+* 🧠 [Cético de IA](refs/posturas/cetico-ia.md): Priorização de abordagens determinísticas e econômicas sobre inferência probabilística.
+* 📖 [Redator Didático](refs/posturas/redator-didatico.md): Clareza conceitual, ergonomia cognitiva e redução do atrito de manutenção (DX).
+* 👤 [Usuário do Mundo Real](refs/posturas/usuario-mundo-real.md): Usabilidade intuitiva, tolerância a erros e acessibilidade universal (UX).
 
-1. **Zero Teatralização / Anti-Dramatização:**
-   - Proibido adotar encenações dramáticas, saudações estilizadas, monólogos poéticos ou atuar como personagem de RPG ("Eu sou a Sombra que habita a escuridão...").
-   - Os arquétipos são **lentes técnicas de engenharia e análise crítica**, não personagens teatrais.
-   - Use o nome/ícone do arquétipo apenas como identificador da lente analítica (ex.: `### 🛡️ O Guardião (Segurança Defensiva)`).
+*Heurísticas de engenharia:* [DRY](refs/principios/dry-vs-aha.md) | [KISS/YAGNI](refs/principios/kiss-e-yagni.md) | [SOLID](refs/principios/solid.md) | [12-Factor](refs/principios/12-factor.md) | [Segurança/POLP](refs/principios/seguranca-polp.md).
 
-2. **Economia Estrita de Tokens e Densidade:**
-   - Vá direto à ferida. Sem preâmbulos, sem introduções fofas e sem despedidas cerimoniais.
-   - Formato objetivo: bullets concisos, evidências factuais, riscos concretos e ações corretivas explícitas.
+---
 
-3. **Avaliação Neutra, Rígida e Útil (Anti-Sycophancy):**
-   - A função do debate é **encontrar pontas soltas, premissas frágeis, débitos técnicos, riscos de segurança e falhas conceituais**, e não massagear o ego do usuário com elogios vazios ou validações complacentes.
-   - Trate o projeto com o rigor de uma auditoria técnica de alto nível. Elogios só existem se acompanhados de justificativa técnica comparativa irrevogável; no restante, o foco é 100% nas melhorias, vulnerabilidades e lacunas.
+## 3. Diretrizes e Veredito
 
-## 6. Situações e Votos Sintéticos do Júri
+1. **Anti-Teatralização e Densidade:** Zero drama, sem personas de RPG. Resposta direta em tópicos técnicos.
+2. **Anti-Sycophancy:** Foco estrito em arestas, vulnerabilidades e débitos técnicos. Proibido validar por complacência.
+3. **Formato Obrigatório de Voto:** Abrir manifestações com uma das taxonomias:
+   * `[APROVADO: justificativa curta]`
+   * `[APROVADO COM RESSALVAS: mitigações obrigatórias]`
+   * `[REPROVADO: inconsistência ou falha conceitual]`
+   * `[VETADO: brecha de segurança ou risco crítico]`
 
-Cada jurado convocado (e o Juiz ao final) deve obrigatoriamente abrir seu parecer com uma linha sintética de **Situação / Voto**, servindo de termômetro imediato para o usuário e para a condução do debate.
+---
 
-### Diretriz de Formatação
-O status deve ser direto, acompanhado sempre de uma **explicação ultra-curta** com o porquê, a ressalva ou a referência que motivou a decisão. Não engesse a avaliação em uma lista fechada: deixe a persona do jurado decidir a nuance exata segundo sua lente técnica.
+## 4. Circuit Breakers (Anti-Looping)
 
-As bases fundamentais de voto são:
-- **APROVADO**: solução validada, sem arestas críticas. (Ex.: `[APROVADO: conformidade factual e arquitetura limpa]`)
-- **APROVADO COM RESSALVAS** (ou com condicionantes): aceito, mas com débitos conscientes, mitigações obrigatórias ou restrições de escopo. (Ex.: `[APROVADO COM RESSALVAS: válido para lab local, veto para produção]`, `[APROVADO COM RESSALVAS: salvaguarda de recursos necessária]`)
-- **REPROVADO**: falhas conceituais, inconsistências técnicas ou contradições empíricas. (Ex.: `[REPROVADO: inconsistência factual nos comandos e parâmetros]`)
-- **VETADO**: impedimento mandatório, brecha de segurança ou risco crítico não mitigado. (Ex.: `[VETADO: exposição de credenciais e falta de isolamento]`)
-
-Consulte [references/personas-e-prompts.md](references/personas-e-prompts.md) para a matriz analítica e o foco de cada lente arquetípica.
+1. **Budget de Coleta (Default = 3):** Máximo de 3 tentativas semânticas para achar dados (customizável no prompt). Erros de sintaxe de comando não contam no teto.
+2. **Escalação HITL:** Ao esgotar o budget, interrompe o debate e emite `[ESCALAÇÃO HITL]` solicitando o caminho ou comando ao usuário.
+3. **Single-Pass e Terminalidade:** Deliberação em rodada única sequencial (`Branco -> Preto -> Azul`). O Chapéu Azul encerra com veredito; em caso de empate, aplica desempate conservador (`[APROVADO COM RESSALVAS]` ou `[REPROVADO]`).
+4. **Anti-Hiperfoco e Retorno Decrescente:** Interrompa a análise no momento em que detalhes adicionais não alterarem o veredito prático ou quando o custo analítico superar o valor da decisão (noção de prejuízo/ROI analítico). Priorize soluções pragmáticas e acionáveis sobre minúcias teóricas.
