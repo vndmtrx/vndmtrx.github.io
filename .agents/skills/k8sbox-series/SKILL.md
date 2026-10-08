@@ -21,6 +21,7 @@ Diretrizes técnicas e estruturais para os posts da série **Kubernetes in a Box
   tags: [Kubernetes, Ansible, DevOps, Infraestrutura, Linux]
   ```
 - **Seção de Diagnóstico Obrigatória:** Todo post deve conter uma seção `## Diagnóstico e Troubleshooting` com comandos reais de validação (`etcdctl`, `kubectl`, `crictl`, `openssl`, `sysctl`).
+- **Sem Seção de Exercícios:** Esta série NÃO utiliza a seção `## Exercícios`. O foco prático e de fixação é a seção obrigatória `## Diagnóstico e Troubleshooting` e o laboratório em `vndmtrx/k8s-in-a-box`.
 - **Repositório Parceiro:** Referenciar tasks/roles Ansible correspondentes em `vndmtrx/k8s-in-a-box`.
 
 ---
