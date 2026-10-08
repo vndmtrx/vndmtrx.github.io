@@ -22,6 +22,7 @@ Diretrizes técnicas e estruturais para os posts da série **Engenharia de Softw
   ```
 - **Página de Coleção / Trilha:** Cadastrada em `tutoriais/engsoftware.md` e metadados em `_data/series.yml`.
 - **Estudo de Caso Contínuo:** Todos os módulos aplicam a teoria ao **SGCF** (Mobile-First Web PWA com QR Code no painel de veículos, GPS via Geolocation API e prestação de contas de combustível).
+- **Override de Exercícios (Obrigatório):** Esta série faz *override* explícito da regra geral de `blog-posts`. Todo módulo DEVE conter obrigatoriamente a seção `## Exercícios` (Exercícios de Fixação), aplicando os desafios ao contexto do SGCF com respostas recolhidas em `<details markdown="1"><summary>Ver resposta</summary>`, conforme o roteiro e a formatação de `blog-posts/references/formatacao-avancada.md`.
 
 ---
 
