@@ -84,7 +84,8 @@ Evite blocos monótonos de IA (3 a 5 frases):
 - **Callouts:** `> [!TIP] Dica`, `> [!NOTE] Nota`, `> [!WARNING] Atenção`, `> [!IMPORTANT] Importante`, `> [!CAUTION] Aviso Crítico`.
 - **Sumário & Índice (TOC):** Em posts longos, insira `{% include toc.html %}` ao final da introdução, imediatamente antes do primeiro cabeçalho `##`. Se precisar de um título customizado ou deixá-lo aberto por padrão: `{% include toc.html title="Título Customizado" open=true %}`. Em ensaios curtos ou crônicas, dispense o TOC.
 - **Footnotes:** `[^1]: **Título** {*Fonte*} ([Link](url))` exclusivamente na seção final `## Referências`.
-- **Diagramas Mermaid, Box-Drawing e Exercícios:** Consulte o guia detalhado em [formatacao-avancada.md](references/formatacao-avancada.md).
+- **Exercícios (`## Exercícios`):** NÃO inclua exercícios por padrão. O assistente DEVE perguntar ao autor se o post deve conter exercícios antes de criá-los, a não ser que a skill da série correspondente faça um *override* explícito (ex.: `engsoftware-series` ou `springboot-series`). Quando aprovados ou exigidos pela série, siga a estrutura de [formatacao-avancada.md](references/formatacao-avancada.md).
+- **Diagramas Mermaid, Box-Drawing e Formatação Avançada:** Consulte o guia detalhado em [formatacao-avancada.md](references/formatacao-avancada.md).
 
 ---
 
