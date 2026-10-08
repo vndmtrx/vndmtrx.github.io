@@ -27,6 +27,7 @@ Diretrizes técnicas e convenções para os posts da série **Spring Boot Tutori
   > [!NOTE] Nota da Série
   > Este post faz parte da série **"Spring Boot Tutorial"**, onde construímos do zero uma API backend de produção com **Spring Boot**, explorando boas práticas de arquitetura, contratos, persistência, resiliência, observabilidade e nuvem. O código-fonte de apoio e os projetos de cada capítulo estão organizados no repositório parceiro [vndmtrx/estudos_springboot](https://github.com/vndmtrx/estudos_springboot).
   ```
+- **Override de Exercícios:** Esta série faz *override* da regra geral. Posts práticos e tutoriais da série incluem a seção `## Exercícios` com desafios de código e testes complementares para fixação na `tarefas-api`, seguindo o padrão de [formatacao-avancada.md](references/formatacao-avancada.md).
 
 ---
 
