@@ -4,9 +4,12 @@ Este documento serve como referência sob demanda para a skill `blog-posts` do b
 
 ---
 
-## 1. Padrão Estrutural de Exercícios (Tutoriais e Séries)
+## 1. Padrão Estrutural de Exercícios
 
-Para manter a consistência didática em todas as séries e tutoriais práticos do blog, a montagem de exercícios segue regras estritas:
+> [!IMPORTANT] Regra de Inclusão
+> **Exercícios NÃO são incluídos por padrão.** O assistente deve sempre **perguntar ao autor** se o post terá exercícios antes de criá-los, **a não ser** que a skill da série correspondente faça um *override* explícito desta regra (como na série `engsoftware-series`, onde são obrigatórios pela ementa).
+
+Quando aprovados pelo autor ou exigidos pela skill da série, a montagem dos exercícios segue regras estritas para manter a consistência didática:
 
 1. **Seção Dedicada (`## Exercícios`):** Agrupados exclusivamente em uma seção `## Exercícios` no final do post (antes da Conclusão / Referências).
 2. **Frase Introdutória:** Convidar o leitor a praticar (*"Para fixar a dinâmica de X, execute os desafios abaixo no seu terminal."*).
