@@ -33,7 +33,7 @@ Sabe quantos arquivos de automação ou manifestos de pods estáticos precisaram
 >
 > Mas olha: se você não aguenta de curiosidade e prefere ver o bicho funcionando na prática antes de ler todo o manual, sem problemas! Vai lá no terminal, clona o repositório, roda a esteira com `make k8s-in-a-box` e vê o cluster se materializar. Depois volta aqui pra continuarmos a dissecar o inventário com calma. Eu te espero!
 
-O ponto de entrada de qualquer automação com a ferramenta é o arquivo de configuração [.ansible.cfg](https://github.com/vndmtrx/k8s-in-a-box/blob/main/ansible/.ansible.cfg). No nosso repositório, ele fica dentro do diretório `ansible/` e estabelece parâmetros cruciais para que a automação rode de forma estável, performática e previsível:
+O ponto de entrada de qualquer automação com a ferramenta é o arquivo de configuração [.ansible.cfg](https://github.com/vndmtrx/k8s-in-a-box/blob/main/ansible/.ansible.cfg). No repositório, ele fica dentro do diretório `ansible/` e define exatamente como eu escolhi configurar o Ansible para atender às necessidades desse laboratório:
 
 ```ini
 [defaults]
@@ -70,7 +70,7 @@ A opção `host_key_checking=False` é uma concessão consciente para o fluxo de
 > [!CAUTION] Alerta de Segurança
 > A desativação de `host_key_checking` é aceitável exclusivamente em laboratórios locais descartáveis com redes privadas isoladas. Em ambientes de homologação ou produção, desativar essa checagem abre as portas para ataques de Man-in-the-Middle (MitM) em conexões SSH corporativas.
 
-Outro ganho significativo de velocidade vem da trinca `gather_facts=false`, `forks = 5` e as opções de `[ssh_connection]`. Por padrão, o Ansible tenta coletar centenas de fatos do sistema operacional (interfaces, discos, variáveis de ambiente) logo no início de cada *play*. Para um cluster com várias máquinas virtuais, essa checagem pode adicionar vários segundos a cada execução. Desativamos a coleta global e deixamos a coleta pontual apenas para as tarefas que realmente precisam dela.
+Outro ganho perceptível de fôlego vem da trinca `gather_facts=false`, `forks = 5` e as opções de `[ssh_connection]`. Por padrão, toda vez que você pisca o olho, o Ansible quer passar um pente fino na VM para descobrir o endereço MAC de cada interface virtual, o tamanho do disco e até a fase da lua no sistema operacional. Para quem está rodando tudo localmente no notebook ou desktop, esperar esse interrogatório a cada *play* só serve para usar CPU à toa e testar a nossa paciência. Desativei essa coleta global por padrão: quando uma role realmente precisar de algum dado específico da máquina, ela que vá lá e colete pontualmente.
 
 Com o `ssh_args` configurado com `ControlMaster=auto` e `ControlPersist=180s`, o cliente SSH reaproveita os sockets de conexão abertos com as VMs durante três minutos. Tarefas subsequentes na mesma máquina acontecem de forma quase instantânea, sem a latência de um novo *handshake* criptográfico a cada task.
 
@@ -86,7 +86,7 @@ inventario/hosts.yml -> ../configs/hosts-mini.yml
 
 Essa abordagem garante que todo o restante do ferramental (Ansible, scripts de verificação e Vagrant) consuma sempre o mesmo caminho (`inventario/hosts.yml`), sem precisar reescrever parâmetros de linha de comando.
 
-Em vez de listar todas as máquinas, basta olhar como declaramos um único nó e como ele se encaixa em um grupo (a listagem completa com todas as VMs está no [configs/hosts-mini.yml](https://github.com/vndmtrx/k8s-in-a-box/blob/main/configs/hosts-mini.yml)):
+A estrutura de cada nó e o agrupamento inicial seguem este padrão (o arquivo completo com todas as VMs está no [configs/hosts-mini.yml](https://github.com/vndmtrx/k8s-in-a-box/blob/main/configs/hosts-mini.yml)):
 
 ```yaml
 all:
@@ -117,13 +117,13 @@ A composição de grupos simplifica a execução dos playbooks:
 
 O inventário não serve apenas para o Ansible rodar tarefas. Ele funciona como a **fonte única da verdade** de toda a infraestrutura virtual:
 
-* **Leitura dinâmica via Ruby**: em vez de manter um `Vagrantfile` estático gigante repetindo nomes, vCPUs e limites de RAM para cada máquina, o script Ruby do Vagrant usa a biblioteca nativa `YAML` para abrir e interpretar diretamente o arquivo ativo em `inventario/hosts.yml`. Ele itera pelos grupos do YAML e dimensiona cada máquina no hipervisor usando as variáveis `memory` e `cpus` declaradas no inventário. Uma única linha modificada no arquivo de configuração atualiza tanto o hardware da VM quanto a automação de software.
-* **Provider Libvirt nativo (KVM) em vez de VirtualBox**: optamos deliberadamente pelo Libvirt comunicando direto com a virtualização KVM do kernel Linux. A eliminação da emulação de terceiros proporciona performance quase de máquina física (*bare-metal*), menor overhead de CPU e consumo de memória muito mais enxuto, viabilizando a execução de várias máquinas virtuais no mesmo computador sem travar o sistema hospedeiro.
+* **Vagrant alimentado pelo inventário**: o `Vagrantfile` não tem máquinas hardcoded. Ele lê diretamente o `inventario/hosts.yml` e provisiona cada VM no hipervisor com as variáveis `memory` e `cpus` que declaramos lá. Ajustou no YAML, o hardware da VM acompanha.
+* **Libvirt (KVM) em vez de VirtualBox**: KVM roda direto no kernel Linux, sem emulação pesada. Isso economiza RAM e CPU para aguentar várias VMs ligadas no mesmo computador sem fazer o sistema hospedeiro pedir socorro.
 * **Isolamento de redes com duas placas (Dual-NIC)**:
-  * `eth0` (Rede NAT padrão do Libvirt): usada exclusivamente para acesso externo à internet (download de pacotes do sistema operacional via gerenciador de pacotes quando necessário). A rota padrão dessa interface é propositalmente contida para não interferir nas rotas do cluster.
-  * `eth1` (Rede Privada 172.24.0.0/24): o coração da infraestrutura. O Vagrant atribui os IPs estáticos descritos no inventário a essas interfaces. Todo o tráfego do cluster (`etcd`, `kube-apiserver`, Pods, CNI e NFS) transita exclusivamente por aqui.
+  * `eth0` (`net_vagrant`): interface exclusiva para a gerência do Vagrant (`vagrant ssh`, triggers e provisioners). Configuramos com `ipv4.never-default yes` e métrica alta (`500`) justamente para ela nunca disputar rota padrão ou rota de saída.
+  * `eth1` (`net_mgmt`, 172.24.0.0/24): a placa de rede principal da VM. É ela que recebe os IPs estáticos do inventário, assume a rota padrão (`metric 50`) com o gateway `172.24.0.1` (NAT do Libvirt) e trafega tudo: comunicação interna do cluster (`etcd`, `kube-apiserver`, CNI, NFS) e saída externa controlada.
 
-Essa arquitetura Dual-NIC blinda o laboratório contra peculiaridades da sua rede física: você pode trocar de rede Wi-Fi, ir para o escritório, conectar ou desconectar cabos de rede e até usar VPNs no seu computador hospedeiro, que a comunicação interna e o roteamento entre as máquinas do cluster continuam 100% íntegros e intocados.
+Com isso, o lab fica imune à sua rede física: você pode trocar de Wi-Fi, ligar VPN ou tirar o cabo de rede que as VMs continuam se falando sem quebrar o cluster.
 
 ## O arquivo all.yml como mapa genético da stack
 
