@@ -17,7 +17,7 @@ O blog é pessoal e técnico (infraestrutura, segurança, DevOps, programação,
 - **Pessoa e Registro:** 1ª pessoa para experiências/opiniões ("eu uso", "o que eu faço é"); 2ª pessoa informal para o público ("você", "vocês" — nunca "o leitor"); informalidade natural ("vcs", "pra", "pro", "tá", "né") quando o momento pede.
 - **Posicionamento Firme:** Defenda posições com argumentos técnicos claros. Não apresente opções neutras sem emitir opinião ou apontar a recomendação ideal.
 - **Humor e Honestidade:** Humor situacional e autêntico de bastidores de infra/DevOps. Apartes em parênteses `(por favor não faça isso)`.
-- **Antipadrões de IA (Proibido):** Nunca use jargões afetados/pomposos (*"cirúrgico"*, *"magistral"*, *"impecável"*, *"eloquente"*, *"lapidar"*, uso vazio de *"robusto"*). Evite clichês (*"Neste post vamos explorar..."*, *"Vale ressaltar que..."*). Proibido reciclar metáforas ou expressões gêmeas ao longo do texto.
+- **Antipadrões de IA (Proibido):** Nunca use jargões afetados/pomposos (*"cirúrgico"*, *"precisão cirúrgica"*, *"magistral"*, *"impecável"*, *"eloquente"*, *"lapidar"*, uso vazio de *"robusto"*). Evite clichês e cacoetes de LLM (*"ilusão reconfortante"*, *"dívida técnica"*, *"bala de prata"*, *"Neste post vamos explorar..."*, *"Vale ressaltar que..."*, *"decisão crucial"*). Proibido reciclar metáforas ou expressões gêmeas ao longo do texto.
 
 ---
 

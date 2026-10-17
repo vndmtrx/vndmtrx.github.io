@@ -120,6 +120,24 @@
     .node.failure span {
       color: #991b1b !important;
     }
+    .node.info rect {
+      fill: #eff6ff !important;
+      stroke: #3b82f6 !important;
+      stroke-width: 1.5px !important;
+    }
+    .node.info .label,
+    .node.info span {
+      color: #1e40af !important;
+    }
+    .node.warning rect {
+      fill: #fffbeb !important;
+      stroke: #d97706 !important;
+      stroke-width: 1.5px !important;
+    }
+    .node.warning .label,
+    .node.warning span {
+      color: #92400e !important;
+    }
     .node.success rect {
       fill: #f0fdf4 !important;
       stroke: var(--accent-green) !important;
@@ -128,6 +146,27 @@
     .node.success .label,
     .node.success span {
       color: #166534 !important;
+    }
+    .cluster rect {
+      fill: #f8fafc !important;
+      stroke: #cbd5e1 !important;
+      stroke-width: 1.5px !important;
+      rx: 8px !important;
+      ry: 8px !important;
+    }
+    .cluster .label,
+    .cluster span {
+      color: #475569 !important;
+    }
+    .edgeLabel {
+      background-color: #f1f5f9 !important;
+      rect {
+        fill: #f1f5f9 !important;
+        opacity: 0.95 !important;
+      }
+      span {
+        color: #334155 !important;
+      }
     }
   }
 }
@@ -172,6 +211,24 @@
     .node.failure span {
       color: #ffb4c8 !important;
     }
+    .node.info rect {
+      fill: #1e293b !important;
+      stroke: #60a5fa !important;
+      stroke-width: 1.5px !important;
+    }
+    .node.info .label,
+    .node.info span {
+      color: #bfdbfe !important;
+    }
+    .node.warning rect {
+      fill: #332415 !important;
+      stroke: #fbbf24 !important;
+      stroke-width: 1.5px !important;
+    }
+    .node.warning .label,
+    .node.warning span {
+      color: #fde68a !important;
+    }
     .node.success rect {
       fill: #1d3322 !important;
       stroke: var(--accent-green) !important;
@@ -180,6 +237,27 @@
     .node.success .label,
     .node.success span {
       color: #c9f5a2 !important;
+    }
+    .cluster rect {
+      fill: #221f22 !important;
+      stroke: #444046 !important;
+      stroke-width: 1.5px !important;
+      rx: 8px !important;
+      ry: 8px !important;
+    }
+    .cluster .label,
+    .cluster span {
+      color: #c5c5c0 !important;
+    }
+    .edgeLabel {
+      background-color: #262428 !important;
+      rect {
+        fill: #262428 !important;
+        opacity: 0.95 !important;
+      }
+      span {
+        color: #e2e8f0 !important;
+      }
     }
   }
 }
