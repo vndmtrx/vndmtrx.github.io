@@ -86,6 +86,7 @@ Série de posts para o blog vndmtrx.github.io, baseada no repositório [k8s-in-a
 
 ### Parte 5: Certificados e a Infraestrutura de PKI (Teoria)
 - **Roles Ansible**: nenhuma (post conceitual)
+- **Pré-requisito**: Trilogia PKI da série Criptografia na Prática (slugs `pki-fundamentos`, `pki-laboratorio-openssl`, `pki-operacao`). Não repetir teoria geral: resumir em 1 parágrafo e linkar via `post-ref.html`, focando nas decisões específicas do cluster (3 intermediárias, CN/O -> RBAC, SANs do apiserver).
 - **Conteúdo**:
   - O problema: como componentes distribuídos provam identidade entre si?
   - Conceitos fundamentais: chave privada, chave pública, CSR, certificado, CA

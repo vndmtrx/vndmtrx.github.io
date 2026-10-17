@@ -175,3 +175,22 @@ engsoftware:
       title: "Engenharia de Software Assistida por Inteligência Artificial (AI-Assisted SE)"
     - part: 28
       title: "Governança Técnica, Sustentabilidade e Transição"
+
+criptografia:
+  title: "Criptografia na Prática"
+  slug: "criptografia"
+  url: "/tutoriais/criptografia/"
+  icon: "fas fa-key"
+  total_planned: 5
+  description: "Série sobre os modelos de confiança que sustentam a segurança na infraestrutura: PKI e certificados X.509 com OpenSSL (da teoria à operação), automação declarativa com CFSSL, comparativos com os certificados do OpenSSH e a teia de confiança do OpenPGP/GnuPG."
+  future_parts:
+    - part: 1
+      title: "PKI com OpenSSL, Parte 1 - Fundamentos"
+    - part: 2
+      title: "PKI com OpenSSL, Parte 2 - Laboratório"
+    - part: 3
+      title: "PKI com OpenSSL, Parte 3 - Operação"
+    - part: 4
+      title: "PKI com CFSSL - Automação Declarativa e API"
+    - part: 5
+      title: "OpenPGP e GnuPG: A Teia de Confiança"
