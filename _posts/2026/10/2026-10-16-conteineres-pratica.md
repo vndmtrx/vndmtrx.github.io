@@ -780,7 +780,7 @@ Todo o funcionamento de um cluster Kubernetes nada mais é do que coordenar em e
 
 Compreendendo o contêiner no sistema operacional, o Kubernetes deixa de parecer aquele leviatã indecifrável de dezenas de siglas e vira o que ele realmente é: um plano de controle distribuído gerenciando as primitivas do bom e velho Linux.
 
-Com essa base prática estabelecida, dominamos o empacotamento, a execução e a segurança de contêineres no dia a dia. Mas o que acontece quando a aplicação capota em produção dentro de uma imagem mínima ou distroless, sem shell nem utilitários de diagnóstico instalados? Esse é o foco do próximo e último capítulo da série: um mergulho em autópsia forense e troubleshooting avançado diretamente pelo kernel e pelo `/proc`.
+Com essa base prática estabelecida, dominamos o empacotamento, a execução e a segurança de contêineres no dia a dia. Mas o que acontece quando a aplicação capota em produção dentro de uma imagem mínima ou distroless, sem shell nem utilitários de diagnóstico instalados? Esse é o foco da {% include post-ref.html slug="conteineres-diagnostico-sem-shell" text="Parte 3: Diagnóstico Forense sem Shell" %}: um mergulho em autópsia forense e troubleshooting avançado diretamente pelo kernel e pelo `/proc`.
 
 ## Referências
 

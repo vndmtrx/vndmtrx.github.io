@@ -4,7 +4,7 @@ title: "Diagnóstico Forense em Contêineres: Inspecionando Sistemas sem Shell n
 subtitle: "Do /proc raiz ao OOM Killer: como investigar memória, processos e falhas silenciosas quando ps e free não existem"
 author:
   - "Eduardo N. S. R."
-date: 2026-10-06 14:00:00 GMT-3
+date: 2026-10-23 15:19:00 GMT-3
 permalink: /posts/conteineres-diagnostico-sem-shell/
 tags: [Docker, Contêineres, Linux, Troubleshooting]
 series: Contêineres de Cabo a Rabo
@@ -376,7 +376,7 @@ Embora o ecossistema Java seja o exemplo mais clássico de divergência entre a 
 
 ### 1. Python e Django com Gunicorn e Celery
 
-A diferença arquitetural mais marcante entre o Java e o Python reside no modelo de processos. Enquanto o Tomcat opera com um único processo e mais de cem threads compartilhando o mesmo espaço de memória, servidores Python WSGI e ASGI como Gunicorn [^8] ou uWSGI operam historicamente sob o modelo *pre-fork*.
+A diferença arquitetural mais marcante entre o Java e o Python reside no modelo de processos. Enquanto o Tomcat opera com um único processo e mais de cem threads compartilhando o mesmo espaço de memória, servidores Python WSGI e ASGI como Gunicorn [^5] ou uWSGI operam historicamente sob o modelo *pre-fork*.
 
 Um processo mestre inicializa o código base e faz o *fork* de múltiplos processos trabalhadores (*workers*):
 
@@ -444,7 +444,7 @@ O coletor de lixo do Go é projetado para operar com baixíssima latência. Hist
 
 Em um servidor corporativo com 128 GB de memória RAM rodando um contêiner Go limitado a 1 GB via cgroup, o runtime olhava para o hardware do host e assumia que havia memória de sobra. O resultado era trágico: o coletor de lixo adiava o ciclo de limpeza esperando o heap expandir, e o cgroup do Linux executava o processo por OOM antes mesmo do Go tentar liberar memória.
 
-Para sanar essa desarmonia entre o runtime da linguagem e o isolamento de recursos do kernel, o time do Go introduziu a variável de ambiente **`GOMEMLIMIT`** [^9]. Em contêineres, definir um teto seguro (geralmente entre 80% e 90% do limite do cgroup) sincroniza o runtime com o kernel:
+Para sanar essa desarmonia entre o runtime da linguagem e o isolamento de recursos do kernel, o time do Go introduziu a variável de ambiente **`GOMEMLIMIT`** [^6]. Em contêineres, definir um teto seguro (geralmente entre 80% e 90% do limite do cgroup) sincroniza o runtime com o kernel:
 
 ```yaml
     environment:
@@ -494,7 +494,7 @@ Você pode editar arquivos de configuração, inspecionar logs ou copiar arquivo
 
 ### 3. Injetando Ferramentas com nsenter
 
-O utilitário `nsenter` [^5] permite entrar nos *namespaces* de um processo alvo utilizando os binários da máquina hospedeira.
+O utilitário `nsenter` [^7] permite entrar nos *namespaces* de um processo alvo utilizando os binários da máquina hospedeira.
 
 Se o contêiner não possui o comando `ss` para checar portas abertas, rodamos o `ss` do host dentro do *network namespace* do contêiner:
 
@@ -526,7 +526,7 @@ Quando estamos operando em ambientes remotos ou em clusters onde o acesso SSH di
 
 O Docker permite anexar um contêiner novo aos *namespaces* de um contêiner já existente que está rodando em produção.
 
-A imagem `nicolaka/netshoot` [^6] é amplamente reconhecida como o canivete suíço definitivo para diagnósticos de rede e sistemas. Podemos disparar uma instância efêmera acoplada à rede do nosso contêiner alvo:
+A imagem `nicolaka/netshoot` [^8] é amplamente reconhecida como o canivete suíço definitivo para diagnósticos de rede e sistemas. Podemos disparar uma instância efêmera acoplada à rede do nosso contêiner alvo:
 
 ```bash
 docker run -it --rm --net=container:<target_container_id> nicolaka/netshoot ss -tulpn
@@ -544,7 +544,7 @@ O `htop` rodará dentro da imagem rica do `netshoot`, mas exibirá os processos 
 
 ### Depurando no Kubernetes com Contêineres Efêmeros
 
-No Kubernetes, o recurso nativo correspondente é o comando `kubectl debug` [^7], que injeta um contêiner efêmero dentro de um Pod em execução sem precisar reiniciar ou recriar a carga de trabalho:
+No Kubernetes, o recurso nativo correspondente é o comando `kubectl debug` [^9], que injeta um contêiner efêmero dentro de um Pod em execução sem precisar reiniciar ou recriar a carga de trabalho:
 
 ```bash
 kubectl debug -it <pod_name> --image=nicolaka/netshoot --target=<container_name>
@@ -596,29 +596,100 @@ Se o limite de 16 GB na máquina for inegociável por restrições físicas de h
 
 Reduzindo o `-Xmx` para 8 GB, o RSS total projetado cai para cerca de 12,5 GB a 13,5 GB, restaurando a folga mínima de segurança de 3 GB exigida pelo kernel Linux para absorver picos de tráfego.
 
-## Exercícios Práticos
+## Exercícios
 
-Para consolidar as técnicas deste post no seu laboratório pessoal, realize os seguintes desafios práticos:
+Para fixar a dinâmica de diagnóstico forense sem utilitários, inspeção do `/proc`, cgroups v2 e injeção com `nsenter`, execute os desafios práticos abaixo no seu terminal Linux.
 
-### Exercício 1: Diagnóstico de Cgroups sem Ferramentas
-1. Suba um contêiner baseado em uma imagem enxuta (como Alpine ou Debian Minimal) limitando a memória a 256 MB:
-   ```bash
-   docker run -d --name lab-cgroup --memory=256m alpine sleep 3600
-   ```
-2. Abra um shell no contêiner e descubra se o host está usando cgroups v1 ou v2 lendo diretamente os arquivos de sistema em `/sys/fs/cgroup/`.
-3. Verifique o consumo atual de memória em bytes e calcule a porcentagem correspondente ao limite de 256 MB.
+**1. Diagnóstico de Cgroups sem Ferramentas**
 
-### Exercício 2: Criando o seu Inspecionador de Processos
-1. Execute um contêiner rodando múltiplos comandos em segundo plano sem o pacote `procps` instalado.
-2. Escreva um script em shell de até dez linhas que percorra as pastas de `/proc` e imprima apenas: o PID, o nome do executável e a memória residente (`VmRSS`) convertida em megabytes.
+Suba um contêiner baseado em uma imagem enxuta (como Alpine ou Debian Minimal) limitando a memória a 256 MB:
 
-### Exercício 3: Injeção Forense com nsenter
-1. Suba um contêiner em modo *detached* sem expor portas para o host e sem pacote de rede:
-   ```bash
-   docker run -d --name lab-nsenter alpine sleep 3600
-   ```
-2. A partir do seu host, descubra o PID do contêiner usando `docker inspect`.
-3. Use o comando `nsenter` para rodar o utilitário `ip addr` ou `ss` do seu sistema operacional dentro do *network namespace* desse contêiner, identificando o endereço IP interno atribuído a ele pela ponte virtual.
+```bash
+docker run -d --name lab-cgroup --memory=256m alpine sleep 3600
+```
+
+Abra uma sessão de shell no contêiner e descubra se o hospedeiro está utilizando cgroups v1 ou v2 lendo diretamente os arquivos de sistema em `/sys/fs/cgroup/`. Em seguida, verifique o consumo atual de memória em bytes e calcule a porcentagem correspondente ao limite configurado de 256 MB.
+
+<details markdown="1">
+<summary>Ver resposta</summary>
+
+No padrão cgroups v2, os controladores unificados ficam diretamente na raiz de `/sys/fs/cgroup/` e o consumo atual fica exposto no arquivo `memory.current` (com o teto em `memory.max`). Se o ambiente ainda rodasse cgroups v1 legado, existiria a pasta dedicada `/sys/fs/cgroup/memory/` com o arquivo `memory.usage_in_bytes`.
+
+Conectando-se ao contêiner:
+
+```bash
+$ docker exec -it lab-cgroup sh
+/ # if [ -f /sys/fs/cgroup/memory.current ]; then
+      echo "Ambiente com Cgroups v2 detectado"
+      uso=$(cat /sys/fs/cgroup/memory.current)
+      max=$(cat /sys/fs/cgroup/memory.max)
+    else
+      echo "Ambiente legado com Cgroups v1 detectado"
+      uso=$(cat /sys/fs/cgroup/memory/memory.usage_in_bytes)
+      max=$(cat /sys/fs/cgroup/memory/memory.limit_in_bytes)
+    fi
+/ # echo "Uso atual: $((uso / 1024 / 1024)) MB de $((max / 1024 / 1024)) MB ($((uso * 100 / max))%)"
+```
+
+Como o processo `sleep` aloca pouquíssimas páginas anônimas de memória e quase nenhum cache em disco, o consumo físico real oscila em torno de 1 a 2 MB, representando menos de 1% do teto máximo de 256 MB estipulado para o cgroup.
+
+</details>
+
+**2. Criando o seu Inspecionador de Processos**
+
+Execute um contêiner rodando múltiplos comandos em segundo plano sem o pacote `procps` instalado:
+
+```bash
+docker run -d --name lab-proc alpine sh -c "sleep 3600 & sleep 3600 & wait"
+```
+
+Escreva um script em shell de até dez linhas que percorra as pastas de `/proc` e imprima apenas: o PID, o comando executado e a memória residente (`VmRSS`) convertida em megabytes.
+
+<details markdown="1">
+<summary>Ver resposta</summary>
+
+Conecte-se ao contêiner com `docker exec -it lab-proc sh` e execute o seguinte laço iterativo diretamente no prompt:
+
+```bash
+for p in /proc/[0-9]*; do
+  pid=$(basename "$p")
+  cmd=$(tr '\0' ' ' < "$p/cmdline" 2>/dev/null | cut -c 1-35)
+  rss_kb=$(grep -s VmRSS "$p/status" | awk '{print $2}')
+  if [ -n "$rss_kb" ]; then
+    rss_mb=$((rss_kb / 1024))
+    printf "PID %-5s | RSS: %3d MB | %s\n" "$pid" "$rss_mb" "$cmd"
+  fi
+done
+```
+
+O `/proc` virtualiza em tempo real o *PID namespace* daquele contêiner. O arquivo `cmdline` entrega os parâmetros passados na inicialização (delimitados por bytes nulos `\0`, que o `tr` converte em espaços legíveis) e o arquivo `status` reporta os contadores de memória do kernel, onde o `VmRSS` reflete exatamente a memória física residente alocada.
+
+</details>
+
+**3. Injeção Forense com nsenter**
+
+Suba um contêiner em modo *detached* sem expor portas para o host e sem utilitários de rede instalados:
+
+```bash
+docker run -d --name lab-nsenter alpine sleep 3600
+```
+
+A partir do seu host, descubra o PID do processo raiz do contêiner usando `docker inspect`. Em seguida, utilize o comando `nsenter` para executar o comando `ip addr` ou `ss` do seu sistema operacional hospedeiro dentro do *network namespace* desse contêiner, identificando o endereço IP interno atribuído a ele pela ponte virtual.
+
+<details markdown="1">
+<summary>Ver resposta</summary>
+
+No terminal do hospedeiro (host):
+
+```bash
+$ PID=$(docker inspect -f '{% raw %}{{.State.Pid}}{% endraw %}' lab-nsenter)
+$ echo "PID do processo no host: $PID"
+$ sudo nsenter -t $PID -n ip addr show dev eth0
+```
+
+Com a flag `-n` (`--net`), o `nsenter` conecta o processo do comando `ip` (que é um binário que existe e roda no sistema operacional hospedeiro) ao *network namespace* isolado do contêiner. Isso permite auditar interfaces, rotas, regras de firewall e conexões ativas (`sudo nsenter -t $PID -n ss -tulpn`) mesmo em imagens construídas a partir de `scratch` ou *distroless*, completamente desprovidas de shell e comandos de rede.
+
+</details>
 
 ## Referências
 
@@ -626,16 +697,16 @@ Para consolidar as técnicas deste post no seu laboratório pessoal, realize os 
 
 [^2]: **proc(5) - Process Information Pseudo-Filesystem** {*Linux Programmer's Manual, man7.org*} ([Link](https://man7.org/linux/man-pages/man5/proc.5.html))
 
-[^3]: **Garbage-First Garbage Collector (G1 GC) Architecture** {*Oracle Java Documentation, docs.oracle.com*} ([Link](https://docs.oracle.com/en/java/javase/17/gctuning/garbage-first-g1-garbage-collector1.html))
+[^3]: **Garbage-First (G1) Garbage Collector** {*Oracle Java Documentation, docs.oracle.com*} ([Link](https://docs.oracle.com/en/java/javase/25/gctuning/garbage-first-g1-garbage-collector1.html))
 
-[^4]: **The jcmd Utility: JVM Diagnostic Command Tool** {*Oracle Java Documentation, docs.oracle.com*} ([Link](https://docs.oracle.com/en/java/javase/17/docs/specs/man/jcmd.html))
+[^4]: **The jcmd Command** {*Oracle Java Documentation, docs.oracle.com*} ([Link](https://docs.oracle.com/en/java/javase/25/docs/specs/man/jcmd.html))
 
-[^5]: **nsenter(1) - Run Program with Namespaces of Other Processes** {*Linux Programmer's Manual, man7.org*} ([Link](https://man7.org/linux/man-pages/man1/nsenter.1.html))
+[^5]: **Gunicorn Design and Worker Processes Architecture** {*Gunicorn Documentation, gunicorn.org*} ([Link](https://docs.gunicorn.org/design/))
 
-[^6]: **Netshoot: A Docker + Kubernetes Network Trouble-Shooting Swiss Army Knife** {*Nicolaka, GitHub*} ([Link](https://github.com/nicolaka/netshoot))
+[^6]: **A Guide to the Go Garbage Collector and GOMEMLIMIT** {*The Go Authors, go.dev*} ([Link](https://go.dev/doc/gc-guide))
 
-[^7]: **Debugging Pods and Nodes with Ephemeral Containers** {*The Kubernetes Authors, kubernetes.io*} ([Link](https://kubernetes.io/docs/tasks/debug/debug-application-cluster/debug-running-pod/))
+[^7]: **nsenter(1) - Run Program with Namespaces of Other Processes** {*Linux Programmer's Manual, man7.org*} ([Link](https://man7.org/linux/man-pages/man1/nsenter.1.html))
 
-[^8]: **Gunicorn Design and Worker Processes Architecture** {*Gunicorn Documentation, gunicorn.org*} ([Link](https://docs.gunicorn.org/en/stable/design.html))
+[^8]: **Netshoot: A Docker + Kubernetes Network Trouble-Shooting Swiss Army Knife** {*Nicolaka, GitHub*} ([Link](https://github.com/nicolaka/netshoot))
 
-[^9]: **A Guide to the Go Garbage Collector and GOMEMLIMIT** {*The Go Authors, go.dev*} ([Link](https://go.dev/doc/gc-guide))
+[^9]: **Debugging Pods and Nodes with Ephemeral Containers** {*The Kubernetes Authors, kubernetes.io*} ([Link](https://kubernetes.io/docs/tasks/debug/debug-application/debug-running-pod/))
