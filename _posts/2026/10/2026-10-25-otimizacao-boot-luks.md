@@ -4,14 +4,14 @@ title: "Otimizando o boot criptografado do meu notebook"
 subtitle: "Porque segurança de disco não precisa significar lentidão no boot"
 author:
   - "Eduardo N. S. R."
-date: 2026-10-09 17:01:00 GMT-3
+date: 2026-10-25 15:05:23 GMT-3
 permalink: /posts/otimizacao-boot-luks/
 tags: [Linux, Debian, Segurança, Performance]
 mermaid: true
 category: Artigos
 ---
 
-Existe uma sensação física de puro ódio que todo usuário de Linux já experimentou: ligar o notebook, digitar a senha do disco e ficar encarando uma tela preta estática, sem cursor piscando, sem sinal de vida, enquanto os segundos escorrem pelo ralo. No meu notebook, um Dell com SSD NVMe rápido rodando Debian Trixie (o mesmo ambiente que mostrei no {% include post-ref.html slug="spring-boot-tutorial-parte-1-ambiente" text="Spring Boot Tutorial, Parte 1" %}), esse ritual diário estava cobrando um pedágio ridículo de um minuto e quarenta segundos.
+Existe uma sensação física de puro ódio que todo usuário de Linux já experimentou: ligar o notebook, digitar a senha do disco e ficar encarando uma tela preta estática, sem cursor piscando, sem sinal de vida, enquanto os segundos escorrem pelo ralo. No meu notebook, um Dell com SSD NVMe rápido rodando Debian Trixie, esse ritual diário estava cobrando um pedágio ridículo de um minuto e quarenta segundos.
 
 Cem segundos. Em pleno 2026, com processador moderno de vários núcleos e SSD em barramento PCIe veloz, o sistema subia com a agilidade de um disquete de três polegadas e meia esquecido na gaveta.
 
@@ -975,7 +975,7 @@ dd if="$MAPPER_ROOT" of=/dev/null bs=1M count=4096 status=progress
 
 [^1]: **systemd-analyze(1) - Analyze and debug system boot-up performance** {*Debian Manpages*} ([Link](https://manpages.debian.org/trixie/systemd/systemd-analyze.1.en.html))
 [^2]: **cryptsetup(8) - Linux man page** {*Debian Manpages*} ([Link](https://manpages.debian.org/trixie/cryptsetup-bin/cryptsetup.8.en.html))
-[^3]: **GRUB - LUKS2 and Cryptomount Limitations** {*ArchWiki Documentation*} ([Link](https://wiki.archlinux.org/title/GRUB#LUKS2))
+[^3]: **GRUB - Encrypted /boot and Cryptomount** {*ArchWiki Documentation*} ([Link](https://wiki.archlinux.org/title/GRUB#Encrypted_/boot))
 [^4]: **Device-mapper crypto target (dm-crypt)** {*Linux Kernel Documentation*} ([Link](https://docs.kernel.org/admin-guide/device-mapper/dm-crypt.html))
 [^5]: **crypttab(5) - Static information about encrypted block devices** {*Debian Manpages*} ([Link](https://manpages.debian.org/trixie/cryptsetup/crypttab.5.en.html))
 [^6]: **zram: Compressed RAM based block devices** {*Linux Kernel Documentation*} ([Link](https://docs.kernel.org/admin-guide/blockdev/zram.html))

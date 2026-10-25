@@ -45,8 +45,6 @@ k8sbox:
   repo: "https://github.com/vndmtrx/k8s-in-a-box"
   description: "Construção de um cluster Kubernetes multinodo e altamente disponível rodando localmente em máquinas virtuais Debian no Proxmox/KVM, dissecando control plane, workers, CNI e storage."
   future_parts:
-    - part: 4
-      title: "Preparação do Sistema Base"
     - part: 5
       title: "Certificados e a Infraestrutura de PKI (Teoria)"
     - part: 6
