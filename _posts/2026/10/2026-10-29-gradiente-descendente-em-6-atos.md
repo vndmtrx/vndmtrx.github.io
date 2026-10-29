@@ -4,12 +4,11 @@ title: "Gradiente Descendente em 6 atos"
 subtitle: "O conto de terror de um profissional de infraestrutura assombrado por buscas em grafos, hipercubos de 23 dimensões e o temido OOM Killer"
 author:
   - "Eduardo N. S. R."
-date: 2026-11-01 00:00:00 GMT-3
+date: 2026-10-29 08:00:00 GMT-3
 permalink: /posts/gradiente-descendente-em-6-atos/
 category: Crônicas
 tags: [Inteligência Artificial, Faculdade, PyTorch, Algoritmos]
 math: true
-published: false
 ---
 
 Existe uma sensação muito peculiar em olhar para os lados em uma sala de aula de pós-graduação e perceber, com razoável grau de certeza estatística, que você é a pessoa mais velha da turma. O povo ao redor parece ter nascido sabendo calcular autovalores de cabeça, enquanto o meu cérebro passou décadas condicionado pela lida crua da infraestrutura: acostumado ao cheiro de poeira dos racks, ao zumbido frio das ventoinhas nos data centers e à certeza quase religiosa de que o mundo funciona melhor quando a gente entende os próprios logs antes de dormir.
@@ -20,15 +19,15 @@ Quando o professor colocou o trabalho no Teams, o Mini-Projeto 1 parecia uma pro
 
 Aqui vale um alinhamento honesto de bastidor. No meu {% include post-ref.html slug="ensaio-sobre-dois-cegos" text="Ensaio sobre dois cegos" %}, eu defendi com unhas e dentes a escrita a quatro mãos com inteligência artificial para o blog, onde a máquina e o autor dividem o texto sem falsa vergonha. Só que aquilo era sobre literatura e ensaios pessoais. Aqui é mestrado. No mestrado, a regra do jogo é outra: se a IA escrever uma linha de código por você ou mastigar o relatório, você não aprendeu nada e virou apenas um papagaio caro de tecnologia.
 
-O meu pacto com a máquina foi radicalmente inverso. Sentei diante do terminal e decretei: *"Você não vai gerar o trabalho para mim. Você será o meu tutor digital. Eu vou formular a minha intuição, vou tentar explicar com a minha linguagem tosca e por várias vezes incorreta, vou quebrar a cara, e você vai me fazer perguntas difíceis para apontar onde a minha lógica furou. Aí eu vou lá, leio o livro, repito tudo novamente, e vou implementando com as minhas próprias mãos no teclado e testo até passar"*.
+O meu pacto com a máquina foi radicalmente inverso. Sentei diante do terminal e decretei: *"Você não vai gerar o trabalho para mim. Você será o meu tutor digital. Eu vou formular a minha intuição, vou tentar explicar com a minha linguagem tosca e incorreta, vou quebrar a cara, e você vai me fazer perguntas difíceis para apontar onde a minha lógica furou. Aí eu vou lá, leio o livro, repito tudo novamente, e vou implementando com as minhas próprias mãos no teclado e faço testes até passar"*.
 
-O que se seguiu nas semanas seguintes não foi um fluxo de trabalho corporativo elegante. Foi uma comédia de erros, humilhações computacionais e pequenas epifanias que merecem ser contadas em seis atos.
+O que se seguiu nas semanas seguintes não foi um fluxo de trabalho elegante. Foi uma comédia de erros, humilhações computacionais e pequenas epifanias que merecem ser contadas em seis atos.
 
 ## Ato I: A Batalha dos Bits
 
 Todo programador que se preza carrega um vício secreto: a vontade incontrolável de complicar coisas simples para parecer inteligente.
 
-Quando li que a fita tinha 23 posições e que podíamos inverter bits isolados ou blocos de tamanho arbitrário com custo unitário, a minha primeira reação foi montar uma arquitetura. Criei uma classe toda bonitinha chamada `FitaBits`, decorei com dataclasses, inventei métodos de parsing, coloquei validações de integridade e cheguei a pensar em abstrações funcionais com tuplas imutáveis. Estava lindo. Parecia um módulo de biblioteca corporativa pronta para ir a leilão.
+Quando li que a fita tinha 23 posições e que podíamos inverter bits isolados ou blocos de tamanho arbitrário com custo unitário, a minha primeira reação foi montar uma arquitetura. Criei uma classe toda bonitinha chamada `FitaBits`, decorei com dataclasses, inventei métodos de parsing, coloquei validações de integridade e cheguei a pensar em abstrações funcionais com tuplas imutáveis. Estava lindo. Parecia um módulo de biblioteca corporativa pronto para ir a leilão.
 
 Aí parei, olhei para o código e me perguntei o que diabos eu estava fazendo.
 
@@ -141,7 +140,7 @@ O pânico voltou em ondas gigantescas.
 
 Até aquele momento, que já tinha passado quase um mês desde o começo dessa odisséia, tudo estava confortável dentro da lógica booleana: bits são zero ou um, estados são inteiros, transições são XOR. De repente, o enunciado exige que a fita binária seja tratada como um ponto contínuo $\mathbf{x} \in [0, 1]^L$ dentro de um hipercubo euclidiano de 23 dimensões, atraído por uma bacia de potencial quadrática até o vetor nulo.
 
-Sentei diante da máquina e mandei a real: *"Eu não entendi nada do que é pra fazer. Sou de infraestrutura. Matrizes e cálculo são o meu calcanhar de Aquiles. Seja meu professor. Não me cuspa fórmulas prontas. Me faça perguntas conceituais, teste minhas analogias, me teste os conhecimentos e vamos construindo a intuição do zero"*.
+Sentei diante da máquina e mandei a real: *"Eu não entendi nada do que é pra fazer. Sou de infraestrutura. Matrizes e cálculo são o meu calcanhar de Aquiles. Seja meu professor. Não me cuspa fórmulas prontas. Me faça perguntas conceituais, teste minhas analogias, teste meus conhecimentos e vamos construindo a intuição do zero"*.
 
 O que se seguiu foi uma das sessões mais fascinantes de tutoria que já experimentei.
 
@@ -173,7 +172,7 @@ $$\eta \le \frac{1}{2 + 4\lambda}$$
 
 Pela primeira vez em quarenta e quatro anos de vida, as matrizes e derivadas começaram a deixar de ser símbolos incompreensíveis em um quadro negro e viraram molas, elásticos e amortecedores que eu conseguia enxergar e tocar. Ok, ainda não é o ideal, mas é o ferramental que consegui construir por conta própria.
 
-## Ato VI: A Conversa no WhatsApp e a Epifania do set()
+## Ato VI: A Conversa no WhatsApp e a Epifania do Set
 
 Alguns dias após a entrega dos resultados, recebi uma mensagem de outro colega de turma.
 
@@ -181,7 +180,7 @@ Ele estava em desespero legítimo com a complexidade combinatória do problema. 
 
 Eu nem sequer tinha estofo para tentar bancar o teórico ali.
 
-Respondi com a mais pura humildade de quem passou a vida inteira trocando cabo de rede e configurando memória de servidor e tava sofrendo com toda aquela prosopopéia abstrata:
+Respondi com a mais pura humildade de quem passou a vida inteira trocando cabo de rede e configurando memória de servidor e tava sofrendo com toda aquela prosopopeia abstrata:
 
 > *"Cara, a sua intuição com o vídeo foi show. Mas eu resolvi esse problema do jeito mais tosco que você pode imaginar: usei uma fila `deque` para pegar os nós por ordem de chegada e enfiei cada fita já vista dentro de um `set()` nativo do Python. Como o `set` usa tabela hash interna com busca em $O(1)$, a busca nunca visitou o mesmo estado duas vezes e a memória não explodiu."*
 
@@ -191,7 +190,7 @@ Essa, no fim das contas, é a verdadeira graça de voltar para a universidade de
 
 O Mini-Projeto 1 está entregue e devidamente commitado no repositório [^3], com oitenta testes automatizados passando no `pytest` e uma sensação deliciosa de dever cumprido.
 
-Agora só me resta respirar fundo e preparar para o enunciado dos Mini-Projetos 2 e do 3, onde as redes neurais profundas, matrizes de pesos densas e tensores multidimensionais certamente estarão me esperando na próxima esquina para cobrar a fatura com juros.
+Agora só me resta respirar fundo e me preparar para o enunciado dos Mini-Projetos 2 e 3, onde as redes neurais profundas, matrizes de pesos densas e tensores multidimensionais certamente estarão me esperando na próxima esquina para cobrar a fatura com juros.
 
 Segura na mão de Zeus e vai.
 
