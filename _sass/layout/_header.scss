@@ -7,7 +7,7 @@
   width: 100%;
   min-height: calc(30px * 1.865);
   background-color: var(--pico-background-color);
-  border-top: 5px solid var(--pico-muted-border-color);
+  border-top: none;
   border-bottom: 1px solid var(--pico-muted-border-color);
   z-index: 100;
   padding: 0 !important;
@@ -115,11 +115,10 @@
   isolation: isolate;
   transform: translateZ(0);
   -webkit-mask-image: -webkit-radial-gradient(white, black);
-  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
   line-height: 1;
 
   &:hover {
-    transform: translateY(-2px) scale(1.05);
     background-color: var(--pico-card-background-color) !important;
     border-color: var(--accent-blue, #009eb3) !important;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16) !important;
@@ -132,10 +131,6 @@
     box-shadow: 0 0 0 2px var(--accent-blue, #009eb3) !important;
   }
 
-  &:active {
-    transform: scale(0.95);
-  }
-
   svg {
     width: 20px;
     height: 20px;
@@ -146,21 +141,21 @@
 }
 
 [data-theme="dark"] .theme-toggle-btn {
-  background-color: rgba(45, 42, 46, 0.88) !important;
+  background-color: rgba(39, 40, 34, 0.88) !important;
   border-color: var(--pico-muted-border-color) !important;
-  color: var(--accent-yellow, #ffd866) !important;
+  color: var(--accent-yellow, #e6db74) !important;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45) !important;
 
   &:hover {
     background-color: var(--pico-card-background-color) !important;
-    border-color: var(--accent-yellow, #ffd866) !important;
+    border-color: var(--accent-yellow, #e6db74) !important;
     box-shadow: 0 6px 22px rgba(0, 0, 0, 0.65) !important;
     outline: none !important;
   }
 
   &:focus,
   &:focus-visible {
-    box-shadow: 0 0 0 2px var(--accent-yellow, #ffd866) !important;
+    box-shadow: 0 0 0 2px var(--accent-yellow, #e6db74) !important;
   }
 }
 

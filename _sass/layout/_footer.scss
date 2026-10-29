@@ -9,6 +9,29 @@
 .footer-col-wrapper a:hover { color: var(--pico-color); text-decoration: underline; }
 .footer-col-wrapper strong { color: inherit; font-weight: 600; }
 .footer-col { flex: 1; min-width: 250px; }
+.footer-author-box {
+  display: flex;
+  align-items: start;
+  gap: 1.25rem;
+}
+.footer-logo-wrapper {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5px;
+
+  .site-logo {
+    width: 50px;
+    height: 50px;
+    display: block;
+    fill: #0d9488;
+    transition: fill 0.2s ease;
+  }
+}
+[data-theme="dark"] .footer-logo-wrapper .site-logo {
+  fill: #1dcaad;
+}
 .contact-list, .social-media-list { list-style: none; padding: 0; margin: 0; }
 .contact-list li, .social-media-list li { list-style: none; margin-bottom: 0.5rem; }
 .social-media-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin-top: 2rem; }

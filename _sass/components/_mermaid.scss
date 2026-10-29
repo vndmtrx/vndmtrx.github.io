@@ -176,31 +176,31 @@
   .mermaid {
     .node.vs circle,
     .node.vs rect {
-      fill: #363337 !important;
-      stroke: #64748b !important;
+      fill: #34352f !important;
+      stroke: #88846f !important;
       stroke-width: 2px !important;
     }
     .node.vs .label,
     .node.vs span {
-      color: #fcfcfa !important;
+      color: #f8f8f2 !important;
     }
     .node.key rect {
-      fill: #363337 !important;
-      stroke: #78dce8 !important;
+      fill: #34352f !important;
+      stroke: #66d9ef !important;
       stroke-width: 1.5px !important;
     }
     .node.key .label,
     .node.key span {
-      color: #fcfcfa !important;
+      color: #f8f8f2 !important;
     }
     .node.neutral rect {
-      fill: #221f22 !important;
+      fill: #1e1f1c !important;
       stroke: var(--pico-muted-border-color) !important;
       stroke-width: 1.5px !important;
     }
     .node.neutral .label,
     .node.neutral span {
-      color: #fcfcfa !important;
+      color: #f8f8f2 !important;
     }
     .node.failure rect {
       fill: #3a1d28 !important;
@@ -239,8 +239,8 @@
       color: #c9f5a2 !important;
     }
     .cluster rect {
-      fill: #221f22 !important;
-      stroke: #444046 !important;
+      fill: #1e1f1c !important;
+      stroke: #414339 !important;
       stroke-width: 1.5px !important;
       rx: 8px !important;
       ry: 8px !important;
@@ -250,9 +250,9 @@
       color: #c5c5c0 !important;
     }
     .edgeLabel {
-      background-color: #262428 !important;
+      background-color: #272822 !important;
       rect {
-        fill: #262428 !important;
+        fill: #272822 !important;
         opacity: 0.95 !important;
       }
       span {

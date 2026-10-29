@@ -4,17 +4,22 @@
       
       <div class="footer-col">
       {%- if site.author %}
-        <ul class="contact-list">
-          {% if site.author.name -%}
-            <li><strong>{{ site.author.name | escape }}</strong></li>
-          {% endif -%}
-          {% if site.author.email -%}
-            <li><a href="mailto:{{ site.author.email }}">{{ site.author.email }}</a></li>
-          {%- endif %}
-          {% if site.author.tagline -%}
-            <li><em>{{ site.author.tagline }}</em></li>
-          {%- endif %}
-        </ul>
+        <div class="footer-author-box">
+          <div class="footer-logo-wrapper">
+            {% include logo.svg %}
+          </div>
+          <ul class="contact-list">
+            {% if site.author.name -%}
+              <li><strong>{{ site.author.name | escape }}</strong></li>
+            {% endif -%}
+            {% if site.author.email -%}
+              <li><a href="mailto:{{ site.author.email }}">{{ site.author.email }}</a></li>
+            {%- endif %}
+            {% if site.author.tagline -%}
+              <li><em>{{ site.author.tagline }}</em></li>
+            {%- endif %}
+          </ul>
+        </div>
       {%- endif %}
       </div>
       

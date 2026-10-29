@@ -3,14 +3,14 @@
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   Cores de Destaque - Tema Escuro (Luminosas / Pastéis para Fundo Escuro)
+   Cores de Destaque - Tema Escuro (Monokai Clássico - Antigravity IDE)
    -------------------------------------------------------------------------- */
-$theme-dark-red:        #ff6188;
-$theme-dark-orange:     #fc9867;
-$theme-dark-yellow:     #ffd866;
-$theme-dark-green:      #a9dc76;
-$theme-dark-cyan:       #78dce8;
-$theme-dark-purple:     #ab9df2;
+$theme-dark-red:        #f92672;
+$theme-dark-orange:     #fd971f;
+$theme-dark-yellow:     #e6db74;
+$theme-dark-green:      #a6e22e;
+$theme-dark-cyan:       #66d9ef;
+$theme-dark-purple:     #ae81ff;
 
 // Aliases para compatibilidade
 $theme-red:             $theme-dark-red;
@@ -20,13 +20,13 @@ $theme-green:           $theme-dark-green;
 $theme-cyan:            $theme-dark-cyan;
 $theme-purple:          $theme-dark-purple;
 
-/* Tons Neutros Tema Escuro */
-$theme-dark-bg:         #2d2a2e;
-$theme-dark-panel:      #363337;
-$theme-dark-code:       #221f22;
-$theme-dark-fg:         #fcfcfa;
-$theme-dark-muted:      #939293;
-$theme-dark-border:     #403e41;
+/* Tons Neutros Tema Escuro (Monokai Clássico - Antigravity IDE) */
+$theme-dark-bg:         #272822; // Fundo clássico do editor Monokai
+$theme-dark-panel:      #34352f; // Superfície elevada (cards, tabs inativas)
+$theme-dark-code:       #1e1f1c; // Fundo de blocos de código e sidebar
+$theme-dark-fg:         #f8f8f2; // Foreground principal do Monokai
+$theme-dark-muted:      #88846f; // Cor clássica de comentários do Monokai
+$theme-dark-border:     #414339; // Bordas e separadores do Monokai
 
 /* Tons Neutros Tema Claro (Clean & Neutro) */
 $theme-light-bg:        #ffffff;
@@ -121,11 +121,11 @@ $theme-light-purple:    #7048c4;
   --pico-primary: #{$theme-cyan};
   --pico-primary-background: #{$theme-cyan};
   --pico-primary-border: #{$theme-cyan};
-  --pico-primary-hover: #a2e8f2;
-  --pico-primary-hover-background: #a2e8f2;
-  --pico-primary-focus: rgba(120, 220, 232, 0.28);
+  --pico-primary-hover: #9eeaf7;
+  --pico-primary-hover-background: #9eeaf7;
+  --pico-primary-focus: rgba(102, 217, 239, 0.28);
   --pico-primary-inverse: #{$theme-dark-bg};
-  --pico-text-selection-color: rgba(120, 220, 232, 0.25);
+  --pico-text-selection-color: rgba(135, 139, 145, 0.45);
 
   /* Variáveis de Destaque para Componentes */
   --accent-red: #{$theme-red};
