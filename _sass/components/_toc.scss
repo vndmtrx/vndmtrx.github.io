@@ -11,6 +11,9 @@
   li {
     margin-bottom: 0.4rem;
     color: var(--pico-muted-color);
+    text-align: left;
+    hyphens: none;
+    -webkit-hyphens: none;
 
     &::marker {
       color: var(--pico-primary);

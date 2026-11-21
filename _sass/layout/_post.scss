@@ -49,7 +49,9 @@ main.container > section {
 
 /* Justificar o texto apenas do conteúdo do post e páginas, sem afetar o cabeçalho */
 article .e-content p,
+article .e-content li,
 article .post-content p,
+article .post-content li,
 .post-excerpt p,
 .category-desc,
 .hub-intro,
