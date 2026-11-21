@@ -17,13 +17,14 @@ O blog é pessoal e técnico (infraestrutura, segurança, DevOps, programação,
 - **Pessoa e Registro:** 1ª pessoa para experiências/opiniões ("eu uso", "o que eu faço é"); 2ª pessoa informal para o público ("você", "vocês" — nunca "o leitor"); informalidade natural ("vcs", "pra", "pro", "tá", "né") quando o momento pede.
 - **Posicionamento Firme:** Defenda posições com argumentos técnicos claros. Não apresente opções neutras sem emitir opinião ou apontar a recomendação ideal.
 - **Humor e Honestidade:** Humor situacional e autêntico de bastidores de infra/DevOps. Apartes em parênteses `(por favor não faça isso)`.
-- **Antipadrões de IA (Proibido):** Nunca use jargões afetados/pomposos (*"cirúrgico"*, *"precisão cirúrgica"*, *"magistral"*, *"impecável"*, *"eloquente"*, *"lapidar"*, uso vazio de *"robusto"*). Evite clichês e cacoetes de LLM (*"ilusão reconfortante"*, *"dívida técnica"*, *"bala de prata"*, *"Neste post vamos explorar..."*, *"Vale ressaltar que..."*, *"decisão crucial"*). Proibido reciclar metáforas ou expressões gêmeas ao longo do texto.
+- **Antipadrões de IA (Proibido):** Nunca use jargões afetados/pomposos (*"cirúrgico"*, *"precisão cirúrgica"*, *"magistral"*, *"impecável"*, *"eloquente"*, *"lapidar"*, uso vazio de *"robusto"*). Evite clichês e cacoetes de LLM (*"ilusão reconfortante"*, *"dívida técnica"*, *"bala de prata"*, *"Neste post vamos explorar..."*, *"Vale ressaltar que..."*, *"decisão crucial"*). Proibido reciclar metáforas, expressões gêmeas ou duplas redundantes (*"anomalia bizarra"*, *"anarquia caótica"*, *"prova cabal"*, *"arma destrutiva"*).
+- **Gentílico dos EUA:** NUNCA use *"americano/americana"* para os Estados Unidos. Use *"estadunidense"*, *"dos EUA"* ou *"dos Estados Unidos"* conforme a fluidez (evite ecos como *"Estado estadunidense"*).
 
 ---
 
 ## 2. Invariantes Rígidas de Formatação (Hard Constraints)
 
-Estas 15 regras são **absolutas** para manter a compatibilidade com o Jekyll (Minima) e GitHub Pages:
+Estas 16 regras são **absolutas** para manter a compatibilidade com o Jekyll (Minima) e GitHub Pages:
 
 1. **Títulos Limpos:** NUNCA use backticks, links, código inline ou footnotes em cabeçalhos (`##`, `###`, `####`). Texto 100% puro.
 2. **Sem Divisores (`---`):** NUNCA insira `---` no corpo do post ou antes de `## Referências`. O `---` é exclusivo do front matter YAML.
@@ -40,6 +41,7 @@ Estas 15 regras são **absolutas** para manter a compatibilidade com o Jekyll (M
 13. **Tags Calibradas:** Média de 4 tags por post (2 a 6). Nunca crie tag idêntica à categoria.
 14. **Controle de Deploy (`[skip ci]`):** Commits de rascunhos e edições intermediárias devem conter `[skip ci]` e `published: false` no front matter.
 15. **Quebras de Linha Linux (`LF`):** NUNCA use `CRLF` (`\r\n`). O Jekyll depende de `\n\n` para calcular o `post.excerpt`.
+16. **Proteção de `$` com KaTeX:** O blog usa `katex/auto-render.min.js`. NUNCA deixe dois `$` soltos no mesmo parágrafo em prosa (`US$ 1,5 bi ... US$ 6,3 bi`); escreva por extenso ou escape `\$`.
 
 ---
 
@@ -92,8 +94,8 @@ Evite blocos monótonos de IA (3 a 5 frases):
 ## 6. Checklist Rápido de Validação
 
 Antes de entregar o post, confirme:
-- [ ] 15 Invariantes respeitadas (sem backtick em títulos, sem `---`, sem travessão `—`, sem setas Unicode, sem emoji solto)?
+- [ ] 16 Invariantes respeitadas (sem backtick em títulos, sem `---`, sem travessão `—`, sem setas Unicode, sem emoji solto, sem dois `$` soltos no mesmo parágrafo)?
 - [ ] Front matter completo (`subtitle`, `category`, `tags`, `author` em lista)?
 - [ ] Links internos usando `{% include post-ref.html slug="..." %}` e Liquid protegido com `{% raw %}`?
-- [ ] Ritmo dinâmico (sem cadência monótona de IA, zero jargões como "cirúrgico" ou "robusto" vazio)?
-- [ ] Footnotes `[^n]` apenas a partir do 2º parágrafo e listados em `## Referências`?
+- [ ] Ritmo dinâmico (sem cadência monótona de IA, zero jargões/duplas redundantes, zero *"americano/americana"* para os EUA)?
+- [ ] Footnotes `[^n]` apenas a partir do 2º parágrafo, listados em `## Referências` e com URLs externas validadas (sem 404, `%28`/`%29` encodados)?
