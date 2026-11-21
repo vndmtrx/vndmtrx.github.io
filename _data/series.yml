@@ -192,3 +192,227 @@ criptografia:
       title: "PKI com CFSSL - Automação Declarativa e API"
     - part: 5
       title: "OpenPGP e GnuPG: A Teia de Confiança"
+
+mente-latente:
+  title: "Mente Latente"
+  slug: "mente-latente"
+  url: "/tutoriais/mente-latente/"
+  icon: "fas fa-brain"
+  total_planned: 98
+  repo: "https://github.com/vndmtrx/mente_latente"
+  description: "Jornada progressiva pelo Aprendizado de Máquina com PyTorch, construída tijolo por tijolo: da base numérica e Perceptron de Rosenblatt até CNNs, Modelos Generativos, RNNs, Aprendizado por Reforço, Modelos Fundacionais e Transformers."
+  future_parts:
+    - part: 1
+      title: "Introdução ao PyTorch, Laboratório e Hello World"
+    - part: 2
+      title: "Tensores no PyTorch: Criação, shape e dtype"
+    - part: 3
+      title: "Indexação, Slicing e Broadcasting"
+    - part: 4
+      title: "Memória e Hardware: view, reshape, contiguous e GPU"
+    - part: 5
+      title: "O Perceptron de Rosenblatt"
+    - part: 6
+      title: "O Neurônio como Vetor e o Truque do w0"
+    - part: 7
+      title: "Regressão Linear e MSE"
+    - part: 8
+      title: "Gradiente Descendente"
+    - part: 9
+      title: "Gradiente em Lotes: Batch, Stochastic e Mini-Batch"
+    - part: 10
+      title: "Probabilidade Mínima (MLE)"
+    - part: 11
+      title: "Classificação Binária com Sigmoid e BCE"
+    - part: 12
+      title: "O Muro do XOR"
+    - part: 13
+      title: "torch.autograd e o Grafo Computacional"
+    - part: 14
+      title: "Backpropagation por Dentro"
+    - part: 15
+      title: "Tanh e Saturação"
+    - part: 16
+      title: "Camadas como Matrizes e Batches em Paralelo"
+    - part: 17
+      title: "A Primeira MLP: Quebrando o XOR"
+    - part: 18
+      title: "One-Hot Encoding vs Saída Escalar"
+    - part: 19
+      title: "Softmax e Cross-Entropy Multiclasse"
+    - part: 20
+      title: "nn.Module, nn.Parameter e o Muro da Profundidade"
+    - part: 21
+      title: "ReLU e Dying ReLU"
+    - part: 22
+      title: "GELU"
+    - part: 23
+      title: "Inicialização de Pesos: Xavier e Kaiming/He"
+    - part: 24
+      title: "SGD com Momentum e Nesterov"
+    - part: 25
+      title: "RMSProp"
+    - part: 26
+      title: "Adam e AdamW"
+    - part: 27
+      title: "Learning Rate Schedulers"
+    - part: 28
+      title: "Viés vs Variância e Weight Decay"
+    - part: 29
+      title: "Dropout"
+    - part: 30
+      title: "Dataset Customizado"
+    - part: 31
+      title: "DataLoader e Gargalos de CPU"
+    - part: 32
+      title: "Saneamento e Engenharia de Features"
+    - part: 33
+      title: "Normalização e Data Leakage"
+    - part: 34
+      title: "Splits, Lookahead Bias e Early Stopping"
+    - part: 35
+      title: "Métricas Além da Acurácia"
+    - part: 36
+      title: "Validar Contra o Quê? Baselines e Filosofia"
+    - part: 37
+      title: "Debugging em PyTorch"
+    - part: 38
+      title: "Checkpointing (state_dict)"
+    - part: 39
+      title: "Reprodutibilidade e Diagnóstico"
+    - part: 40
+      title: "Dados Tabulares e Desbalanceados"
+    - part: 41
+      title: "Dados de Imagem e Áudio como Espectrogramas"
+    - part: 42
+      title: "Dados de Séries Temporais (Jena Climate)"
+    - part: 43
+      title: "Dados de Texto (Corpus, Emoções e SFT/DPO)"
+    - part: 44
+      title: "O Limite da MLP em Imagens"
+    - part: 45
+      title: "Convolução 2D: Filtros e Bordas"
+    - part: 46
+      title: "Stride, Padding e Canais 3D"
+    - part: 47
+      title: "Pooling e LeNet no MNIST"
+    - part: 48
+      title: "Blocos Profundos (estilo VGG)"
+    - part: 49
+      title: "Data Augmentation em Visão"
+    - part: 50
+      title: "Batch Normalization"
+    - part: 51
+      title: "Conexões Residuais (ResNet) e Transfer Learning"
+    - part: 52
+      title: "Autoencoders: Comprimindo o Mundo"
+    - part: 53
+      title: "Denoising Autoencoders"
+    - part: 54
+      title: "Navegando e Visualizando o Espaço Latente (PCA e t-SNE)"
+    - part: 55
+      title: "Embeddings: Tabela de Consulta e Geometria"
+    - part: 56
+      title: "Hipótese Distribucional e Word2Vec"
+    - part: 57
+      title: "Embeddings Estáticos vs Contextuais"
+    - part: 58
+      title: "Aprendizado Contrastivo: Triplet Loss e InfoNCE"
+    - part: 59
+      title: "VAE (Parte 1): Espaço Probabilístico e KL-Divergence"
+    - part: 60
+      title: "VAE (Parte 2): Reparametrização e Geração"
+    - part: 61
+      title: "Difusão / DDPM (Parte 1): O Processo Forward"
+    - part: 62
+      title: "Difusão / DDPM (Parte 2): Denoising e Geração"
+    - part: 63
+      title: "Tokenização: Caractere, Palavra e Subpalavra (BPE)"
+    - part: 64
+      title: "Janelas Temporais no Jena Climate"
+    - part: 65
+      title: "RNNs Simples e BPTT"
+    - part: 66
+      title: "Vanishing/Exploding Gradients e Gradient Clipping"
+    - part: 67
+      title: "LSTMs: Portas de Memória"
+    - part: 68
+      title: "GRUs e RNNs Bidirecionais"
+    - part: 69
+      title: "Seq2Seq Clássico"
+    - part: 70
+      title: "Atenção como Busca Suave (Cross-Attention)"
+    - part: 71
+      title: "Similaridade Vetorial e Projeções Q, K, V"
+    - part: 72
+      title: "Self-Attention em PyTorch Puro"
+    - part: 73
+      title: "Multi-Head Attention"
+    - part: 74
+      title: "Positional Encoding"
+    - part: 75
+      title: "LayerNorm vs BatchNorm e FFN"
+    - part: 76
+      title: "Transformer Encoder Completo no Jena Climate"
+    - part: 77
+      title: "Multi-Armed Bandits"
+    - part: 78
+      title: "MDPs: Estados, Ações, Recompensas e Desconto"
+    - part: 79
+      title: "Q-Learning Tabular"
+    - part: 80
+      title: "Deep Q-Networks (DQN)"
+    - part: 81
+      title: "Policy Gradients (REINFORCE)"
+    - part: 82
+      title: "Actor-Critic e PPO"
+    - part: 83
+      title: "O Paradigma Fundacional"
+    - part: 84
+      title: "Pré-Treino Autossupervisionado"
+    - part: 85
+      title: "Leis de Escala (Scaling Laws) e Emergência"
+    - part: 86
+      title: "Multimodalidade Fundacional (CLIP)"
+    - part: 87
+      title: "Corpus de Linguagem, Next-Token Prediction e Weight Tying"
+    - part: 88
+      title: "Transformer Decoder (estilo GPT) e Máscara Causal"
+    - part: 89
+      title: "Projeto Integrador: Treinando Nossa Mini-LLM"
+    - part: 90
+      title: "Estratégias de Sampling"
+    - part: 91
+      title: "Como Testar o que Não Tem Gabarito Único?"
+    - part: 92
+      title: "Perplexidade na Prática"
+    - part: 93
+      title: "In-Context Learning: Zero-Shot e Few-Shot"
+    - part: 94
+      title: "Linear Probing, Full Fine-Tuning e Esquecimento Catastrófico"
+    - part: 95
+      title: "SFT (Supervised Fine-Tuning): De Base Model a Assistente"
+    - part: 96
+      title: "Alinhamento: RLHF e DPO"
+    - part: 97
+      title: "PEFT, LoRA e QLoRA"
+    - part: 98
+      title: "Escala e Inferência: Mixed Precision, Gradient Accumulation e Quantização"
+    - part: E1
+      title: "Double Descent"
+    - part: E2
+      title: "Grokking"
+    - part: E3
+      title: "Anatomia LLaMA/Qwen (RMSNorm, SwiGLU e RoPE)"
+    - part: E4
+      title: "KV Cache na Prática"
+    - part: E5
+      title: "Mixture of Experts (MoE)"
+    - part: E6
+      title: "Além da Atenção Quadrática (State Space Models / Mamba)"
+    - part: E7
+      title: "Interpretabilidade Mecanística (Sparse Autoencoders)"
+    - part: E8
+      title: "Pós-Treino e Raciocínio (Test-Time Compute e GRPO)"
+    - part: E9
+      title: "Busca Semântica e RAG em PyTorch Puro"
