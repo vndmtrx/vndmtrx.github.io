@@ -48,7 +48,7 @@ Se são runtimes de desenvolvimento como Erlang, Elixir ou Java? Vivem no meu ho
 Se é uma biblioteca pesada de machine learning? Roda em contêiner descartável no Docker.
 Se é um AppImage? Fica no espaço do usuário, sem invadir o `/usr`.
 
-O sistema operacional cuida dos drivers, do kernel e dos serviços essenciais. O resto vive no meu usuário. Se algo der errado com uma ferramenta de trabalho, o Debian continua impecável.
+O sistema operacional cuida dos drivers, do kernel e dos serviços essenciais. O resto vive no meu usuário. Se algo der errado com uma ferramenta de trabalho, o Debian continua intacto.
 
 > [!NOTE] Em Casa de Ferreiro, Espeto de Pau
 > Tá bom, confesso: minha regra sagrada de purismo às vezes parece aquele clássico "faça o que eu digo, não faça o que eu faço". No papel, o discurso de manter a raiz intocada é lindo e austero. Na prática do dia a dia, meu `$HOME` tem Flatpaks do Flathub para utilitários gráficos, AppImages soltos rodando sem a menor cerimônia e binários compilados na mão no `~/.local/bin`. O segredo da minha paz de espírito não é o celibato digital absoluto, mas manter o estrago estritamente contido no espaço de usuário sem poluir o sistema operacional raiz.
@@ -87,21 +87,21 @@ fi
 
 O `pipx` cria um ambiente virtual isolado para o Ansible dentro de `~/.local/share/pipx/venvs/ansible` e expõe apenas os executáveis necessários na minha pasta `~/.local/bin`. A raiz do sistema operacional continua intocada, o Ansible ganha acesso total aos seus módulos modernos e eu não corro o menor risco de quebrar o Python do sistema.
 
-Além disso, transformei o meu `bootstrap.sh` em um painel de diagnóstico da máquina antes de disparar o playbook: ele checa se deixei instaladores manuais esperando na pasta de Downloads, confere versões de runtimes instaladas no host e cronometra o tempo exato do provisionamento.
+Aproveitei também para transformar o `bootstrap.sh` num painel de diagnóstico antes de disparar o playbook: ele checa se deixei instaladores manuais esperando na pasta de Downloads, confere versões de runtimes no host e cronometra o tempo exato do provisionamento.
 
 ## Os limites da automação: onde o Ansible para e o Day-0 começa
 
-Diante do poder do Ansible, a tentação clássica de quem se apaixona por automação é querer enfiar o mundo inteiro dentro do playbook: automatizar a eliminação de partições físicas de swap antigas, o redimensionamento a quente do sistema de arquivos para recuperar gigabytes para a raiz (`/`), a calibração das iterações de PBKDF2 nos keyslots do LUKS ou até o disparo de atualizações de firmware de baixo nível via `fwupd`.
+Diante do poder do Ansible, a tentação clássica de quem se apaixona por automação é querer enfiar o mundo inteiro dentro do playbook: automatizar a eliminação de partições físicas de swap antigas, o redimensionamento a quente do sistema de arquivos para recuperar gigabytes para a raiz (`/`), a calibração das iterações de PBKDF2 nos keyslots do LUKS ou até o disparo de atualizações de firmware de baixo nível via `fwupd` [^10].
 
 A resposta curta e direta para não fazer isso é: **porque você tem amor à sua sanidade e aos seus dados**.
 
-Existe uma fronteira de arquitetura crucial que separa **operações de ciclo de vida inicial e hardware tuning da máquina (Day-0/Day-1)** de **gerenciamento contínuo de estado idempotente do espaço de usuário (Day-2)**. O Ansible é rei absoluto no Day-2. Mas no momento em que você tenta enfiar particionamento destrutivo de baixo nível (`parted rm`, `resize2fs`, `cryptsetup resize`) ou gravação de memória Flash da placa-mãe em um playbook que roda periodicamente, você transforma uma ferramenta de padronização em uma roleta-russa digital.
+Existe uma fronteira de arquitetura clara que separa **operações de ciclo de vida inicial e hardware tuning da máquina (Day-0/Day-1)** de **gerenciamento contínuo de estado idempotente do espaço de usuário (Day-2)**. O Ansible é rei absoluto no Day-2. Mas no momento em que você tenta enfiar particionamento destrutivo de baixo nível (`parted rm`, `resize2fs`, `cryptsetup resize`) ou gravação de memória Flash da placa-mãe em um playbook que roda periodicamente, você transforma uma ferramenta de padronização em uma roleta-russa digital.
 
-Mexer em slots criptográficos de disco e recalibrar chaves do LUKS exige digitação de senhas mestras no TTY e validação humana a cada etapa. Um parâmetro errado de partição ou uma execução acidental em uma máquina com layout de disco ligeiramente diferente deixaria o SSD completamente inacessível e ininicializável antes mesmo do café esfriar.
+Mexer em slots criptográficos de disco e recalibrar chaves do LUKS exige digitação de senhas mestras no TTY e validação humana a cada etapa. Um parâmetro errado de partição ou uma execução acidental numa máquina com layout de disco diferente deixaria o SSD inacessível e sem boot antes mesmo do café esfriar.
 
-Toda essa cirurgia de baixo nível pertence à fase de instalação assistida e hardware tuning da máquina, exatamente como detalhei no {% include post-ref.html slug="otimizacao-boot-luks" text="artigo de otimização do boot criptografado com LUKS" %}.
+Essa cirurgia de baixo nível pertence à instalação assistida (detalhei tudo no {% include post-ref.html slug="otimizacao-boot-luks" text="artigo de otimização do boot criptografado com LUKS" %}).
 
-O que cabe ao Ansible nessa camada de base é garantir a manutenção contínua e a saúde do ambiente: manter parâmetros de kernel idempotentes, validar permissões e assegurar que o timer nativo de descarte de blocos do SSD (`fstrim.timer`) esteja permanentemente ativo no systemd.
+O que cabe ao Ansible nessa camada de base é garantir a manutenção contínua e a saúde do ambiente: manter parâmetros de kernel idempotentes, validar permissões e assegurar que o timer nativo de descarte de blocos do SSD (`fstrim.timer`) esteja ativo no systemd.
 
 ## O segredo mais bem guardado da distribuição: o extrepo
 
@@ -115,6 +115,7 @@ O `extrepo` é um gerenciador de repositórios externos com curadoria oficial. A
 
 No meu playbook, a task `01-extrepo.yaml` parametriza o arquivo de políticas do extrepo de forma dinâmica para a versão corrente da distribuição e habilita os repositórios declarados em lote:
 
+{% raw %}
 ```yaml
 - name: Habilita repositórios via extrepo
   ansible.builtin.command:
@@ -128,6 +129,7 @@ No meu playbook, a task `01-extrepo.yaml` parametriza o arquivo de políticas do
   register: extrepo_result
   changed_when: extrepo_result.rc == 0
 ```
+{% endraw %}
 *Ativação declarativa de repositórios upstream homologados sem intervenção manual de chaves.*
 
 Com isso, o playbook provisiona com segurança e integridade criptográfica o **LibreWolf** (meu navegador padrão focado em privacidade estrita), o **VSCodium** (meu editor de código sem telemetria), o **Docker CE** oficial e o repositório da **HashiCorp** para ferramentas de infraestrutura. Tudo auditado e respeitando as políticas de licença `main`, `contrib` e `non-free` do Debian.
@@ -136,14 +138,15 @@ Mas o que acontece quando você precisa de um aplicativo que não está listado 
 
 ## Repositórios manuais com a arquitetura moderna deb822
 
-A pergunta de um milhão de reais surgiu quando decidi incluir o navegador **Vivaldi** no meu setup diário de trabalho. Fui consultar o banco de dados do `extrepo-data` todo animado e constatei que o Vivaldi não faz parte do catálogo oficial mantido pelo Debian.
+A pergunta de um milhão de reais surgiu quando incluí o **Vivaldi** no meu setup diário e descobri que ele não estava no `extrepo-data`.
 
-Nessas horas, a maioria dos tutoriais da internet manda você baixar a chave pública e jogar num arquivo `.list` de linha única em `/etc/apt/sources.list.d/vivaldi.list`. Por favor, não faça isso. O formato de linha única é herança legada dos anos noventa e está sendo gradativamente substituído no Debian pelo formato estruturado **deb822** [^4].
+Nessas horas, a maioria dos tutoriais da internet manda você baixar a chave pública e jogar num arquivo `.list` de linha única em `/etc/apt/sources.list.d/vivaldi.list`. Por favor, não faça isso. O formato de linha única é herança legada dos anos noventa e vem sendo substituído no Debian pelo formato estruturado **deb822** [^4].
 
-No Debian 13, a convenção moderna para fontes de pacotes utiliza arquivos `.sources` baseados em blocos declarativos RFC 822 (o mesmo padrão usado nos arquivos de controle de pacotes do Debian). Além disso, o gerenciador de pacotes moderno aceita diretamente chaves públicas de assinatura em formato ASCII puro (`.asc`), dispensando invocações desnecessárias de `gpg --dearmor`.
+No Debian 13, a convenção moderna para fontes de pacotes usa arquivos `.sources` baseados em blocos declarativos RFC 822 (o mesmo padrão dos arquivos de controle de pacotes do Debian), e o APT moderno já aceita chaves públicas de assinatura em ASCII puro (`.asc`), dispensando invocações extras de `gpg --dearmor`.
 
 Para manter a minha política de isolamento e não misturar repositórios manuais com as ferramentas oficiais, criei a task dedicada `10-vivaldi.yaml`:
 
+{% raw %}
 ```yaml
 - name: Baixa chave pública de assinatura do repositório Vivaldi
   ansible.builtin.get_url:
@@ -174,19 +177,20 @@ Para manter a minha política de isolamento e não misturar repositórios manuai
     state: present
     update_cache: "{{ vivaldi_repo.changed }}"
 ```
+{% endraw %}
 *Configuração do repositório oficial Vivaldi utilizando o padrão deb822 nativo do Debian moderno.*
 
-Repare na sutileza do parâmetro `update_cache: "{{ vivaldi_repo.changed }}"`: se a definição do repositório não mudou desde a última execução, o Ansible não perde tempo fazendo requisições de rede para atualizar o cache do apt. Ele vai direto ao ponto.
+Repare na sutileza do parâmetro `update_cache: "{% raw %}{{ vivaldi_repo.changed }}{% endraw %}"`: se a definição do repositório não mudou desde a última execução, o Ansible não perde tempo fazendo requisições de rede para atualizar o cache do apt. Ele vai direto ao ponto.
 
 ## A saga dos AppImages e o fantasma do libfuse2t64
 
-Outro componente indispensável no meu fluxo diário de trabalho é o **pCloud Drive**. Eu uso o pCloud porque ele monta uma unidade virtual no sistema de arquivos: tenho acesso aos meus arquivos na nuvem sem precisar torrar o espaço do meu SSD local.
+Outro item fixo no meu fluxo diário é o **pCloud Drive**, que monta uma unidade virtual sem torrar espaço do SSD local.
 
 No Linux, a pCloud distribui seu cliente oficial no formato **AppImage**. E aqui entra uma decisão arquitetural alinhada à minha regra de isolamento: vale a pena descompactar um AppImage, tentar extrair bibliotecas internas e empacotar um `.deb` no braço para colocar no sistema?
 
-De jeito nenhum. Um AppImage foi desenhado especificamente para ser um executável auto-contido que vive no espaço do usuário. O próprio cliente pCloud possui rotinas internas de auto-atualização em segundo plano. Se você tentar empacotar o software de forma estática no sistema operacional, você quebra o mecanismo nativo de atualização dele.
+De jeito nenhum. Um AppImage nasceu para ser um executável autocontido no espaço do usuário, e o cliente do pCloud tem rotinas próprias de atualização em segundo plano. Empacotar isso no sistema operacional só quebra o mecanismo nativo dele.
 
-Minha abordagem foi mantê-lo exatamente onde deve estar: baixado no meu usuário (`~/.local/share/pcloud/pcloud.AppImage`), com um atalho no meu `~/.local/bin` e um lançador `.desktop` no menu do GNOME.
+Minha abordagem foi mantê-lo onde deve ficar: baixado no meu usuário (`~/.local/share/pcloud/pcloud.AppImage`), com atalho no `~/.local/bin` e lançador `.desktop` no menu do GNOME.
 
 Só que no Debian 13 (Trixie), essa tarefa simples me reservou uma surpresa desagradável.
 
@@ -202,10 +206,11 @@ Fui todo confiante rodar o comando e o Debian 13 respondeu friamente:
 
 Fiquei alguns segundos olhando para a tela pensando o que diabos tinha acontecido.
 
-A explicação para isso é fascinante: o projeto Debian passou recentemente pela monumental transição do **ano 2038** (a famosa migração do tipo `time_t` de 32 bits para 64 bits em arquiteturas de hardware) [^5]. Para evitar quebra de compatibilidade binária entre bibliotecas compiladas antes e depois da transição, dezenas de pacotes receberam o sufixo `t64`. O pacote do FUSE clássico no Debian 13 chama-se oficialmente **`libfuse2t64`**.
+A explicação para isso é fascinante: o projeto Debian passou pela monumental transição do **ano 2038** (a famosa migração do tipo `time_t` de 32 bits para 64 bits em arquiteturas de hardware) [^5]. Para evitar quebra de compatibilidade binária entre bibliotecas compiladas antes e depois da transição, dezenas de pacotes receberam o sufixo `t64`. O pacote do FUSE clássico no Debian 13 agora se chama **`libfuse2t64`**.
 
 Com essa dependência resolvida na base do sistema, a task `08-pcloud.yaml` opera com total previsibilidade:
 
+{% raw %}
 ```yaml
 - name: Garante diretórios de suporte ao pCloud
   ansible.builtin.file:
@@ -231,6 +236,7 @@ Com essa dependência resolvida na base do sistema, a task `08-pcloud.yaml` oper
     - not pcloud_installed_stat.stat.exists
     - pcloud_downloaded_stat.stat.exists | default(false)
 ```
+{% endraw %}
 *Módulo pCloud respeitando instalações prévias e evitando downloads redundantes.*
 
 O playbook confere se o executável já existe no meu home. Se existir, não mexe em nada para não sobrescrever atualizações que o próprio aplicativo já tenha baixado sozinho. Se eu já tiver colocado o instalador na pasta de Downloads, ele reaproveita o arquivo local. Se não houver nada, ele consulta a API pública de distribuição da pCloud e baixa o binário oficial automaticamente. Em seguida, extrai o ícone embutido do próprio AppImage com `--appimage-extract pcloud.png` e gera o lançador `.desktop` no menu de aplicativos.
@@ -302,11 +308,11 @@ Instalar versões de Java, Node.js, Erlang ou Elixir através do `apt` é pedir 
 Seguindo a minha filosofia de manter o Debian limpo, dividi os runtimes em ecossistemas isolados estritamente no meu espaço de usuário:
 
 ### ASDF em Go para Erlang e Elixir
-Historicamente, o ASDF era um conjunto massivo de scripts em Bash que adicionava uma lentidão perceptível a cada abertura de terminal. A partir da versão `v0.20.0`, o projeto foi reescrito integralmente em **Go** [^6]. O executável agora é um binário único, compilado e muito rápido.
+Por anos, o ASDF foi uma pilha de scripts em Bash que deixava cada abertura de terminal lenta. Na versão `v0.20.0`, o projeto foi reescrito em **Go** [^6]: virou um binário único, compilado e instantâneo.
 
-O playbook baixa o binário diretamente em `~/.local/bin/asdf`, configura os plugins necessários e compila o **Erlang/OTP 29** com suporte completo a bibliotecas gráficas (wxWidgets) e segurança (OpenSSL). Na sequência, instala o binário oficial pré-compilado do **Elixir 1.20** casado com o OTP 29 e ativa as versões globais via `~/.tool-versions`.
+O playbook baixa o binário direto em `~/.local/bin/asdf`, configura os plugins e compila o **Erlang/OTP 29** com suporte completo a bibliotecas gráficas (wxWidgets) e segurança (OpenSSL). Na sequência, instala o binário oficial pré-compilado do **Elixir 1.20** casado com o OTP 29 e ativa as versões globais via `~/.tool-versions`.
 
-Para garantir que o Ansible não perca tempo tentando recompilar linguagens que já estão presentes no sistema, a task inspeciona o disco previamente com `ansible.builtin.stat`. Se a versão já existe dentro de `~/.asdf/installs/erlang/29.0.6`, a etapa de compilação é ignorada sem pestanejar.
+Se a versão já existir em `~/.asdf/installs/erlang/29.0.6`, a checagem prévia via `ansible.builtin.stat` pula a compilação sem pestanejar.
 
 ### SDKMAN para o ecossistema Java
 Embora o ASDF possua plugins para Java, o **SDKMAN!** [^7] continua sendo a minha escolha definitiva no ecossistema Java. Ele gerencia versões do OpenJDK de todos os fornecedores (Temurin, GraalVM, Corretto, Zulu) e utilitários de build de forma nativa e transparente.
@@ -355,6 +361,7 @@ Para o Debian 13 rodando GNOME 48, adotei uma ferramenta fantástica chamada **`
 
 O `gext` possui um backend de instalação direta chamado `--filesystem`. Em vez de tentar se comunicar com o barramento gráfico do GNOME na tela (o que quase sempre falha ou trava quando executado por ferramentas de automação como o Ansible), o utilitário baixa o pacote oficial da extensão, valida a compatibilidade com a versão do GNOME Shell, extrai os arquivos diretamente em `~/.local/share/gnome-shell/extensions/<UUID>` e compila os esquemas do GSettings com `glib-compile-schemas`.
 
+{% raw %}
 ```yaml
 - name: Instala extensões GNOME via gext com backend de sistema de arquivos
   ansible.builtin.command:
@@ -365,6 +372,7 @@ O `gext` possui um backend de instalação direta chamado `--filesystem`. Em vez
   when: not gext_check.stat.exists
   changed_when: true
 ```
+{% endraw %}
 *Instalação silenciosa de extensões em lote sem janelas piscando na tela.*
 
 Com esse comando, o playbook provisiona silenciosamente doze extensões essenciais para o meu fluxo de trabalho:
@@ -406,7 +414,7 @@ Em vez de disparar dezenas de comandos `gsettings set` que levam minutos para ex
 
 E a cereja no topo do bolo: para garantir que qualquer ajuste fino feito no dia a dia não se perca, criei um utilitário em Bash chamado `salvar-extensoes` em `~/.local/bin/salvar-extensoes`. Se eu mexer na posição de um ícone da barra ou trocar um atalho de teclado no futuro, basta rodar esse comando no terminal: ele extrai exclusivamente essas seções delimitadas do `dconf` e salva cópias carimbadas com data e hora dentro de `~/du/conf/`.
 
-Para finalizar a personalização visual com um toque nostálgico, o playbook armazena e aplica automaticamente o lendário papel de parede **Bliss** do Windows XP, renderizado a partir de uma digitalização em altíssima definição de 600 DPI, sincronizado simultaneamente para os modos claro e escuro do GNOME 48.
+Para fechar o visual com nostalgia, o playbook armazena e aplica o lendário papel de parede **Bliss** do Windows XP (digitalizado em 600 DPI), sincronizado nos modos claro e escuro do GNOME 48.
 
 ## A obsessão pela idempotência no dia a dia
 
@@ -416,7 +424,7 @@ Idempotência real significa o seguinte: na primeira vez em que você executa o 
 
 Para atingir esse nível de confiança operacional, passei por um processo minucioso de auditoria em cada arquivo de task:
 
-* **Eliminação de loops no apt:** tarefas antigas costumavam iterar com `loop: "{{ pacotes }}"` chamando o módulo `ansible.builtin.apt` vinte vezes seguidas. Consolidei isso em chamadas únicas passando a lista completa de pacotes (`name: "{{ pacotes }}"`), reduzindo o tempo de verificação de pacotes em mais de oitenta por cento.
+* **Eliminação de loops no apt:** tarefas antigas costumavam iterar com `loop: "{% raw %}{{ pacotes }}{% endraw %}"` chamando o módulo `ansible.builtin.apt` vinte vezes seguidas. Consolidei isso em chamadas únicas passando a lista completa de pacotes (`name: "{% raw %}{{ pacotes }}{% endraw %}"`), reduzindo o tempo de verificação de pacotes em mais de oitenta por cento.
 * **Checagem de comandos de sistema:** comandos como a sincronização de hora (`timedatectl set-ntp true`) só disparam se a consulta prévia de status indicar que o NTP não está ativo.
 * **Tratamento de arquivos de configuração:** no arquivo `~/.bash_aliases`, a expressão regular do módulo `lineinfile` foi calibrada para casar com exatidão a chave do alias antes do sinal de igual (`^alias {% raw %}{{ item.split('=')[0] }}{% endraw %}=`). Se eu rodar o playbook cem vezes seguidas, ele jamais duplicará uma única linha no meu arquivo de aliases.
 * **Separação estrita de precedência de variáveis:** todas as variáveis que tenho interesse em customizar (versões de linguagens, listas de pacotes extras, preferências de extensões) foram centralizadas em `sistema/defaults/main.yaml` (nível 2 de precedência no Ansible) [^9]. Já os caminhos internos de infraestrutura e diretórios imutáveis vivem protegidos em `sistema/vars/main.yaml` (nível 16).
@@ -456,7 +464,7 @@ Para não precisar instalar a ISO do Debian a cada novo teste, o orquestrador ge
 ### 2. A pegadinha do OpenSSH moderno e contenção de travas
 No Debian 13 (Trixie), o `sshd` implementa penalidades ativas contra ataques de força bruta: se um script tentar conexões repetitivas com falha de autenticação em um curto espaço de tempo, o daemon bloqueia o IP temporariamente (`drop connection penalty: failed authentication`). Substituímos o polling cego por uma checagem pura de socket TCP no Bash (`/dev/tcp/${VM_IP}/22`), injetando a chave SSH via `sshpass` de primeira e configurando o `sudo` sem senha.
 
-Além disso, tratamos a clássica disputa de travas do APT no primeiro boot do GNOME: o daemon do **PackageKit** (`packagekitd`) entra em segundo plano para checar atualizações e segura o arquivo `/var/lib/dpkg/lock-frontend`. O orquestrador detecta a disputa, pausa o daemon de forma limpa e injeta a flag `-o DPkg::Lock::Timeout=120` em todas as operações de pacotes.
+No mesmo passo, tratamos a clássica disputa de travas do APT no primeiro boot do GNOME: o daemon do **PackageKit** (`packagekitd`) entra em segundo plano para checar atualizações e segura o arquivo `/var/lib/dpkg/lock-frontend`. O orquestrador detecta a disputa, pausa o daemon de forma limpa e injeta a flag `-o DPkg::Lock::Timeout=120` em todas as operações de pacotes.
 
 ### 3. Detecção dinâmica de armazenamento e isolamento
 O script de Day-0 do testbed foi desenhado para ser agnóstico: ele inspeciona o ponto de montagem da raiz com `findmnt` e `lsblk`. Se o disco estiver criptografado com LUKS, ele descobre o nome do mapper (`/dev/mapper/luks-*`), calibra o Keyslot 0 em 500ms e expande o container criptografado. Se for uma partição direta sem criptografia (`/dev/vda2`), ele pula a etapa do LUKS e expande o sistema de arquivos diretamente, sem quebrar a execução.
@@ -484,7 +492,7 @@ Até aqui, exploramos a orquestração do espaço de usuário com o Ansible no D
 
 Se a sua partição raiz for criada com escolhas ruins de particionamento, alinhamento de blocos ou criptografia mal calibrada, nenhum playbook do mundo vai consertar o estrago depois.
 
-Quem acompanhou o artigo sobre {% include post-ref.html slug="otimizacao-boot-luks" text="otimização do boot criptografado com LUKS" %} deve lembrar da via-crúcis que enfrentei para consertar a quente uma instalação antiga do Debian: matar keyslots fora de ordem na unha, redimensionar partições a quente e reconfigurar crypttab no braço. O instalador padrão do Debian havia deixado a máquina em LUKS1 com milhões de iterações de hash, e tentar converter um sistema rodando para LUKS2 com Btrfs é pedir para ter dor de cabeça.
+Quem acompanhou o artigo sobre {% include post-ref.html slug="otimizacao-boot-luks" text="otimização do boot criptografado com LUKS" %} deve lembrar da via-crúcis que enfrentei para consertar a quente uma instalação antiga do Debian: matar keyslots fora de ordem na unha, redimensionar partições a quente e reconfigurar crypttab no braço. O instalador padrão do Debian havia deixado a máquina em LUKS1 com milhões de iterações de hash, e tentar converter um sistema rodando para LUKS2 com Btrfs [^14] é pedir para ter dor de cabeça.
 
 A resposta para eliminar esses "erros" de fábrica diretamente no parto da máquina é dividir o provisionamento em duas fronteiras bem delimitadas:
 1. **Day-0 / Day-1 (Instalação Padrão + Ajustes de Baixo Nível):** Instalação padrão via Calamares na ISO oficial do Debian Live (com disco cifrado e ext4 padrão), seguida pelas calibrações manuais de baixo nível no primeiro boot: calibração de PBKDF2 do LUKS (Slot 0 em 500ms), eliminação do swap em disco, redimensionamento da raiz a quente, parâmetros de kernel para NVMe sem filas intermediárias, ativação do zram e limpeza do boot.
@@ -509,7 +517,7 @@ A estrutura no pendrive de dados (`exFAT`) organiza a ISO, o repositório e os p
 
 Cada ajuste de Day-0 resolve um gargalo histórico de desempenho e usabilidade antes do Ansible assumir o sistema operacional:
 
-* **Calibração de Boot LUKS (PBKDF2 em 500ms no Slot 0):** O instalador padrão calibra a derivação de chave com mais de 5 a 6 milhões de iterações, fazendo o GRUB (que roda em single-core sem aceleração criptográfica de hardware) demorar até 50 segundos para abrir o disco. Recriar a senha no **Slot 0** com `--iter-time 500` (~1.4M iterações) despenca o tempo de descriptografia no bootloader para menos de 10 segundos.
+* **Calibração de Boot LUKS (PBKDF2 em 500ms no Slot 0):** O instalador padrão calibra a derivação de chave com mais de 5 a 6 milhões de iterações, fazendo o GRUB (que roda em single-core sem aceleração criptográfica de hardware) demorar até 50 segundos para abrir o disco. Recriar a senha no **Slot 0** com `--iter-time 500` (~1.4M iterações) [^15] despenca o tempo de descriptografia no bootloader para menos de 10 segundos.
 * **NVMe em modo direto no `crypttab`:** A inclusão das flags `no-read-workqueue,no-write-workqueue,discard` instrui o subsistema dm-crypt a despachar operações de I/O diretamente para as filas de hardware do SSD NVMe, eliminando filas intermediárias de software do kernel.
 * **GRUB com suporte a cryptodisk:** Habilita `GRUB_ENABLE_CRYPTODISK=y` e pré-carrega os módulos `luks`, `crypto`, `gcry_rijndael`, `gcry_sha256` e `btrfs` na imagem EFI, garantindo que a descriptografia do disco funcione desde o primeiro estágio de boot.
 * **Eliminação do swap em disco:** Desativa e remove a partição de swap criptografada criada pelo instalador, limpando `/etc/fstab`, `/etc/crypttab` e o parâmetro `resume=` do GRUB, exatamente como fizemos no {% include post-ref.html slug="otimizacao-boot-luks" text="artigo de otimização de boot" %}.
