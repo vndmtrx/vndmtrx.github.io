@@ -33,9 +33,9 @@ A matemática das curvas elípticas ou do RSA entrega duas garantias espetacular
 
 Mas tem uma pergunta cruel que a matemática se recusa terminantemente a responder: **de quem diabos é essa chave pública?**
 
-A matemática é agnóstica a ponto de ser ingênua. Ela te entrega um ponto elegante numa curva elíptica ou um número primo monumental de 600 dígitos, olha pra sua cara e diz: "Os cálculos fecharam com precisão de nanossegundo, meu chefe!". Só que ela não faz a menor ideia se aquela sequência impecável de bits pertence ao servidor do seu internet banking ou a um adolescente entediado na Romênia que subiu um rogue access point no Wi-Fi da praça de alimentação do shopping. A matemática garante que a fechadura é indestrutível; ela só não sabe se quem acabou de te entregar a chave foi o chaveiro credenciado ou o próprio ladrão que arrombou a janela dos fundos.
+A matemática é agnóstica a ponto de ser ingênua. Ela te entrega um ponto elegante numa curva elíptica ou um número primo monumental de 600 dígitos, olha pra sua cara e diz: "Os cálculos fecharam com precisão de nanossegundo, meu chefe!". Só que ela não faz a menor ideia se aquela sequência intacta de bits pertence ao servidor do seu internet banking ou a um adolescente entediado na Romênia que subiu um rogue access point no Wi-Fi da praça de alimentação do shopping. A matemática garante que a fechadura é indestrutível; ela só não sabe se quem acabou de te entregar a chave foi o chaveiro credenciado ou o próprio ladrão que arrombou a janela dos fundos.
 
-Pensa no nosso clássico João (o desenvolvedor júnior que adora um atalho perigoso). O João abre o terminal e tenta se conectar no servidor `php-01.example.com`. Ele recebe uma chave pública pela rede. A chave é linda, perfeita, matematicamente irrepreensível. O handshake TLS roda liso, sem nenhum erro de paridade. O João agora tem um canal perfeitamente cifrado, íntegro e à prova de bisbilhoteiros com... alguém.
+Pensa no nosso clássico João (o desenvolvedor júnior que adora um atalho perigoso). O João abre o terminal e tenta se conectar no servidor `php-01.example.com`. Ele recebe uma chave pública pela rede. A chave é linda, válida e sem um único defeito matemático. O handshake TLS roda liso, sem erro de paridade. O João agora tem um canal cifrado, íntegro e à prova de bisbilhoteiros com... alguém.
 
 O problema é que esse "alguém" pode ser o Antônio (nosso QA pentester malandro) sentado no meio do caminho (*Man-in-the-Middle*, ou MITM). O Antônio interceptou os pacotes na rede local, entregou a própria chave pública pro João, abriu outra ponta cifrada com o servidor real e agora tá lendo cada senha e payload que o João envia enquanto toma um refrigerante e dá risada. Pro João, o terminal tá verde e os cálculos fecharam com louvor. A criptografia funcionou perfeitamente; a identidade foi pro ralo.
 
@@ -80,9 +80,9 @@ O modelo clássico do arquivo `known_hosts` do SSH. Na primeira vez que você ac
 Nas conexões subsequentes, o cliente exige que a chave recebida seja idêntica à gravada. O TOFU funciona muito bem para redes pequenas ou administradores cuidadosos, mas é vulnerável no instante exato do primeiro contato (se houver um MITM na primeira conexão, você grava a chave do atacante) e escala pessimamente em parques com centenas de servidores dinâmicos.
 
 ### 2. Modelo Hierárquico (PKI / X.509)
-Em vez de confiar em cada servidor individualmente, você escolhe confiar previamente em uma entidade terceira respeitada: a Autoridade Certificadora (*Certificate Authority*, ou CA). 
+Em vez de confiar em cada servidor um por um, você confia de antemão em uma entidade terceira respeitada: a Autoridade Certificadora (*Certificate Authority*, ou CA).
 
-A CA inspeciona a solicitação de uma entidade, confere se ela realmente tem o direito sobre aquele nome de domínio e carimba um documento digital (o certificado) ligando a chave pública ao nome do solicitante. Se o seu sistema operacional ou navegador já conhece e confia na chave pública da CA Raiz (*Root CA*), qualquer certificado assinado diretamente por ela, ou por uma cadeia de CAs intermediárias autorizadas por ela, herda essa confiança automaticamente. 
+A CA inspeciona a solicitação de uma entidade, confere se ela tem direito sobre aquele domínio e carimba um documento digital (o certificado) ligando a chave pública ao nome do solicitante. Se o seu sistema operacional ou navegador já conhece e confia na chave pública da CA Raiz (*Root CA*), qualquer certificado assinado por ela, ou por uma cadeia de CAs intermediárias autorizadas por ela, herda essa confiança sem esforço extra.
 
 Mesmo o ecossistema de certificados SSH que exploramos anteriormente adota uma variante simplificada desse modelo: uma CA de um único nível que assina chaves de hosts e usuários.
 
@@ -156,11 +156,11 @@ Vamos aos campos que realmente importam no dia a dia:
 
 ## ASN.1, DER, PEM e o Zoológico de Formatos
 
-Se tem uma coisa capaz de deflagrar discussões homéricas em canais de Slack de infraestrutura é o zoológico de extensões: `.crt`, `.pem`, `.cer`, `.key`, `.der`, `.p12`, `.pfx`. 
+Pouca coisa acende briga mais rápida num canal de Slack de infra do que `.crt`, `.pem`, `.cer`, `.key`, `.der`, `.p12` e `.pfx`.
 
 Quem nunca viu um desenvolvedor pegar um arquivo binário `.der`, renomear no desespero pra `.crt` e depois abrir chamado jurando de pés juntos que o Nginx "enlouqueceu e não lê mais certificados"? (Por favor, não faça isso).
 
-Pra gente não se perder nessa floresta, precisamos separar claramente duas coisas distintas: a **notação abstrata dos dados** e a **codificação física em disco**[^4].
+Pra gente não se perder nessa floresta, separe duas camadas bem distintas: a **notação abstrata dos dados** e a **codificação física em disco**[^4].
 
 ```mermaid
 flowchart LR
@@ -169,7 +169,7 @@ flowchart LR
 ```
 
 ### ASN.1 (Abstract Syntax Notation One)
-Desenvolvido em 1984 pela ITU-T, o ASN.1 é uma linguagem formal para modelar estruturas de dados independentemente de plataforma, sistema operacional ou endianness de processador. A RFC 5280 descreve a estrutura de um certificado X.509 inteiramente em ASN.1. 
+Desenvolvido em 1984 pela ITU-T, o ASN.1 é uma linguagem formal para modelar estruturas de dados sem depender de plataforma, sistema operacional ou endianness de processador. A RFC 5280 descreve toda a estrutura de um certificado X.509 em ASN.1.
 
 Pense no ASN.1 como o tataravô do Protocol Buffers ou do JSON Schema: ele define que tipos de campos existem e como eles se relacionam, mas não se mete em como os bits serão gravados no HD.
 
@@ -179,7 +179,7 @@ Se o ASN.1 é o projeto da casa, o DER é a alvenaria. O DER define as regras ma
 - **Length:** Quantos bytes o valor ocupa.
 - **Value:** Os bytes da carga útil propriamente dita.
 
-O DER é determinístico e inequívoco: um mesmo objeto ASN.1 sempre resultará rigorosamente nos mesmos bytes sob DER. E é exatamente por isso que a assinatura digital é calculada sobre os bytes brutos em DER. 
+O DER é determinístico e inequívoco: o mesmo objeto ASN.1 sempre produz os mesmos bytes sob DER. É por isso que a assinatura digital é calculada sobre os bytes brutos em DER.
 
 Se bater a curiosidade mórbida de enxergar as entranhas binárias de um certificado, você pode pedir pro OpenSSL dissecar a árvore TLV:
 
@@ -246,7 +246,7 @@ Historicamente, todo mundo colocava o hostname do servidor no campo `Common Name
 
 Só que a Web explodiu. Um mesmo servidor passou a atender dez domínios diferentes, balancear tráfego por múltiplos hostnames e responder por endereços IP literais. O pobre do `Common Name` só aceitava uma única string simples, com limite arbitrário de 64 caracteres e sem nenhuma tipagem que dissesse se aquilo era um DNS, um IP ou o apelido do cachorro do administrador.
 
-A RFC 6125 e a recente **RFC 9525**[^8] decretaram o óbito formal: **o Common Name foi sumariamente depreciado para validação de nomes de domínio e deve ser solenemente ignorado pelos clientes TLS**.
+A RFC 6125 e a recente **RFC 9525**[^8] decretaram o óbito formal: **o Common Name foi depreciado para validação de domínios e deve ser ignorado pelos clientes TLS**.
 
 Em 2017, o Google Chrome 58 chegou chutando a porta: se o certificado não tivesse a extensão SAN preenchida, o navegador simplesmente recusava a conexão com tela vermelha de aviso, mesmo que o CN estivesse perfeito. Foi um festival de intranets e portais internos quebrando numa segunda-feira de manhã porque ninguém lia as RFCs.
 
@@ -257,13 +257,13 @@ Em 2017, o Google Chrome 58 chegou chutando a porta: se o certificado não tives
 
 A versão 3 do X.509 introduziu a seção de extensões, que transformou certificados de meros crachás de cartório em regras ativas de tráfego e política de segurança.
 
-O X.509 versão 1 original era inocente demais. Ele basicamente dizia: "Essa chave pública pertence ao João e eu, a CA, confirmo isso". Ponto final. Não havia nenhum mecanismo pra dizer se o João era um servidor web, um usuário humano ou se ele tinha poderes pra sair emitindo certificados pra empresa inteira no almoço de domingo. Aí veio a versão 3 e disse: "Chega de anarquia, vamos botar rédeas e regras duras aqui dentro".
+O X.509 versão 1 original era inocente demais. Ele dizia: "Essa chave pública pertence ao João e eu, a CA, confirmo isso". Ponto final. Não havia nenhum mecanismo pra dizer se o João era um servidor web, um usuário humano ou se ele tinha poderes pra sair emitindo certificados pra empresa inteira no almoço de domingo. Aí veio a versão 3 e disse: "Chega de anarquia, vamos botar rédeas e regras duras aqui dentro".
 
-Toda extensão possui três elementos fundamentais: um identificador de objeto numérico único (OID), uma flag booleana de criticidade (`critical`) e o valor da extensão codificado em DER binário.
+Cada extensão tem três peças: um OID numérico único, a flag `critical` e o valor em DER binário.
 
-A regra de ouro da criticidade é simples e impiedosa: **se uma extensão estiver marcada como `critical` e o validador não reconhecer ou não souber como processar aquele OID específico, ele DEVE obrigatoriamente abortar e rejeitar o certificado inteiro**. 
+A regra de ouro da criticidade é impiedosa: **se uma extensão estiver marcada como `critical` e o validador não reconhecer aquele OID, ele DEVE abortar e rejeitar o certificado inteiro**.
 
-Esse comportamento é o exato equivalente às *Critical Options* dos certificados SSH que estudamos no post passado: se uma opção crítica não for honrada, a conexão cai antes de começar.
+É o equivalente direto às *Critical Options* dos certificados SSH do post passado: opção crítica não honrada derruba a conexão na porta.
 
 Vejamos as principais extensões padronizadas pela RFC 5280:
 
@@ -286,12 +286,12 @@ Restringe os propósitos criptográficos fundamentais daquela chave:
 ### 3. extendedKeyUsage (EKU)
 Refina o escopo de aplicação prática do certificado no nível da camada de transporte ou aplicação:
 - `serverAuth`: Autenticação de servidor web/TLS (o servidor prova quem é pro cliente).
-- `clientAuth`: Autenticação mútua de cliente (mTLS: o usuário ou agente prova quem é pro servidor).
+- `clientAuth`: Autenticação mútua de cliente (mTLS: o usuário ou agente prova quem é pro servidor; motivo pelo qual CAs públicas passaram a restringir esse perfil[^9]).
 - `codeSigning`: Assinatura digital de binários, drivers ou pacotes de código.
 - `OCSPSigning`: Autoriza um responder OCSP a assinar respostas de status em nome de uma CA.
 
 > [!NOTE] A Virada de 2025/2026 na Web PKI
-> Em maio de 2025, a Let's Encrypt puxou o freio de mão e encerrou a farra: nada mais de `clientAuth` nas folhas públicas gratuitas emitidas por ela[^9]. A decisão foi técnica e protetiva: certificado público automatizado existe pra colocar cadeado verde em site perante o público geral, e não pra servir de crachá de autenticação interna de microsserviços corporativos. Com essa mudança, quem quiser fazer mTLS sério entre serviços internos precisa arregaçar as mangas e gerenciar sua própria PKI privada (que é exatamente o laboratório que vamos construir no próximo post).
+> Em maio de 2025, a Let's Encrypt puxou o freio de mão e encerrou a farra: nada mais de `clientAuth` nas folhas públicas gratuitas emitidas por ela ([anúncio oficial](https://letsencrypt.org/2025/05/14/ending-tls-client-authentication/)). A decisão foi técnica e protetiva: certificado público automatizado existe pra colocar cadeado verde em site perante o público geral, e não pra servir de crachá de autenticação interna de microsserviços corporativos. Com essa mudança, quem quiser fazer mTLS sério entre serviços internos precisa arregaçar as mangas e gerenciar sua própria PKI privada (que é o laboratório que vamos construir no próximo post).
 
 ### 4. subjectAltName (SAN)
 O substituto obrigatório e oficial do Common Name. Permite empilhar uma lista inteira de identidades válidas em um mesmo certificado:
@@ -310,7 +310,7 @@ Quando esse certificado emite e assina uma folha subordinada, a folha recebe um 
 ### 6. nameConstraints
 A extensão mais poderosa e criminosamente subestimada em infraestruturas corporativas. Permite que uma CA Raiz delegue autoridade para uma CA Intermediária, mas coloque uma cerca elétrica ao redor do que aquela subordinada pode emitir. 
 
-Uma CA com `nameConstraints = critical, permitted;DNS:.example.com` só tem poder de assinar certificados para domínios que terminem estritamente em `.example.com`. Se essa CA intermediária for comprometida ou se alguém lá dentro tentar emitir um certificado desonesto para `google.com` ou `banco.com`, qualquer navegador ou validador rejeitará o certificado imediatamente com o erro `permitted subtree violation`.
+Uma CA com `nameConstraints = critical, permitted;DNS:.example.com` só pode assinar domínios que terminem em `.example.com`. Se essa intermediária vazar ou tentar emitir um certificado desonesto para `google.com` ou `banco.com`, qualquer validador rejeita na hora com `permitted subtree violation`.
 
 ### 7. crlDistributionPoints e authorityInfoAccess
 Ponteiros de rede que indicam onde a parte confiante pode obter informações dinâmicas sobre o ciclo de vida do certificado:
@@ -325,11 +325,8 @@ Como um computador decide se confia no certificado que acabou de receber de um s
 flowchart TD
     Leaf["<b>Certificado de Folha</b><br>(php-01.example.com)"] -->|"Assinado por"| Intermediate["<b>Certificado Intermediário</b><br>(Example Intermediate CA)"]
     Intermediate -->|"Assinado por"| Root["<b>Certificado Raiz</b><br>(Example Root CA)"]
-    
-    subgraph TrustStore["Trust Store Local (SO / Navegador)"]
-        Anchor["<b>Example Root CA</b><br>(Chave pré-instalada no sistema)"]
-    end
-    
+    Anchor["<b>Trust Store Local (SO / Navegador)</b><br>Example Root CA pré-instalada no sistema"]
+
     Root -.->|"Identidade e Chave batem com"| Anchor
 
     class Leaf info;
@@ -354,13 +351,13 @@ O processo opera em duas etapas distintas:
 Se todas as verificações forem satisfeitas, a cadeia é declarada válida. Se uma única checagem falhar em qualquer nó intermediário, a conexão é sumariamente interrompida.
 
 ### O Paradoxo da Assinatura da Root CA
-Você já parou pra pensar nisso com calma? A Root CA emite um certificado autoassinado. Ela mesma assina a si própria. Ela olha no espelho, bate no próprio peito e diz: "Eu confio em mim mesma e ponto final!". 
+Você já parou pra pensar nisso? A Root CA emite um certificado autoassinado: olha no espelho, bate no peito e diz "eu confio em mim mesma, ponto final".
 
-Do ponto de vista puramente matemático, qualquer pessoa com um computador portátil gera uma chave privada e emite um certificado autoassinado declarando-se "Autoridade Suprema da Galáxia" em exatos três segundos.
+Em termos matemáticos, qualquer pessoa com um notebook gera uma chave privada e um certificado autoassinado de "Autoridade Suprema da Galáxia" em três segundos.
 
-Por que o seu navegador cospe fogo na tela se você tentar usar uma Root dessas em um site, mas aceita a Root da Let's Encrypt ou da DigiCert de braços abertos?
+Então por que o navegador rejeita essa Root, mas aceita a Let's Encrypt ou a DigiCert?
 
-Porque a assinatura de uma Root CA é matematicamente irrelevante para a confiança. **A confiança na Root não decorre de cálculos criptográficos, mas de um ato político e social prévio**: a chave pública daquela autoridade passou por auditorias caras, foi homologada e incluída fisicamente dentro do pacote de certificados confiáveis do seu sistema operacional ou navegador. Uma Âncora de Confiança é confiável porque alguém com autoridade sobre aquele computador decidiu gravá-la lá antes de você iniciar a conexão.
+Porque a assinatura de uma Root CA não vale nada para a confiança. **Confiar na Root é um ato político e social prévio**: a chave pública daquela autoridade passou por auditorias caras, foi homologada e gravada dentro do pacote de raízes confiáveis do seu sistema operacional ou navegador. Uma Âncora de Confiança só é confiável porque quem controla o seu sistema decidiu colocá-la lá antes de você abrir a conexão.
 
 No Linux Debian, esse repositório global fica consolidado no diretório `/etc/ssl/certs/` e é gerenciado pelo pacote `ca-certificates`. No Firefox, a Mozilla mantém seu próprio repositório interno de raízes dentro do motor NSS, desacoplado do sistema operacional.
 
@@ -410,7 +407,7 @@ Não faça isso. Esse é um dos maiores mal-entendidos operacionais da história
 O Apache separa categoricamente duas coisas: **o que o servidor apresenta para provar quem ele é** versus **o que o servidor exige para deixar alguém entrar**.
 
 1. **`SSLCertificateFile` (O que você apresenta ao mundo):**
-   Nas versões modernas do Apache (>= 2.4.8), esta é a única diretiva necessária para certificados. Você aponta diretamente para o seu bundle concatenado (`fullchain.pem`), exatamente igual ao `ssl_certificate` do Nginx:
+   Nas versões modernas do Apache (>= 2.4.8), esta é a única diretiva necessária para certificados. Você aponta direto para o seu bundle concatenado (`fullchain.pem`), igual ao `ssl_certificate` do Nginx:
    ```apache
    SSLCertificateFile    /etc/ssl/certs/php-01.fullchain.pem
    SSLCertificateKeyFile /etc/ssl/private/php-01.key
@@ -459,7 +456,7 @@ Eu sei exatamente o que você deve estar berrando contra a tela agora: "Peraí, 
 
 Calma. Guarda a tocha e o ancinho que eu explico a treta política do ecossistema.
 
-Não se trata de limitação matemática. A RFC 8410[^11] padronizou formalmente identificadores de algoritmo para o uso de Ed25519 e Ed448 em certificados X.509, e bibliotecas como o OpenSSL suportam a criação dessas folhas perfeitamente. 
+Não se trata de limitação matemática. A RFC 8410[^11] padronizou os identificadores de algoritmo para Ed25519 e Ed448 em certificados X.509, e bibliotecas como o OpenSSL geram essas folhas sem problema.
 
 O obstáculo reside no **ecossistema público de partes confiantes**. As normas de base do CA/Browser Forum e os programas de raiz da Mozilla, Google e Microsoft não autorizam a emissão e validação irrestrita de certificados TLS públicos com chaves Ed25519 para a Web geral. A imensa maioria dos navegadores web, clientes embutidos em hardwares legados e stacks TLS de linguagens de programação históricas foram construídos e testados para validar exclusivamente certificados RSA e curvas elípticas NIST (secp256r1/secp384r1).
 
@@ -487,7 +484,7 @@ Olha a impressionante equivalência funcional entre as opções do `ssh-keygen` 
 - O parâmetro de tempo `-V +52w` equivale à janela `Validity`.
 - O arquivo binário KRL (*Key Revocation List*) gerado por `ssh-keygen -k` equivale diretamente à CRL (*Certificate Revocation List*) gerada pelo `openssl ca -gencrl`.
 
-As fundações conceituais são rigorosamente as mesmas. O que muda radicalmente são os protocolos de transporte e os formatos de codificação.
+As fundações conceituais são as mesmas; mudam os protocolos de transporte e os formatos de codificação.
 
 ## Diagnóstico e Troubleshooting
 
@@ -605,7 +602,7 @@ error sem-san.crt: verification failed
 
 Mesmo que o certificado seja a própria raiz confiável (`-CAfile sem-san.crt`) e o Subject exiba explicitamente `CN = meu-servidor.local`, o validador moderno do OpenSSL (em conformidade rigorosa com a RFC 6125 e a RFC 9525) recusa a conexão com `error 62: Hostname mismatch`. 
 
-Para validação de hostnames em TLS, clientes modernos ignoram solenemente o campo Common Name. Se a identidade não constar expressamente em uma entrada `DNS:` ou `IP:` dentro do `subjectAltName`, a conexão é abortada sumariamente.
+Para validação de hostnames em TLS, clientes modernos ignoram o campo Common Name. Se a identidade não constar numa entrada `DNS:` ou `IP:` dentro do `subjectAltName`, a conexão é abortada na hora.
 
 *Para limpar os arquivos de teste: `rm -f sem-san.key sem-san.crt`.*
 
@@ -646,7 +643,7 @@ Na notação do comando, `d=3` indica o nível de profundidade na árvore (*dept
 
 **4. Prova Real do Par de Chaves (Key Matching)**
 
-Sabe aquele momento clássico em que alguém mexe no servidor, renomeia arquivos em `/etc/ssl/` e você precisa descobrir qual chave privada `.key` pertence a qual certificado `.crt`? Demonstre como comprovar matematicamente no terminal que uma chave privada e um certificado formam rigorosamente o mesmo par, sem precisar reiniciar o serviço web nem tentar na sorte.
+Sabe aquele momento clássico em que alguém mexe no servidor, renomeia arquivos em `/etc/ssl/` e você precisa descobrir qual chave privada `.key` pertence a qual certificado `.crt`? Demonstre como comprovar no terminal que uma chave privada e um certificado formam o mesmo par, sem precisar reiniciar o serviço web nem tentar na sorte.
 
 <details markdown="1">
 <summary>Ver resposta</summary>
@@ -700,7 +697,7 @@ Segundo a seção 4.2 da RFC 5280, a regra de criticidade é mandatória: se um 
 
 Extensões como `basicConstraints` e `keyUsage` precisam ser críticas para impedir desvios graves de segurança (por exemplo, impedir que um cliente trate uma CA intermediária com restrição `pathlen:0` como se ela tivesse poderes irrestritos para criar novas CAs filhas). 
 
-Já no caso do `subjectAltName`, historicamente a RFC 5280 permitia marcá-lo como não-crítico caso o certificado ainda mantivesse um `Subject Common Name` preenchido para compatibilidade com clientes antigos. Em certificados modernos onde o `Subject DN` é deixado vazio ou carrega apenas metadados organizacionais, o SAN DEVE ser marcado como crítico, forçando qualquer validador a honrar exclusivamente as identidades declaradas na lista de alternativas.
+Já no caso do `subjectAltName`, a RFC 5280 permitia marcá-lo como não-crítico quando o certificado ainda mantinha um `Subject Common Name` preenchido para clientes antigos. Em certificados modernos onde o `Subject DN` fica vazio ou carrega só metadados organizacionais, o SAN DEVE ser crítico, forçando o validador a honrar apenas as identidades da lista de alternativas.
 
 </details>
 

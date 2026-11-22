@@ -15,9 +15,9 @@ published: false
 
 No {% include post-ref.html slug="pki-fundamentos" text="primeiro capítulo desta série" %}, desossamos a teoria do X.509: entendemos a árvore genealógica das autoridades certificadoras, a gramática do ASN.1 por trás dos arquivos PEM, o zoológico de extensões e por que mandar a Root CA no bundle do seu servidor web é um atestado solene de desperdício de banda.
 
-Agora, o recreio acabou de vez. Chegou a hora de vestir o macacão de operador, abrir o terminal Linux e construir uma Infraestrutura de Chaves Públicas corporativa completa em duas camadas (Root offline e Intermediária operacional), utilizando rigorosamente os utilitários nativos do OpenSSL.
+O recreio acabou.
 
-Vamos emitir credenciais com Subject Alternative Names (SAN) para servidores, gerar crachás de acesso mútuo (mTLS) para a nossa equipe, instalar a âncora de confiança no sistema operacional e reproduzir em laboratório cada um dos erros clássicos de verificação que derrubam conexões em produção.
+Chegou a hora de abrir o terminal Linux e construir uma Infraestrutura de Chaves Públicas corporativa completa em duas camadas (Root offline e Intermediária operacional) usando só os utilitários nativos do OpenSSL: emitiremos certificados com SAN para servidores, crachás mTLS para a equipe, instalaremos a âncora no sistema operacional e reproduziremos os erros clássicos de verificação que derrubam produção.
 
 {% include toc.html %}
 
@@ -25,11 +25,11 @@ Vamos emitir credenciais com Subject Alternative Names (SAN) para servidores, ge
 
 Com a popularização massiva do Let's Encrypt e de gerenciadores automatizados de certificados (cert-manager, Caddy, Traefik), é legítimo perguntar: por que diabos alguém ainda precisa criar e operar sua própria Autoridade Certificadora privada?
 
-A resposta tem duas frentes: uma arquitetural e outra estritamente educacional.
+A resposta tem duas frentes: uma arquitetural e outra educacional.
 
-A primeira razão é que a Web PKI pública não atende (e nunca teve a intenção de atender) ao tráfego interno dos seus sistemas. Em maio de 2025, o Let's Encrypt encerrou formalmente o suporte à emissão de certificados com `clientAuth`[^1]. Certificados públicos existem para colocar o cadeado verde no navegador do usuário comum, validando nomes de domínio roteáveis publicamente. Eles não servem para colocar crachá de autenticação mútua (mTLS) entre a sua API e o seu banco de dados, nem para emitir certificados em redes internas sem DNS público exposto. Se você precisa de segurança de transporte em microsserviços, telemetria protegida no Kubernetes ou autenticação corporativa de operadores, a gestão da PKI privada é problema seu.
+Primeiro, a Web PKI pública não atende (e nunca pretendeu atender) ao tráfego interno dos seus sistemas. Em maio de 2025, o Let's Encrypt encerrou o suporte à emissão de certificados com `clientAuth`[^1]. Certificados públicos servem para colocar cadeado verde no navegador do usuário comum validando domínios roteáveis na internet, não para emitir crachá mTLS entre a sua API e o banco de dados em rede interna sem DNS público. Se você precisa de segurança de transporte em microsserviços, telemetria protegida no Kubernetes ou autenticação corporativa de operadores, a gestão da PKI privada é problema seu.
 
-A segunda razão é de sobrevivência profissional. No mundo corporativo de larga escala, você provavelmente usará ferramentas de automação como HashiCorp Vault, Smallstep (`step-ca`) ou CFSSL. Mas nenhuma dessas ferramentas reinventou a roda da criptografia: todas elas implementam exatamente a mesma máquina de estados, o mesmo controle de seriais e as mesmas regras de extensões X.509 que o utilitário nativo `openssl ca` gerencia. Quem só sabe apertar botão em painel web entra em pânico quando uma cadeia quebra; quem aprendeu a construir uma CA no braço com OpenSSL sabe exatamente em qual elo o cabo arrebentou e como consertar.
+Segundo, sobrevivência profissional. Em larga escala, você vai acabar usando HashiCorp Vault, Smallstep (`step-ca`) ou CFSSL. Nenhuma dessas ferramentas reinventou a criptografia: todas operam a mesma máquina de estados, controle de seriais e extensões X.509 que o `openssl ca` gerencia na mão. Quem só aperta botão em painel web trava quando uma cadeia quebra; quem montou uma CA no braço sabe em qual elo o cabo arrebentou e como consertar.
 
 ```mermaid
 flowchart TD
@@ -54,7 +54,7 @@ flowchart TD
     class Dev,QA success;
 ```
 
-A regra de ouro da nossa arquitetura é a segregação estrita: a Root CA emite apenas um único certificado na vida (o da Intermediária) e volta imediatamente para o cofre offline. Todas as emissões cotidianas de servidores e clientes são executadas exclusivamente pela Intermediária.
+A regra de ouro da nossa arquitetura é a segregação estrita: a Root CA emite um único certificado na vida (o da Intermediária) e volta na hora para o cofre offline. Toda emissão cotidiana de servidores e clientes fica sob responsabilidade exclusiva da Intermediária.
 
 ## A Arquitetura Física e os Arquivos de Configuração
 
@@ -304,7 +304,7 @@ Certificate:
     Signature Algorithm: ecdsa-with-SHA384
 ```
 
-Observe que `Issuer` e `Subject` são rigorosamente idênticos (o certificado é autoassinado). A extensão `basicConstraints` marca `CA:TRUE` como crítica, e `keyUsage` habilita explicitamente `Certificate Sign` e `CRL Sign`.
+Observe que `Issuer` e `Subject` são idênticos (o certificado é autoassinado). A extensão `basicConstraints` marca `CA:TRUE` como crítica, e `keyUsage` habilita `Certificate Sign` e `CRL Sign`.
 
 A partir deste instante, em um cenário de produção sério, a máquina onde essa chave reside teria sua placa de rede desativada ou seria desligada fisicamente, sendo guardada em cofre protegido até o dia em que uma nova intermediária precisasse ser assinada.
 
@@ -387,7 +387,7 @@ Com a autoridade intermediária operando, vamos emitir o certificado do nosso pr
 Para servidores e aplicações de ponta, utilizamos a curva **ECDSA P-256** (`prime256v1`): ela consome pouquíssima CPU durante o aperto de mão TLS e entrega excelente segurança de 128 bits.
 
 ### 1. Gerando a Chave Privada do Servidor
-Chaves de servidores web em produção geralmente não possuem senha em disco (para permitir que o serviço reinicie automaticamente sem intervenção humana após um reboot):
+Chaves de servidores web em produção costumam ficar sem senha em disco (para que o serviço suba sozinho após um reboot sem travar esperando digitação humana):
 
 ```bash
 $ openssl genpkey -algorithm EC -pkeyopt ec_paramgen_curve:P-256 \
@@ -741,7 +741,7 @@ Para fixar a construção e operação de autoridades certificadoras na prática
 
 **1. Emissão de Folha com Validade Ultracurta**
 
-O mercado e o CA/Browser Forum estão reduzindo drasticamente a validade dos certificados TLS. Como você configuraria e emitiria um certificado de servidor para `db-01.example.com` com validade de exatamente 48 horas utilizando o comando `openssl ca`?
+O mercado e o CA/Browser Forum vêm encurtando a validade dos certificados TLS. Como você configuraria e emitiria um certificado de servidor para `db-01.example.com` válido por exatas 48 horas usando `openssl ca`?
 
 <details markdown="1">
 <summary>Ver resposta</summary>
@@ -844,7 +844,7 @@ Para inspecionar:
 $ openssl pkcs7 -in intermediate/certs/php-01.p7b -print_certs -noout
 ```
 
-A diferença crucial é de segurança: o contêiner PKCS#7 (`.p7b` ou CMS) transporta **exclusivamente certificados públicos e cadeias**, sendo incapaz de armazenar chaves privadas. O PKCS#12 (`.p12`), por sua vez, é um contêiner seguro concebido especificamente para armazenar a chave privada do titular protegida por derivação de senha.
+A diferença é de segurança: o contêiner PKCS#7 (`.p7b` ou CMS) carrega **apenas certificados públicos e cadeias**, incapaz de guardar chaves privadas. Já o PKCS#12 (`.p12`) foi feito para armazenar a chave privada do titular protegida por derivação de senha.
 
 </details>
 
@@ -860,7 +860,7 @@ Adicione no `/etc/hosts`:
 127.0.0.1 php-01.example.com
 ```
 
-Como instalamos a `example-root.crt` em `/usr/local/share/ca-certificates/` no Passo 5, o parâmetro `--cacert` se torna completamente desnecessário. O `curl` confia no servidor automaticamente:
+Como instalamos a `example-root.crt` em `/usr/local/share/ca-certificates/` no Passo 5, o `--cacert` vira desnecessário: o `curl` confia no servidor sozinho:
 
 ```bash
 $ curl --cert intermediate/certs/joao.crt \
