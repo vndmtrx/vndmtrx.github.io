@@ -1,7 +1,7 @@
 # Roteiro Detalhado: Série Criptografia na Prática
 
 > [!TIP] Eficiência de Tokens
-> **NÃO leia o arquivo inteiro.** Ao redigir ou revisar uma parte específica, consulte exclusivamente o bloco correspondente utilizando `view_file` com slice (`StartLine`/`EndLine`).
+> **NÃO leia o arquivo inteiro.** Ao redigir ou revisar uma parte específica, consulte exclusivamente o bloco correspondente por intervalo de linhas.
 
 ---
 

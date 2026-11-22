@@ -19,7 +19,7 @@ Sequências estruturadas de chapéus para finalidades específicas. Toda sequên
 ---
 
 ## 3. ⚡ Feedback Rápido
-* **Finalidade:** Revisão rápida e cirúrgica de alterações pontuais, decisões imediatas ou entregas parciais.
+* **Finalidade:** Revisão rápida e objetiva de alterações pontuais, decisões imediatas ou entregas parciais.
 * **Sequência:** `🔵 Azul` ➔ `⚫ Preto` ➔ `🟢 Verde` ➔ `🔵 Azul`
 * **Foco:** Ataque direto aos riscos e falhas (Preto), seguido imediatamente pela proposta de simplificação (Verde).
 

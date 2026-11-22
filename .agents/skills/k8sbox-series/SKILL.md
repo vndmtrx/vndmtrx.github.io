@@ -1,16 +1,16 @@
 ---
 name: k8sbox-series
 description: >
-  Convenções, metadados e diretrizes da série "Kubernetes in a Box" (25 posts) do blog vndmtrx.github.io. Use quando o usuário pedir para escrever, rascunhar ou revisar posts desta série sobre infraestrutura e Kubernetes the hard way.
+  Convenções, metadados e roteiro da série "Kubernetes in a Box" (25 posts, Kubernetes the hard way com Ansible) no blog vndmtrx.github.io. Ative ao escrever, rascunhar ou revisar posts desta série.
 ---
 
 # Skill: Série Kubernetes in a Box
 
-Diretrizes técnicas e estruturais para os posts da série **Kubernetes in a Box**, baseada no repositório parceiro [vndmtrx/k8s-in-a-box](https://github.com/vndmtrx/k8s-in-a-box).
+Herda integralmente voz, antipadrões, ritmo, invariantes e validação (`scripts/lint_post.py`) de [blog-posts](../blog-posts/SKILL.md). Baseada no repositório parceiro [vndmtrx/k8s-in-a-box](https://github.com/vndmtrx/k8s-in-a-box).
 
 ---
 
-## 1. Convenções Editoriais da Série
+## 1. Convenções da Série
 
 - **Front Matter Obrigatório:**
   ```yaml
@@ -20,15 +20,15 @@ Diretrizes técnicas e estruturais para os posts da série **Kubernetes in a Box
   subtitle: "[Tagline técnica sobre o componente abordado]"
   tags: [Kubernetes, Ansible, DevOps, Infraestrutura, Linux]
   ```
-- **Seção de Diagnóstico Obrigatória:** Todo post deve conter uma seção `## Diagnóstico e Troubleshooting` com comandos reais de validação (`etcdctl`, `kubectl`, `crictl`, `openssl`, `sysctl`).
-- **Sem Seção de Exercícios:** Esta série NÃO utiliza a seção `## Exercícios`. O foco prático e de fixação é a seção obrigatória `## Diagnóstico e Troubleshooting` e o laboratório em `vndmtrx/k8s-in-a-box`.
-- **Repositório Parceiro:** Referenciar tasks/roles Ansible correspondentes em `vndmtrx/k8s-in-a-box`.
+- **Seção de Diagnóstico Obrigatória:** Todo post exige `## Diagnóstico e Troubleshooting` com comandos reais de validação (`etcdctl`, `kubectl`, `crictl`, `openssl`, `sysctl`).
+- **Sem Exercícios:** Esta série **não** usa `## Exercícios`. A fixação prática acontece em `## Diagnóstico e Troubleshooting` e no laboratório em `vndmtrx/k8s-in-a-box`.
+- **Repositório Parceiro:** Referencie sempre as tasks/roles Ansible correspondentes na branch principal de `vndmtrx/k8s-in-a-box`.
 
 ---
 
-## 2. Roteiro e Ementa sob Demanda
+## 2. Roteiro sob Demanda
 
-O roteiro detalhado dos 25 posts (Cluster Base, Integração, Operações e Extras) está em [references/roteiro.md](references/roteiro.md).
+O roteiro dos 25 posts (Cluster Base, Integração, Operações e Extras) está em [references/roteiro.md](references/roteiro.md).
 
-> [!TIP] Eficiência de Tokens
-> **NÃO leia o roteiro inteiro.** Ao redigir ou revisar a Parte X, consulte exclusivamente o bloco da Parte X em `references/roteiro.md` utilizando `view_file` com slice de linhas (`StartLine`/`EndLine`).
+> [!TIP] Eficiência de Tokens e Anti-Bleed
+> **Não leia o roteiro inteiro.** Inspecione apenas o intervalo de linhas da Parte X em `references/roteiro.md` e converta os tópicos do roteiro em narrativa técnica (sem copiar listas simétricas para o post).

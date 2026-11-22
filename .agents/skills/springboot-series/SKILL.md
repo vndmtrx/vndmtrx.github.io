@@ -1,16 +1,16 @@
 ---
 name: springboot-series
 description: >
-  Convenções, metadados e stack para a série "Spring Boot Tutorial" do blog vndmtrx.github.io. Use quando o usuário pedir para escrever, rascunhar ou revisar posts especificamente desta série.
+  Convenções, metadados, stack e roteiro da série "Spring Boot Tutorial" (17 partes, tarefas-api) no blog vndmtrx.github.io. Ative ao escrever, rascunhar ou revisar posts desta série.
 ---
 
 # Skill: Série Spring Boot Tutorial
 
-Diretrizes técnicas e convenções para os posts da série **Spring Boot Tutorial** (`tarefas-api`) no blog `vndmtrx.github.io`.
+Herda integralmente voz, antipadrões, ritmo, invariantes e validação (`scripts/lint_post.py`) de [blog-posts](../blog-posts/SKILL.md).
 
 ---
 
-## 1. Convenções Editoriais da Série
+## 1. Convenções da Série
 
 - **Front Matter Obrigatório:**
   ```yaml
@@ -20,20 +20,19 @@ Diretrizes técnicas e convenções para os posts da série **Spring Boot Tutori
   subtitle: "[Tagline técnica marcante]"
   tags: [Spring Boot, Java, Backend, DevOps, Infraestrutura, Arquitetura]
   ```
-- **Página de Coleção / Trilha:** Cadastrada em `tutoriais/spring-boot.md` (`/tutoriais/spring-boot/`) e metadados centralizados em `_data/series.yml`.
-- **Repositório Parceiro:** `[vndmtrx/estudos_springboot](https://github.com/vndmtrx/estudos_springboot)` organizado por capítulos (`capitulo-02/`, `capitulo-03/`, etc.).
-- **Callout de Abertura:**
+- **Trilha e Repositório:** Página em `tutoriais/spring-boot.md` (`/tutoriais/spring-boot/`), metadados em `_data/series.yml` e código por capítulo (`capitulo-02/`, `capitulo-03/`, ...) em [vndmtrx/estudos_springboot](https://github.com/vndmtrx/estudos_springboot).
+- **Callout de Abertura (na introdução, antes do primeiro `##`):**
   ```markdown
   > [!NOTE] Nota da Série
   > Este post faz parte da série **"Spring Boot Tutorial"**, onde construímos do zero uma API backend de produção com **Spring Boot**, explorando boas práticas de arquitetura, contratos, persistência, resiliência, observabilidade e nuvem. O código-fonte de apoio e os projetos de cada capítulo estão organizados no repositório parceiro [vndmtrx/estudos_springboot](https://github.com/vndmtrx/estudos_springboot).
   ```
-- **Override de Exercícios:** Esta série faz *override* da regra geral. Posts práticos e tutoriais da série incluem a seção `## Exercícios` com desafios de código e testes complementares para fixação na `tarefas-api`, seguindo o padrão de [formatacao-avancada.md](references/formatacao-avancada.md).
+- **Override de Exercícios (Obrigatório):** Posts práticos da série incluem `## Exercícios` com desafios de código e testes na `tarefas-api`, seguindo [formatacao-avancada.md](../blog-posts/references/formatacao-avancada.md).
 
 ---
 
-## 2. Roteiro e Ementa sob Demanda
+## 2. Roteiro sob Demanda
 
-O roteiro completo com as 17 partes está em [references/roteiro.md](references/roteiro.md).
+O roteiro das 17 partes está em [references/roteiro.md](references/roteiro.md).
 
-> [!TIP] Eficiência de Tokens
-> **NÃO leia o roteiro inteiro.** Ao trabalhar no capítulo X, inspecione exclusivamente a seção da Parte X em `references/roteiro.md` utilizando `view_file` com `StartLine` e `EndLine`.
+> [!TIP] Eficiência de Tokens e Anti-Bleed
+> **Não leia o roteiro inteiro.** Inspecione apenas o intervalo de linhas da Parte X em `references/roteiro.md` e converta os tópicos do roteiro em prosa fluida (sem copiar listas simétricas `- **Negrito:**` para o post).
