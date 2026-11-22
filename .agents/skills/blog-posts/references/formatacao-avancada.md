@@ -7,7 +7,7 @@ Este documento serve como referência sob demanda para a skill `blog-posts` do b
 ## 1. Padrão Estrutural de Exercícios
 
 > [!IMPORTANT] Regra de Inclusão
-> **Exercícios NÃO são incluídos por padrão.** O assistente deve sempre **perguntar ao autor** se o post terá exercícios antes de criá-los, **a não ser** que a skill da série correspondente faça um *override* explícito desta regra (como na série `engsoftware-series`, onde são obrigatórios pela ementa).
+> **Exercícios NÃO são incluídos por padrão.** O assistente deve sempre **perguntar ao autor** se o post terá exercícios antes de criá-los, **a não ser** que a skill da série correspondente faça um *override* explícito desta regra.
 
 Quando aprovados pelo autor ou exigidos pela skill da série, a montagem dos exercícios segue regras estritas para manter a consistência didática:
 
