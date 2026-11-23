@@ -5,7 +5,7 @@ subtitle: "Do terminal vazio ao cluster virtual em duas placas de rede"
 author:
   - "Eduardo N. S. R."
 date: 2026-09-07 11:33:00 GMT-3
-modified_date: 2026-09-23 14:30:00 GMT-3
+modified_date: 2026-11-23 11:23:16 GMT-3
 permalink: /posts/k8sbox-ferramentas-ambiente/
 tags: [Kubernetes, Ansible, DevOps, Infraestrutura]
 series: Kubernetes in a Box
@@ -25,7 +25,7 @@ Se você já perdeu horas tentando entender por que as VMs do Vagrant conseguiam
 
 ## O que você precisa ter instalado
 
-Antes de qualquer coisa, seu hospedeiro Linux precisa de cinco ferramentas. Essas são as únicas instalações manuais que você vai fazer em todo o processo: tudo o que acontece *dentro* das VMs (chaves SSH, configuração de rede, pacotes, provisionamento) é gerenciado automaticamente pelo Vagrantfile e pelo Ansible quando você roda `make up`.
+Antes de qualquer coisa, seu hospedeiro Linux precisa de cinco ferramentas. Essas são as únicas instalações manuais que você vai fazer em todo o processo: tudo o que acontece *dentro* das VMs (chaves SSH, configuração de rede, pacotes, provisionamento) é gerenciado automaticamente pelo Vagrantfile e pelo Ansible [^9] quando você roda `make up`.
 
 | Ferramenta | Função no Projeto |
 |:---|:---|
@@ -35,7 +35,7 @@ Antes de qualquer coisa, seu hospedeiro Linux precisa de cinco ferramentas. Essa
 | **vagrant-libvirt** | Plugin que conecta o Vagrant ao KVM/libvirt |
 | **Ansible** | Motor de automação declarativa |
 
-A forma de instalar cada uma varia conforme a sua distribuição, então não vou prescrever comandos aqui. O importante é que todas estejam disponíveis no `PATH` do seu usuário. Uma coisa que pode pegar desprevenido: o KVM precisa de permissões de grupo. Sem elas, o Vagrant vai pedir senha de `root` a cada operação ou simplesmente falhar silenciosamente. Garanta que o seu usuário pertence aos grupos `libvirt` e `kvm` (e faça logout/login depois de adicioná-los).
+A forma de instalar cada uma varia conforme a sua distribuição, então não vou prescrever comandos aqui. O importante é que todas estejam no `PATH` do seu usuário. Uma pegadinha clássica: o KVM exige permissões de grupo. Sem elas, o Vagrant pede senha de `root` a cada passo ou falha em silêncio. Garanta que o seu usuário pertence aos grupos `libvirt` e `kvm` (e faça logout/login depois de adicioná-los).
 
 > [!TIP] Dica
 > O projeto inclui o comando `make check-deps` que verifica todas essas dependências de uma vez. Ele testa se o Ansible, Vagrant, KVM, libvirt e o plugin vagrant-libvirt estão instalados e com as permissões corretas. É o primeiro comando que você deveria rodar depois de clonar o repositório.
@@ -68,7 +68,7 @@ A decisão de usar LibVirt [^5] com KVM [^3] em vez do VirtualBox foi, antes de 
 
 Sim, o VirtualBox também usa um módulo de kernel (`vboxdrv`) para acessar as extensões de virtualização do processador, então não é uma questão de "um usa hardware e o outro não". Ambos fazem virtualização assistida por hardware. Mas o módulo do VirtualBox é mantido fora da árvore do kernel, distribuído pela Oracle sob uma licença que mistura GPLv3 com componentes proprietários no *Extension Pack*, e precisa ser recompilado a cada atualização de kernel. Com KVM, esse atrito simplesmente não existe.
 
-Na prática, pra um cluster Kubernetes com cinco a nove VMs rodando simultaneamente e disputando CPU, memória e disco, tanto KVM quanto VirtualBox vão entregar performance razoável. A diferença real é filosófica e operacional: com KVM você está usando a infraestrutura nativa do seu sistema operacional, sem dependências externas.
+Na prática, pra cinco a nove VMs rodando juntas, a performance empata; o diferencial do KVM é usar infraestrutura nativa do Linux sem penduricalho externo.
 
 O Vagrant [^4] funciona como uma camada de abstração sobre o hipervisor. Ele não cria VMs sozinho: ele precisa de um *provider* que saiba efetivamente gerenciar o ciclo de vida das máquinas. O plugin `vagrant-libvirt` [^6] faz essa ponte, traduzindo as instruções do `Vagrantfile` para chamadas à API do libvirt, que por sua vez comanda o KVM.
 
@@ -76,7 +76,7 @@ O Vagrant [^4] funciona como uma camada de abstração sobre o hipervisor. Ele n
 
 Para as máquinas virtuais do laboratório, escolhemos o **AlmaLinux 10** [^2] como sistema operacional base. Essa escolha não é um capricho estético.
 
-O AlmaLinux é uma distribuição binariamente compatível com o Red Hat Enterprise Linux (RHEL), o que significa que tudo o que funciona no RHEL funciona aqui sem adaptação. Isso é relevante porque a maior parte da documentação corporativa de Kubernetes e os guias de hardening de segurança assumem um ecossistema RHEL-*like* (CentOS, Rocky, AlmaLinux). Do ponto de vista prático, a versão 10 traz o NetworkManager como gerenciador de rede padrão com o `nmcli` já integrado, `systemd` atualizado, e *boxes* oficiais para Vagrant publicados e mantidos ativamente no Vagrant Cloud.
+O AlmaLinux é compatível em nível binário com o Red Hat Enterprise Linux (RHEL), então o que roda no RHEL roda aqui sem adaptação. Isso pesa porque boa parte da documentação corporativa de Kubernetes e dos guias de hardening assume um ecossistema RHEL-*like* (CentOS, Rocky, AlmaLinux). Na prática, a versão 10 traz o NetworkManager padrão com `nmcli` integrado, `systemd` atualizado e *boxes* oficiais para Vagrant mantidos no Vagrant Cloud.
 
 > [!WARNING] Atenção
 > A série e o projeto estão atualmente travados na versão **AlmaLinux 10**. Mudanças futuras de versão do sistema operacional podem exigir ajustes no Vagrantfile e nas *roles* do Ansible, especialmente na configuração de rede e nos pacotes disponíveis nos repositórios. Se você estiver acompanhando a série em um momento posterior, verifique o repositório do projeto para a versão atual suportada.
@@ -85,7 +85,7 @@ Se você preferir usar outra distribuição (Ubuntu, Debian, openSUSE), o concei
 
 ## O Vagrantfile dissecado
 
-Agora vamos ao arquivo que orquestra toda a criação das máquinas virtuais. O `Vagrantfile` do k8s-in-a-box não é um arquivo estático com meia dúzia de VMs *hardcoded*. Ele é um programa Ruby que lê dinamicamente o inventário do Ansible e constrói as VMs a partir das definições que encontra ali.
+Agora vamos ao arquivo que orquestra toda a criação das máquinas virtuais. O `Vagrantfile` do k8s-in-a-box [^1] não é um arquivo estático com meia dúzia de VMs *hardcoded*. Ele é um programa Ruby que lê dinamicamente o inventário do Ansible e constrói as VMs a partir das definições que encontra ali.
 
 ### Leitura dinâmica do inventário
 
@@ -113,11 +113,11 @@ grupos.each do |grupo, dados|
 end
 ```
 
-*O Vagrant carrega o arquivo `inventario/hosts.yml` (que é um symlink para a topologia ativa), percorre todos os grupos do inventário e extrai IP, memória, CPUs e a flag de autostart de cada host.*
+*O Vagrant carrega `inventario/hosts.yml` (symlink para a topologia ativa) e extrai IP, RAM, CPUs e autostart de cada host.*
 
 A beleza desse mecanismo é que o Vagrantfile nunca precisa ser editado. Quer adicionar um worker? Bota no inventário YAML. Quer trocar a topologia inteira? Muda o symlink. A mesma lógica em Ruby vai gerar as VMs corretas independente de quantas máquinas estejam definidas no inventário.
 
-O hash `nodes` resultante é um dicionário simples onde a chave é o nome da VM e o valor contém as especificações de hardware. Pra topologia `mini`, por exemplo, ele vai conter seis entradas: `loadbalancer1`, `nfs1`, `manager1`, `worker1`, `worker2` e `kubox`.
+O hash `nodes` resultante guarda cada VM com suas especificações de hardware. Na topologia `mini`, por exemplo, nascem seis entradas: `loadbalancer1`, `nfs1`, `manager1`, `worker1`, `worker2` e `kubox`.
 
 ### Geração automática de chaves SSH
 
@@ -134,7 +134,7 @@ end
 
 *Gera uma chave ed25519 sem passphrase, apenas se ela não existir e se o comando não for `vagrant destroy`.*
 
-Durante a criação de cada VM, essa chave pública é automaticamente injetada no `authorized_keys` do usuário `vagrant`. É com ela que o Ansible vai se conectar às máquinas depois, sem que você precise copiar chaves manualmente, editar `authorized_keys` ou configurar qualquer coisa. O `config.ssh.insert_key = false` logo adiante desativa a inserção da chave padrão do Vagrant, garantindo que a única chave de acesso seja a do projeto. O arquivo `ssh_config` na raiz do repositório já aponta para essa chave e desabilita a verificação de *host keys*, fechando o ciclo: Vagrant gera, injeta e o Ansible usa.
+Durante a criação de cada VM, essa chave pública entra direto no `authorized_keys` do usuário `vagrant`. É com ela que o Ansible se conecta depois, sem copiar chave na mão nem editar arquivo nenhum. O `config.ssh.insert_key = false` logo adiante desativa a chave padrão do Vagrant, garantindo que a única chave aceita seja a do projeto. O `ssh_config` na raiz já aponta para ela e desabilita verificação de *host keys*, fechando o ciclo: Vagrant gera, injeta e o Ansible usa.
 
 E quando o cluster é destruído? Um *trigger* pós-destruição cuida da limpeza:
 
@@ -175,7 +175,7 @@ end
 
 *Configuração do hipervisor: KVM com virtio, CPU passthrough em modo host-model, e rede de gerenciamento do Vagrant em `192.168.250.0/24` sem NAT.*
 
-Duas decisões chamam atenção aqui. Primeiro, o `cpu_mode = "host-model"` expõe os *flags* da CPU do hospedeiro diretamente para as VMs, o que é essencial para o eBPF do Cilium funcionar corretamente. Segundo, a rede de gerenciamento do Vagrant (`192.168.250.0/24`) é configurada com `mode = "none"`, sem NAT e sem DHCP. Essa é a rede `eth0` que o Vagrant usa internamente pra comunicação via SSH. O cluster não usa essa rede pra nada.
+Duas decisões chamam atenção aqui. Primeiro, `cpu_mode = "host-model"` expõe os *flags* da CPU do hospedeiro direto para as VMs, requisito para o eBPF do Cilium rodar sem tropeço. Segundo, a rede de gerenciamento do Vagrant (`192.168.250.0/24`) fica com `mode = "none"`, sem NAT nem DHCP: é a `eth0` que o Vagrant reserva para o SSH interno, e o cluster não encosta nela.
 
 > [!NOTE] Pastas Compartilhadas Desativadas
 > Por padrão, o Vagrant tenta montar o diretório do projeto dentro de cada VM em `/vagrant` usando 9p, virtiofs ou NFS. No ecossistema KVM/libvirt, isso costuma ser uma fonte clássica de lentidão e erros de montagem caso o host não tenha os módulos correspondentes configurados. Como o nosso laboratório é 100% provisionado remotamente pelo Ansible via SSH, desativamos essa sincronização explicitamente com `config.vm.synced_folder "./", "/vagrant", disabled: true`. Menos atrito, boot mais veloz e zero dependências de filesystem compartilhado.
@@ -229,7 +229,7 @@ A `eth1` é a rede privada `172.24.0.0/24`, que é o verdadeiro sistema circulat
 
 ### A guerra dos gateways via nmcli
 
-Aqui entra o trecho mais importante do Vagrantfile: o provisionamento de rede via shell que resolve a prioridade entre as interfaces. Esse script foi resultado de bastante experimentação, especialmente na migração do AlmaLinux 9 para o 10, onde o comportamento do NetworkManager [^7] mudou significativamente.
+Aqui entra o trecho mais importante do Vagrantfile: o provisionamento de rede via shell que resolve a prioridade entre as interfaces. Esse script saiu de bastante experimentação, sobretudo na migração do AlmaLinux 9 para o 10, onde o comportamento do NetworkManager [^7] mudou de cara.
 
 No AlmaLinux 9, os nomes das conexões eram previsíveis (`eth0`, `System eth1`). Na versão 10, o NetworkManager passou a nomear as conexões de forma genérica (`Wired connection 1`, `Wired connection 2`), o que quebrou todas as referências estáticas que eu tinha no Vagrantfile. A solução foi implementar uma detecção dinâmica dos nomes das conexões por dispositivo:
 
@@ -304,14 +304,14 @@ restorecon -R /etc/NetworkManager/system-connections/
 
 *Coloca o SELinux em modo permissivo e restaura os rótulos dos arquivos de conexão do NetworkManager criados pelo Vagrant.*
 
-O Vagrant cria arquivos de configuração de rede dentro da VM durante o processo de boot, mas esses arquivos nascem sem os rótulos de SELinux corretos. O NetworkManager simplesmente recusa processar conexões com rótulos inválidos quando o SELinux está ativo. Esse `restorecon` corrige o problema silenciosamente.
+O Vagrant cria arquivos de configuração de rede dentro da VM durante o boot, mas esses arquivos nascem sem os rótulos de SELinux corretos. Com SELinux ativo, o NetworkManager recusa conexões com rótulo inválido; esse `restorecon` conserta o estrago em silêncio.
 
 > [!NOTE] Mas Dudu, você não disse que não desabilitava o SELinux?!
 > Calma, jovem padawan, respira. A gente **não** desabilitou o SELinux. Desabilitar (`SELINUX=disabled`) é o que tutorial preguiçoso de internet faz para varrer sujeira pra baixo do tapete e fingir que segurança não existe. O que fizemos aqui foi colocar em modo permissivo (`permissive`). A diferença não é sutil: no modo permissivo o kernel não bloqueia as ações, mas continua de olhos bem abertos, auditando rigorosamente cada chamada no `audit.log` e dedurando exatamente o que o Kubernetes, o Kubelet ou o CNI fizerem que não está nas regras implementadas. O importante na engenharia de verdade não é desligar cegamente, mas botar no permissivo, ver o que está disparando de alertas, acomodar tudo nas regras e aí então fechar as portas virando a chave para *enforcing*. Teremos um post dedicado exclusivamente a compilar essa política customizada (`k8s-custom-selinux.te`) quando instalarmos o Kubelet.
 
 ## O sistema de topologias: três clusters, um repositório
 
-Na Parte 1, apresentamos as três configurações de cluster disponíveis: `nano`, `mini` e `completo`. Agora vamos ver como esse sistema funciona por dentro.
+Na Parte 1 [^10], apresentamos as três configurações de cluster disponíveis: `nano`, `mini` e `completo`. Agora vamos ver como esse sistema funciona por dentro.
 
 A engrenagem é simples e elegante: um arquivo de configuração (`config.mk`), um diretório com os inventários pré-definidos (`configs/`) e um symlink que conecta os dois.
 

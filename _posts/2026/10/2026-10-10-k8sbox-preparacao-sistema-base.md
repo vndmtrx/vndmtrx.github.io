@@ -5,6 +5,7 @@ subtitle: "Módulos de kernel, sysctl, swap e a fundação do Linux antes de qua
 author:
   - "Eduardo N. S. R."
 date: 2026-10-10 23:51:00 GMT-3
+modified_date: 2026-11-23 11:23:16 GMT-3
 permalink: /posts/k8sbox-preparacao-sistema-base/
 tags: [Kubernetes, Ansible, DevOps, Infraestrutura, Linux]
 series: Kubernetes in a Box
@@ -14,7 +15,7 @@ mermaid: true
 
 Uma VM AlmaLinux recém-saída do `vagrant up` é um ótimo servidor genérico: quieta, previsível e configurada para aplicações comuns. Ela não repassa pacotes entre interfaces, não deixa o firewall inspecionar o tráfego das pontes de rede, convive com swap sem remorso e nem sequer conhece os nomes das outras máquinas do laboratório. Para quem vai virar nó de Kubernetes, cada uma dessas características é um problema que precisa ser resolvido.
 
-Neste post, vamos cobrir exatamente essa lacuna: tudo o que precisa mudar no sistema operacional de fábrica antes que o primeiro binário do Kubernetes encoste no disco. No `kubeadm`, essa etapa é mascarada como uma simples checagem de *preflight*. Aqui, sem instaladores automáticos, nós assumimos essa responsabilidade e deixamos o Ansible preparar cada nó de forma repetível, previsível e sem surpresas.
+Aqui cobrimos essa lacuna: tudo o que precisa mudar no sistema operacional de fábrica antes que o primeiro binário do Kubernetes encoste no disco. No `kubeadm`, essa etapa é mascarada como uma simples checagem de *preflight*. Sem instaladores automáticos, nós assumimos essa responsabilidade e deixamos o Ansible preparar cada nó de forma repetível, previsível e sem surpresas.
 
 > [!NOTE] Nota da Série e Contexto de Laboratório
 > Este post faz parte da série **"Kubernetes in a Box"**, onde dissecamos e construímos, do zero e de forma totalmente reproduzível via Ansible, um cluster Kubernetes completo, com alta disponibilidade, armazenamento persistente, rede moderna e observabilidade. Todo o código do projeto está disponível no repositório parceiro [vndmtrx/k8s-in-a-box](https://github.com/vndmtrx/k8s-in-a-box).
@@ -109,7 +110,7 @@ Não existe servidor de DNS no laboratório. As VMs enxergam a internet pela `et
 {% raw %}{% endfor %}{% endraw %}
 ```
 
-O IP e o FQDN de cada máquina vêm de `ansible_host` e `fqdn`, exatamente os campos que você viu no `hosts-*.yml` da Parte 3. No topologia `mini`, o arquivo renderizado fica assim (a ordem das últimas linhas pode variar):
+O IP e o FQDN de cada máquina vêm de `ansible_host` e `fqdn`, exatamente os campos que você viu no `hosts-*.yml` da Parte 3 [^2]. No topologia `mini`, o arquivo renderizado fica assim (a ordem das últimas linhas pode variar):
 
 ```
 # Hostname da máquina
@@ -139,7 +140,7 @@ Para fechar a `infra-sistema`, instalamos o [Tailspin](https://github.com/bensad
 $ journalctl -u sshd --no-pager | tspin
 ```
 
-O binário é baixado no host pela role de artefatos e descompactado em `/usr/local/bin` com verificação de idempotência para não baixar novamente se já existir. Diferente dos binários do Kubernetes, aqui usamos a URL `latest` sem checksum rígido — concessão aceitável para uma ferramenta de conveniência em lab local descartável.
+O binário é baixado no host pela role de artefatos e descompactado em `/usr/local/bin` com verificação de idempotência para não baixar novamente se já existir. Diferente dos binários do Kubernetes, aqui usamos a URL `latest` sem checksum rígido, concessão aceitável para uma ferramenta de conveniência em lab local descartável.
 
 ## A role k8s-cluster-base: transformando uma VM em nó
 
@@ -278,9 +279,7 @@ Essa é a regra mais famosa da lista, e quase sempre repetida sem explicação. 
 
 Agora some swap à equação:
 
-* **O limite deixa de ser parede.** Um pod acima do teto pode ter páginas empurradas para o disco, em vez de morrer. Em vez de uma queda rápida, você ganha uma lentidão arrastada, difícil de enxergar.
-* **O agendador planeja com RAM.** O *scheduler* decide onde encaixar um pod somando `requests` de memória. Se o nó empurra páginas para o disco por baixo dos panos, o plano de encaixe vira ficção.
-* **O nó não se defende.** Os limiares de despejo (*eviction*) do kubelet olham para a memória disponível. Com swap, o nó pode ficar patinando no disco em vez de despejar pods a tempo.
+Com swap ativo, o limite de memória deixa de ser parede: em vez de cair rápido, um pod acima do teto empurra páginas para o disco e vira lentidão arrastada. Pior: o *scheduler* planeja encaixe somando `requests` de RAM (o plano vira ficção se o nó pagina em disco), e os limiares de *eviction* do kubelet perdem a reação, deixando o nó patinar no disco em vez de despejar pods a tempo.
 
 Por padrão, o kubelet nem tenta conviver com isso: ele recusa iniciar se detectar swap ativo. A configuração `failSwapOn` [^7] tem como valor padrão `true`, e o template [kubelet-config.yml.j2](https://github.com/vndmtrx/k8s-in-a-box/blob/main/ansible/k8s-kubelet/templates/kubelet-config.yml.j2) do projeto mantém essa diretriz intacta. Se o swap estiver ligado quando o kubelet subir, ele simplesmente não inicializa.
 
@@ -371,7 +370,7 @@ flowchart TD
     class ON success;
 ```
 
-Sem o módulo, o Pod B responde diretamente ao Pod A pela *bridge*, sem que ninguém desfaça a tradução de endereço feita na ida. O Pod A espera uma resposta do IP do Service e recebe uma vinda do IP do Pod B. Descarta. A chamada simplesmente trava, e só quando o Service tem um *endpoint* no mesmo nó que quem chama. É o tipo de bug que "funciona na minha máquina" e quebra em produção quando o escalonador muda um pod de lugar.
+Sem o módulo, o Pod B responde direto ao Pod A pela *bridge*, sem que ninguém desfaça a tradução de endereço feita na ida. O Pod A espera resposta do IP do Service, recebe um pacote do IP do Pod B e descarta. A chamada trava, e só quando o Service tem um *endpoint* no mesmo nó que quem chama. É o tipo de bug que "funciona na minha máquina" e quebra em produção quando o escalonador muda um pod de lugar.
 
 Também por isso a ordem das tasks importa: as chaves `net.bridge.*` só existem no `/proc/sys` depois que o módulo `br_netfilter` é carregado. Rode o `sysctl` antes e o kernel responde `cannot stat /proc/sys/net/bridge/bridge-nf-call-iptables: No such file or directory`.
 

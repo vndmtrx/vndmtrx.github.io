@@ -5,7 +5,7 @@ subtitle: "Por que construir um cluster Kubernetes na mão?"
 author:
   - "Eduardo N. S. R."
 date: 2026-08-15 14:30:00 GMT-3
-modified_date: 2026-09-23 14:30:00 GMT-3
+modified_date: 2026-11-23 11:23:16 GMT-3
 permalink: /posts/k8sbox-visao-geral/
 tags: [Kubernetes, Ansible, DevOps, Infraestrutura]
 series: Kubernetes in a Box
@@ -19,9 +19,9 @@ Se você trabalha com infraestrutura, nuvem ou DevOps, as chances de você já t
 >
 > **Aviso de escopo:** as decisões de arquitetura e parâmetros deste projeto foram pensadas sob medida para a nossa realidade de laboratório local em estações Linux com Vagrant e KVM/Libvirt. Elas priorizam aprendizado profundo e reprodutibilidade rápida sobre convenções corporativas de produção. O cluster foi originalmente projetado em versões anteriores e recentemente atualizado para o **Kubernetes v1.37.0**.
 
-Há algum tempo, eu mantinha um projeto de estudos chamado `vagrant-k8s-cluster` [^2], onde eu subia máquinas virtuais locais e deixava o `kubeadm` fazer a mágica dele. Funcionava perfeitamente, mas aquilo sempre me deixava com uma pulga atrás da orelha. O `kubeadm` gerava dezenas de certificados, subia um `etcd`, configurava o *control plane*, gerava *kubeconfigs*, e no final me entregava um comando de *join*. Mas o que exatamente estava acontecendo ali dentro? Como os certificados se conversavam? Como o *control plane* encontrava o `etcd`? Como o nó decidia quem tinha autoridade para fazer o quê?
+Há algum tempo, eu mantinha um projeto de estudos chamado `vagrant-k8s-cluster` [^2], subindo VMs locais e deixando o `kubeadm` fazer a mágica dele. Funcionava bem, mas deixava uma pulga atrás da orelha: o `kubeadm` gerava dezenas de certificados, subia um `etcd`, configurava o *control plane*, gerava *kubeconfigs* e entregava um comando de *join*. Mas o que acontecia lá dentro? Como os certificados conversavam? Como o *control plane* achava o `etcd`? Como o nó decidia quem mandava em quê?
 
-A resposta para essas perguntas não está nos instaladores automáticos. Ela está em abrir a caixa preta e montar o quebra-cabeça peça por peça. Foi assim que nasceu o projeto **k8s-in-a-box** [^1]: um laboratório estruturado para construir um cluster Kubernetes seguindo a cartilha do *Kubernetes The Hard Way* [^3], mas com uma diferença crucial. Em vez de colar comandos gigantescos no terminal até os dedos doerem e nunca mais conseguir reproduzir o ambiente, automatizamos cada milímetro do processo com **Ansible** e **Vagrant**.
+Instaladores automáticos escondem essas respostas; para enxergar tudo, só abrindo a caixa preta e montando peça por peça. Foi assim que nasceu o **k8s-in-a-box** [^1]: um laboratório seguindo a cartilha do *Kubernetes The Hard Way* [^3], sem colar comandos gigantes até os dedos doerem, automatizando cada passo com **Ansible** e **Vagrant**.
 
 A proposta aqui é construir o conhecimento de forma estritamente progressiva. Vamos começar do hardware virtual até chegar num cluster completo, seguro e validado pelo teste de conformidade oficial da CNCF [^6].
 
@@ -121,11 +121,11 @@ Você escolhe o tamanho do cluster que cabe no seu hardware e o projeto se adapt
 
 Ao longo do desenvolvimento do projeto, várias decisões técnicas foram tomadas para aproximar o laboratório das práticas modernas de engenharia, sem abrir mão do aprendizado artesanal:
 
-* **Control Plane via Static Pods** [^5]: em versões anteriores, o projeto instalava cada componente do *control plane* como um serviço nativo do sistema operacional gerenciado pelo `systemd`. Migramos essa arquitetura para *Static Pods* gerenciados diretamente pelo `kubelet` local. Isso espelha a arquitetura de instaladores consolidados e traz resiliência automática ao ciclo de vida dos componentes.
-* **SELinux ativo com política customizada**: a esmagadora maioria dos tutoriais de Kubernetes manda você desabilitar o SELinux no primeiro parágrafo. Aqui fizemos o oposto: mantivemos o SELinux ativo e construímos uma política customizada de *Type Enforcement* (`k8s-custom-selinux`) compilada no kernel, resolvendo os acessos legítimos sem desativar a proteção do sistema operacional.
-* **Cilium e eBPF como CNI padrão**: adotamos o Cilium como provedor de rede primário, aproveitando programas eBPF no kernel Linux para substituir regras do `iptables`, com suporte nativo a Gateway API e anúncio L2 (sem depender de ferramentas externas). Para fins comparativos, a stack clássica com Canal (Calico + Flannel) e Kube-vip também foi mantida.
-* **Execução 100% Rootless**: as aplicações de demonstração do cluster rodam sem privilégios de `root`, utilizando `securityContext`, portas acima de 1024 e diretiva `fsGroup` no NFS, alcançando nota máxima (Score A 100%) no analisador de segurança Popeye.
-* **Cache local com Skopeo e extração via OverlayFS**: para não gastar sua banda baixando gigabytes de imagens a cada recriação de laboratório, o projeto faz cache centralizado das imagens via `skopeo copy`. Além disso, o utilitário `etcdctl` é extraído diretamente da camada *OverlayFS* do contêiner do `etcd` em execução, sem necessidade de baixar pacotes compactados extras da internet.
+* **Control Plane via Static Pods** [^5]: sai o `systemd`, entram *Static Pods* gerenciados pelo `kubelet`.
+* **SELinux ativo com política customizada**: enquanto a maioria dos tutoriais desliga o SELinux no primeiro parágrafo, aqui mantemos tudo ativo com um módulo próprio de *Type Enforcement* (`k8s-custom-selinux`) compilado no kernel, testando cada permissão real dos componentes do cluster sem atalhos fáceis.
+* **Cilium + eBPF**: CNI padrão no lugar do `iptables`, com Gateway API e anúncio L2 nativos (e Canal + Kube-vip de alternativa).
+* **Execução 100% Rootless**: nada de `root` nos workloads (`securityContext`, portas > 1024, `fsGroup` no NFS e Score A 100% no Popeye).
+* **Cache local com Skopeo e extração via OverlayFS**: `skopeo copy` guarda todas as imagens OCI localmente para economizar gigabytes a cada recriação, e o `etcdctl` sai direto da camada *OverlayFS* do contêiner do `etcd`, sem download extra.
 
 > [!NOTE] Conformidade CNCF
 > Desde a versão anterior (baseada puramente em serviços `systemd`) até a atual (com *Static Pods*), o cluster foi testado e **aprovado** na [suíte oficial de testes de conformidade da CNCF via Sonobuoy](https://github.com/cncf/k8s-conformance). Isso garante que a nossa construção artesanal não é só um brinquedo de entusiasta: o cluster é 100% aderente aos padrões e às especificações oficiais do Kubernetes.

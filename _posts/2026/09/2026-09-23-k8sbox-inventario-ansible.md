@@ -5,6 +5,7 @@ subtitle: "O cérebro declarativo que orquestra a infraestrutura e viabiliza upg
 author:
   - "Eduardo N. S. R."
 date: 2026-09-23 21:48:00 GMT-3
+modified_date: 2026-11-23 11:23:16 GMT-3
 permalink: /posts/k8sbox-inventario-ansible/
 tags: [Kubernetes, Ansible, DevOps, Infraestrutura, Linux]
 series: Kubernetes in a Box
@@ -20,7 +21,7 @@ No post anterior, deixamos nossas máquinas virtuais ligadas e conversando em um
 
 Em muitos projetos de automação, é comum ver tarefas com comandos soltos e caminhos fixos espalhados pelo código. O problema dessa abordagem aparece na primeira manutenção: atualizar a versão do Kubernetes exige vasculhar dezenas de arquivos à procura de referências manuais, com o risco constante de esquecer um manifesto estático ou uma URL de download em uma role secundária.
 
-No **k8s-in-a-box**, tomamos uma direção oposta. Toda a inteligência da infraestrutura está desacoplada da execução. O arquivo `inventario/group_vars/all.yml` funciona como o mapa genético do laboratório, enquanto a estrutura de inventário dita quem é quem na topologia. Para provar o valor dessa separação, fizemos hoje uma atualização real no repositório do projeto: saltamos a versão base do Kubernetes de `v1.36.2` para o **Kubernetes v1.37.0** [^1], acompanhado do etcd 3.7.1, crictl v1.37.0, helm v3.22.0 e cilium v1.20.2.
+No **k8s-in-a-box** [^5], tomamos uma direção oposta. Toda a inteligência da infraestrutura está desacoplada da execução. O arquivo `inventario/group_vars/all.yml` funciona como o mapa genético do laboratório, enquanto a estrutura de inventário dita quem é quem na topologia. Para provar o valor dessa separação, fizemos hoje uma atualização real no repositório do projeto: saltamos a versão base do Kubernetes de `v1.36.2` para o **Kubernetes v1.37.0** [^1], acompanhado do etcd 3.7.1, crictl v1.37.0, helm v3.22.0 e cilium v1.20.2.
 
 Sabe quantos arquivos de automação ou manifestos de pods estáticos precisaram ser reescritos para suportar essa nova versão em todo o cluster? Apenas um.
 
@@ -63,14 +64,14 @@ control_path_dir = ../artefatos/ansible_cache/cp
 
 Cada uma dessas linhas resolve um problema prático recorrente de automação local.
 
-A diretiva `inventory=../inventario/` aponta para um diretório inteiro em vez de um arquivo estático. Isso permite que o Ansible combine o arquivo de máquinas (`hosts.yml`) com o subdiretório de variáveis de grupo (`group_vars/`) de maneira orgânica.
+A diretiva `inventory=../inventario/` [^2] aponta para um diretório inteiro em vez de um arquivo estático. Isso permite que o Ansible combine o arquivo de máquinas (`hosts.yml`) com o subdiretório de variáveis de grupo (`group_vars/`) de maneira orgânica.
 
-A opção `host_key_checking=False` é uma concessão consciente para o fluxo de desenvolvimento. Como estamos destruindo e recriando máquinas virtuais frequentemente com Vagrant, o hash de chave pública de cada VM mudaria a cada recriação, causando erros de *host key mismatch* no SSH.
+A opção `host_key_checking=False` é uma concessão consciente para o fluxo de desenvolvimento. Como destruímos e recriamos máquinas virtuais com frequência no Vagrant (montado na Parte 2 [^6]), o hash de chave pública de cada VM mudaria a cada recriação, causando erros de *host key mismatch* no SSH.
 
 > [!CAUTION] Alerta de Segurança
 > A desativação de `host_key_checking` é aceitável exclusivamente em laboratórios locais descartáveis com redes privadas isoladas. Em ambientes de homologação ou produção, desativar essa checagem abre as portas para ataques de Man-in-the-Middle (MitM) em conexões SSH corporativas.
 
-Outro ganho perceptível de fôlego vem da trinca `gather_facts=false`, `forks = 5` e as opções de `[ssh_connection]`. Por padrão, toda vez que você pisca o olho, o Ansible quer passar um pente fino na VM para descobrir o endereço MAC de cada interface virtual, o tamanho do disco e até a fase da lua no sistema operacional. Para quem está rodando tudo localmente no notebook ou desktop, esperar esse interrogatório a cada *play* só serve para usar CPU à toa e testar a nossa paciência. Desativei essa coleta global por padrão: quando uma role realmente precisar de algum dado específico da máquina, ela que vá lá e colete pontualmente.
+Outro ganho perceptível de fôlego vem da trinca `gather_facts=false`, `forks = 5` e as opções de `[ssh_connection]`. Por padrão, toda vez que você pisca o olho, o Ansible passa um pente fino na VM para descobrir o endereço MAC de cada interface virtual, o tamanho do disco e até a fase da lua no sistema operacional. Rodando tudo no notebook ou desktop, esperar esse interrogatório a cada *play* só queima CPU à toa e testa a paciência. Desativei a coleta global: quando uma role precisar de algum dado da máquina, ela coleta sob demanda.
 
 Com o `ssh_args` configurado com `ControlMaster=auto` e `ControlPersist=180s`, o cliente SSH reaproveita os sockets de conexão abertos com as VMs durante três minutos. Tarefas subsequentes na mesma máquina acontecem de forma quase instantânea, sem a latência de um novo *handshake* criptográfico a cada task.
 
@@ -127,7 +128,7 @@ Com isso, o lab fica imune à sua rede física: você pode trocar de Wi-Fi, liga
 
 ## O arquivo all.yml como mapa genético da stack
 
-Se a topologia define onde as coisas rodam, o arquivo [inventario/group_vars/all.yml](https://github.com/vndmtrx/k8s-in-a-box/blob/main/inventario/group_vars/all.yml) define o que roda e em qual versão. No Ansible, variáveis colocadas dentro de `group_vars/all.yml` tornam-se visíveis automaticamente para todos os hosts do inventário.
+Se a topologia define onde as coisas rodam, o arquivo [inventario/group_vars/all.yml](https://github.com/vndmtrx/k8s-in-a-box/blob/main/inventario/group_vars/all.yml) [^3] define o que roda e em qual versão. No Ansible, variáveis colocadas dentro de `group_vars/all.yml` tornam-se visíveis automaticamente para todos os hosts do inventário.
 
 Vamos dissecar os principais blocos do `all.yml` e examinar as decisões por trás de cada um.
 
@@ -135,7 +136,7 @@ Vamos dissecar os principais blocos do `all.yml` e examinar as decisões por tr�
 
 Um cluster Kubernetes possui pelo menos três domínios de rede distintos que nunca devem se sobrepor: a rede física ou dos hosts, a rede interna dos Pods e a rede virtual de Services (ClusterIPs).
 
-Em vez de preencher manualmente endereços IP em dezenas de lugares, definimos as faixas CIDR principais e calculamos os endereços derivados utilizando o plugin `ansible.utils.ipaddr`:
+Em vez de preencher manualmente endereços IP em dezenas de lugares, definimos as faixas CIDR principais e calculamos os endereços derivados utilizando o plugin `ansible.utils.ipaddr` [^4]:
 
 ```yaml
 # Trecho de inventario/group_vars/all.yml
@@ -283,7 +284,7 @@ control-plane: garante-config
 
 Quando você digita `make infra`, o Makefile valida se a configuração ativa no `config.mk` corresponde ao symlink atual, define a variável de ambiente `ANSIBLE_CONFIG` e dispara exatamente as tags necessárias para preparar o terreno antes do Kubernetes. 
 
-Além disso, o Makefile traz utilitários essenciais de confiabilidade:
+O Makefile traz ainda três utilitários que evitam dor de cabeça no dia a dia:
 
 * **Validação prévia de dependências (`make check-deps`)**: antes de subir qualquer máquina ou playbook, o script verifica se o processador tem suporte a KVM habilitado, se o seu usuário faz parte do grupo `libvirt`, e se o Ansible, o Vagrant e o plugin `vagrant-libvirt` estão presentes. Isso impede falhas frustrantes no meio do provisionamento por falta de permissão ou pacote esquecido.
 * **Ciclos rápidos de estudo (`make cluster-etcd`, `make cluster-kubelet`)**: durante o desenvolvimento ou depuração de um subsistema específico, essas tags executam apenas as tarefas da role designada. Você testa alterações em segundos sem ter que esperar a execução completa de todo o cluster.
@@ -297,18 +298,18 @@ Antes de avançarmos para os comandos práticos, vale a pena abrir o capô e ent
 
 ### Construção centralizada de certificados no host
 
-Em muitas instalações manuais, a geração de certificados TLS é uma bagunça espalhada: comandos `openssl` ou `cfssl` rodam dentro de cada VM, autoridades certificadoras são copiadas de um lado para o outro e qualquer erro exige caçar chaves perdidas no sistema de arquivos.
+Em instalações manuais, gerar certificados TLS vira bagunça espalhada: `openssl` rodando em cada VM e chaves copiadas de um lado pro outro.
 
 No nosso projeto, a role [ansible/infra-pki](https://github.com/vndmtrx/k8s-in-a-box/blob/main/ansible/infra-pki) roda inteiramente em `localhost`. Todos os certificados (Root CA, intermediárias de etcd, kubernetes e front-proxy, além de certificados de nós, clientes e service accounts) são forjados uma única vez na máquina hospedeira e armazenados em `artefatos/pki/`.
 
-As máquinas virtuais nunca chegam a ver a chave privada da Root CA: elas recebem por cópia SSH estritamente o par exato de chave e certificado que precisam para funcionar. Além disso, controlamos a regeração com a variável `pki_regerar_certs: false`. Se você destruir e recriar as VMs, não precisa regerar toda a infraestrutura criptográfica do zero.
+As máquinas virtuais nunca chegam a ver a chave privada da Root CA: elas recebem por cópia SSH apenas o par de chave e certificado de que precisam. Com `pki_regerar_certs: false`, destruir e recriar VMs não obriga a regerar toda a PKI do zero.
 
 > [!NOTE] E as listas de revogação de certificados (CRLs)?
 > Em ambientes de produção corporativos, é indispensável manter listas de revogação de certificados (CRLs) ou validação OCSP para revogar imediatamente o acesso caso uma máquina seja comprometida. Em um laboratório local e descartável como o nosso, onde os nós são destruídos e recriados em minutos e o acesso é estritamente isolado no host, implementar CRLs adicionaria burocracia sem benefício prático imediato. Contudo, a nossa arquitetura de CA centralizada no host permite plugar mecanismos de revogação no futuro sem retrabalho.
 
 ### Downloads atômicos e reaproveitamento de binários
 
-A role [ansible/infra-artefatos](https://github.com/vndmtrx/k8s-in-a-box/blob/main/ansible/infra-artefatos) segue o mesmo princípio de eficiência. Em vez de várias máquinas virtuais baixarem os binários do `kubelet`, `kubectl` e plugins CNI simultaneamente da internet (disputando banda e correndo risco de throttling ou timeout), o Ansible baixa cada pacote uma única vez na máquina física, confere o hash SHA256 e guarda em `artefatos/bin/`. A partir dali, os binários são distribuídos localmente via SSH em segundos.
+A role [ansible/infra-artefatos](https://github.com/vndmtrx/k8s-in-a-box/blob/main/ansible/infra-artefatos) segue a mesma lógica. Em vez de várias VMs baixarem `kubelet`, `kubectl` e plugins CNI ao mesmo tempo da internet (disputando banda sob risco de throttling ou timeout), o Ansible baixa cada pacote uma vez na máquina física, valida o SHA256 em `artefatos/bin/` e distribui via SSH em segundos.
 
 ### Cache local de imagens OCI com Skopeo e importação direta
 
@@ -346,7 +347,7 @@ Fizemos uma transição para uma taxonomia puramente semântica:
 3. **ops-***: ferramental administrativo e automações executadas a partir do bastion host `kubox`.
 4. **cni-*** e **addon-***: redes de sobreposição intercambiáveis e serviços auxiliares de valor agregado.
 
-Cada role possui tasklists enxutas e focadas em uma única responsabilidade. As tarefas são agrupadas logicamente (instalação de pacotes, renderização de templates Jinja2 e ativação de serviços systemd), permitindo que qualquer pessoa leia a pasta `tasks/` de uma role e entenda exatamente o que está acontecendo sem adivinhações.
+Cada role possui tasklists enxutas e focadas numa única responsabilidade, agrupadas por fase (instalação de pacotes, templates Jinja2 e ativação de serviços systemd) para que qualquer pessoa leia `tasks/` e entenda o que acontece sem adivinhações.
 
 ## Diagnóstico e validação rápida
 
