@@ -5,6 +5,7 @@ subtitle: "De namespaces a cgroups v2: tudo que o kernel faz quando você digita
 author:
   - "Eduardo N. S. R."
 date: 2026-10-05 11:26:00 GMT-3
+modified_date: 2026-11-23 18:46:37 GMT-3
 permalink: /posts/conteineres-fundamentos/
 tags: [Docker, Contêineres, Linux, DevOps]
 series: Contêineres de Cabo a Rabo
@@ -13,11 +14,11 @@ category: Tutoriais
 
 Você já rodou `docker run` centenas de vezes. Digita o comando, aperta enter, um punhado de letrinhas corre pelo terminal e, em questão de meio segundo, você tem uma aplicação inteira rodando em um ambiente isolado com rede, disco e variáveis próprias. Mas se eu te perguntar exatamente o que o kernel Linux fez naquele exato instante de meio segundo, você sabe responder?
 
-A maioria dos desenvolvedores e operadores de infraestrutura aprendeu a usar contêineres como se fossem "máquinas virtuais mais leves e rápidas". Essa metáfora quebra galho para começar, mas ela é conceitualmente falsa. Contêineres não são máquinas virtuais. Não existe um hipervisor emulando placa-mãe, processador ou controladora SCSI. Não existe um segundo kernel dando *boot* silencioso no fundo da sua máquina. O que existe é um processo comum, rodando no mesmo kernel que o seu editor de texto e o seu navegador, só que usando uma coleira extremamente sofisticada fornecida pelo próprio sistema operacional.
+A maioria dos desenvolvedores e operadores de infraestrutura aprendeu a usar contêineres como se fossem "máquinas virtuais mais leves e rápidas". Essa metáfora quebra galho no início, mas erra o conceito: sem hipervisor emulando placa-mãe nem segundo kernel dando *boot*, um contêiner roda como processo comum no mesmo kernel do seu navegador, preso por uma coleira sofisticada do sistema operacional.
 
-Entender essa coleira é o divisor de águas entre o profissional que só sabe colar comandos do Stack Overflow e aquele que realmente resolve problemas quando o bicho pega em produção. Quando uma aplicação estoura o limite de memória e é abatida sem piedade pelo sistema operacional, quando duas instâncias brigam pela mesma porta de rede, ou quando você precisa projetar um cluster distribuído com Kubernetes, a abstração bonitinha do Docker desaparece. O que sobra é o kernel puro.
+Quando o OOM Killer mata o processo ou duas instâncias brigam por porta, a abstração do Docker evapora e sobra kernel puro.
 
-Este conhecimento também é o alicerce fundamental para a nossa série sobre criação de clusters locais com o projeto {% include post-ref.html slug="k8sbox-visao-geral" text="Kubernetes in a Box" %} e para a etapa de empacotamento que veremos na Parte 14 da série {% include post-ref.html slug="spring-boot-tutorial-parte-1-ambiente" text="Spring Boot Tutorial" %}. Sem dominar o que é um contêiner por baixo do capô, tentar entender a arquitetura de *Pods*, *Container Network Interface* (CNI) ou *Container Runtime Interface* (CRI) vira mero exercício de decoreba.
+É também a base de {% include post-ref.html slug="k8sbox-visao-geral" text="Kubernetes in a Box" %} e da Parte 14 de {% include post-ref.html slug="spring-boot-tutorial-parte-1-ambiente" text="Spring Boot Tutorial" %}.
 
 > [!NOTE] Nota da Série
 > Este post é a Parte 1 da série **"Contêineres de Cabo a Rabo"**. Se você quer entender como chegamos até aqui, leia primeiro o {% include post-ref.html slug="conteineres-historia" text="Post Zero: A História dos Contêineres" %}. Aqui vamos dissecar a anatomia interna dos contêineres e explorar as três tecnologias fundamentais do kernel Linux: *namespaces*, *cgroups* e *union filesystems*, fechando com a construção de um mini-contêiner do zero em apenas 50 linhas de shell script. Na Parte 2, vamos subir o nível para as ferramentas de produção: Dockerfiles avançados, Docker Compose, arquitetura sem daemon do Podman, segurança e o caminho para a orquestração.
@@ -53,7 +54,7 @@ Em termos de arquitetura de computadores, a virtualização tradicional funciona
 └─────────────────────────────────┘       └─────────────────────────────────┘
 ```
 
-Nos contêineres, essa camada de emulação de hardware simplesmente não existe. Quando você inicia um contêiner, o runtime não pede para uma CPU virtual dar boot. Ele simplesmente faz chamadas de sistema normais do Linux (como `clone` e `execve`) para criar um novo processo comum no sistema hospedeiro. 
+Nos contêineres, essa emulação de hardware não existe. Ao subir um contêiner, o runtime não dá boot numa CPU virtual: chama syscalls normais do Linux (`clone`, `execve`) para lançar um processo comum no hospedeiro.
 
 A diferença reside no fato de que esse novo processo recebe restrições estritas do kernel sobre o que ele pode visualizar e quantos recursos ele pode consumir. O tempo de inicialização cai de quarenta segundos para dez milissegundos porque criar um contêiner tem exatamente o mesmo custo computacional que iniciar qualquer programa na linha de comando.
 
@@ -67,7 +68,7 @@ A diferença reside no fato de que esse novo processo recebe restrições estrit
 | **Heterogeneidade de Kernel** | Total (Linux roda sobre Windows, BSD sobre Linux) | Inexistente (compartilha estritamente o kernel host) |
 | **Superfície de Ataque** | Menor (barreira física de hardware emulado) | Maior (compartilhamento direto de chamadas ao kernel) |
 
-Essa tabela deixa claro o que um contêiner realmente é: o resultado de três tecnologias nativas do kernel Linux trabalhando em uníssono. Os **namespaces** criam as paredes visuais de isolamento, os **cgroups** agem como o medidor de consumo de recursos, e os **union filesystems** estruturam o sistema de arquivos em camadas. Vamos analisar detalhadamente cada uma dessas peças.
+Essa tabela deixa claro o que um contêiner realmente é: o resultado de três tecnologias nativas do kernel Linux trabalhando em uníssono. Os **namespaces** [^8] criam as paredes visuais de isolamento, os **cgroups** [^9] agem como o medidor de consumo de recursos, e os **union filesystems** estruturam o sistema de arquivos em camadas. Vamos analisar cada uma dessas peças.
 
 ## Namespaces: Os Muros de Isolamento do Kernel
 
@@ -122,7 +123,7 @@ root         2  0.0  0.0  10072  3456 pts/0    R+   14:00   0:00 ps aux
 ```
 *A flag `--mount-proc` remonta o sistema de arquivos `/proc` no novo contexto; sem ela, o utilitário ps continuaria lendo a tabela de processos do host.*
 
-Repare no detalhe da chamada: a flag `--fork` é estritamente necessária porque a chamada de sistema `unshare(CLONE_NEWPID)` afeta apenas os processos filhos criados posteriormente. Para que o seu shell assuma o papel de PID 1 dentro do novo espaço, o utilitário precisa criar um processo filho bifurcado (*forked*).
+Repare no detalhe da chamada: a flag `--fork` é obrigatória porque `unshare(CLONE_NEWPID)` afeta apenas os processos filhos criados depois dela. Para o seu shell assumir o PID 1 no novo espaço, o utilitário precisa bifurcar (*fork*) um filho.
 
 ### Isolamento de Rede: O Namespace NET
 
@@ -203,7 +204,7 @@ lrwxrwxrwx 1 usuario usuario 0 set  8 14:00 uts -> 'uts:[4026531838]'
 ```
 *Os números entre colchetes representam o identificador de inode do namespace no kernel; dois processos compartilham o mesmo namespace se os números de inode forem idênticos.*
 
-Agora veja a prova cabal. Vamos subir um contêiner com o Docker e inspecionar os mesmos apontadores a partir do sistema operacional hospedeiro:
+Agora veja a prova real no terminal. Vamos subir um contêiner com o Docker e inspecionar os mesmos apontadores a partir do sistema operacional hospedeiro:
 
 {% raw %}
 ```bash
@@ -262,11 +263,11 @@ No Linux, os cgroups não são configurados por meio de interfaces obscuras ou c
 
 ### A Grande Mudança: Cgroups v1 versus Cgroups v2
 
-Durante muitos anos, o Linux utilizou a primeira versão dos grupos de controle (cgroups v1). No modelo v1, cada recurso (CPU, memória, entrada e saída de disco, identificadores de processo) vivia em uma hierarquia de diretórios totalmente separada e independente dentro de `/sys/fs/cgroup/`. Um processo podia pertencer ao grupo `limite-baixo` na hierarquia de memória, mas pertencer ao grupo `prioridade-alta` na hierarquia de CPU.
+Durante muitos anos, o Linux utilizou a primeira versão dos grupos de controle (cgroups v1). No modelo v1, cada recurso (CPU, memória, entrada e saída de disco, identificadores de processo) vivia em uma hierarquia de diretórios separada e independente dentro de `/sys/fs/cgroup/`. Um processo podia pertencer ao grupo `limite-baixo` na hierarquia de memória, mas pertencer ao grupo `prioridade-alta` na hierarquia de CPU.
 
-Na prática, gerenciar essa matriz multidimensional virou um pesadelo de complexidade para os desenvolvedores de sistemas operacionais. Além disso, surgiam inconsistências graves: o controlador de memória não conversava direito com o controlador de gravação em disco (*writeback cache*), gerando bloqueios misteriosos de I/O.
+Gerenciar essa matriz multidimensional virou pesadelo, e o controlador de memória não conversava com o *writeback cache* de disco, gerando travamentos misteriosos de I/O.
 
-Para solucionar essas dores, o engenheiro Tejun Heo liderou a reestruturação que deu origem aos **cgroups v2** (também conhecida como *Unified Hierarchy* ou hierarquia unificada) [^5]. No cgroups v2, existe apenas uma árvore de diretórios unificada. Um processo pertence a exatamente um cgroup, e todos os controladores de recursos habilitados para aquele grupo são aplicados de forma consistente sobre os mesmos processos.
+Para resolver isso, Tejun Heo liderou os **cgroups v2** (*Unified Hierarchy*) [^5]: uma única árvore unificada onde cada processo pertence a um único cgroup e todos os controladores de recursos atuam juntos de forma consistente.
 
 Você pode verificar qual versão está em operação no seu sistema inspecionando as montagens:
 
@@ -378,11 +379,11 @@ $ sudo dmesg -T | tail -n 6
 
 ## Union Filesystems: Imagens em Camadas
 
-Chegamos à terceira perna do nosso tripé fundamental. Até aqui, vimos como os *namespaces* isolam a visão dos processos e como os *cgroups* limitam o consumo de memória e processamento. Mas resta um problema crucial: de onde vem o sistema de arquivos que o contêiner enxerga?
+Falta a terceira perna do tripé: de onde vem o sistema de arquivos que o contêiner enxerga?
 
-Se você baixar uma imagem oficial do Ubuntu, ela tem cerca de 80 megabytes. Se você precisar rodar cem contêineres idênticos desse mesmo Ubuntu no mesmo servidor, copiar 80 MB cem vezes gastaria 8 gigabytes de espaço em disco e demoraria vários segundos durante a clonagem.
+Uma imagem oficial do Ubuntu pesa uns 80 MB. Se você subir cem contêineres idênticos no mesmo servidor copiando esses 80 MB cem vezes, queima 8 GB de disco e segundos preciosos só clonando arquivos iguais.
 
-A solução elegante encontrada pelo ecossistema de contêineres é o uso de **Sistemas de Arquivos de União** (*Union Filesystems*), materializados no Linux moderno pelo driver de kernel **OverlayFS** [^6].
+A saída do Linux moderno é o **OverlayFS** [^6], um *Union Filesystem* nativo do kernel.
 
 ### A Mecânica do Copy-on-Write (CoW)
 
@@ -412,11 +413,7 @@ A regra de ouro desse modelo chama-se **Copy-on-Write (CoW)**:
 └─────────────────────────────────────────────────────────┘
 ```
 
-O OverlayFS estrutura essa mágica dividindo a operação em quatro diretórios fundamentais:
-- **`lowerdir`**: Os diretórios base somente leitura (as camadas da imagem). Múltiplos caminhos podem ser encadeados separando-os por dois-pontos.
-- **`upperdir`**: O diretório de leitura e escrita onde ficam as modificações efetuadas pelo contêiner.
-- **`workdir`**: Uma pasta de serviço interna necessária para o kernel preparar operações atômicas antes de exibi-las.
-- **`merged`**: O diretório final onde o sistema de arquivos unificado é montado e disponibilizado para consumo.
+O OverlayFS empilha quatro diretórios distintos: `lowerdir` guarda as camadas base somente leitura (encadeadas por dois-pontos); `upperdir` absorve tudo que o contêiner escreve ou altera; `workdir` serve de rascunho interno pro kernel preparar operações atômicas; e `merged` é o ponto final unificado que o contêiner enxerga.
 
 ### Montando um OverlayFS na Mão
 
@@ -518,7 +515,7 @@ Graças à padronização OCI, o ecossistema de execução foi modularizado em c
 
 Repare na separação nítida:
 - O **Runtime de Alto Nível** (como `containerd` ou `CRI-O`) é responsável por baixar imagens pela rede, validar assinaturas criptográficas, descompactar camadas em disco e preparar o sistema de arquivos montado.
-- O **Runtime de Baixo Nível** (como `runc` ou `crun`) tem um papel estritamente pontual: ele recebe uma pasta já montada com um arquivo `config.json`, invoca as chamadas de sistema do kernel (`unshare`, `mount`, configuração de cgroup), executa o binário da sua aplicação e em seguida se encerra, deixando o processo isolado rodando supervisionado pelo kernel.
+- O **Runtime de Baixo Nível** (como `runc` ou `crun` [^10]) tem um papel pontual: ele recebe uma pasta já montada com um arquivo `config.json`, invoca as chamadas de sistema do kernel (`unshare`, `mount`, configuração de cgroup), executa o binário da sua aplicação e em seguida se encerra, deixando o processo isolado rodando supervisionado pelo kernel.
 
 ### O Raio-X do config.json da OCI
 
@@ -685,7 +682,7 @@ No quarto passo, o script fala diretamente com o subsistema cgroups v2 do kernel
 
 O quinto passo cuida da configuração básica de rede, gravando diretamente servidores de DNS públicos em `/etc/resolv.conf` para evitar conflitos com o resolvedor local em stub (`127.0.0.53`) do *systemd-resolved*.
 
-No sexto passo, a grande mágica se concretiza: o utilitário `unshare` dispara novas instâncias de todos os seis namespaces essenciais. No namespace privado de montagem recém-criado, o script monta os pseudo-sistemas de arquivos `/proc`, `/sys` e `/dev` (garantindo que o `/proc` reflita exclusivamente a tabela de processos do novo contêiner e que essas montagens desapareçam do hospedeiro assim que o namespace for encerrado). Antes de entregar o terminal ao usuário, o shell grava o seu próprio identificador de processo dentro do arquivo `cgroup.procs` daquele cgroup, garantindo que os limites de hardware passem a valer imediatamente. Em seguida, a chamada `exec chroot` substitui o processo atual pelo `/bin/sh` assumindo rigorosamente o PID 1.
+No sexto passo, a engrenagem fecha: o `unshare` cria os seis namespaces. Dentro do novo namespace de montagem, o script monta `/proc`, `/sys` e `/dev` (assim `/proc` exibe só os processos do contêiner e some do hospedeiro ao sair). Antes de abrir o terminal, o shell escreve o próprio PID em `cgroup.procs` para ativar os limites de hardware na hora, e `exec chroot` substitui o processo pelo `/bin/sh` como PID 1.
 
 Ao digitar `exit`, a rotina de encerramento entra em ação: desmonta o ponto OverlayFS e remove o diretório do cgroup, devolvendo o sistema operacional hospedeiro exatamente ao estado em que se encontrava.
 
@@ -761,7 +758,7 @@ Crie duas pastas de base diferentes: `/tmp/overlay-multi/camada1` contendo um ar
 
 Ao inspecionar o arquivo montado, o valor retornado será `AMB=desenvolvimento`.
 
-A regra do OverlayFS estabelece que as camadas passadas no parâmetro `lowerdir` são avaliadas rigorosamente da esquerda para a direita. O primeiro caminho listado tem precedência máxima sobre os subsequentes. É exatamente através dessa mecânica que uma instrução `COPY` ou `RUN` em um Dockerfile consegue substituir arquivos introduzidos por camadas anteriores da imagem.
+A regra do OverlayFS avalia as camadas de `lowerdir` da esquerda para a direita: o primeiro caminho tem precedência máxima sobre os seguintes. É assim que uma instrução `COPY` ou `RUN` num Dockerfile sobrescreve arquivos de camadas anteriores.
 
 </details>
 
@@ -793,13 +790,7 @@ Mas vamos ser francos: ninguém em sã consciência vai ficar escrevendo scripts
 
 É exatamente aqui que entram as ferramentas modernas de engenharia.
 
-Na {% include post-ref.html slug="conteineres-pratica" text="Parte 2 da nossa série" %}, vamos subir para a camada de ferramentas e práticas do mundo real:
-- **Anatomia avançada de Dockerfiles**: como estruturar construções em múltiplos estágios (*multi-stage builds*) eficientes para compilar aplicações pesadas gerando imagens de produção com menos de cem megabytes;
-- **O ciclo de vida do contêiner**: as diferenças operacionais críticas entre estados de pausa, parada graciosa com tratamento de sinais `SIGTERM` e extermínio abrupto com `SIGKILL`;
-- **Redes no Docker**: a arquitetura de pontes virtuais (*bridge*), tabelas de roteamento e resolução interna de nomes via DNS integrado;
-- **Docker Compose**: como orquestrar múltiplos serviços interligados com bancos de dados, filas e caches em uma stack completa;
-- **A revolução do Podman**: a arquitetura sem daemons centralizados (*daemonless*), contêineres sem privilégios (*rootless*) por padrão e a criação nativa de *Pods* no modelo do Kubernetes;
-- **Segurança de contêineres**: análise de vulnerabilidades em imagens, restrição de capacidades administrativas do Linux (*capabilities*) e os perigos fatais de montar o socket do Docker em ambientes compartilhados.
+Na {% include post-ref.html slug="conteineres-pratica" text="Parte 2 da nossa série" %}, subimos para as ferramentas do dia a dia: *multi-stage builds* em Dockerfiles para cortar imagens pesadas a menos de 100 MB, sinais `SIGTERM`/`SIGKILL` no ciclo de vida, redes virtuais (`bridge` e DNS interno) e orquestração de múltiplos serviços com Docker Compose. Também entramos de cabeça no **Podman** (*daemonless*, *rootless* por padrão e Pods no modelo Kubernetes) e nos cuidados de segurança que evitam sustos com *capabilities* e exposição do socket do Docker.
 
 Nos vemos na Parte 2 para colocar toda essa fundação em prática no mundo real.
 

@@ -5,6 +5,7 @@ subtitle: "Do Dockerfile ao docker compose up: construindo, orquestrando e prote
 author:
   - "Eduardo N. S. R."
 date: 2026-10-16 15:17:00 GMT-3
+modified_date: 2026-11-23 18:46:37 GMT-3
 permalink: /posts/conteineres-pratica/
 tags: [Docker, Contêineres, Linux, DevOps]
 series: Contêineres de Cabo a Rabo
@@ -14,7 +15,7 @@ mermaid: true
 
 Na primeira parte desta série, a gente abriu o capô do kernel Linux e viu que contêineres não são máquinas virtuais: são processos comuns isolados por *namespaces*, limitados em hardware por *cgroups* v2 e servidos por camadas montadas via *OverlayFS*. Chegamos a empacotar tudo isso num script em shell de cinquenta linhas capaz de rodar um ambiente funcional do zero.
 
-Na teoria tudo é lindo, mas no dia a dia da firma ninguém vai ficar digitando `unshare` na unha ou criando cgroup no `/sys/fs/cgroup` pra subir um microsserviço às duas da tarde (a não ser que vc seja muito masoquista). A gente usa ferramentas consolidadas pra automatizar esse ciclo: Docker, Docker Compose e Podman.
+Só que no dia a dia da firma ninguém vai digitar `unshare` na unha às duas da tarde (a não ser que vc seja muito masoquista). Entram Docker, Docker Compose e Podman.
 
 O foco agora é a aplicação prática. Vamos ver como as instruções de um `Dockerfile` se traduzem fisicamente nas fatias de disco que estudamos, como estruturar builds multi-stage pra não entregar imagem de 1.5 GB em produção, como os contêineres se conversam através de pontes de rede virtuais e como declarar ambientes completos com múltiplos serviços interligados sem enlouquecer.
 
@@ -29,9 +30,9 @@ Também vamos explorar a arquitetura sem daemons do Podman, aplicar práticas de
 
 No ecossistema Docker, o ponto de partida do empacotamento é o `Dockerfile`. Você bate o olho naquele arquivo de vinte linhas e parece uma listinha de compras no mercadinho: faz isso, copia aquilo, roda aquilo outro. Só que debaixo do capô, cada instrução tem um peso bem diferente na pilha de camadas do OverlayFS.
 
-Como vimos na Parte 1, uma imagem de contêiner no padrão OCI nada mais é do que uma coleção de arquivos compactados (*tarballs*), onde cada camada guarda exclusivamente as diferenças em relação à anterior. O `Dockerfile` é a receita que orienta o motor de compilação (*build engine*) a produzir essas camadas.
+Como vimos na Parte 1, uma imagem OCI é uma pilha de *tarballs* onde cada camada guarda só a diferença em relação à anterior, e o `Dockerfile` é a receita do *build engine*.
 
-Existe uma diferença fundamental que vale ter em mente: **nem toda instrução cria uma camada física no disco**. Algumas gravam arquivos novos ou modificados, enquanto outras apenas atualizam metadados no manifesto JSON da imagem.
+O pulo do gato: **nem toda instrução cria camada física no disco** (várias só gravam metadados no manifesto JSON).
 
 A tabela a seguir detalha essa distinção para as instruções fundamentais:
 
@@ -136,7 +137,7 @@ ENTRYPOINT ["java", "-jar", "/app/aplicacao.jar"]
 ```
 *O uso de multi-stage builds permite compilar a aplicação no primeiro estágio e transferir apenas o artefato final para a imagem de produção.*
 
-A diferença de tamanho é um tapa na cara. No primeiro estágio (`builder`), temos um JDK completo pesando mais de 600 MB com o Maven e ferramentas de build. No segundo estágio (`runner`), a gente carrega exclusivamente o runtime (JRE) sobre Alpine Linux, entregando uma imagem final de aproximadamente 160 MB. Sem compilador, sem Maven e sem código-fonte dando sopa no servidor de produção.
+A diferença de tamanho é um tapa na cara. No primeiro estágio (`builder`), temos um JDK completo pesando mais de 600 MB com o Maven e ferramentas de build. No segundo estágio (`runner`), carregamos só o runtime (JRE) sobre Alpine Linux, entregando uma imagem final de cerca de 160 MB. Sem compilador, sem Maven e sem código-fonte dando sopa no servidor de produção.
 
 ### Boas Práticas para Dockerfiles
 
@@ -485,7 +486,7 @@ $ podman exec monitor-sidecar wget -qO- http://localhost:80 | head -n 4
 ```
 *Como os contêineres compartilham o namespace de rede do Pod, eles se comunicam via loopback (localhost).*
 
-Além disso, o Podman exporta essa configuração diretamente para YAML do Kubernetes:
+O Podman ainda exporta essa configuração direto para YAML do Kubernetes:
 
 ```bash
 # Gerar a especificação YAML do Kubernetes correspondente ao Pod criado
@@ -512,16 +513,14 @@ $ head -n 20 pod-web.yaml
 
 A conveniência de baixar e rodar imagens prontas costuma criar uma falsa sensação de blindagem. Executar uma aplicação dentro de um contêiner não a torna imune a invasões: ela ainda divide o mesmo kernel com o hospedeiro. Se o contêiner estiver mal configurado, a barreira de isolamento vira casca de ovo.
 
-Abaixo estão quatro tropeços clássicos de segurança e como neutralizá-los.
+Abaixo estão quatro tropeços clássicos de segurança (todos cobertos no CIS Docker Benchmark [^9]) e como neutralizá-los.
 
 ### O Risco de Montar o Socket do Docker (/var/run/docker.sock)
 
-Em tutoriais de esteiras de CI/CD ou painéis de administração web, você certamente já viu esta instrução inocente:
+Em tutoriais de CI/CD ou painéis web, vive aparecendo esta linha inocente:
 `docker run -v /var/run/docker.sock:/var/run/docker.sock ...`
 
-**Não faça isso.** Montar `/var/run/docker.sock` dentro de um contêiner é o equivalente em segurança a colocar a chave mestra da sua casa debaixo do capacho com um bilhete dizendo *"favor não roubar"*.
-
-O arquivo `/var/run/docker.sock` é o canal direto de controle do daemon do Docker. Como o daemon tradicional roda como `root`, quem tem permissão de leitura e escrita nesse arquivo controla o hospedeiro por completo.
+**Não faça isso.** Montar `/var/run/docker.sock` dentro de um contêiner é deixar a chave mestra da casa debaixo do capacho com bilhete *"favor não roubar"*: como o daemon tradicional roda como `root`, quem escreve nesse socket manda no hospedeiro inteiro.
 
 Veja como é trivial escapar de um contêiner quando o socket está exposto:
 
@@ -533,7 +532,7 @@ root
 ```
 *Montar o socket do Docker permite ao processo interno subir instâncias paralelas com acesso irrestrito ao sistema de arquivos do computador hospedeiro.*
 
-Em três comandos o invasor virou `root` no hospedeiro. Se você precisa construir imagens dentro de esteiras de CI/CD (o famoso padrão *Docker-in-Docker*), utilize alternativas projetadas para rodar sem privilégios de root, como o **Buildah** [^5] da Red Hat.
+Em três comandos o invasor virou `root` no hospedeiro. Se você precisa construir imagens dentro de esteiras de CI/CD (o famoso padrão *Docker-in-Docker* [^10]), utilize alternativas projetadas para rodar sem privilégios de root, como o **Buildah** [^5] da Red Hat.
 
 ### Limpeza de Vulnerabilidades em Imagens com Trivy
 
@@ -703,7 +702,7 @@ $ docker exec -i pg-novo psql -U postgres -c "SELECT * FROM clientes;"
 
 A tabela volta intacta, com o registro `'Empresa Exemplo'` sorrindo pra você no terminal.
 
-Isso acontece porque o volume nomeado `dados-postgres` não mora na camada efêmera do OverlayFS. Ele é um diretório gerenciado pelo Docker que fica seguro no disco do hospedeiro (geralmente sob `/var/lib/docker/volumes/dados-postgres/_data`). Quando você matou o primeiro contêiner na força bruta com `-f`, o volume continuou intacto no disco. Ao subir o segundo contêiner apontando pro mesmo volume, o novo processo do PostgreSQL simplesmente encontrou a base preexistente e seguiu a vida sem perda de um único byte.
+Isso acontece porque o volume nomeado `dados-postgres` não mora na camada efêmera do OverlayFS. Ele é um diretório gerenciado pelo Docker no disco do hospedeiro (em geral sob `/var/lib/docker/volumes/dados-postgres/_data`). Quando você matou o primeiro contêiner na força bruta com `-f`, o volume continuou intacto. Ao subir o segundo contêiner apontando pro mesmo volume, o novo processo do PostgreSQL encontrou a base pronta e seguiu a vida sem perder um único byte.
 
 *Para limpar o volume de testes após o exercício, execute `docker rm -f pg-novo && docker volume rm dados-postgres`.*
 

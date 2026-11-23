@@ -5,6 +5,7 @@ subtitle: "Do /proc raiz ao OOM Killer: como investigar memória, processos e fa
 author:
   - "Eduardo N. S. R."
 date: 2026-10-23 15:19:00 GMT-3
+modified_date: 2026-11-23 18:46:37 GMT-3
 permalink: /posts/conteineres-diagnostico-sem-shell/
 tags: [Docker, Contêineres, Linux, Troubleshooting]
 series: Contêineres de Cabo a Rabo
@@ -16,7 +17,7 @@ Sexta-feira, ambiente de produção. O alerta do sistema de monitoramento dispar
 
 O painel da aplicação jura de pés juntos que o consumo de memória estava sob controle, bem abaixo do teto configurado para a máquina virtual de execução. No entanto, o contêiner tinha um limite rígido de 16 GB estipulado na infraestrutura e simplesmente desapareceu do mapa sem deixar uma única linha de erro fatal nos arquivos de registro tradicionais.
 
-Você abre o terminal com a tranquilidade de quem vai resolver o enigma em dois minutos. Executa um comando interativo para entrar no contêiner recém-criado, digita o velho e bom `ps aux` para auditar a árvore de processos e o sistema devolve uma bofetada em seco:
+Você abre o terminal achando que mata o enigma em dois minutos, entra no contêiner, digita `ps aux` e toma uma bofetada seca:
 
 ```text
 bash: ps: command not found
@@ -151,11 +152,10 @@ active_file 61759488
 slab 22700576
 ```
 
-Dois indicadores desta tabela contam a história completa do ambiente:
+Três números desta tabela contam a história toda:
 
-* **`anon 9518325760` (~8,86 GB)**: A métrica *anonymous memory* representa páginas de memória alocadas diretamente pelos processos que não possuem vínculo com arquivos em disco (heap de linguagens, pilhas de execução, estruturas dinâmicas). Dos 9,03 GB em uso, **98,1%** correspondiam a alocações anônimas puras da aplicação.
-* **`file 136572928` (~130 MB)**: O consumo com *page cache* (arquivos abertos, logs transitórios ou leituras em disco mantidas em cache pelo kernel) era desprezível. Isso descartava imediatamente a clássica suspeita de que buffers de disco ou arquivos de log em crescimento contínuo estavam inflando o contêiner.
-* **`anon_thp 9307160576` (~8,66 GB)**: Revela que o kernel Linux estava usando ativamente *Transparent Huge Pages* (páginas de 2 MB em vez dos tradicionais 4 KB) para sustentar a grande massa de memória da aplicação, otimizando o custo de tradução de endereços na tabela de páginas.
+* `anon 9518325760` (~8,86 GB): **98,1%** dos 9,03 GB em uso vinham de memória anônima pura (heap, pilhas e estruturas dinâmicas sem arquivo em disco), praticamente toda sustentada por *Transparent Huge Pages* (`anon_thp 9307160576`, cerca de 8,66 GB em páginas de 2 MB no lugar de 4 KB).
+* `file 136572928` (~130 MB): *page cache* irrelevante, descartando logs ou buffers de disco.
 
 Restava uma pergunta incômoda: será que esses 9 GB pertenciam apenas à aplicação Java ou existia outro processo invasor consumindo recursos silenciosamente dentro daquele contêiner?
 
@@ -306,7 +306,7 @@ Configurada no nosso exemplo com `-XX:MaxDirectMemorySize=1g`, essa região é a
 ### 3. As Estruturas Nativas do Garbage Collector (G1 GC)
 O coletor de lixo moderno padrão do Java, o **G1 GC** (`-XX:+UseG1GC`), fatiou o heap em milhares de regiões menores para realizar pausas ultracurtas e previsíveis. Para saber quais objetos de uma região apontam para objetos em outras regiões sem precisar varrer todo o heap, o G1 mantém estruturas de controle em memória puramente nativa chamadas **Remembered Sets (RSets)** e **Card Tables**.
 
-O custo de memória dessas tabelas nativas varia historicamente entre **10% e 15% do tamanho total do heap configurado** [^3]. Em um heap de 10 GB, as estruturas do G1 GC podem abocanhar facilmente entre **1,0 GB e 1,5 GB adicionais de RAM física**, completamente invisíveis na contabilidade do heap.
+Essas tabelas nativas costumam custar entre **10% e 15% do heap configurado** [^3]. Num heap de 10 GB, as estruturas do G1 GC mordem de **1,0 GB a 1,5 GB extras de RAM física**, invisíveis na contabilidade do heap.
 
 ### 4. Pilhas de Execução de Threads e a Flag Xss
 Cada thread criada no sistema aloca uma pilha nativa dedicada no sistema operacional, definida pela flag `-Xss512k`. Com 119 threads ativas no início, o consumo inicial era de cerca de 60 MB. Em horários de pico sob centenas de conexões simultâneas de clientes web, 300 threads podem consumir mais de 150 MB apenas em pilhas de execução.
@@ -444,7 +444,7 @@ O coletor de lixo do Go é projetado para operar com baixíssima latência. Hist
 
 Em um servidor corporativo com 128 GB de memória RAM rodando um contêiner Go limitado a 1 GB via cgroup, o runtime olhava para o hardware do host e assumia que havia memória de sobra. O resultado era trágico: o coletor de lixo adiava o ciclo de limpeza esperando o heap expandir, e o cgroup do Linux executava o processo por OOM antes mesmo do Go tentar liberar memória.
 
-Para sanar essa desarmonia entre o runtime da linguagem e o isolamento de recursos do kernel, o time do Go introduziu a variável de ambiente **`GOMEMLIMIT`** [^6]. Em contêineres, definir um teto seguro (geralmente entre 80% e 90% do limite do cgroup) sincroniza o runtime com o kernel:
+Para alinhar o runtime ao cgroup, o Go trouxe **`GOMEMLIMIT`** [^6] (em geral calibrado entre 80% e 90% do limite do contêiner):
 
 ```yaml
     environment:
