@@ -5,7 +5,7 @@ subtitle: "Como joguei fora o tema padrão do GitHub Pages, eliminei CDNs extern
 author:
   - "Eduardo N. S. R."
 date: 2026-09-13 20:00:00 GMT-3
-modified_date: 2026-09-14 00:02:00 GMT-3
+modified_date: 2026-11-24 19:27:44 GMT-3
 permalink: /posts/lanternagem-blog/
 tags: [Web, CSS, Jekyll, Minimalismo]
 category: Artigos
@@ -17,7 +17,7 @@ Existe uma sensação física de incômodo que todo desenvolvedor com mania de a
 
 Só que a sensação constante era a de morar de aluguel em uma casa mobiliada por outra pessoa. Você não pode pintar uma parede sem o reboco inteiro desabar sobre a sua cabeça.
 
-A gota d'água não foi uma falha técnica repentina. Foi o acúmulo silencioso do tempo.
+A gota d'água veio do acúmulo silencioso do tempo, não de alguma falha súbita.
 
 Conforme o blog foi crescendo, acumulando dezenas de artigos analíticos, tutoriais de infraestrutura, trilhas de Kubernetes e reflexões sobre engenharia, o contraste entre o conteúdo e o continente foi ficando incômodo. Eu passava horas polindo argumentos, formatando blocos de código e desenhando diagramas em ASCII, para no final ver tudo espremido em uma tipografia genérica de sistema, com espaçamentos desajeitados e uma paleta sem vida.
 
@@ -47,7 +47,7 @@ meu-blog/
 
 O problema começa quando você decide customizar qualquer detalhe mínimo da interface.
 
-Quer mudar a largura da coluna principal de leitura? Você precisa criar uma pasta `_sass/`, descobrir qual era o nome exato da variável que o tema original usava e torcer para que o seu arquivo seja importado na ordem correta. Quer alterar o comportamento do cabeçalho da página? Precisa copiar o template `header.html` original da gem para dentro de `_includes/` e começar a fazer alterações cirúrgicas no código alheio.
+Quer mudar a largura da coluna principal de leitura? Você precisa criar uma pasta `_sass/`, descobrir qual era o nome exato da variável que o tema original usava e torcer para que o seu arquivo seja importado na ordem correta. Quer alterar o comportamento do cabeçalho da página? Precisa copiar o template `header.html` original da gem para dentro de `_includes/` e sair remendando o código alheio na unha.
 
 Em pouco tempo, o repositório vira uma colcha de retalhos de arquivos sobrepostos.
 
@@ -95,7 +95,7 @@ Este é um parágrafo normal de texto com um [link](https://exemplo.com).
 > Uma citação relevante de algum autor histórico.
 ```
 
-O processador do Jekyll (o Kramdown) converte esse arquivo diretamente para tags HTML5 puras: `<h2>`, `<p>`, `<a>` e `<blockquote>`, sem injetar classes utilitárias no meio do caminho. Para usar Tailwind nesse cenário, você seria obrigado a instalar o plugin `@tailwindcss/typography`, aceitar o conjunto opinativo de classes `.prose`, configurar um pipeline pesado de compilação em Node.js com PostCSS e vigiar constantemente o tamanho da saída gerada.
+O processador do Jekyll (o Kramdown) converte esse arquivo direto em tags HTML5 puras (`<h2>`, `<p>`, `<a>`, `<blockquote>`), sem injetar classes utilitárias no caminho. Para usar Tailwind nesse cenário, você precisaria instalar `@tailwindcss/typography`, aceitar o pacote opinativo de classes `.prose`, montar um pipeline de build em Node.js com PostCSS e ficar vigiando o tamanho do CSS gerado.
 
 Eu não queria mais esteiras complexas de frontend para rodar um blog de texto. Eu queria simplicidade objetiva.
 
@@ -132,7 +132,7 @@ Se você escreve uma tabela em Markdown, o Kramdown cospe a tag `<table>`, e o P
 
 O Markdown continua puro, o HTML gerado permanece limpo e o navegador recebe exatamente o que precisa.
 
-Além disso, a versão 2 do Pico CSS foi reescrita inteiramente em SCSS modular, trazendo duas vantagens fundamentais que selaram a minha decisão: todas as escolhas estéticas são expostas por variáveis nativas de CSS com o prefixo `--pico-*`, e a alternância entre temas claro e escuro é controlada diretamente pelo atributo `data-theme` na tag raiz `<html>`.
+A versão 2 do Pico CSS ainda foi reescrita em SCSS modular, o que selou minha decisão por dois motivos: todas as escolhas estéticas ficam expostas em variáveis nativas `--pico-*` e a troca entre tema claro e escuro responde ao atributo `data-theme` na tag raiz `<html>`.
 
 O casamento foi perfeito. Conquistamos um design system limpo, responsivo e adaptável, com uma folha de estilos que pesa menos de 15 KB compactada e que respeita rigorosamente a semântica da web.
 
@@ -144,9 +144,9 @@ O primeiro erro é o Dark Mode amador, com fundo preto absoluto (<span class="co
 
 O segundo erro é o Light Mode hospitalar: aquele fundo branco puro reflexivo que transforma a tela de um monitor grande de 27 polegadas em uma lâmpada fluorescente ligada a meio metro do seu rosto. Em ambos os casos, a leitura prolongada se torna um exercício de resistência física.
 
-A inspiração para o visual não veio de nenhum tratado acadêmico de teoria das cores. Veio de um hábito muito simples e antigo meu: eu sempre adorei rabiscar e rascunhar ideias no papel com cores fortes e marcantes, do tipo que você encontra nas dezenas de canetas Stabilo ponta fina que acumulei pela mesa ao longo dos anos. Aquele contraste vivo de tinta pigmentada sobre folha de caderno pautado sempre me deu prazer na hora de pensar.
+A inspiração visual nasceu de um hábito antigo meu, bem longe de tratados de teoria das cores: eu sempre adorei rabiscar ideias no papel com cores fortes, do tipo que você encontra nas dezenas de canetas Stabilo ponta fina acumuladas na mesa. Aquele contraste vivo de tinta pigmentada sobre caderno pautado sempre me deu prazer na hora de pensar.
 
-No mundo digital, as minhas referências de conforto visual sempre foram o Monokai Pro [^2] e o Solarized [^3]. Eu queria trazer essa mesma sensação para o blog: fundos que não agridem a vista, superfícies foscas e acentos de destaque que saltam aos olhos como marca-texto bem passado, sem transformar a página em um carnaval de neon.
+No digital, minhas referências de conforto sempre foram Monokai Pro [^2] e Solarized [^3]: fundos foscos e acentos que destacam sem virar carnaval de neon.
 
 Ajustei os valores hexadecimais no arquivo `_sass/base/_variables.scss` buscando equilíbrio prático.
 
@@ -239,7 +239,7 @@ Comecei a faxina pelas fontes tipográficas, eliminando as chamadas remotas do G
 
 Perguntei a mim mesmo se precisávamos de todo esse entulho histórico. A resposta foi um sonoro não.
 
-O formato `.woff2` (Web Open Font Format 2.0) utiliza o algoritmo de compressão Brotli nativo e é suportado por praticamente 100% dos navegadores modernos em circulação no mundo há muitos anos. Apaguei todos os formatos antigos da pasta de fontes e deixei exclusivamente os arquivos `.woff2` leves, mantendo as declarações limpas em `_sass/base/_typography.scss`:
+O formato `.woff2` (Web Open Font Format 2.0) usa compressão Brotli nativa e roda em quase 100% dos navegadores modernos há anos. Apaguei os formatos antigos e deixei só os `.woff2` leves em `_sass/base/_typography.scss`:
 
 ```scss
 /* Declaração enxuta em _sass/base/_typography.scss */
@@ -422,7 +422,7 @@ Menos código duplicado, mais coerência visual em cada recanto do site.
 
 Depois de mexer na fundação inteira do blog, renomear variáveis de ponta a ponta, excluir centenas de linhas de código antigo e refatorar cada template HTML, qualquer desenvolvedor é assaltado pela dúvida natural: o que foi que quebrou sem que eu percebesse?
 
-Em um site pessoal com mais de cem páginas publicadas ao longo de anos, fazer uma checagem visual clicando em cada link pelo navegador é humanamente inviável. Fatalmente você esquecerá um link antigo, deixará uma âncora órfã ou esquecerá de fechar uma tag semântica.
+Num site pessoal com mais de cem páginas publicadas ao longo de anos, sair clicando link por link no navegador é inviável: cedo ou tarde passa um link morto, uma âncora órfã ou uma tag sem fechar.
 
 Para auditar o site com rigor de engenharia, convoquei o auditor definitivo: o **HTMLProofer** [^5], adicionando a ferramenta ao `Gemfile` dentro do grupo de testes. O utilitário compila o site estático completo e realiza uma varredura minuciosa em cada arquivo gerado na pasta `_site`, inspecionando links internos, imagens ausentes, scripts inexistentes e marcações malformadas.
 

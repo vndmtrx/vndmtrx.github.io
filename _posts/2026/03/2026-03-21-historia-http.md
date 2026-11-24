@@ -5,13 +5,13 @@ subtitle: "Do HTTP/0.9 de linha única no CERN até a revolução do HTTP/3 sobr
 author:
 - "Eduardo N. S. R."
 date: 2026-03-21 20:16:00 GMT-3
-modified_date: 2026-03-25 14:11:00 GMT-3
+modified_date: 2026-11-24 19:27:44 GMT-3
 permalink: /posts/evolucao-http/
 tags: [Web, Internet, Redes, História]
 category: Artigos
 ---
 
-A história do protocolo HTTP e da World Wide Web está intimamente ligada, desde a sua fundação. Originalmente desenvolvido pelos cientistas do CERN, o HTTP vem passando por várias mudanças que mantiveram sua simplicidade ao passo que melhoraram sua flexibilidade para lidar com os cenários cada vez mais completos e modernos da Web com o passar dos anos. Pensado originalmente para troca de informações automatizadas entre cientistas entre universidades, tornou-se hoje em uma estrutura capaz de carregar imagens e vídeos de alta resolução, além de ser a base de praticamente todos os protocolos de troca de dados dos Web Services, seja em REST, seja RPC ou SOAP, para citar apenas estes.
+A história do protocolo HTTP e da World Wide Web anda junta desde a fundação. Nascido no CERN, o HTTP evoluiu mantendo sua simplicidade enquanto ganhava flexibilidade para os cenários modernos da Web. Pensado no início para trocar documentos entre universidades, hoje carrega vídeo em alta resolução e sustenta quase todo Web Service em circulação (REST, RPC ou SOAP).
 
 A ideia básica do WWW e do HTTP era juntar tecnologias emergentes dos computadores, redes de comunicação e hipertexto em algo poderoso e fácil de usar como sistema de troca de informações, como uma grande teia de páginas, artigos, relatórios, ligados entre si. Daí o nome World Wide Web, ou em bom português: Grande Teia Global.
 
@@ -38,7 +38,7 @@ GET /minha-pagina.html
 
 *Em HTTP/0.9, a requisição continha apenas o método GET e o caminho do arquivo solicitado, sem versão e sem cabeçalhos.*
 
-Onde o recurso minha página poderia ser qualquer coisa disponibilizada. A resposta também era extremamente simples, e consistia em simplesmente retornar o conteúdo do arquivo:
+Onde o recurso minha página poderia ser qualquer coisa disponibilizada. A resposta também era seca e direta, devolvendo o conteúdo do arquivo puro:
 
 ```html
 <html>Uma página de texto</html>
@@ -71,7 +71,7 @@ E essa era toda a essência do protocolo HTTP nessa versão. Não havia outros v
 
 ## HTTP/1.0 - Uma evolução bastante desejada
 
-A recepção do HTTP/Web foi extremamente positiva. O ano de 1994 ficou conhecido como "O Ano da Web". Durante os anos seguintes à criação dos padrões da Web, foi criado o World Wide Web Consortium (W3C) para supervisionar o desenvolvimento da Web.
+A recepção foi explosiva: 1994 virou "O Ano da Web" e nasceu o W3C para supervisionar os padrões.
 
 Entre 1991 e 1995, vários recursos começaram a serem testados, em uma abordagem do tipo trial-and-error, onde os recursos eram implementados nos servidores e clientes e a comunidade testava para ver quais desses recursos tinham maior aceitação. Problemas de interoperabilidade eram bastante comuns nessa época.
 
@@ -191,7 +191,7 @@ Como é possível ver nos exemplos acima, temos várias novas funcionalidades di
 
 A partir de agora, a conexão TCP pode ser reutilizada entre requisições HTTP. Não é mais necessário abrir múltiplas conexões TCP para recuperar os recursos linkados nas páginas html. Junto com a possibilidade de reutilização da conexão TCP, foi adicionado um recurso de pipeline, que permitia a requisição de outros recursos enquanto um recurso ainda está sendo enviado pelo servidor.
 
-Adicionalmente, também foram adicionados mecanismos de cache mais poderosos, permitindo que o navegador possa indagar o servidor sobre o status de recursos baixados e salvos localmente, sem precisar baixar os recursos novamente. Além do cabeçalho `Expires`, que define um tempo de expiração absoluto, o **HTTP/1.1** passou a usar cabeçalhos como `Cache-Control`, `ETag` e `If-Modified-Since`, permitindo estratégias mais flexíveis de cache e revalidação de recursos.
+Também entraram mecanismos de cache muito melhores, deixando o navegador consultar o servidor sobre recursos guardados em disco sem baixá-los de novo. Além do `Expires`, o **HTTP/1.1** trouxe `Cache-Control`, `ETag` e `If-Modified-Since` para estratégias flexíveis de revalidação.
 
 E não menos importante, foi adicionada uma funcionalidade de Host, que passou a permitir que um mesmo servidor, em um mesmo IP, pudesse responder por diferentes endereços DNS.
 
@@ -271,7 +271,7 @@ Além das melhorias intrínsecas implementadas no novo protocolo, ainda houve es
 
 ### Limitações
 
-Curiosamente, o protocolo **HTTP/2** ainda não era totalmente livre de problemas. Apesar de todas as melhorias feitas no desempenho do protocolo, na forma de transferir dados e nos novos recursos para melhorar a distribuição de conteúdo, o **HTTP/2** ainda era suscetível ao problema original do _"Head-of-line blocking"_, e isso era devido à característica inerente do protocolo TCP, a base para o funcionamento de todas as versões do HTTP até o momento.
+Mesmo com todas as melhorias de desempenho e transferência, o **HTTP/2** não ficou livre de problemas: ele ainda sofria com o velho _"Head-of-line blocking"_, herdado do TCP, que servia de base para todas as versões do HTTP até então.
 
 O problema é que a despeito do fato de que as transferências de dados entre cliente e servidor já encontravam-se multiplexadas, com possibilidade de transferência simultânea de vários recursos ao mesmo tempo, o canal de transmissão era único.
 
@@ -355,9 +355,11 @@ Host: vndmtrx.github.io
 
 A única mudança real veio no **HTTP/3**, onde **TLS 1.3** passa a ser integrado ao QUIC:
 
-- **HTTP/1.1** + TLS = 4 handshakes (3 TCP + 1 TLS)
-- **HTTP/2** + TLS   = 2 handshakes (1 TCP + 1 TLS)
-- **HTTP/3** + QUIC  = 1 handshake (TLS embutido)
+| Versão | Handshakes até trafegar dados |
+| :--- | :--- |
+| **HTTP/1.1 + TLS** | 4 handshakes (3 TCP + 1 TLS) |
+| **HTTP/2 + TLS** | 2 handshakes (1 TCP + 1 TLS) |
+| **HTTP/3 + QUIC** | 1 handshake (TLS embutido) |
 
 No futuro devo fazer um post só sobre TLS, para complementar esse post.
 

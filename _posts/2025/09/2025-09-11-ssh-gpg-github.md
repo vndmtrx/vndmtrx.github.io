@@ -5,7 +5,7 @@ subtitle: "Um guia prático para gerar chaves Ed25519 e assinar seus commits com
 author:
   - "Eduardo N. S. R."
 date: 2025-09-11 23:13:00 GMT-3
-modified_date: 2026-05-10 10:26:00 GMT-3
+modified_date: 2026-11-24 19:27:44 GMT-3
 permalink: /posts/ssh-gpg-github/
 tags: [SSH, Git, Segurança, DevOps]
 series: OpenSSH na Prática
@@ -16,7 +16,7 @@ Não sei se vocês passam por isso, mas frequentemente eu troco minhas chaves SS
 
 ## Gerando a Chave SSH
 
-Primeiro, vamos criar a chave SSH. Hoje, a recomendação prática e padrão ouro da indústria é usar **ED25519** [^1] (curta, rápida e matematicamente robusta):
+Primeiro, vamos criar a chave SSH. Hoje, a recomendação prática e padrão ouro da indústria é usar **ED25519** [^1] (curta, rápida e segura por construção):
 
 ```bash
 ssh-keygen -t ed25519 -a 100 -C "seu-email@exemplo.com"

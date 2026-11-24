@@ -5,7 +5,7 @@ subtitle: "Centralizando usuários, grupos e chaves públicas com Debian Trixie 
 author:
   - "Eduardo N. S. R."
 date: 2026-07-18 21:57:00 GMT-3
-modified_date: 2026-09-02 13:57:00 GMT-3
+modified_date: 2026-11-24 19:27:44 GMT-3
 permalink: /posts/openssh-sssd-ldap/
 tags: [SSH, Linux, Segurança, Infraestrutura]
 series: OpenSSH na Prática
@@ -46,7 +46,7 @@ O SSSD não é apenas "mais um cliente LDAP". Ele é um **daemon de sistema** [^
 - **NSS (Name Service Switch):** Permite que comandos como `getent passwd`, `id`, `ls -la` resolvam nomes de usuários e grupos que não existem no `/etc/passwd` local. Para o kernel e os programas, é como se o usuário fosse local. Transparente. Invisível.
 - **PAM (Pluggable Authentication Modules):** Permite que o processo de login (seja via SSH, console, `su`, ou qualquer outra porta de entrada) valide a senha do usuário contra o diretório remoto, sem precisar de senhas locais no `/etc/shadow`.
 
-O SSSD faz tudo isso com **cache local** inteligente: se o servidor LDAP cair (porque servidores LDAP adoram cair na sexta-feira às 18h), os usuários que já logaram recentemente continuam acessando normalmente, graças a credenciais cacheadas localmente no banco de dados do SSSD (`/var/lib/sss/db/`) [^3].
+O SSSD faz tudo isso com **cache local** inteligente: se o servidor LDAP cair (porque servidores LDAP adoram cair na sexta-feira às 18h), os usuários que logaram há pouco continuam entrando sem susto, graças às credenciais cacheadas no banco do SSSD (`/var/lib/sss/db/`) [^3].
 
 > [!NOTE] Curiosidade
 > O SSSD nasceu como um projeto da Red Hat/Fedora, mas hoje é mantido como [projeto upstream independente](https://github.com/SSSD/sssd) e está presente nos repositórios de praticamente todas as distribuições Linux relevantes. No Debian 13 (Trixie), o metapacote `sssd` puxa automaticamente os módulos para NSS (`sssd-common`), PAM (`libpam-sss`) e o provedor LDAP (`sssd-ldap`).
@@ -126,7 +126,7 @@ Dissecando os pacotes:
 > [!IMPORTANT] Importante
 > Não confunda `libnss-sss` com o antigo `libnss-ldapd` (e seu daemon `nslcd`). O `libnss-ldapd` consulta o LDAP diretamente, sem cache inteligente, sem failover automático, sem integração com PAM. É a abordagem "à moda antiga". O SSSD substitui tudo isso com um daemon unificado, cache local, e gerenciamento de credenciais offline. Se você ainda está usando `nslcd` em 2026, eu respeitosamente sugiro que reconsidere suas escolhas de vida.
 
-## Configurando o `/etc/sssd/sssd.conf`
+## Configurando o /etc/sssd/sssd.conf
 
 Este é o coração da operação. O arquivo `/etc/sssd/sssd.conf` é onde você define quais serviços o SSSD vai prover, e como ele se conecta ao seu provedor de identidade. Ele **precisa** ter permissões `0600` (leitura/escrita apenas pelo `root`), caso contrário o SSSD se recusa a iniciar. E com razão, pois o arquivo pode conter credenciais de *bind* do LDAP.
 
@@ -190,7 +190,7 @@ ldap_access_filter = (loginShell=/bin/bash)
 
 Vamos dissecar as partes mais interessantes:
 
-### A seção `[sssd]`
+### A seção [sssd]
 
 ```ini
 services = nss, pam, ssh
@@ -203,7 +203,7 @@ Três serviços habilitados:
 - **pam**: Autenticação de senhas contra o LDAP.
 - **ssh**: A feature que nos interessa. Habilita o responder de chaves SSH, permitindo que o utilitário `sss_ssh_authorizedkeys` consulte o atributo `sshPublicKey` do LDAP.
 
-### A seção `[nss]` e o `filter_users`
+### A seção [nss] e o filter_users
 
 ```ini
 filter_users = root,daemon,bin,sys,nobody
@@ -214,7 +214,7 @@ filter_groups = root,daemon,bin,sys,nogroup
 
 Isso diz ao SSSD: *"Nunca tente resolver esses usuários/grupos no LDAP"*. Parece inocente, mas é uma proteção crítica. Sem isso, toda vez que o sistema chamar `getent passwd root`, o SSSD vai perder tempo fazendo um round-trip inútil até o LDAP procurando um `root` que só existe localmente. No melhor caso, isso é lento. No pior caso (se o LDAP estiver fora), o login do `root` local pode travar por timeout. Ninguém quer ficar trancado para fora do próprio servidor esperando o LDAP responder.
 
-### A seção `[domain/example.com]`
+### A seção [domain/example.com]
 
 **`ldap_uri = ldaps://ldap.example.com`**: Note o protocolo `ldaps://` (LDAP sobre TLS implícito, porta 636). Se o seu LDAP usa StartTLS na porta 389, substitua por `ldap://` e adicione `ldap_id_use_start_tls = true`. Em 2026, se o seu LDAP não está criptografado, pare tudo o que está fazendo e vá corrigir isso agora.
 
@@ -225,7 +225,7 @@ Isso diz ao SSSD: *"Nunca tente resolver esses usuários/grupos no LDAP"*. Parec
 > [!CAUTION] Aviso Crítico de Segurança
 > A senha de bind (`ldap_default_authtok`) fica em *plain text* dentro do `sssd.conf`. É por isso que a permissão `0600` é inegociável. A conta de bind deve ser uma conta **read-only** no LDAP, com o mínimo de privilégios possível. Ela só precisa ler atributos de usuário (`uid`, `uidNumber`, `gidNumber`, `sshPublicKey`, etc.). Nunca use a conta `cn=admin` para bind do SSSD. Se alguém comprometer o servidor e ler esse arquivo, o estrago com uma conta read-only é infinitamente menor.
 
-## O truque elegante: `override_homedir = /tmp/%u`
+## O truque elegante: override_homedir = /tmp/%u
 
 Essa diretiva merece uma seção própria, porque ela desafia a intuição de qualquer sysadmin criado na era clássica do Linux.
 
@@ -241,7 +241,7 @@ override_homedir = /tmp/%u
 
 *Substitui dinamicamente o diretório home para um caminho temporário `/tmp/usuario`.*
 
-Isso faz o SSSD **ignorar** o atributo `homeDirectory` do LDAP (que provavelmente está apontando para `/home/joao`) e substituir por `/tmp/joao` em todos os servidores [^7]. O diretório `/tmp` já existe, é limpo automaticamente pelo sistema, e ninguém deveria guardar nada importante lá.
+Isso faz o SSSD **ignorar** o atributo `homeDirectory` do LDAP (que quase sempre aponta para `/home/joao`) e substituir por `/tmp/joao` em todos os servidores [^7]. O diretório `/tmp` já existe, o sistema limpa sozinho, e ninguém deveria guardar nada importante lá.
 
 > [!NOTE] Nota
 > O `%u` é um token que o SSSD expande para o nome do usuário. Existem outros tokens úteis: `%d` (nome do domínio), `%f` (FQDN do usuário), `%U` (UID numérico). A documentação completa está no [`sssd.conf(5)`](https://manpages.debian.org/testing/sssd-common/sssd.conf.5.en.html).
@@ -252,7 +252,7 @@ Excelente pergunta. E é exatamente por isso que no nosso setup nós **não usam
 
 E para cenários onde o diretório precisa existir de fato (porque algum programa teimoso insiste em escrever no `$HOME`), o Systemd moderno do Debian 13 já cuida disso: o serviço `systemd-tmpfiles` pode criar diretórios temporários com permissões corretas via configuração em `/etc/tmpfiles.d/`.
 
-## Ajustando o `/etc/nsswitch.conf`
+## Ajustando o /etc/nsswitch.conf
 
 O NSS (Name Service Switch) é o mecanismo do glibc que define **onde** o sistema procura por informações de usuários, grupos, hostnames, etc. Sem configurar o NSS, o SSSD pode estar rodando perfeitamente, mas o sistema operacional não vai enxergar os usuários do LDAP.
 
@@ -281,7 +281,7 @@ joao:*:10001:10001:João da Silva:/tmp/joao:/bin/bash
 
 *Reinicia o SSSD e valida a resolução do usuário joao via NSS.*
 
-Se você viu essa saída, comemore discretamente. O SSSD acabou de consultar o LDAP, aplicou o `override_homedir` (repare no `/tmp/joao` em vez do `/home/joao` do LDAP), e devolveu a informação exatamente como se o João fosse um usuário local. O `id joao` também deve funcionar perfeitamente:
+Se você viu essa saída, comemore em silêncio. O SSSD acabou de consultar o LDAP, aplicou o `override_homedir` (repare no `/tmp/joao` em vez do `/home/joao` do LDAP) e devolveu os dados como se o João fosse usuário local. O `id joao` também deve responder liso:
 
 ```bash
 $ id joao
@@ -313,9 +313,9 @@ Note que **não** vamos habilitar o `mkhomedir`:
 
 *Evitamos criar diretórios persistentes mantendo os ambientes de servidores desacoplados e efêmeros.*
 
-Lembra do `override_homedir = /tmp/%u`? Criar diretórios home persistentes é exatamente o que estamos evitando. O `/tmp/joao` será criado sob demanda se necessário, ou simplesmente não existirá. E está tudo bem.
+Lembra do `override_homedir = /tmp/%u`? Evitar diretórios home persistentes é o objetivo aqui. O `/tmp/joao` nasce sob demanda se precisar, ou nem chega a existir. E está tudo bem.
 
-## A peça final: `AuthorizedKeysCommand` e o `sss_ssh_authorizedkeys`
+## A peça final: AuthorizedKeysCommand e o sss_ssh_authorizedkeys
 
 Aqui é onde o OpenSSH encontra o SSSD e os dois dançam uma valsa elegante. No post sobre certificados, mencionei brevemente a diretiva `AuthorizedPrincipalsCommand` como forma avançada de consultar "quais principals são válidos" num LDAP. Agora vamos usar a irmã dela: **`AuthorizedKeysCommand`** [^9].
 

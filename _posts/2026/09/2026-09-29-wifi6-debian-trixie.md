@@ -5,6 +5,7 @@ subtitle: "Como contornar as travas LAR e NO-IR para rodar um AP 802.11ax com WP
 author:
   - "Eduardo N. S. R."
 date: 2026-09-29 10:38:00 GMT-3
+modified_date: 2026-11-24 19:27:44 GMT-3
 permalink: /posts/wifi6-debian-trixie/
 category: Artigos
 tags: [Debian, Linux, Wi-Fi 6, hostapd, nftables]
@@ -46,7 +47,7 @@ Essa intimidade profunda entre a placa-mãe e o rádio significa uma coisa bem s
 
 A tentação mais comum ao criar um hotspot no Linux é deixar o NetworkManager cuidar de tudo: ele cria uma ponte virtual, sobe um `dnsmasq` temporário onde bem entender e joga um punhado de regras legadas de `iptables`.
 
-O problema é que o NetworkManager se comporta igual àquele estagiário excessivamente proativo: você não pediu nada, mas ele vê uma interface dando sopa, assume o controle sem avisar, tenta adivinhar o que você quer e, no primeiro sinal de instabilidade, reseta o link ou decide unilateralmente que a interface virou "não gerenciável". Pra um AP que você só quer deixar quieto funcionando no canto, essa boa vontade é a receita perfeita pra dor de cabeça.
+O problema é que o NetworkManager se comporta igual àquele estagiário proativo demais: você não pediu nada, mas ele vê uma interface dando sopa, assume o controle sem avisar, tenta adivinhar o que você quer e, no primeiro sinal de instabilidade, reseta o link ou marca a interface como "não gerenciável" por conta própria. Pra um AP que você só quer deixar quieto no canto, essa boa vontade é a receita certa pra dor de cabeça.
 
 Em vez de brigar com o desktop, a saída foi chutar o NetworkManager pra longe e separar as responsabilidades em camadas simples:
 
@@ -119,7 +120,7 @@ O `hostapd` opera em *userspace*. Para conversar com os adaptadores modernos, el
 
 Só que o kernel Linux não cai em papo furado. Uma interface de rede só abandona a flag `NO-CARRIER` e atinge o estado `state UP` quando o rádio físico reporta que a portadora está ligada de verdade (`LOWER_UP`). No cabo de rede, é quando o conector detecta tensão elétrica no cobre. No Wi-Fi, é quando o chip efetivamente liga o transmissor, sintoniza a frequência e joga os primeiros *beacons* 802.11 no ar.
 
-Se o `hostapd` comemora que o AP subiu, mas a interface continua em `NO-CARRIER` no kernel, a constatação é límpida (depois de perder um belo par de horas quebrando a cabeça): o microcódigo da Intel simplesmente puxou o freio de mão e se recusou a transmitir um mísero watt de sinal.
+Se o `hostapd` comemora `AP-ENABLED`, mas o kernel segue em `NO-CARRIER`, o veredito é seco: o microcódigo da Intel puxou o freio de mão e não transmitiu um watt.
 
 ### A armadilha do Location Aware Regulatory e o perfil country 00
 
@@ -213,7 +214,7 @@ Frequencies:
     * 5825.0 MHz [165] (22.0 dBm)
 ```
 
-No Brasil, sob regulamentação da Anatel e em conformidade com as regras da FCC, a faixa UNII-3 não divide frequências com radares meteorológicos (dispensando o complexo mecanismo DFS) e autoriza emissão de maior potência. Como a placa havia escutado passivamente o ambiente e herdado temporariamente o código geográfico `country BR: DFS-UNSET`, a flag restritiva de `no IR` parecia ter desaparecido desses cinco canais.
+No Brasil, sob regras da Anatel e da FCC, a faixa UNII-3 não divide frequências com radares meteorológicos (dispensando DFS) e autoriza maior potência. Como a placa tinha escutado o ambiente em modo passivo e herdado o código geográfico `country BR: DFS-UNSET`, a flag restritiva de `no IR` parecia ter sumido desses cinco canais.
 
 A ideia era tentadora: por que me contentar com os 286 Mbps da faixa de 2.4 GHz se dava pra tentar o canal 149 com canais agregados de 80 MHz (`vht_oper_chwidth=1`, `he_oper_chwidth=1`) e buscar taxas bem mais altas no Wi-Fi 6?
 
@@ -283,7 +284,7 @@ unmanaged-devices=interface-name:wlp0s20f3
 ```
 *Blindagem definitiva para impedir qualquer interferência de daemons de desktop.*
 
-Essa configuração combinada garante que, durante a fase de inicialização da rede (`networking.service`), a interface `wlp0s20f3` receba imediatamente o endereço de gateway `192.168.100.1/24`, ficando totalmente invisível para os applets de bandeja do desktop.
+Essa configuração combinada garante que, no boot da rede (`networking.service`), a interface `wlp0s20f3` assuma na hora o gateway `192.168.100.1/24` e fique invisível para os applets do desktop.
 
 ### Serviços de suporte: DHCP e DNS com dnsmasq
 
@@ -532,7 +533,7 @@ O que começou como uma simples curiosidade prática, querendo saber se dava pra
 
 Por trás da promessa sedutora do "criar hotspot em um clique", existe um abismo de detalhes. Os adaptadores da Intel foram paridos com a premissa de serem apenas clientes; tentar forçar a placa a virar um roteador 5 GHz autônomo sem entender o que a fabricante fez no silício só resulta em mensagens crípticas de assertiva no `dmesg` e muita frustração.
 
-Mas jogando pelas regras do jogo e aproveitando a brecha limpa do canal 13 em 2.4 GHz, o resultado compensou: conexão estável como rocha, WPA3 moderno com SAE puro, preâmbulo curto e velocidade real de sobra pros meus aparelhos, tudo orquestrado de forma declarativa e atômica.
+Jogando pelas regras no canal 13 em 2.4 GHz, fechou bonito: WPA3 com SAE puro, conexão firme como rocha e tudo declarativo.
 
 Agora, se formos honestos na ponta do lápis (e a nossa fatura de energia elétrica exige essa honestidade): vale a pena manter um computador desktop de 80W ligado direto na tomada só pra servir Wi-Fi pro celular? *Por favor, não faça isso.* Se você quer apenas internet estável sem inventar moda, compre um roteador Wi-Fi 6 dedicado de duzentos reais que consome 5W e vá viver a sua vida em paz. Mas se o seu objetivo era o prazer sádico de domar o hardware, entender como o rádio do Linux opera por baixo do capô e não deixar a Intel decidir o que você pode ou não rodar na sua própria máquina: aí sim, cada linha de log valeu a pena.
 

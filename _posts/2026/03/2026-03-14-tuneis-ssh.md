@@ -5,17 +5,20 @@ subtitle: "Desmistificando -L, -R, -D e ProxyJump para redirecionar tráfego seg
 author:
   - "Eduardo N. S. R."
 date: 2026-03-14 21:16:00 GMT-3
+modified_date: 2026-11-24 19:27:44 GMT-3
 permalink: /posts/tuneis-ssh/
 tags: [SSH, Redes, Segurança, Infraestrutura]
 series: OpenSSH na Prática
 category: Tutoriais
 ---
 
-SSH é daquelas ferramentas que todo mundo na área de infra tem na ponta da língua: `ssh usuario@servidor` [^1], entra, faz o que tem que fazer, sai. Simples, confiável, onipresente. O problema é que boa parte das pessoas para exatamente por aí, e o pior é que o SSH possui alguns recursos que ficam completamente invisíveis pra quem nunca foi além do básico. Não porque sejam obscuros ou experimentais. Eles estão inclusive na man page, funcionam desde sempre, e aparecem toda vez que você digita `ssh --help`. Só que ninguém parou pra explicar direito como usar de forma intuitiva.
+SSH é daquelas ferramentas que todo mundo na área de infra tem na ponta da língua: `ssh usuario@servidor`, entra, faz o que tem que fazer, sai. Simples, confiável, onipresente.
+
+O problema é que boa parte das pessoas para por aí, deixando passar recursos inteiros que ficam invisíveis pra quem nunca saiu do básico. Eles não são obscuros nem experimentais: estão na man page [^1], funcionam desde sempre e aparecem toda vez que você digita `ssh --help`. Só faltou alguém explicar direito como usar.
 
 Um desses recursos são os **túneis SSH** [^2]. Três flags (`-L`, `-R` e `-D`) que permitem redirecionar tráfego de rede arbitrário por dentro de uma conexão SSH já estabelecida. Sem VPN, sem configuração extra no firewall, sem instalar nada. É o tipo de coisa que, quando você descobre, fica se perguntando por que ninguém nunca te contou antes, e que faz você olhar pro seu histórico de comandos e pensar _"mds, quanto tempo eu perdi sem isso"_!
 
-E ainda vou deixar vocês com uma pulga atrás da orelha antes de continuar: essas mesmas técnicas que você vai aprender aqui são exatamente as que equipes de red team e atacantes reais costumam usar para se mover lateralmente dentro de redes comprometidas. O MITRE ATT&CK inclusive cataloga isso como técnica [T1021.004](https://attack.mitre.org/techniques/T1021/004/) [^3], e a Red Canary já descreveu o abuso de túneis SSH como um vetor de lateralização _"incrivelmente difícil de detectar quando as ferramentas certas não estão no lugar"_ [^5]. E em 2025, a Sygnia documentou grupos de ransomware usando exatamente o `-R` pra se mover por ambientes VMware ESXi sem levantar alertas [^4] ([ESXi Ransomware Attacks: Stealthy Persistence through SSH Tunneling](https://www.sygnia.co/blog/esxi-ransomware-ssh-tunneling-defense-strategies/)). Conhecer o recurso é a primeira linha de defesa (e também de uso legítimo).
+E ainda vou deixar vocês com uma pulga atrás da orelha antes de continuar: essas mesmas técnicas são as que equipes de red team e atacantes reais usam para se mover de máquina em máquina dentro de redes comprometidas. O MITRE ATT&CK cataloga isso como técnica [T1021.004](https://attack.mitre.org/techniques/T1021/004/) [^3], e a Red Canary já descreveu o abuso de túneis SSH como um vetor _"muito difícil de detectar quando as ferramentas certas não estão no lugar"_ [^5]. Em 2025, a Sygnia documentou grupos de ransomware usando o `-R` pra se mover por ambientes VMware ESXi sem levantar alertas [^4] ([ESXi Ransomware Attacks: Stealthy Persistence through SSH Tunneling](https://www.sygnia.co/blog/esxi-ransomware-ssh-tunneling-defense-strategies/)). Conhecer o recurso é a primeira linha de defesa (e também de uso legítimo).
 
 Dito isso, nesse post vou explicar cada um dos três modos de uso de túneis que existem no SSH (e por tabela no PuTTY, ok?). A ideia é simular um cenário real, e sem pular etapas. No final ainda tem um bônus sobre o `ProxyJump` (`-J`), que muita gente confunde com túnel mas é outra coisa. Vale ficar até lá.
 
@@ -23,11 +26,11 @@ Dito isso, nesse post vou explicar cada um dos três modos de uso de túneis que
 
 ## Mas antes: o que diabos é um túnel SSH, Dudu?
 
-Ok, vamos do começo então. Imagina que você tem um cano de água entre dois pontos. Normalmente, esse cano carrega água, mas nada impede que você enfie um cabo elétrico dentro dele pra chegar no mesmo lugar (_por favor não faça isso_), só que usando a estrutura já existente.
+Ok, vamos do começo. Imagina um cano de água entre dois pontos: normalmente ele carrega água, mas nada impede que você passe um cabo elétrico por dentro dele (_por favor não faça isso_), aproveitando o trajeto que já existe.
 
-Um túnel SSH funciona assim. Você já tem uma conexão SSH estabelecida entre dois pontos. O que o túnel faz é pegar outro tráfego de rede (banco de dados, HTTP, o que for) e mandar junto, empacotado dentro dessa conexão SSH. Criptografado, sem abrir novas portas no firewall, sem VPN.
+O túnel SSH faz isso com rede: empacota outro tráfego (banco, HTTP, o que for) dentro de uma sessão SSH já aberta, criptografado e sem abrir porta nova no firewall.
 
-A fonte de confusão que quase todo mundo tem quando vê túneis SSH pela primeira vez é: **de quem é o ponto de vista?** Quando o comando diz `localhost`, a qual máquina ele está se referindo? Quando diz _"escutar uma porta"_, é no seu PC ou no servidor? Essa é exatamente a pergunta de um milhão de reais, e vamos respondê-la para cada cenário de tunelamento que temos no SSH.
+A fonte de confusão que quase todo mundo tem quando vê túneis SSH pela primeira vez é: **de quem é o ponto de vista?** Quando o comando diz `localhost`, a qual máquina ele está se referindo? Quando diz _"escutar uma porta"_, é no seu PC ou no servidor? Essa é a pergunta de um milhão de reais, e vamos respondê-la para cada cenário de tunelamento no SSH.
 
 ## Configurando o cenário
 
@@ -47,7 +50,7 @@ Primeiramente temos:
                         └─> DASHBOARD: 10.0.254.50 (HTTPS :443)
 ```
 
-É o tipo de topologia que aparece o tempo todo em ambientes corporativos, homelabs com um mínimo de segurança, e praticamente qualquer cloud bem configurada. E é exatamente nesses ambientes que os túneis SSH brilham.
+É o tipo de topologia que aparece o tempo todo em ambientes corporativos, homelabs com o mínimo de segurança e quase toda cloud bem configurada. É nesses ambientes que os túneis SSH brilham.
 
 ## Primeiro Cenário - Túnel Local
 
@@ -190,15 +193,15 @@ Agora, configure o seu navegador preferido pra usar SOCKS proxy no endereço `lo
 SEU_NAVEGADOR ──> SOCKS:9999 ──[túnel]──> BASTION ──> DASHBOARD:10.0.254.50
 ```
 
-E o melhor: funciona pra qualquer site/serviço da rede interna, não só pro dashboard. Uma única configuração. Inclusive, se o `bastion` tem rota padrão para a internet, é possível navegar para fora da rede por essa conexão. E é por isso que ela é uma opção **extremamente poderosa** (e usada frequentemente por atacantes para esconder tráfego).
+E o melhor: funciona pra qualquer site/serviço da rede interna, não só pro dashboard. Uma única configuração. Inclusive, se o `bastion` tem rota padrão para a internet, é possível navegar para fora da rede por essa conexão. Por isso ela é uma opção **poderosa demais** (e muito usada por atacantes para esconder tráfego).
 
 ## Caso Especial - ProxyJump
 
-Às vezes você só quer entrar num servidor da rede interna que **também tem SSH**, mas não tem acesso direto. O ProxyJump resolve isso sem precisar de túnel nenhum.
+Às vezes você só quer entrar num servidor da rede interna que **também tem SSH**, sem acesso direto.
 
-O `ProxyJump` permite **pular pelo bastion** para abrir uma sessão SSH em outra máquina da rede interna. Ele não cria redirecionamento de porta nenhum, simplesmente usa o `bastion` como relay transparente pra uma nova conexão SSH.
+O `ProxyJump` resolve isso pulando pelo `bastion`: não redireciona porta nenhuma, só usa o `bastion` como relay transparente pra abrir uma nova sessão SSH no destino.
 
-É útil quando o servidor de destino também tem SSH e você só quer um terminal nele. Mas se o objetivo é acessar um serviço (banco, web, etc.), você vai precisar das flags de túnel de verdade.
+Guarde o corte: se o destino tem SSH e você só quer um terminal, vai de `-J`; se precisa alcançar um banco ou serviço HTTP lá dentro, aí sim entram as flags de túnel.
 
 #### "Eu só quero um terminal no servidor interno"
 
@@ -271,11 +274,13 @@ Por isso essa feature é tão forte: ela te dá um canivete suíço de acesso in
 
 O SSH tem recursos que a maioria dos programadores e pessoal de ops **nunca chega a conhecer**. Não por serem obscuros ou difíceis, mas porque ninguém nunca realmente parou para ler direito como funciona (ou fazer playground para aprender o comportamento).
 
-E tem um outro lado dessa moeda que não dá pra ignorar: essas mesmas técnicas que simplificam tanto a vida do pessoal de ops também criam **vetores de navegação lateral praticamente invisíveis**. Uma porta SSH legítima pode facilmente virar canal pra evasão de regras de firewall internas: você pula de máquina em máquina sem tocar nas políticas de rede que o time de segurança passou meses configurando.
+E tem um outro lado dessa moeda que não dá pra ignorar: essas mesmas técnicas que simplificam a vida de ops também abrem **vetores de movimento lateral quase invisíveis**. Uma porta SSH legítima vira canal de evasão de firewall interno sem esforço: você pula de máquina em máquina sem encostar nas regras de rede que segurança passou meses configurando.
 
-Por isso a **microsegmentação** é tão crucial hoje. Security Groups (AWS, GCP), Network Policies (Kubernetes) [^6], listas de permissão granulares, tudo isso existe exatamente pra garantir que **só quem deve** acessar um recurso consiga. Uma porta SSH no `bastion` não deveria, por princípio de menor privilégio, ter acesso irrestrito pra todo o resto da rede interna.
+É por isso que **microsegmentação** importa tanto.
 
-Em outro post futuro, pretendo falar de outro recurso muito poderoso do SSH, chamado **SSH-Based Virtual Private Networks** (`-w`), que permite criar túneis TAP/TUN de camada 2/3 completos, a **VPN nativa do SSH** que tenho certeza que a maioria das pessoas usuárias de SSH nem sonham que existe.
+Security Groups (AWS, GCP), Network Policies (Kubernetes) [^6] e listas granulares de permissão existem pra garantir que **só quem deve** alcance cada recurso. Uma porta SSH no `bastion`, pelo princípio do menor privilégio, nunca deveria ter passe livre pro resto da rede interna.
+
+Num post futuro, ainda quero cobrir a **VPN nativa do SSH** (`-w`, túneis TAP/TUN de camada 2/3), um recurso poderoso que quase ninguém conhece.
 
 **É conhecimento de ops que todo mundo deveria ter. E de segurança que todo mundo deveria temer quando usado errado.**
 

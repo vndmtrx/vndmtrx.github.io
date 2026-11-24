@@ -5,7 +5,7 @@ subtitle: "Das redes militares da ARPANET nos anos 60 à era do streaming e da c
 author:
 - "Eduardo N. S. R."
 date: 2026-07-31 12:40:00 GMT-3
-modified_date: 2026-08-07 18:40:00 GMT-3
+modified_date: 2026-11-24 19:27:44 GMT-3
 permalink: /posts/historia-internet/
 tags: [Internet, Web, História, Redes]
 category: Artigos
@@ -23,53 +23,53 @@ A ideia desse post é contar essa história de uma forma razoavelmente acessíve
 
 ## As Raízes da Internet: Comutação de Pacotes e a Guerra Fria
 
-Antes de qualquer coisa, a gente precisa voltar ao início dos anos 1960, em plena Guerra Fria. Nessa época, uma das preocupações dos militares estadunidenses era bastante prática: como manter uma rede de comunicação funcionando caso parte dela fosse destruída por um ataque nuclear? As redes de telecomunicação existentes eram baseadas em comutação de circuitos, ou seja, quando duas pontas se comunicavam, existia um circuito dedicado entre elas. Se alguém cortasse aquele circuito, a comunicação morria.
+Volte aos anos 1960, em plena Guerra Fria: o problema militar era manter comunicações de pé num ataque nuclear, já que redes de circuitos dedicados morriam com um único fio cortado.
 
-É nesse cenário que Paul Baran, um engenheiro da RAND Corporation, começou a pensar em uma alternativa. Ele publicou uma série de relatórios entre 1960 e 1964 chamada *"On Distributed Communications"* [^1], onde propôs um modelo de rede distribuída. A ideia era que a mensagem fosse quebrada em pedaços menores (que ele chamou de "message blocks") e que esses pedaços pudessem trafegar por caminhos diferentes dentro de uma rede em formato de malha, se reorganizando dinamicamente ao redor de pontos danificados ou sobrecarregados.
+Foi aí que Paul Baran, engenheiro da RAND Corporation, publicou entre 1960 e 1964 a série *"On Distributed Communications"* [^1], propondo quebrar mensagens em blocos menores (*message blocks*) trafegando por caminhos distintos numa malha que se reorganizava sozinha ao redor de pontos danificados ou congestionados.
 
-Do outro lado do Atlântico, de forma totalmente independente, o cientista da computação Donald Davies chegava a conclusões parecidas no National Physical Laboratory (NPL), na Inglaterra, em 1965 [^2]. Em vez de motivações militares, seu objetivo era otimizar a troca de dados entre computadores de tempo compartilhado. Foi ele, inclusive, quem cunhou os termos **"packet"** (pacote) e **"packet switching"** (comutação de pacotes), terminologia que usamos até hoje [^3].
+Do outro lado do Atlântico, sem saber de Baran, Donald Davies chegou às mesmas conclusões no NPL (Inglaterra, 1965) [^2] e cunhou **"packet"** e **"packet switching"** [^3].
 
 Os dois pesquisadores trabalharam de forma independente, mas quando suas pesquisas se cruzaram, a comunidade percebeu que tinha em mãos um conceito poderoso. Lawrence Roberts, que viria a ser uma figura central no projeto da ARPANET, incorporou a terminologia e os conceitos de Davies no projeto estadunidense [^2].
 
 ## ARPANET: A Primeira Rede
 
-A ARPANET foi o primeiro grande experimento prático de rede de comutação de pacotes. O projeto foi financiado pela Advanced Research Projects Agency (ARPA) [^4], uma agência do Departamento de Defesa dos Estados Unidos que tinha o papel de investir em projetos de pesquisa de longo prazo. O arquiteto principal da rede foi Lawrence Roberts, que acabamos de falar no tópico anterior.
+A ARPANET foi o primeiro grande experimento prático de comutação de pacotes, financiado pela ARPA [^4] (agência de pesquisa do Departamento de Defesa dos EUA) sob arquitetura de Lawrence Roberts.
 
-A primeira conexão da ARPANET aconteceu em **29 de outubro de 1969** [^5], entre um computador na Universidade da Califórnia em Los Angeles (UCLA) e outro no Stanford Research Institute (SRI). A equipe era liderada pelo professor Leonard Kleinrock na UCLA, e o estudante Charley Kline ficou responsável por enviar a primeira mensagem. O plano era digitar "LOGIN" para se conectar remotamente ao computador de Stanford.
+A primeira conexão aconteceu em **29 de outubro de 1969** [^5], entre um computador na Universidade da Califórnia em Los Angeles (UCLA) e outro no Stanford Research Institute (SRI). A equipe era liderada pelo professor Leonard Kleinrock na UCLA, e o estudante Charley Kline ficou responsável por enviar a primeira mensagem. O plano era digitar "LOGIN" para se conectar remotamente ao computador de Stanford.
 
-O resultado? O sistema caiu depois de transmitir apenas as duas primeiras letras. A primeira mensagem da história enviada pela ARPANET foi **"LO"** [^5]. Em cerca de uma hora, a equipe conseguiu restabelecer a conexão e completar o comando. É um início humilde para algo que mudaria o mundo.
+O sistema caiu na segunda letra. A primeira mensagem da ARPANET foi **"LO"** [^5] (uma hora depois eles restabeleceram o link e completaram o comando).
 
 Até o final de 1969, a rede já tinha quatro nós: UCLA, SRI, UC Santa Barbara e a Universidade de Utah [^4]. A conexão entre esses computadores usava equipamentos chamados Interface Message Processors (IMPs), desenvolvidos pela empresa Bolt, Beranek and Newman (BBN) [^6]. Os IMPs são, na prática, os ancestrais dos roteadores modernos.
 
 ## O Surgimento do TCP/IP
 
-A ARPANET cresceu, e com ela o problema de interoperabilidade. Cada rede que surgia usava seus próprios protocolos, e elas simplesmente não conseguiam conversar entre si. A ARPANET usava um protocolo chamado NCP (*Network Control Protocol*), que funcionava bem dentro da própria rede mas não tinha sido pensado para interconectar redes diferentes.
+A ARPANET cresceu e esbarrou na interoperabilidade: cada rede falava um dialeto próprio e o protocolo NCP não fora feito para ligar redes distintas.
 
 Em 1974, Vint Cerf e Bob Kahn publicaram um paper que seria um marco na história das redes: *"A Protocol for Packet Network Intercommunication"* [^7]. Nesse artigo, eles propuseram um protocolo de "arquitetura aberta" que pudesse conectar redes heterogêneas através de gateways. O protocolo foi batizado inicialmente de Transmission Control Program (TCP).
 
-O design proposto por Cerf e Kahn foi significativamente influenciado pela rede **CYCLADES**, um projeto de pesquisa francês liderado por Louis Pouzin nos anos 1970 [^8]. A CYCLADES introduziu o conceito de **datagrama**, onde a responsabilidade pela entrega confiável dos dados ficava nos computadores das pontas, e não na rede em si, uma implementação pioneira do que ficaria conhecido como o princípio fim-a-fim (*end-to-end principle*). Conceitos como o mecanismo de janela deslizante para controle de fluxo, desenvolvidos pela equipe de Pouzin, foram incorporados diretamente no design do TCP/IP.
+O design de Cerf e Kahn bebeu fundo na rede francesa **CYCLADES**, liderada por Louis Pouzin nos anos 1970 [^8]. A CYCLADES trouxe o conceito de **datagrama**, jogando a responsabilidade pela entrega confiável para os computadores das pontas (o princípio fim-a-fim, ou *end-to-end*). O mecanismo de janela deslizante para controle de fluxo, criado pela equipe de Pouzin, entrou direto no desenho do TCP/IP.
 
-Com o tempo, ficou claro que o TCP monolítico precisava ser dividido. Em 1978, o protocolo foi separado em duas camadas: o **TCP** (*Transmission Control Protocol*), responsável pela entrega confiável e ordenada dos dados, e o **IP** (*Internet Protocol*), responsável pelo roteamento dos pacotes até o destino correto. Nascia o **TCP/IP**.
+Em 1978, o TCP monolítico foi separado em duas camadas: **TCP** (entrega confiável e ordenada) e **IP** (roteamento até o destino). Nascia o **TCP/IP**.
 
-O momento decisivo veio em **1º de janeiro de 1983**, data conhecida como o "Flag Day" [^9]. Nesse dia, a ARPANET migrou de NCP para TCP/IP de uma vez, sem período de transição. Quem não migrasse, ficava fora da rede. Essa data é frequentemente citada como o nascimento da internet como a conhecemos, porque a partir dali tínhamos um protocolo universal que permitia que qualquer rede se conectasse a qualquer outra rede. O nome "internet" vem justamente disso: uma rede de redes interconectadas (*inter-net*).
+A virada definitiva veio em **1º de janeiro de 1983**, o "Flag Day" [^9]: a ARPANET migrou de NCP para TCP/IP de uma tacada só, sem transição. Quem não migrou ficou de fora. É essa data que muita gente marca como o nascimento real da internet (*inter-net*, rede de redes interconectadas sob um protocolo comum).
 
 ## A Internet Chega ao Brasil
 
-No Brasil, a internet chegou um pouco mais tarde. Em 1988, a FAPESP (em São Paulo) e o LNCC (no Rio de Janeiro) fizeram as primeiras conexões internacionais do país, usando a rede Bitnet para troca de e-mails e arquivos [^10]. Era o início, mas ainda bem distante do que a gente entende por "internet" hoje.
+No Brasil, o pontapé foi em 1988: FAPESP (São Paulo) e LNCC (Rio de Janeiro) fecharam as primeiras conexões internacionais via Bitnet para e-mail e arquivos [^10].
 
-Em 1989, o Ministério da Ciência e Tecnologia criou a **RNP** (Rede Nacional de Pesquisa) [^11], com o objetivo de construir um backbone nacional que interligasse universidades e centros de pesquisa. A primeira conexão TCP/IP brasileira aconteceu em 1991, pela FAPESP. Mas até esse ponto, a internet no Brasil era coisa restrita ao mundo acadêmico.
+Em 1989, o Ministério da Ciência e Tecnologia criou a **RNP** (Rede Nacional de Pesquisa) [^11] para erguer um backbone nacional ligando universidades e centros de pesquisa. A primeira conexão TCP/IP brasileira veio em 1991, pela FAPESP, ainda restrita ao meio acadêmico.
 
-A abertura para uso comercial veio em **1995**, com a criação do **CGI.br** (Comitê Gestor da Internet no Brasil) [^12] e a liberação do acesso para o público geral. A Embratel iniciou os primeiros projetos de acesso discado, e a partir daí surgiram os provedores comerciais que levariam a internet para dentro das casas dos brasileiros.
+A abertura comercial chegou em **1995**, com a criação do **CGI.br** (Comitê Gestor da Internet no Brasil) [^12] e os primeiros projetos de acesso discado da Embratel, abrindo caminho para os provedores comerciais nas casas brasileiras.
 
 ## A World Wide Web
 
-Ter uma rede global funcionando é uma coisa. Torná-la utilizável para pessoas comuns é outra bem diferente. A internet existia nos anos 80, mas era usada quase que exclusivamente por pesquisadores e militares, através de ferramentas como e-mail, FTP e Usenet. Faltava uma camada que tornasse a informação fácil de publicar, encontrar e navegar.
+Ter uma rede global de pé é uma coisa; deixá-la usável para pessoas comuns é outra. Nos anos 80, a internet era território de pesquisadores e militares (e-mail, FTP, Usenet).
 
-Essa camada foi criada por Tim Berners-Lee [^13], um cientista do CERN, o Laboratório Europeu de Física de Partículas, na Suíça. Em março de 1989, Berners-Lee escreveu uma proposta chamada *"Information Management: A Proposal"*, onde ele descrevia um sistema para conectar documentos através de links, usando a infraestrutura da internet. A ideia era juntar hipertexto com rede de computadores, criando algo que ele inicialmente chamou de "Mesh" e depois batizou de World Wide Web.
+Essa camada faltante nasceu das mãos de Tim Berners-Lee [^13], no CERN (Suíça). Em março de 1989, ele escreveu *"Information Management: A Proposal"*, descrevendo um sistema de documentos ligados por hiperlinks sobre a internet, batizado primeiro de "Mesh" e depois de World Wide Web.
 
-Até o final de 1990, Berners-Lee já tinha desenvolvido os componentes fundamentais da Web: o primeiro servidor web, o primeiro navegador (chamado WorldWideWeb) e os protocolos base (HTML, HTTP e URIs). O primeiro site da história ficava no endereço info.cern.ch [^14] e ainda pode ser acessado nos dias de hoje. Em agosto de 1991, Berners-Lee fez o anúncio público da Web no newsgroup alt.hypertext [^15], convidando qualquer pessoa a acessar e contribuir.
+No fim de 1990, já rodavam o primeiro servidor web, o navegador WorldWideWeb e a tríade HTML, HTTP e URIs. O primeiro site da história (`info.cern.ch` [^14]) ainda está no ar, e em agosto de 1991 Berners-Lee anunciou a Web no newsgroup `alt.hypertext` [^15], convidando o mundo a construir em cima.
 
-Eu escrevi com mais detalhes sobre a evolução técnica do HTTP e da Web no meu post sobre {% include post-ref.html slug="evolucao-http" text="Evolução do Protocolo HTTP e da World Wide Web" %}, se você quiser se aprofundar na evolução do protocolo.
+Detalhei essa evolução técnica em {% include post-ref.html slug="evolucao-http" text="Evolução do Protocolo HTTP e da World Wide Web" %}.
 
 Um fator que não dá pra ignorar na expansão da Web foi a decisão do CERN, em **30 de abril de 1993**, de liberar o software da World Wide Web para o domínio público [^16]. Se o CERN tivesse decidido cobrar licenças ou patentear a tecnologia, é provável que a Web como conhecemos simplesmente não existisse. Essa decisão garantiu que a tecnologia fosse aberta, e qualquer pessoa ou instituição pudesse construir em cima dela.
 
@@ -77,11 +77,11 @@ Pouco tempo depois, em 1993, surgiu o **NCSA Mosaic** [^17], o primeiro navegado
 
 ## Os Primeiros Buscadores
 
-Com a Web crescendo rapidamente, um novo problema apareceu: como encontrar alguma coisa? Nos primeiros anos, se você não soubesse o endereço exato de um site, tinha que trocar e-mails, ler listas de discussão ou pedir referências para outras pessoas. Conforme o número de páginas crescia, ficava claro que era necessário algum mecanismo de busca.
+Com a Web crescendo em ritmo acelerado, bateu uma pergunta óbvia: como achar qualquer coisa ali dentro?
 
-O primeiro a resolver esse problema (antes mesmo da Web) foi o **Archie**, criado em 1990 [^18]. O Archie não era um buscador da Web, porque a Web nem existia ainda no formato que conhecemos. O que ele fazia era indexar os nomes de arquivos disponíveis em servidores FTP públicos. Era basicamente um banco de dados de diretórios de arquivos.
+Antes mesmo da Web existir nesse formato, o **Archie** (1990) [^18] resolveu uma ponta do problema indexando nomes de arquivos em servidores FTP públicos. Era um catálogo de diretórios de arquivos, simples e útil.
 
-Quando a Web apareceu e o volume de páginas explodiu, surgiram soluções voltadas especificamente para a Web. O **Yahoo!**, lançado em 1994, funcionava como um diretório curado por humanos [^19]. As páginas eram organizadas manualmente em categorias, como um catálogo de biblioteca. Funcionava bem enquanto o número de sites era administrável, mas com o crescimento da Web, uma abordagem manual passou a ser inviável.
+Quando a Web explodiu, vieram soluções feitas pra ela. O **Yahoo!**, lançado em 1994, operava como diretório curado por humanos [^19]: páginas organizadas na mão em categorias, tipo catálogo de biblioteca. Funcionou enquanto a Web cabia na prateleira; depois, escalar curadoria manual ficou inviável.
 
 No Brasil, o equivalente do Yahoo! foi o **Cadê?**, criado em 1995 por Gustavo Viberti e Fábio de Oliveira [^20]. O Cadê? funcionava da mesma forma: uma catalogação manual de sites brasileiros, organizada por categorias. Para quem usava internet no Brasil nessa época, o Cadê? era o ponto de partida para encontrar qualquer coisa em português na Web. O serviço foi vendido para a StarMedia em 1999 e depois comprado pelo Yahoo! Brasil em 2002, desaparecendo gradualmente com a chegada do Google.
 
@@ -95,29 +95,29 @@ Enquanto os buscadores disputavam a atenção dos usuários, outra guerra aconte
 
 O protagonista inicial era o **Netscape Navigator**, que surgiu em 1994 e rapidamente dominou o mercado, chegando a ter entre 70% e 90% de participação [^24]. O Netscape era o navegador que a maioria das pessoas usava para acessar a Web. Marc Andreessen, o mesmo criador do Mosaic, era cofundador da Netscape Communications.
 
-A Microsoft, por sua vez, demorou a perceber a importância da internet. Isso mudou em 1995, quando Bill Gates escreveu o famoso memorando interno *"The Internet Tidal Wave"* [^25], onde ele reconhecia que a internet era a coisa mais importante desde o IBM PC. A partir dali, a Microsoft redirecionou a empresa para a Web.
+A Microsoft demorou a acordar para a internet. A virada veio em 1995, com o memorando interno de Bill Gates *"The Internet Tidal Wave"* [^25], reconhecendo a rede como a maior mudança desde o IBM PC.
 
-A estratégia da Microsoft foi criar o **Internet Explorer** e embutí-lo diretamente no Windows. Dessa forma, todo computador com Windows já vinha com um navegador instalado, sem que o usuário precisasse baixar nada. O IE era gratuito, o que minava o modelo de negócio da Netscape, que vendia licenças do seu navegador [^26]. A Microsoft também pressionou fabricantes de computadores e provedores de internet para priorizarem o IE e limitarem a distribuição do Netscape.
+A resposta foi criar o **Internet Explorer** e embutir o navegador direto no Windows. Como todo PC já saía de fábrica com o IE de graça, o modelo de licenças pagas da Netscape desabou [^26], agravado pela pressão da Microsoft sobre fabricantes e provedores para limitar a distribuição do rival.
 
-Em 1998, o Departamento de Justiça dos Estados Unidos moveu um processo antitruste contra a Microsoft [^27], acusando a empresa de usar seu monopólio no mercado de sistemas operacionais para eliminar a concorrência no mercado de navegadores. Os tribunais confirmaram que a Microsoft tinha agido de forma anticompetitiva. Uma proposta inicial de desmembrar a empresa foi derrubada, mas a Microsoft aceitou mudar algumas práticas de negócio.
+Em 1998, o Departamento de Justiça dos Estados Unidos processou a Microsoft por práticas antitruste [^27], acusando-a de usar o monopólio do Windows para esmagar a concorrência nos navegadores. Os tribunais confirmaram a conduta anticompetitiva; a proposta de fatiar a empresa caiu, mas a Microsoft teve que recuar em várias práticas comerciais.
 
 A Netscape não sobreviveu. Foi comprada pela AOL em 1999. Mas antes de desaparecer, fez algo que teria consequências profundas: liberou o código-fonte do seu navegador como software de código aberto [^28]. Desse código nasceu o projeto **Mozilla**, que anos depois daria origem ao **Firefox**. A Guerra dos Navegadores terminou com a Microsoft vencendo a batalha, mas semeou o terreno para o movimento de código aberto nos navegadores que culminaria, anos depois, na diversidade de navegadores que temos hoje, com Chrome, Firefox, Safari e outros.
 
 ## A Bolha Pontocom (e o seu estouro)
 
-A rápida expansão da Web nos anos 90 criou uma euforia no mercado financeiro. Investidores de risco despejaram quantidades enormes de dinheiro em qualquer startup que tivesse ".com" no nome. A lógica era que a internet ia mudar tudo (e de fato mudou), e que portanto qualquer empresa conectada à internet valeria muito dinheiro (aí a lógica falhava).
+A expansão da Web nos anos 90 disparou uma euforia cega no mercado financeiro: se tivesse ".com" no nome, o dinheiro dos fundos jorrava.
 
-O índice Nasdaq, fortemente concentrado em ações de tecnologia, subiu cerca de 600% entre 1995 e 2000 [^29]. Empresas eram avaliadas não por lucro, receita ou fluxo de caixa, mas por métricas como "cliques", "eyeballs" (quantas pessoas olhavam para o site) e "market share" (participação de mercado). A estratégia dominante era o "Get Big Fast": gastar agressivamente para crescer rápido, mesmo operando no prejuízo.
+O índice Nasdaq, pesado em tecnologia, disparou cerca de 600% entre 1995 e 2000 [^29]. Em vez de lucro ou fluxo de caixa, o mercado precificava "cliques", "eyeballs" e participação de mercado sob o mantra "Get Big Fast": queimar caixa sem freio para crescer antes dos rivais, mesmo no prejuízo.
 
-A bolha estourou em março de 2000. A Nasdaq começou a cair e não parou. Até outubro de 2002, o índice tinha perdido mais de 75% do seu valor, evaporando algo em torno de 5 trilhões de dólares em capitalização de mercado [^29]. Empresas emblemáticas como a Pets.com queimaram centenas de milhões de dólares e desapareceram da noite para o dia.
+Em março de 2000, a bolha estourou. Até outubro de 2002, a Nasdaq perdeu mais de 75% do valor, evaporando cerca de 5 trilhões de dólares [^29] e enterrando símbolos da época como a Pets.com da noite para o dia.
 
 No Brasil, o cenário tinha suas particularidades. O **UOL** (Universo Online), lançado em 1996 pelo Grupo Folha [^30], era o grande portal brasileiro: provedor de acesso, conteúdo, e-mail, chat, tudo num lugar só. O **iG** (Internet Group) apareceu em janeiro de 2000 e mexeu bastante o mercado ao oferecer acesso gratuito à internet [^31]. O usuário pagava apenas a ligação telefônica, o que democratizou o acesso em um momento em que a assinatura mensal dos provedores ainda era cara para muita gente.
 
 O **Submarino** surgiu como um dos primeiros grandes e-commerces brasileiros, sobreviveu à bolha e anos depois se juntou a outras operações para formar a B2W [^30]. Assim como nos Estados Unidos, a crise filtrou quem tinha um modelo de negócio sustentável e quem estava apenas surfando a euforia.
 
-E para quem viveu essa época no Brasil, a experiência da internet tinha um ritual particular: o modem 56k discando, a linha telefônica ocupada enquanto você navegava (e a família reclamando), e a espera até meia-noite para conectar pagando um único pulso telefônico.
+No Brasil daquela época, conectar tinha ritual: modem 56k chiando, telefone ocupado com a família reclamando e a espera pela meia-noite pra pagar um único pulso.
 
-A parte interessante dessa história é que, apesar da destruição, a bolha não foi um desperdício completo. Ela financiou a construção de infraestrutura de rede (fibra óptica, data centers) que seria aproveitada pelas empresas que sobreviveram. E entre as sobreviventes estavam a Amazon e o Google, que saíram do outro lado da crise e se tornaram duas das maiores empresas do mundo.
+Mesmo com a quebradeira, a bolha deixou herança útil: fibra óptica e data centers já pagos, que serviram de pista para sobreviventes como Amazon e Google virarem gigantes.
 
 ## A Web 2.0 e o Conteúdo Gerado pelo Usuário
 
@@ -133,17 +133,17 @@ O próprio Tim Berners-Lee criticou o termo "Web 2.0", argumentando que a Web se
 
 Se a Web 2.0 transformou a internet em um lugar de criação de conteúdo, as redes sociais transformaram a internet em um lugar de conexão entre pessoas. A ideia de perfis, amigos e redes de contatos na internet não é tão nova quanto parece.
 
-O **SixDegrees**, lançado em 1997, é considerado uma das primeiras redes sociais [^35]. O nome faz referência à teoria dos seis graus de separação [^36]. Ele permitia criar perfis, listar amigos e navegar pelas conexões dos seus contatos. Chegou a ter milhões de usuários, mas não conseguiu se manter e fechou em 2000.
+Lançado em 1997, o **SixDegrees** é considerado uma das primeiras redes sociais [^35], inspirado nos seis graus de separação [^36]. Permitia perfis, lista de amigos e navegação por contatos; bateu milhões de usuários, mas fechou em 2000.
 
-O **Friendster** apareceu em 2002 com uma proposta de conectar pessoas através de amigos em comum [^35]. Cresceu rápido, mas sofreu com problemas técnicos na medida em que a base de usuários aumentou.
+O **Friendster** apareceu em 2002 conectando pessoas via amigos em comum [^35], cresceu rápido e travou nos próprios problemas técnicos de escala.
 
-O **MySpace** (2003) foi um fenômeno cultural, especialmente entre a cena musical e o público adolescente. A possibilidade de customizar o perfil com HTML e CSS (muitas vezes gerando verdadeiras aberrações visuais) e a integração com música fizeram do MySpace a maior rede social do mundo entre 2005 e 2008 [^37].
+Em 2003 veio o **MySpace**, fenômeno cultural entre bandas e adolescentes: perfis customizados em HTML e CSS (muitas vezes aberrações visuais memoráveis) o mantiveram como maior rede social do mundo entre 2005 e 2008 [^37].
 
-O **Orkut** foi lançado pelo Google em janeiro de 2004 [^38], criado pelo engenheiro turco Orkut Büyükkökten como um projeto do "20% time" do Google (a política que permitia funcionários dedicarem parte do tempo a projetos pessoais). O Orkut virou um fenômeno no Brasil e na Índia. No Brasil, em especial, a rede se tornou sinônimo de internet para uma geração inteira: comunidades, depoimentos, scraps e a eterna disputa por "quem te adicionou". No auge, a maioria esmagadora do tráfego do Orkut vinha de usuários brasileiros. O Google chegou a transferir a operação do Orkut para o Brasil em 2008. Mas com a ascensão do Facebook, o Orkut perdeu usuários progressivamente e foi encerrado em setembro de 2014.
+Em janeiro de 2004, o Google lançou o **Orkut** [^38], nascido no "20% time" do engenheiro turco Orkut Büyükkökten. No Brasil e na Índia virou febre: comunidades, depoimentos, scraps e a novela de "quem visitou seu perfil" fizeram os brasileiros dominarem o tráfego da rede. O Google chegou a mover a operação para o Brasil em 2008, mas com a ascensão do Facebook o serviço foi definhando até fechar em setembro de 2014.
 
-O **Facebook** surgiu em fevereiro de 2004 [^39], criado por Mark Zuckerberg e colegas na Universidade de Harvard. Começou restrito a estudantes universitários e foi expandindo gradualmente até abrir para o público geral. A introdução do News Feed, a interface limpa e a rede de identidade real foram fatores que fizeram o Facebook ultrapassar o MySpace e se tornar a rede social dominante do planeta.
+No mês seguinte (fevereiro de 2004), Mark Zuckerberg e colegas lançaram o **Facebook** em Harvard [^39]. Começou restrito a universitários, abriu ao público e, com News Feed, interface limpa e identidade real, atropelou o MySpace para dominar o planeta.
 
-O **Twitter** apareceu em 2006 [^40], criado por Jack Dorsey e equipe. O conceito de microblogging em tempo real criou uma dinâmica nova: mensagens curtas, públicas, em um fluxo contínuo de informação. O Twitter se tornou uma ferramenta de comunicação instantânea para jornalismo, política e movimentos sociais.
+Dois anos depois (2006), Jack Dorsey e equipe tiraram do forno o **Twitter** [^40], criando o microblogging em tempo real que mudou a dinâmica do jornalismo, da política e dos movimentos sociais.
 
 A história das redes sociais também é uma história de fracassos. Para cada Facebook ou Twitter que sobreviveu, dezenas de redes desapareceram. O próprio Google, apesar do sucesso do Orkut no Brasil, nunca conseguiu replicar isso globalmente: o **Google Buzz** (2010) e o **Google+** (2011) foram tentativas de competir com o Facebook que não emplacaram. O **Vine** (2013), que popularizou vídeos de 6 segundos, foi encerrado pelo Twitter em 2017. O **Path** (2010) apostou em uma rede limitada a 150 amigos e não escalou. Redes sociais dependem de efeito de rede: quanto mais gente usa, mais útil fica. E o inverso também é verdade: quando os usuários começam a sair, o êxodo se acelera.
 
@@ -151,11 +151,11 @@ A história das redes sociais também é uma história de fracassos. Para cada F
 
 Até meados dos anos 2000, acessar a internet significava sentar na frente de um computador. Existiam celulares com acesso à internet (WAP, lembram?), mas a experiência era precária: telas minúsculas, navegadores limitados e conexões lentas.
 
-Em **9 de janeiro de 2007**, Steve Jobs apresentou o iPhone [^41]. Jobs o descreveu como três dispositivos em um: um iPod com tela widescreen, um telefone e um "dispositivo de comunicação com a internet". A tela multi-touch, sem teclado físico nem stylus, mudou a forma como as pessoas interagiam com tecnologia. O Safari do iPhone oferecia uma experiência de navegação na web que era utilizável pela primeira vez em um dispositivo móvel.
+Em **9 de janeiro de 2007**, Steve Jobs apresentou o iPhone [^41]: um iPod widescreen, um telefone e um "dispositivo de comunicação com a internet". A tela multi-touch sem teclado nem stylus, somada a um Safari realmente navegável, virou a chave do mercado móvel.
 
-Mas o que mudou o jogo de verdade foi a **App Store**, lançada em 2008. De repente, o celular deixou de ser um aparelho para fazer ligações e mandar SMS. Ele virou uma plataforma. Desenvolvedores do mundo inteiro passaram a criar aplicativos que iam de jogos a bancos, de GPS a delivery de comida. A internet saiu do escritório e entrou no bolso.
+Mas o golpe decisivo veio em 2008, com a **App Store**: o celular virou plataforma e a internet saiu do escritório pro bolso.
 
-O Android, do Google, expandiu essa revolução para faixas de preço mais acessíveis, acelerando a adoção global de smartphones. Em poucos anos, para bilhões de pessoas ao redor do mundo, o smartphone se tornou o **primeiro** dispositivo de acesso à internet, e não o computador. Isso é especialmente verdade em países em desenvolvimento, onde o celular chegou antes do PC com acesso à banda larga.
+O Android, do Google, levou essa onda a faixas de preço acessíveis e fez do smartphone o **primeiro** acesso à internet para bilhões de pessoas (principalmente em países em desenvolvimento, onde o celular chegou antes do PC com banda larga).
 
 No Brasil, essa transição teve um capítulo próprio. Nos anos 2000, antes da explosão dos smartphones, as **lan houses** foram o principal ponto de acesso à internet para uma enorme parcela da população [^42], especialmente nas periferias. Elas não eram apenas locais de conexão: eram espaços de socialização, jogos em rede e auxílio para trabalhos escolares. Entre 2005 e 2008, as lan houses chegaram a ser a forma mais comum de acesso à internet no Brasil para quem não tinha computador em casa.
 
@@ -174,7 +174,7 @@ Os dois marcos que realmente inauguraram a era da computação em nuvem vieram e
 - **Amazon S3** (*Simple Storage Service*), lançado em março de 2006 [^44], que resolveu o problema de armazenar grandes volumes de dados de forma confiável e escalável.
 - **Amazon EC2** (*Elastic Compute Cloud*), lançado em agosto de 2006 [^44], que permitiu que qualquer pessoa alugasse computadores virtuais sob demanda, pagando apenas pelo que usasse.
 
-A combinação de S3 e EC2 foi o que hoje chamamos de "nuvem". Startups que antes precisavam comprar servidores físicos e montar data centers agora podiam lançar seus produtos com investimento inicial mínimo em infraestrutura. Isso democratizou o acesso a poder computacional de uma forma que antes era restrita a grandes corporações.
+S3 e EC2 inauguraram o que hoje chamamos de "nuvem": startups passaram a subir produtos sem comprar servidores físicos nem montar data center próprio.
 
 Anos depois a Microsoft respondeu com o **Azure**, o Google com o **Google Cloud Platform**, e hoje essas três empresas dominam o mercado de nuvem pública. Em 2014, a Amazon lançou o **AWS Lambda**, popularizando o conceito de computação serverless, onde o desenvolvedor roda código sem nem precisar pensar em servidores.
 
@@ -184,11 +184,11 @@ Para quem está começando na computação, vale o lembrete que o pessoal gosta 
 
 A internet não mudou só a forma como acessamos informação. Ela mudou a forma como consumimos música, filmes e séries. E essa história começa com um garoto de 18 anos.
 
-Em 1999, Shawn Fanning lançou o **Napster** [^46]. O Napster permitia que usuários compartilhassem arquivos MP3 diretamente entre si, em um modelo peer-to-peer. Ele não hospedava nenhuma música; apenas mantinha um índice centralizado dos arquivos que cada usuário estava compartilhando. Chegou a 80 milhões de usuários registrados [^46] e provocou um caos na indústria da música.
+Em 1999, Shawn Fanning lançou o **Napster** [^46], permitindo compartilhar MP3 em peer-to-peer sem hospedar música nenhuma (só mantinha o índice central). Bateu 80 milhões de usuários [^46] e virou a indústria fonográfica de cabeça para baixo.
 
-A RIAA (*Recording Industry Association of America*) processou o Napster por violação de direitos autorais, e o serviço foi fechado em julho de 2001 [^46]. Mas o estrago (do ponto de vista da indústria estadunidense) já estava feito. O Napster provou que as pessoas queriam acesso instantâneo à música digital. A indústria poderia ter se adaptado mais cedo, mas preferiu brigar na justiça. Isso abriu espaço para serviços sucessores como Gnutella, LimeWire e BitTorrent.
+A RIAA (*Recording Industry Association of America*) processou o Napster e derrubou o serviço em julho de 2001 [^46]. Tarde demais: o público já tinha provado acesso instantâneo à música digital, e a teimosia judicial da indústria só abriu caminho para Gnutella, LimeWire e BitTorrent.
 
-A primeira resposta efetiva mesmo veio com a **iTunes Store** da Apple em 2003, que oferecia músicas individuais por US$0,99. E a resposta definitiva veio com o **Spotify**, fundado em 2006 [^47] e lançado em 2008. O Spotify oferecia um modelo freemium: acesso gratuito com anúncios ou assinatura mensal sem anúncios. A ideia era ser uma alternativa legal e conveniente à pirataria. E funcionou.
+A resposta comercial começou na **iTunes Store** (2003, faixas a US$0,99) e se firmou com o **Spotify** (2006 [^47], lançado em 2008), vencendo a pirataria pela conveniência.
 
 No campo do vídeo, existem duas histórias que se entrelaçam. O **YouTube**, que foi lançado em 2005 [^48] e democratizou a publicação de vídeos na internet. Qualquer pessoa com uma câmera (e depois com um celular) podia publicar conteúdo para o mundo inteiro. O Google comprou o YouTube em 2006 por 1,65 bilhão de dólares.
 
@@ -214,11 +214,11 @@ De quatro computadores conectados em 1969 para bilhões de dispositivos intercon
 
 O que chama atenção nessa história é que nenhuma pessoa ou empresa sozinha "inventou" a internet. Ela foi construída em camadas, ao longo de décadas, por pesquisadores, engenheiros, cientistas e programadores em universidades, laboratórios, empresas e garagens ao redor do mundo. Paul Baran pensou em redes distribuídas. Vint Cerf e Bob Kahn criaram o TCP/IP. Tim Berners-Lee inventou a Web. Marc Andreessen trouxe o navegador gráfico. Larry Page e Sergey Brin organizaram a busca. E milhões de outras pessoas contribuíram com código, padrões, infraestrutura e conteúdo.
 
-Cada geração construiu em cima do que a geração anterior deixou. E o que é mais importante: boa parte dessas contribuições foi feita de forma aberta, com protocolos públicos, padrões abertos e software livre. Se a Web tivesse sido patenteada pelo CERN, se o TCP/IP fosse proprietário da DARPA, se o código do Mosaic não tivesse sido acessível, a internet seria algo completamente diferente do que é hoje (se é que existiria).
+Cada geração construiu em cima do que a geração anterior deixou. E o que é mais importante: boa parte dessas contribuições foi feita de forma aberta, com protocolos públicos, padrões abertos e software livre. Se a Web tivesse sido patenteada pelo CERN, se o TCP/IP fosse proprietário da DARPA, se o código do Mosaic não tivesse sido acessível, a internet seria algo irreconhecível (se é que existiria).
 
-Hoje estamos entrando em uma nova era, com inteligência artificial generativa, computação quântica e novos desafios de privacidade e governança. Mas a lição das últimas seis décadas é que a internet prospera quando é aberta, distribuída e colaborativa. Toda vez que alguém tentou fechar, centralizar ou monopolizar, a rede encontrou um caminho ao redor.
+Hoje entramos em outra virada, com IA generativa, computação quântica e novas disputas de privacidade e governança. Ainda assim, a lição de seis décadas continua de pé: toda vez que alguém tentou cercar ou monopolizar a rede, ela deu a volta.
 
-Para quem lê essa história hoje: tudo isso foi construído em menos de uma vida humana. O que será construído nas próximas décadas ainda está sendo escrito, mas a história mostra que as maiores transformações acontecem quando a tecnologia permite que mais pessoas se conectem, compartilhem e criem juntas.
+Tudo isso aconteceu em menos de uma vida humana. O resto ainda está em aberto.
 
 ## Referências
 
@@ -256,7 +256,7 @@ Para quem lê essa história hoje: tudo isso foi construído em menos de uma vid
 
 [^17]: **NCSA Mosaic** {*Living Internet*} ([Link](https://web.archive.org/web/20070702183017/http://www.livinginternet.com/w/wi_mosaic.htm))
 
-[^18]: **Archie search engine** {*Wikipedia*} ([Link](https://en.wikipedia.org/wiki/Archie_(search_engine)))
+[^18]: **Archie search engine** {*Wikipedia*} ([Link](https://en.wikipedia.org/wiki/Archie_%28search_engine%29))
 
 [^19]: **History of search engines** {*Wikipedia*} ([Link](https://en.wikipedia.org/wiki/Web_search_engine))
 

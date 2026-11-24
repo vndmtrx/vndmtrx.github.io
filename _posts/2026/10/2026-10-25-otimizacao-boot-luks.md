@@ -5,6 +5,7 @@ subtitle: "Porque segurança de disco não precisa significar lentidão no boot"
 author:
   - "Eduardo N. S. R."
 date: 2026-10-25 15:05:23 GMT-3
+modified_date: 2026-11-24 19:27:44 GMT-3
 permalink: /posts/otimizacao-boot-luks/
 tags: [Linux, Debian, Segurança, Performance]
 mermaid: true
@@ -317,11 +318,11 @@ A reação impulsiva de quem tem 32 GB de RAM é mandar um `sudo swapoff -a` def
 
 O subsistema de gerenciamento de memória do kernel Linux (`mm`) foi desenhado contando com a existência de uma área de troca. O kernel usa o swap pra desovar páginas anônimas frias: pequenos blocos de memória alocados por processos e daemons de background que rodaram na inicialização e nunca mais vão ser executados. Quando o Linux consegue empurrar esse lixo inativo pro swap, ele libera memória RAM física nobre para o *page cache* (o cache de disco em memória), o que deixa o sistema globalmente muito mais ágil nas leituras de arquivos.
 
-Além disso, sem swap nenhum, qualquer pico repentino de consumo ou vazamento de memória dispara o temido `OOM Killer` (*Out Of Memory Killer*) de forma abrupta, matando seu navegador ou sua IDE no meio do expediente sem dó nem piedade.
+Pior: sem swap nenhum, qualquer pico repentino de consumo ou vazamento dispara o `OOM Killer` (*Out Of Memory Killer*) de forma abrupta, matando seu navegador ou sua IDE no meio do expediente sem dó nem piedade.
 
 A saída de engenharia ideal é usar o **zram** [^6].
 
-O `zram` cria um dispositivo de bloco comprimido diretamente na memória RAM usando algoritmos velocíssimos como `zstd`. Ele intercepta as páginas frias e as comprime em tempo real na proporção de 2:1 a 3:1. Como tudo roda no barramento da memória DDR, a latência é medida em nanossegundos (infinitamente mais rápida do que qualquer NVMe PCIe), com zero I/O no disco físico e alocando memória estritamente sob demanda.
+O `zram` cria um dispositivo de bloco comprimido na RAM usando algoritmos velozes como `zstd`, interceptando páginas frias numa proporção de 2:1 a 3:1. Como tudo corre no barramento DDR, a latência cai para nanossegundos (muito acima de qualquer NVMe PCIe), com zero I/O no disco físico e alocação sob demanda.
 
 > [!TIP] Bônus de Privacidade e Segurança
 > Trocar swap em disco por zram é muito mais seguro para a privacidade dos dados: páginas de memória jogadas em um swap físico ficam gravadas em células flash do SSD até serem sobrescritas. No zram, a área de troca reside 100% na memória RAM volátil. Desligou o computador, tudo evapora no mesmo microssegundo sem deixar rastro de silício.
@@ -685,13 +686,13 @@ Uma economia líquida de incríveis 45 segundos a cada inicialização da máqui
 
 Depois dessa maratona de diagnósticos e tropeços, algumas verdades ficam gravadas:
 
-Primeiro: **defina o seu modelo de ameaça antes de bancar o paranoico**. Aumentar parâmetros criptográficos a ponto de tornar o boot intragável não te dá segurança de ponta; só te dá raiva. Segurança de verdade é pragmática e cabe na sua rotina.
+Primeiro: **defina o modelo de ameaça antes de bancar o paranoico**. Boot intragável não te deixa mais seguro; só te dá raiva.
 
 Segundo: **o bootloader não é o seu sistema operacional**. O GRUB roda em modo protegido básico, em single-core e sem aceleração por hardware. Calibrar derivação de chave no Linux com AES-NI e achar que o GRUB vai aguentar o tranco é pedir pra passar vergonha.
 
 Terceiro: **keyslot de bootloader é fila de banco**. O GRUB testa os slots de forma puramente sequencial. Se você deixar chaves pesadas antes da senha humana, vai pagar a conta de falha de cada uma delas antes de conseguir logar. Senha interativa mora no Slot 0.
 
-Quarto: **autologin tem pegadinha oculta**. Pular o login com senha quebra o repasse do PAM pro GNOME Keyring, transferindo a dor de autenticação pra chamadas travadas no D-Bus bem no meio da inicialização do desktop.
+Quarto: **autologin tem pegadinha oculta**. Pular a senha quebra o repasse do PAM pro GNOME Keyring e trava o desktop em chamadas do D-Bus.
 
 Quinto: **hardware moderno pede caminho direto**. Filas assíncronas de software no `dm-crypt` foram feitas pra discos rotacionais do início dos anos 2000. Desativar workqueues no NVMe e garantir o TRIM ativo é obrigação pra quem quer a latência real do PCIe.
 

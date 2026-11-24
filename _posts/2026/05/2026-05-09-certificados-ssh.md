@@ -5,7 +5,7 @@ subtitle: "Como abandonar o caos de authorized_keys e known_hosts usando uma aut
 author:
   - "Eduardo N. S. R."
 date: 2026-05-09 19:24:00 GMT-3
-modified_date: 2026-05-10 10:26:00 GMT-3
+modified_date: 2026-11-24 19:27:44 GMT-3
 permalink: /posts/certificados-ssh/
 tags: [SSH, Segurança, Linux, Infraestrutura]
 series: OpenSSH na Prática
@@ -14,7 +14,7 @@ category: Tutoriais
 
 No último post sobre SSH, falei sobre o poder oculto dos túneis (`-L`, `-R`, `-D`) e como a maioria de nós usa apenas uma fração do que o OpenSSH oferece. Hoje, vamos dar mais um passo nessa jornada e falar sobre um recurso que resolve uma das maiores dores de cabeça de quem administra infraestrutura em escala: o gerenciamento de identidades e chaves públicas.
 
-Se você trabalha com infraestrutura, com certeza conhece a rotina clássica: um novo desenvolvedor entra no time, gera um par de chaves, manda a chave pública pelo Slack para alguém de Ops, e essa pessoa adiciona a string gigante no final do arquivo `~/.ssh/authorized_keys` dos servidores. 
+Se você trabalha com infra, conhece o ritual: dev novo entra, manda chave pública no Slack e Ops cola a string gigante no `~/.ssh/authorized_keys` de cada servidor.
 
 Ou pior, se você trabalha em uma daquelas equipes cabeça dura que juram de pés juntos que logar direto como `root` em tudo é "mais ágil", o desenvolvedor novo simplesmente recebe no WhatsApp a chave privada do `root` que a empresa inteira usa. Afinal, pra que auditoria e controle de acesso se a gente pode viver a "agilidade do caos", não é mesmo? (spoiler: não é mais ágil, é só mais perigoso e desorganizado).
 
@@ -57,7 +57,7 @@ Antes de criar a CA, precisamos decidir qual algoritmo criptográfico ela vai us
 
 O RSA com chaves menores (como 1024 e 2048 bits) já não oferece margem de segurança confortável contra a capacidade computacional moderna. Usar 4096 bits resolve, mas cria chaves lentas para assinar/verificar e arquivos gigantes. Já o ECDSA (Elliptic Curve Digital Signature Algorithm) sofre com a desconfiança da comunidade devido ao fato de usar as curvas padronizadas pelo NIST, que muitos criptógrafos encaram com suspeita por causa da influência histórica da NSA.
 
-A recomendação padrão ouro hoje em dia, e o que eu pessoalmente uso para tudo, é o **ED25519** [^5]. Baseado na Curve25519 de Daniel J. Bernstein (o mesmo cara por trás do ChaCha20/Poly1305 usado no WireGuard). Chaves ED25519 são absurdamente menores (68 caracteres de chave pública), mais rápidas de verificar, resistentes a ataques de temporização (side-channel timing attacks) e não dependem das curvas do NIST.
+A recomendação padrão ouro hoje, e o que eu uso pra tudo, é o **ED25519** [^5], baseado na Curve25519 de Daniel J. Bernstein (o mesmo cara do ChaCha20/Poly1305 no WireGuard). Chaves ED25519 são muito menores (68 caracteres de chave pública), mais rápidas de verificar, resistentes a ataques de temporização (side-channel timing attacks) e independentes das curvas do NIST.
 
 > [!CAUTION] Aviso Crítico de Segurança
 > A chave privada da sua CA é a "joia da coroa" de toda a operação. Se ela for vazada, um atacante poderá forjar certificados válidos para se passar por qualquer usuário ou servidor, tendo acesso irrestrito e silencioso à sua infraestrutura. Por design, essa chave **NUNCA** deve residir em um servidor acessível via internet ou na máquina de trabalho diário. O padrão ouro é mantê-la em uma máquina *air-gapped* (desconectada da rede), armazenada em dispositivos de hardware (como YubiKeys ou HSMs) ou delegar a custódia para soluções de cofre corporativo (como o HashiCorp Vault).
@@ -98,7 +98,7 @@ The key's randomart image is:
 > [!NOTE] Curiosidade
 > Aquele quadro `randomart image` gerado pelo comando não é só decoração de terminal. Ele é uma representação visual do fingerprint da chave. O cérebro humano é péssimo em memorizar strings SHA256 gigantes, mas é excelente em reconhecer formas e padrões visuais. A ideia do randomart é permitir que você perceba rapidamente, num "bater de olhos", se a chave foi alterada, pois o desenho será completamente diferente.
 
-Como no nosso exemplo de equipe teremos dois servidores alvo (`php-01` e `db-01`), vamos provisionar os certificados de host para ambos. Primeiro, geramos o par de chaves interno de cada servidor. Muitas vezes isso é feito automaticamente na instalação do SO, mas vamos gerar explicitamente:
+Como no nosso exemplo de equipe teremos dois servidores alvo (`php-01` e `db-01`), vamos provisionar os certificados de host para ambos. Primeiro geramos o par de chaves interno de cada servidor (o SO costuma gerar isso na instalação, mas aqui vamos criar na mão):
 
 ```bash
 # No servidor php-01
@@ -293,7 +293,7 @@ E como o cliente SSH sabe qual chave usar quando você tem várias? Ele é esper
 
 Esse mesmo ciclo de subir o agent e rodar o `ssh-add` é feito pela Maria, pelo Antônio e por qualquer outro usuário.
 
-E a grande vantagem do campo de validade: se a empresa contratar o **Carlos** (um consultor terceirizado) para atuar na infraestrutura por apenas uma semana, a equipe de Ops pode emitir o certificado dele com `-V +1w` (válido por 1 semana) ou até mesmo `-V +1d` para um acesso de apenas um dia. Quando o prazo acabar, o acesso do Carlos some automaticamente de toda a rede. Ninguém precisa criar um ticket lembrando de entrar nos servidores para limpar chaves. O certificado simplesmente "vence" e o SSH recusa novas conexões.
+E a grande vantagem do campo de validade: se a empresa contratar o **Carlos** (consultor terceirizado) por uma semana, Ops emite o certificado dele com `-V +1w` (ou `-V +1d` pra um dia). Acabou o prazo, o acesso some da rede inteira sem abrir ticket pra limpar chave: o certificado vence e o SSH barra novas conexões.
 
 ### E se um notebook for roubado? A Lista de Revogação (KRL)
 
@@ -335,9 +335,9 @@ Você percebeu o parâmetro `-n` recebendo uma lista separada por vírgulas (com
 
 A autenticação de certificados no SSH não é um simples *"a assinatura bate com a CA que eu confio, então pode entrar"*. O OpenSSH executa uma camada adicional de autorização (uma espécie de RBAC nativo): ele verifica se os Principals que estão "carimbados" no seu certificado possuem permissão para acessar a conta destino no sistema operacional.
 
-A boa prática diz que não devemos logar diretamente como `root` e que não devemos distribuir a mesma conta para pessoas de áreas diferentes. O normal é termos contas genéricas de função ("role accounts") no sistema operacional (ex: o usuário `deploy` na máquina PHP, e na máquina de banco podemos ter `db_admin` para os DBAs operarem a infra e `db_readonly` para os devs). Ninguém deveria acessar a conta do `root` diretamente via SSH.
+A boa prática manda não logar direto como `root` e não repartir a mesma conta entre áreas diferentes. O normal é usar contas de função ("role accounts") no SO (ex.: `deploy` na máquina PHP; `db_admin` para DBAs e `db_readonly` para devs no banco). Ninguém deveria entrar em `root` via SSH.
 
-Criar essas contas locais, garantir que não tenham senhas (`usermod -L`) e amarrar os privilégios exatos de cada uma no arquivo `/etc/sudoers` é uma arte à parte. Para dar um exemplo rápido de como isso ficaria no Linux, você adicionaria algo assim no `sudoers`:
+Depois você trava a senha (`usermod -L`) e amarra os privilégios no `/etc/sudoers`:
 
 ```bash
 # Permite que o usuário 'deploy' apenas reinicie o PHP, sem pedir senha
@@ -414,7 +414,7 @@ Ela tenta `ssh deploy@php-01`. Como o seu certificado tem apenas `maria,dba` e o
 **5. O Antônio (QA) tenta "dar uma espiada" no PHP:**
 Ele tenta `ssh deploy@php-01`. O certificado do Antônio tem apenas o principal `qa_team`. O servidor checa e barra na hora. O QA fica de fora, exatamente como a política dita.
 
-Para empresas muito grandes, o OpenSSH oferece até a diretiva `AuthorizedPrincipalsCommand`, que permite que o SSH execute um script ou binário (passando o certificado do usuário) que pode bater num LDAP ou API interna para retornar "quais principals são válidos para esse login", removendo totalmente a necessidade de distribuir arquivos de configuração de principals localmente em cada servidor.
+Para empresas muito grandes, o OpenSSH oferece até `AuthorizedPrincipalsCommand`: o SSH chama um script ou binário (passando o certificado do usuário) para consultar um LDAP ou API interna e descobrir quais principals valem naquele login, eliminando a distribuição de arquivos de principals em cada servidor.
 
 ## O perigo mora nos detalhes: A falha CVE-2026-35414
 
@@ -430,7 +430,7 @@ cert-authority,principals="bob,admin" ssh-rsa AAAAB3... (chave publica da CA)
 
 Essa linha diz ao servidor: *"Aceite o acesso SE a chave pública apresentada for um certificado assinado por esta CA e se esse certificado tiver o principal 'bob' OU o principal 'admin'"*.
 
-A vulnerabilidade residia especificamente no *parser* de opções (a função interna do OpenSSH em C que faz o *split* da string). O OpenSSH antigo falhava miseravelmente em lidar com vírgulas usadas dentro da declaração `principals="..."` acoplada ao `cert-authority`. Em vez de quebrar a string em dois tokens (`bob` e `admin`), o parser engasgava, não separava nada, e registrava em memória que a linha exigia **um único principal longo** chamado literalmente `"bob,admin"`.
+A falha morava no *parser* de opções (a função em C do OpenSSH que faz o *split* da string): versões antigas engasgavam com vírgulas dentro de `principals="..."` acoplado ao `cert-authority`. Em vez de quebrar em dois tokens (`bob` e `admin`), o parser gravava em memória a exigência de **um único principal** chamado `"bob,admin"`.
 
 A implicação disso em produção causa tanto DoS quanto Bypass:
 
@@ -445,7 +445,7 @@ A implicação disso em produção causa tanto DoS quanto Bypass:
 
    *Gera um certificado propositalmente forjado contendo uma vírgula literal no campo do principal.*
 
-   Quando o atacante usa esse certificado com o principal exato `"bob,admin"`, o parser quebrado do servidor examina a string, faz o `strcmp()`, e como as strings batem exatamente com a interpretação errônea dele, **o servidor concede acesso imediato**, contornando a intenção de controle de acesso de "apenas bob ou admin separadamente".
+   Quando o atacante usa esse certificado com o principal `"bob,admin"`, o parser quebrado compara com `strcmp()` e, como a string bate com o erro dele, **o servidor libera acesso na hora**, driblando a regra original de "apenas bob ou admin em separado".
 
 A correção definitiva requer atualizar para a versão 10.3+. Mas há uma regra de design universal para levar pra vida: **Nunca use vírgulas, espaços ou caracteres especiais nos nomes dos seus Principals**. Trate Principals como variáveis limpas e restritas (ex: `admin`, `db_read`, `squad_frontend`). Deixe as vírgulas apenas para separar os argumentos do `ssh-keygen`.
 
