@@ -5,17 +5,18 @@ subtitle: "Desconstrução de dados, fluxo idiomático e a implementação do al
 author:
   - "Eduardo N. S. R."
 date: 2025-04-28 20:28:00 GMT-3
+modified_date: 2026-11-24 09:49:12 GMT-3
 permalink: /posts/elixir-patterns/
 tags: [Programação, Programação Funcional, Elixir, Engenharia de Software]
 series: Aprendendo Elixir
 category: Tutoriais
 ---
 
-Se tivéssemos que apontar uma única característica que define como é programar em Elixir [^1], seria o **pattern matching**. Esse recurso da linguagem vai muito além da atribuição tradicional que conhecemos em outras linguagens: ele molda a forma como pensamos e estruturamos o código.
+Se tivéssemos que apontar uma única característica que define como é programar em Elixir, seria o **pattern matching**. Esse recurso vai muito além da atribuição tradicional que conhecemos em outras linguagens: ele molda a forma como pensamos e estruturamos o código.
 
-O pattern matching [^2] é uma ferramenta poderosa que permite comparar estruturas de dados, extrair valores e guiar o fluxo de execução de forma clara e expressiva. Em Elixir, essa técnica não é apenas uma opção útil: ela é uma expectativa idiomática em praticamente todo o código escrito.
+No Elixir [^1], o pattern matching [^2] compara estruturas de dados, extrai valores e guia o fluxo de execução de forma clara e expressiva. Mais do que opção útil, é expectativa idiomática em quase todo código escrito na linguagem.
 
-Ao longo deste artigo, vamos explorar a semântica do pattern matching em Elixir, desde sua interpretação básica com o operador `=`, passando pela desconstrução de tuplas e listas, até o uso intensivo em fluxos de controle e definição de funções.
+Aqui percorremos da semântica do `=` e desconstrução de tuplas/listas até fluxos de controle e definição de funções.
 
 Todos os exemplos práticos apresentados foram extraídos do projeto em desenvolvimento, no qual implementamos um algoritmo conhecido como **Shunting Yard**. Este algoritmo tem como objetivo converter expressões matemáticas da notação infixa (como `1 + 2 * 3`) para uma estrutura que seja mais fácil de ser interpretada por computadores, como a notação posfixa ("notação polonesa reversa"). No nosso caso, a implementação serve também para construir uma árvore sintática abstrata (AST).
 
@@ -116,7 +117,7 @@ end
 
 ### Controle de Fluxo com with
 
-O `with` é utilizado para encadear múltiplas operações que podem falhar. Cada etapa precisa casar corretamente para o fluxo continuar; caso contrário, o controle é transferido imediatamente para o bloco `else`.
+O `with` encadeia múltiplas operações que podem falhar. Cada etapa precisa casar para o fluxo seguir; caso contrário, o controle salta na hora para o bloco `else`.
 
 ```elixir
 with {:ok, esq, resto1} <- parse_tokens(resto),
@@ -228,7 +229,7 @@ defp valida_ast(_), do: {:error, :ast_invalido}
 
 ## Pattern Matching em Binários (Strings e Bytes)
 
-Elixir também permite aplicar pattern matching diretamente sobre dados binários [^5], como strings e buffers de bytes. Essa funcionalidade é amplamente utilizada, especialmente para parsing de texto e manipulação de fluxos binários.
+Elixir também aplica pattern matching direto sobre dados binários [^5], como strings e buffers de bytes, recurso muito usado em parsing de texto e manipulação de fluxos binários.
 
 No nosso projeto, usamos bastante no módulo Tokenize, onde exploramos esse recurso para decompor strings em seus caracteres.
 

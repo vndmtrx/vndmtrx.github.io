@@ -5,16 +5,16 @@ subtitle: "Organizando aplicações complexas e domínios independentes com proj
 author:
   - "Eduardo N. S. R."
 date: 2025-04-20 15:46:00 GMT-3
-modified_date: 2026-05-10 10:26:00 GMT-3
+modified_date: 2026-11-24 09:49:12 GMT-3
 permalink: /posts/elixir-umbrella/
 tags: [Programação, Programação Funcional, Elixir]
 series: Aprendendo Elixir
 category: Tutoriais
 ---
 
-Neste segundo post da série *Aprendendo Elixir* [^1], vamos explorar como organizar projetos maiores usando arquitetura modular com uma estrutura guarda-chuva (chamada *Umbrella* pelo ecossistema Elixir). A proposta é dividir o sistema em múltiplas aplicações menores, focadas e coesas, que podem ser desenvolvidas, testadas e integradas dentro de um mesmo repositório sob o comando do Mix. Esse modelo segue o princípio de separação de responsabilidades, facilitando a manutenção e a escalabilidade do código.
+Neste segundo post da série *Aprendendo Elixir*, vamos organizar projetos maiores em arquitetura modular com uma estrutura guarda-chuva (chamada *Umbrella* pelo ecossistema). A proposta é dividir o sistema em múltiplas aplicações menores, focadas e coesas, desenvolvidas, testadas e integradas dentro do mesmo repositório sob o comando do Mix. Esse modelo segue a separação de responsabilidades, facilitando a manutenção e a escalabilidade do código.
 
-Os exemplos deste post estão disponíveis na pasta [02-umbrella](https://github.com/vndmtrx/estudo_elixir/tree/main/02-umbrella) do [repositório de estudos](https://github.com/vndmtrx/estudo_elixir). Para demonstrar o conceito na prática, construímos um conversor unificado composto por três aplicações internas: o `conversor_temperatura` (cálculos entre Celsius e Fahrenheit), o `conversor_distancia` (conversões entre metros e pés) e o app integrador `main`, responsável por orquestrar as entradas do usuário no terminal.
+Os exemplos deste post (baseados na documentação oficial do Elixir [^1]) estão na pasta [02-umbrella](https://github.com/vndmtrx/estudo_elixir/tree/main/02-umbrella) do [repositório de estudos](https://github.com/vndmtrx/estudo_elixir). Para demonstrar o conceito na prática, construímos um conversor unificado composto por três aplicações internas: o `conversor_temperatura` (cálculos entre Celsius e Fahrenheit), o `conversor_distancia` (conversões entre metros e pés) e o app integrador `main`, responsável por orquestrar as entradas do usuário no terminal.
 
 ## Por que usar um projeto Guarda-Chuva?
 

@@ -5,7 +5,7 @@ subtitle: "Primeiros passos no paradigma funcional com ASDF, Mix e ExUnit"
 author:
   - "Eduardo N. S. R."
 date: 2025-04-18 15:09:00 GMT-3
-modified_date: 2026-09-02 13:57:00 GMT-3
+modified_date: 2026-11-24 09:49:12 GMT-3
 permalink: /posts/elixir-introducao/
 tags: [Programação, Programação Funcional, Elixir]
 series: Aprendendo Elixir
@@ -14,7 +14,7 @@ category: Tutoriais
 
 Este post inaugura uma série intitulada *Aprendendo Elixir*, na qual registro minha jornada de aprendizado com essa linguagem. Minha ideia aqui é descrever meu aprendizado (e escrever sobre isso é uma forma de consolidar esse processo). Ao longo dos próximos módulos, iremos construir uma base sólida em Elixir por meio de projetos práticos, cada um introduzindo novos conceitos e boas práticas da programação funcional. Espero que este conteúdo te ajude tanto quanto está me ajudando.
 
-Sempre tive afinidade com linguagens funcionais. Meu primeiro contato foi ainda nos anos 90, quando usava AutoLisp no AutoCAD R14. O AutoLisp despertou meu interesse pelo paradigma funcional de forma totalmente inesperada. Mais tarde, usei Python extensivamente, não apenas pela clareza sintática, mas principalmente pelos recursos funcionais que ele mescla com a programação imperativa e orientação a objetos. Também sempre tive bastante apreço por Java: mesmo não sendo funcional, sua estrutura e clareza sempre me pareceram convidativas à manutenção e organização do código.
+Sempre tive afinidade com linguagens funcionais. Meu primeiro contato foi ainda nos anos 90, usando AutoLisp no AutoCAD R14, que despertou meu interesse pelo paradigma de forma inesperada. Mais tarde, passei anos em Python, atraído pela clareza sintática e pelos recursos funcionais misturados ao estilo imperativo e à orientação a objetos. Também guardo apreço por Java: mesmo fora do mundo funcional, sua estrutura e clareza convidam à organização e manutenção do código.
 
 Agora, com Elixir, sinto um misto desses mundos: a elegância e concisão da sintaxe, combinadas com o poder do paradigma funcional. Recursos como o operador `|>` (*pipe*) e o *pattern matching* moldam a forma de pensar, e vou abordar cada um deles com calma ao longo da série.
 
@@ -28,7 +28,7 @@ O Elixir [^1] é uma linguagem funcional, concorrente e tolerante a falhas, cons
 
 Por ser funcional, o Elixir trabalha com imutabilidade de dados e funções puras. Na prática, você não altera o estado de um objeto: você recebe dados, aplica transformações e retorna novos dados. No começo parece uma restrição estranha para quem vem da orientação a objetos tradicional, mas logo fica claro como isso elimina categorias inteiras de bugs e torna o código previsível e testável.
 
-O ecossistema também se destaca pela consistência. O `mix` [^2] gerencia projetos, compilação, tarefas e dependências; o `ExUnit` [^3] é o *framework* de testes nativo, sem necessidade de ferramentas externas; e o IEx é o REPL interativo, excelente para experimentar código ao vivo.
+O ecossistema também brilha na consistência: `mix` [^2] cuida de projetos e dependências, `ExUnit` [^3] entrega testes nativos e o IEx dá um REPL interativo excelente.
 
 Neste primeiro módulo, vamos configurar o ambiente do zero com o ASDF, entender como funcionam as versões do Erlang e do Elixir, criar um projeto básico com `mix`, implementar nossa primeira função e escrever testes automatizados com `ExUnit`. Todo o código deste exemplo está no diretório [01-saudacao](https://github.com/vndmtrx/estudo_elixir/tree/main/01-saudacao) do repositório parceiro no GitHub [^4].
 
@@ -385,7 +385,7 @@ Até a próxima!
 
 ## Referências
 
-[^1]: **Elixir (linguagem de programação)** {*Wikipedia*} ([Link](https://pt.wikipedia.org/wiki/Elixir_(linguagem_de_programa%C3%A7%C3%A3o)))
+[^1]: **Elixir (linguagem de programação)** {*Wikipedia*} ([Link](https://pt.wikipedia.org/wiki/Elixir_%28linguagem_de_programa%C3%A7%C3%A3o%29))
 
 [^2]: **Guia do Mix** {*HexDocs*} ([Link](https://hexdocs.pm/mix/Mix.html))
 

@@ -5,6 +5,7 @@ subtitle: "Por que a metáfora da construção civil falha e programar é, na ve
 author:
   - "Eduardo N. S. R."
 date: 2024-08-09 10:43:00 GMT-3
+modified_date: 2026-11-24 09:49:12 GMT-3
 permalink: /posts/jardineiro-software/
 tags: [Programação, Análise de Sistemas]
 category: Ensaios
@@ -18,21 +19,19 @@ Na minha visão, a melhor de todas é a ideia de que programar é como cuidar de
 
 ## Você não é um Engenheiro de Software
 
-Você não constrói arranha-céus. Você não constrói pontes.
-
-Você planta jardins.
+Você não constrói arranha-céus nem pontes: você planta jardins.
 
 Você é um Jardineiro de Software.
 
-Você tenta planejar seus jardins com um nível de detalhe a ponto de saber exatamente onde cada folha estará posicionada antes de plantar uma simples semente? As pessoas na sua organização cobram estimativas milimétricas de quantas flores terão desabrochado no prazo de um ano? Existem bônus atrelados a isso? Coisas que seriam perfeitamente sensatas para o planejamento de uma ponte ou edifício parecem completamente sem sentido quando aplicadas a jardins.
+Alguém tenta planejar um jardim sabendo onde cada folha vai nascer antes de plantar uma semente? A sua empresa cobra estimativa milimétrica de quantas flores vão abrir daqui a um ano (com bônus atrelado)? Coisas sensatas para uma ponte ou edifício viram piada quando aplicadas a jardins.
 
-Você provavelmente tem uma boa ideia de como o seu jardim deve estar daqui a uma semana. Pode até ter uma expectativa razoável de como ele estará daqui a um ano. Mas você não tem a menor ideia de onde cada ramo, folha, caule e flor estará nesse horizonte, e se disser que sabe com precisão, estará apenas chutando um palpite.
+Você até imagina como o jardim vai estar semana que vem, talvez daqui a um ano. Agora, dizer onde cada folha e flor vai brotar? Palpite puro.
 
-Se você estivesse construindo uma ponte ou um arranha-céu e me dissesse que, antes de começar, sabia exatamente como ele ficaria depois de pronto, eu acreditaria. Se você me dissesse que sabia, com precisão matemática, quanto tempo levaria para chegar ao estado acabado, acreditaria de novo. É assim que engenheiros trabalham. Mas diga-me a mesma coisa sobre seu jardim e vou responder: "Aham Cláudia, senta lá!" Diga-me que vai fazer o jardim crescer o dobro de rápido apenas contratando mais jardineiros, e eu vou rir junto com você.
+Se você estivesse erguendo uma ponte ou um arranha-céu e me jurasse saber antes de começar como ficaria e quanto tempo levaria, eu acreditaria. É assim que engenharia civil trabalha. Diga o mesmo sobre seu jardim e vai ouvir "Aham Cláudia, senta lá!" (e se prometer dobrar o crescimento contratando mais jardineiros, eu rio junto).
 
-Por que tantos jardins enfrentam dificuldades enquanto grandes obras de engenharia são entregues com regularidade? Salvo raras exceções, a técnica para erguer um edifício segue padrões estruturais semelhantes, seja na Europa ou em Singapura. Jardins não funcionam assim. Cada jardim é único porque o ecossistema em si é único. Jardins lado a lado podem ter solos, incidência solar e microclimas totalmente diferentes. É por isso que uma construtora média consegue erguer a mesma ponte que uma gigante da engenharia, mas uma empresa qualquer não consegue fazer seus sistemas crescerem no mesmo calibre do Google apenas copiando seus processos.
+Por que tantos jardins sofrem enquanto grandes obras saem no prazo? Salvo raras exceções, erguer um edifício segue técnicas semelhantes na Europa ou em Singapura. Com jardins não funciona assim: cada ecossistema é único, com solo, sol e microclima próprios. Uma construtora média ergue a mesma ponte de uma gigante, mas empresa nenhuma cresce no calibre do Google só copiando processo.
 
-Lembra daquela vez em que alguém na empresa tentou aplicar uma metodologia ágil qualquer na base da receita pronta e depois saiu dizendo que o adubo não funcionava? O adubo funciona, mas talvez o seu jardim já estivesse sufocado pelo clima organizacional antes mesmo de começar. Você estava tentando plantar uma floresta tropical no deserto? Não adianta simplesmente tentar cultivar as mesmas espécies do Facebook, do Twitter ou do Netflix e esperar que elas criem raízes profundas sem considerar a terra que você tem em mãos.
+Aplicar metodologia ágil na receita pronta e culpar o adubo não ajuda: não nasce floresta tropical no deserto só porque você copiou a terra do Facebook ou da Netflix.
 
 Ao contrário de um prédio, em um jardim sempre nascerão ervas daninhas. Ele nunca estará 'terminado'. Só porque o orçamento do projeto acabou não significa que o software está concluído. Se você parar de cuidar do jardim e não retirar as pragas, elas irão sufocar o que foi plantado e, em pouco tempo, recomeçar do zero parecerá mais tentador do que fazer a poda necessária. O ambiente em torno do código está sempre em movimento: bibliotecas atualizam, requisitos mudam, servidores evoluem.
 

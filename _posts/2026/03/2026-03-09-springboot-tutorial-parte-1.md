@@ -5,7 +5,7 @@ subtitle: "Configurando o ambiente base com Debian Trixie, SDKMAN, VS Codium e J
 author:
   - "Eduardo N. S. R."
 date: 2026-03-09 11:20:00 GMT-3
-modified_date: 2026-08-19 09:30:00 GMT-3
+modified_date: 2026-11-24 09:49:12 GMT-3
 permalink: /posts/spring-boot-tutorial-parte-1-ambiente/
 tags: [Spring Boot, Java, DevOps, Linux]
 series: Spring Boot Tutorial
@@ -31,7 +31,7 @@ A escolha do sistema operacional de trabalho não precisa ser um dogma, mas prec
 
 O primeiro grande erro em ambientes Java é instalar o JDK via gerenciador de pacotes da distribuição (`apt install default-jdk`). Fazer isso amarra o seu sistema a uma versão engessada, polui diretórios globais como `/usr/lib/jvm` e transforma a troca de versão entre projetos diferentes em um pesadelo manual.
 
-A solução definitiva para esse problema é o **SDKMAN** [^2]. Ele gerencia múltiplos kits de desenvolvimento de forma isolada dentro da sua *home*, sem exigir privilégios de superusuário para alternar entre versões de JDK, Gradle ou Maven.
+A solução definitiva é o **SDKMAN** [^2], isolando JDK, Gradle e Maven dentro da sua *home* sem `sudo`.
 
 A instalação é direta e roda inteiramente no espaço de usuário:
 
@@ -90,7 +90,7 @@ $ cat .sdkmanrc
 java=26-tem
 ```
 
-A partir desse momento, qualquer pessoa que clonar o projeto pode simplesmente rodar `sdk env install` para baixar e travar exatamente a mesma versão de compilador e runtime. O mito do "na minha máquina roda diferente" morre aqui.
+A partir desse momento, quem clonar o projeto só precisa rodar `sdk env install` para baixar e travar a mesma versão de compilador e runtime. O mito do "na minha máquina roda diferente" morre aqui.
 
 ## O editor leve e sem telemetria: VS Codium
 
@@ -100,7 +100,7 @@ Eu sei que a comunidade Java adora o IntelliJ IDEA. Não tiro a razão de quem u
 
 Para quem, como eu, sempre teve um carinho especial por editores modulares (saudades eternas do saudoso Atom Editor), o **VS Codium** [^3] é o ponto de equilíbrio perfeito.
 
-O VS Codium é o binário limpo do Visual Studio Code, compilado diretamente a partir do código-fonte livre sob licença MIT. A grande sacada em relação ao executável da Microsoft é que ele vem completamente livre de rastreadores, telemetria invasiva e chamadas de rede em segundo plano. É leve, consome uma fração da memória de uma IDE tradicional e não fica tentando adivinhar a sua vida.
+O VS Codium é o binário limpo do Visual Studio Code, compilado a partir do código-fonte livre sob licença MIT. A grande sacada em relação ao executável da Microsoft é vir sem rastreadores, telemetria invasiva nem chamadas em segundo plano: leve, consome uma fração da memória de uma IDE tradicional e não fica bisbilhotando a sua vida.
 
 No Debian Trixie, a instalação é muito simples através do `extrepo` (caso seu sistema seja uma instalação mínima, certifique-se de ter o `curl` e o `extrepo` instalados com `sudo apt install curl extrepo`):
 

@@ -5,7 +5,7 @@ subtitle: "Do H2 parametrizado ao JpaRepository: a primeira fatia de domínio co
 author:
   - "Eduardo N. S. R."
 date: 2026-08-26 08:43:00 GMT-3
-modified_date: 2026-08-27 10:36:00 GMT-3
+modified_date: 2026-11-24 09:49:12 GMT-3
 permalink: /posts/spring-boot-tutorial-parte-3-core-api/
 tags: [Spring Boot, Java, Backend, Engenharia de Software]
 series: Spring Boot Tutorial
@@ -21,7 +21,7 @@ A tentação nesse ponto é honesta: abrir o controller, despejar ali toda a ló
 
 Quem vive de infraestrutura já viu esse filme repetidas vezes. Aplicação que funciona na máquina do dev e explode no deploy. Schema alterado na mão, sem histórico de migração. `ddl-auto=update` rodando em produção como se a JVM tivesse passe livre para reescrever o banco. O mesmo descuido que, na Parte 2, apontamos nas variáveis de configuração agora se manifesta na persistência, só que com potencial de estrago bem maior.
 
-Por isso, nesta parte a gente faz o oposto do impulso: constrói a primeira fatia de domínio da `tarefas-api` em camadas separadas, com o banco parametrizado no padrão 12-Factor e com testes em cada fronteira importante. O controller, por ora, vai continuar rústico de propósito, e o refinamento fica para um próximo momento.
+Aqui vamos no sentido inverso: construímos a primeira fatia de domínio da `tarefas-api` em camadas separadas, banco 12-Factor e testes nas fronteiras (o controller fica rústico de propósito por ora).
 
 {% include toc.html %}
 
@@ -33,10 +33,10 @@ Quando o domínio de verdade entra em jogo, essa abordagem não escala. Tentar r
 
 Na engenharia de software, a resposta para essa complexidade é a clássica **separação de responsabilidades** (*Separation of Concerns*). Em APIs backend no ecossistema Spring, essa separação se consolida em quatro papéis conceituais fundamentais:
 
-* **Model (Domínio e Estado):** Representa a estrutura dos dados, as regras de integridade interna e o estado que precisa ser preservado. É o núcleo do sistema, independente de protocolos de rede ou interfaces visuais.
-* **Repository (Persistência e I/O):** Isola toda a comunicação com a camada de armazenamento. Sua função é traduzir operações de domínio em consultas de banco, escondendo o dialeto SQL e o driver JDBC do restante do sistema.
-* **Service (Regras de Negócio e Transações):** O cérebro da aplicação. Orquestra os fluxos operacionais, valida invariantes de negócio e define os limites transacionais (o que deve ser salvo com sucesso ou desfeito atomicamente em caso de falha).
-* **Controller (Transporte e Protocolo):** O adaptador de entrada. Não conhece regras de banco nem toma decisões de negócio: sua única responsabilidade é receber requisições HTTP, validar os dados de entrada, acionar o serviço correto e devolver a resposta com o status HTTP semântico.
+* **Model:** núcleo de dados, integridade e estado, alheio a HTTP ou interface.
+* **Repository:** isola o I/O de banco, escondendo dialeto SQL e driver JDBC do resto da aplicação.
+* **Service:** o cérebro do negócio. Orquestra fluxos, valida invariantes e crava fronteiras transacionais (salva tudo ou desfaz tudo em falha).
+* **Controller:** adaptador fino de entrada HTTP que recebe a requisição, chama o service e devolve o status semântico sem encostar no banco.
 
 No nosso projeto `tarefas-api`, materializaremos cada um desses quatro conceitos em componentes concretos ao longo deste post:
 
@@ -287,7 +287,7 @@ Esse recurso é ágil, mas tem limite. Tentar expressar regras compostas por der
 
 É onde entram as **Custom Queries com `@Query`** [^6]. Em vez de poluir a interface, escrevemos a consulta diretamente em JPQL (*Java Persistence Query Language*) sobre a entidade `Tarefa`, batizando o método com um nome claro de negócio: `buscarPendentesPorTitulo(fragmento)`.
 
-Veja que aqui usamos um parâmetro nomeado `:fragmento` com `@Param("fragmento")`. Fazer o *binding* por nome em vez de posição (`?1`) protege a query caso a ordem dos argumentos mude no futuro. E ao resolver os curingas diretamente na consulta com `CONCAT('%', :fragmento, '%')`, quem consome o método passa apenas a palavra limpa (`"estudar"`), sem precisar colar `%` no código Java. O `CONCAT` com três argumentos é um facilitador do Hibernate, provedor padrão do Spring Boot; na especificação JPA, a função recebe exatamente dois argumentos, e a forma portável seria aninhar dois `CONCAT`. O Hibernate se encarrega de gerar o *Prepared Statement* parametrizado no banco, seguro contra injeção de SQL por definição.
+Veja que aqui usamos um parâmetro nomeado `:fragmento` com `@Param("fragmento")`. Fazer o *binding* por nome em vez de posição (`?1`) protege a query caso a ordem dos argumentos mude no futuro. Resolvendo os curingas na própria consulta com `CONCAT('%', :fragmento, '%')`, quem consome o método passa só a palavra limpa (`"estudar"`), sem colar `%` no Java. O `CONCAT` com três argumentos é um facilitador do Hibernate, provedor padrão do Spring Boot; na especificação JPA, a função aceita só dois argumentos, e a forma portável seria aninhar dois `CONCAT`. O Hibernate gera o *Prepared Statement* parametrizado no banco, seguro contra injeção de SQL por definição.
 
 Ainda assim, o `@Query` é estático. Para buscas avançadas onde o cliente combina múltiplos filtros opcionais em tempo de execução, ferramentas como o `JpaSpecificationExecutor` combinado com o verbo **HTTP QUERY (RFC 9734)** serão exploradas adiante.
 
@@ -377,11 +377,11 @@ public class TarefaService {
 
 Três detalhes aqui merecem uma lupa atenta, porque mudam a forma como pensamos persistência e segurança de tipos no ecossistema JPA.
 
-O primeiro é a ausência deliberada de `repository.save()` nos métodos de alteração. Quem veio do JDBC puro ou de DAOs procedurais costuma carregar o vício de mandar salvar cada objeto manualmente. No JPA, a mecânica é orientada a estado. Quando o método `buscarTarefaPorId` executa dentro de uma transação ativa (`@Transactional`), o Hibernate carrega a entidade para dentro do seu **contexto de persistência** no estado gerenciado (*managed*), guardando uma cópia fiel daquele registro (um *snapshot* em memória).
+O primeiro ponto é a ausência proposital de `repository.save()` nas alterações: no JPA, quando `buscarTarefaPorId` roda sob `@Transactional`, a entidade já entra no **contexto de persistência** em estado *managed* com um *snapshot* em memória.
 
 Quando você altera os atributos de `tarefa` (seja via setters ou pelo método de negócio `concluir()`), o objeto na memória muda, mas nenhuma instrução SQL é disparada de imediato. Ao final do método, quando o Spring prepara o *commit* da transação, o Hibernate executa a fase de *flush*: ele compara a entidade em memória com o *snapshot* inicial. Esse mecanismo é o *dirty checking* (*detecção de estado modificado*). Detectada a diferença, o próprio Hibernate gera e dispara o comando SQL `UPDATE` correspondente no banco. Invocar `save()` em uma entidade que já está no estado *managed* é redundância inócua.
 
-O segundo detalhe é a gestão das fronteiras com `@Transactional`. O `@Transactional(readOnly = true)` nos métodos de listagem e busca sinaliza ao Hibernate que ele não precisa guardar *snapshots* nem rastrear alterações para aquela sessão, economizando memória e permitindo otimizações de leitura pura na conexão JDBC. Nos métodos de escrita, a anotação assegura atomicidade: se qualquer regra for violada ou uma exceção estourar no meio do caminho, o Spring comanda o *rollback* imediato e nada contamina o banco.
+O segundo detalhe é `@Transactional`: `readOnly = true` dispensa *snapshots* no Hibernate e otimiza leitura no JDBC, enquanto nos métodos de escrita garante atomicidade com *rollback* imediato em qualquer exceção.
 
 Há ainda um terceiro ponto no método auxiliar `buscarTarefaPorId`: o uso do `Optional` e a mentalidade funcional. Em código Java clássico, métodos de busca frequentemente devolviam `null`, transferindo para quem chama o fardo de lembrar do `if (tarefa == null)` sob pena de tomar o clássico `NullPointerException`. No Spring Data JPA, o `repository.findById()` retorna um `Optional<Tarefa>`, transformando a possibilidade de ausência em um contrato explícito no sistema de tipos.
 
@@ -473,7 +473,7 @@ public class TarefaController {
 ```
 *Os status seguem a semântica HTTP: 200 para leitura e atualização, 201 para criação e 204 para exclusão.*
 
-O `TarefaRequest` não é a camada de DTOs que a aplicação merece. É um remendo honesto para não bater a entidade inteira no JSON de entrada. A resposta, porém, ainda expõe a entidade nua. Adiante, a coisa muda de figura: DTOs de visão, MapStruct e Bean Validation entram para valer.
+O `TarefaRequest` entra aqui como remendo honesto para não expor a entidade inteira no JSON de entrada, ainda longe da camada de DTOs que a aplicação merece. A resposta continua devolvendo a entidade nua; adiante entram DTOs de visão, MapStruct e Bean Validation para valer.
 
 ## O JShell com o contexto inteiro do Spring
 
@@ -492,7 +492,7 @@ $ jshell --class-path target/classes:$(cat .classpath.txt)
 # Abre o REPL enxergando as classes compiladas e as dependencias
 ```
 
-Dentro do JShell, o truque para uma exploração rápida e direta é iniciar o `SpringApplication` com o perfil web desativado (`--spring.main.web-application-type=none`). Assim o contexto sobe com JPA e H2 sem disputar porta HTTP, permitindo inspecionar qualquer bean do ecossistema. (Caso queira subir o servidor web completo para testar os endpoints simultaneamente no navegador ou via `curl`, basta omitir esse parâmetro, como faremos na seção de exercícios). No REPL, manter o hábito de fechar instruções com ponto e vírgula (` ; `) ajuda na hora de copiar trechos diretamente para classes Java:
+Dentro do JShell, o truque para uma exploração rápida e direta é iniciar o `SpringApplication` com o perfil web desativado (`--spring.main.web-application-type=none`). Assim o contexto sobe com JPA e H2 sem disputar porta HTTP, permitindo inspecionar qualquer bean do ecossistema. (Se quiser subir o servidor web completo para testar endpoints no navegador ou via `curl` ao mesmo tempo, basta omitir esse parâmetro, como faremos nos exercícios.) No REPL, fechar instruções com ponto e vírgula (` ; `) facilita copiar trechos direto para classes Java:
 
 ```bash
 jshell> import org.springframework.boot.SpringApplication;

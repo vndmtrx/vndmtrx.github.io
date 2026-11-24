@@ -5,7 +5,7 @@ subtitle: "Inicialização com Maven, variáveis de ambiente e perfis de execuç
 author:
   - "Eduardo N. S. R."
 date: 2026-08-19 16:31:00 GMT-3
-modified_date: 2026-09-02 13:57:00 GMT-3
+modified_date: 2026-11-24 09:49:12 GMT-3
 permalink: /posts/spring-boot-tutorial-parte-2-projeto-base/
 tags: [Spring Boot, Java, Engenharia de Software, DevOps]
 series: Spring Boot Tutorial
@@ -68,7 +68,7 @@ $ curl https://start.spring.io/starter.tgz \
 
 Basta descompactar o arquivo `.tgz` no seu diretório de trabalho ou, se preferir, clonar e abrir diretamente o código deste capítulo no [repositório parceiro](https://github.com/vndmtrx/estudos_springboot). Todos os exemplos a partir de agora serão baseados neste projeto. O código desse post está na pasta [estudos_springboot/parte2](https://github.com/vndmtrx/estudos_springboot/tree/main/parte2).
 
-Repare que na raiz do projeto temos o arquivo `mvnw` (o **Maven Wrapper**) [^3]. O Maven Wrapper é fundamental para a reprodutibilidade: ele garante que qualquer pessoa (ou servidor de CI) que clone o repositório execute exatamente a mesma versão do Maven sem precisar ter o binário instalado globalmente no sistema operacional.
+Repare que na raiz do projeto temos o arquivo `mvnw` (o **Maven Wrapper**) [^3]. Ele garante que qualquer pessoa (ou servidor de CI) que clone o repositório rode a mesma versão do Maven sem precisar instalar o binário no sistema operacional.
 
 Podemos compilar e rodar a aplicação imediatamente:
 
@@ -326,7 +326,7 @@ Aqui entra a regra de ouro que adotaremos em toda a série: **nenhum código ava
 
 A boa notícia é que não precisamos configurar bibliotecas de teste externas do zero: o Spring Initializr já inclui por padrão no nosso `pom.xml` o artefato `spring-boot-starter-webmvc-test`. Esse pacote empacota o **JUnit 5**, o **Mockito** e o utilitário **MockMvc** prontos para uso.
 
-Vamos escrever um teste unitário para o `StatusController` utilizando o `MockMvc`. Com a anotação `@WebMvcTest`, o Spring inicializa exclusivamente a camada web (controllers e serialização JSON), permitindo simular requisições HTTP e validar o payload de resposta diretamente na memória, sem abrir portas de rede ou subir um servidor web completo:
+Vamos escrever um teste unitário para o `StatusController` usando `MockMvc`. Com `@WebMvcTest`, o Spring sobe só a camada web (controllers e serialização JSON), simulando requisições HTTP e validando o payload na memória sem abrir porta nem levantar o servidor inteiro:
 
 Arquivo `src/test/java/io/github/vndmtrx/tarefas_api/StatusControllerTest.java`:
 
