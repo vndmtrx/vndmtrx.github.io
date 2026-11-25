@@ -5,6 +5,7 @@ subtitle: "O conto de terror de um profissional de infraestrutura assombrado por
 author:
   - "Eduardo N. S. R."
 date: 2026-10-29 08:00:00 GMT-3
+modified_date: 2026-11-25 07:54:29 GMT-3
 permalink: /posts/gradiente-descendente-em-6-atos/
 category: Crônicas
 tags: [Inteligência Artificial, Faculdade, PyTorch, Algoritmos]
@@ -13,15 +14,17 @@ math: true
 
 Existe uma sensação muito peculiar em olhar para os lados em uma sala de aula de pós-graduação e perceber, com razoável grau de certeza estatística, que você é a pessoa mais velha da turma. O povo ao redor parece ter nascido sabendo calcular autovalores de cabeça, enquanto o meu cérebro passou décadas condicionado pela lida crua da infraestrutura: acostumado ao cheiro de poeira dos racks, ao zumbido frio das ventoinhas nos data centers e à certeza quase religiosa de que o mundo funciona melhor quando a gente entende os próprios logs antes de dormir.
 
-Só que quando alguém abre um colchete de matriz e começa a falar sobre derivadas parciais em superfícies não lineares, o meu instinto de sobrevivência apita na hora. Eu travo. Travo feio, como um computador antigo tentando renderizar vídeo sem placa aceleradora. Álgebra linear e otimização contínua sempre foram a minha criptonita em qualquer coisa que encarei na vida. E saber que os próximos projetos da disciplina vão descambar para redes neurais profundas só ativa um alarme silencioso no fundo da mente: AAAAAAAAAA!
+Só que abriu colchete de matriz com derivada parcial em superfície não linear e eu travo feio, como PC velho sem placa aceleradora. Álgebra linear e otimização contínua sempre foram minha criptonita, e lembrar que vêm redes neurais profundas pela frente só dispara um alarme mudo na cabeça: AAAAAAAAAA!
 
 Quando o professor colocou o trabalho no Teams, o Mini-Projeto 1 parecia uma provocação em duas partes complementares. Na primeira, você recebe uma fita binária de 23 bits, `00001001000011001100111`, e precisa encontrar a sequência ótima de inversões de bits individuais e de blocos contíguos até transformar tudo em zeros usando buscas clássicas em grafos. Na segunda, ele joga o conforto dos inteiros no lixo e exige que você trate esses mesmos bits como coordenadas contínuas no intervalo real entre zero e um, descendo a encosta da função de custo na base do puro gradiente descendente.
 
-Aqui vale um alinhamento honesto de bastidor. No meu {% include post-ref.html slug="ensaio-sobre-dois-cegos" text="Ensaio sobre dois cegos" %}, eu defendi com unhas e dentes a escrita a quatro mãos com inteligência artificial para o blog, onde a máquina e o autor dividem o texto sem falsa vergonha. Só que aquilo era sobre literatura e ensaios pessoais. Aqui é mestrado. No mestrado, a regra do jogo é outra: se a IA escrever uma linha de código por você ou mastigar o relatório, você não aprendeu nada e virou apenas um papagaio caro de tecnologia.
+Aqui vale um alinhamento honesto de bastidor. No meu {% include post-ref.html slug="ensaio-sobre-dois-cegos" text="Ensaio sobre dois cegos" %}, defendi com unhas e dentes a escrita a quatro mãos com IA para o blog, sem falsa vergonha.
+
+Só que aquilo era literatura e ensaio. Aqui é mestrado: se a IA escrever código ou mastigar o relatório por você, você não aprendeu nada e virou só um papagaio caro de tecnologia.
 
 O meu pacto com a máquina foi radicalmente inverso. Sentei diante do terminal e decretei: *"Você não vai gerar o trabalho para mim. Você será o meu tutor digital. Eu vou formular a minha intuição, vou tentar explicar com a minha linguagem tosca e incorreta, vou quebrar a cara, e você vai me fazer perguntas difíceis para apontar onde a minha lógica furou. Aí eu vou lá, leio o livro, repito tudo novamente, e vou implementando com as minhas próprias mãos no teclado e faço testes até passar"*.
 
-O que se seguiu nas semanas seguintes não foi um fluxo de trabalho elegante. Foi uma comédia de erros, humilhações computacionais e pequenas epifanias que merecem ser contadas em seis atos.
+O que veio nas semanas seguintes passou longe de um fluxo elegante: virou uma comédia de erros, humilhações computacionais e pequenas epifanias que merecem ser contadas em seis atos.
 
 ## Ato I: A Batalha dos Bits
 
@@ -81,7 +84,7 @@ Para fitas alternadas (`101010...`), o BFS visita mais de um milhão de estados 
 
 Entramos no terreno das buscas heurísticas: o Algoritmo Guloso (*Greedy Best-First Search*).
 
-Primeiro, testamos a óbvia Distância de Hamming ($h_1$), que simplesmente conta quantos bits 1 ainda restam na fita. Parecia uma excelente ideia, mas na prática ela é míope. Para ela, uma sequência com cinco bits 1 espalhados pela fita tem exatamente a mesma distância estimada até o alvo que um bloco sólido de cinco bits 1 contíguos. Só que pelas regras do problema, o bloco sólido pode ser eliminado inteiro com uma única inversão de bloco (custo 1), enquanto os bits espalhados vão exigir pelo menos cinco operações. A heurística de Hamming não enxerga essa vantagem dos blocos, calcula custos distorcidos, expande caminhos desnecessários e sofre para convergir.
+Primeiro, testamos a óbvia Distância de Hamming ($h_1$), que só conta quantos bits 1 restam na fita. Parecia ótima ideia, mas na prática é míope: cinco bits 1 espalhados ganham a mesma distância estimada que um bloco sólido de cinco bits 1 contíguos. Só que pelas regras do problema, o bloco inteiro cai numa única inversão (custo 1), enquanto os bits espalhados pedem pelo menos cinco operações. A heurística de Hamming ignora essa vantagem dos blocos, calcula custos distorcidos, expande caminhos à toa e sofre para convergir.
 
 Foi quando implementamos a heurística de blocos contíguos ($h_2$), que conta quantos agrupamentos contíguos de bits 1 existem.
 
@@ -118,7 +121,7 @@ Qualquer um que já tenha passado aperto na faculdade conhece a voz que sussurra
 
 Mas eu saberia. E isso pesa muito pra mim.
 
-Botei uma regra de ferro para mim mesmo. Eu até baixei o repositório, dei uma olhada no relatório dela, comentei com o meu tutor digital sobre o que tinha visto, mas dei uma ordem categórica no terminal: *"Não use nada do conhecimento ou do código dela como base. Vamos nos basear estritamente no que eu construí até aqui no meu próprio repositório"*. Não era purismo moral de santinho de barro; era pragmatismo de aprendizado. Se eu pegasse o atalho antes de fechar o meu próprio raciocínio, eu perderia a oportunidade de construir a minha própria musculatura mental.
+Botei uma regra de ferro para mim mesmo. Baixei o repositório, olhei o relatório dela, comentei com o meu tutor digital sobre o que tinha visto, mas dei uma ordem categórica no terminal: *"Não use nada do conhecimento ou do código dela como base. Vamos nos basear estritamente no que eu construí até aqui no meu próprio repositório"*. Era pragmatismo puro de aprendizado, longe de purismo de santinho de barro: pegar o atalho antes de fechar o raciocínio me roubaria a musculatura mental.
 
 Só depois que a minha suíte inteira de testes estava rodando perfeitamente e o meu código estava blindado é que me dei ao luxo de abrir o trabalho dela para comparar os resultados.
 
@@ -128,7 +131,7 @@ Fiquei intrigado. Como o algoritmo dela tinha passado com tanta tranquilidade pe
 
 Fui olhar o código dela com carinho e entendi a intuição: a fita canônica do professor (`00001001000011001100111`) é na verdade uma fita extremamente rasa. Ela tem apenas cinco blocos de bits 1. A solução ótima mora na profundidade cinco. O BFS dela fazia o teste de objetivo na geração e parava assim que encontrava a primeira resposta viável, além de colocar uma trava rígida de segurança limitando a busca a três milhões de nós visitados.
 
-Foi uma sacada prática e muito inteligente para o enunciado específico. Se eu tivesse olhado o trabalho dela antes, eu certamente teria copiado a mesma estratégia, teria ficado feliz com os 23 bits resolvidos e jamais teria me dado ao trabalho de estressar o pior caso em fitas alternadas onde o algoritmo falha invariavelmente.
+Foi uma sacada prática e muito inteligente para o enunciado específico. Se eu tivesse aberto o trabalho dela antes, teria copiado a mesma estratégia, comemorado os 23 bits resolvidos e nunca teria estressado o pior caso em fitas alternadas onde o algoritmo quebra sem remédio.
 
 Não havia um código "melhor" ou "pior". Havia duas intuições complementares diante da mesma folha de papel: ela foi certeira no alvo pedido; eu fui paranóico com os limites da máquina. Ter respeitado o meu próprio tempo me permitiu apreciar a inteligência da solução dela sem me sentir inferior nem superior.
 

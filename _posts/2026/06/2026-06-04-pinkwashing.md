@@ -5,6 +5,7 @@ subtitle: "A ilusão da diversidade corporativa sazonal, memes de marketing e a 
 author:
 - "Eduardo N. S. R."
 date: 2026-06-04 16:51:00 GMT-3
+modified_date: 2026-11-25 07:54:29 GMT-3
 permalink: /posts/pinkwashing/
 tags: [Sociedade, Política, LGBTQIAPN+, Opinião]
 category: Crônicas
@@ -12,7 +13,7 @@ category: Crônicas
 
 "Oi, gay! Feliz mês do orgulho! Estamos lacrando nos descontos esse mês. Como assim, mona? Sim, no mês do orgulho nós estamos pensando ainda mais em vocês, gays. Afinal de contas, meu melhor amigo é gay, meu primo é gay, isso me faz quase gay. Então por isso nossas Tupperwares estão com 24% de desconto!"
 
-Se você trabalha com marketing, RH ou simplesmente navega pelo LinkedIn e redes sociais em junho, muito provavelmente já riu (de puro nervoso) com esse vídeo viral da jujudosteclados servindo *cunt* [^1]. A paródia escancara um roteiro que centenas de corporações seguem fielmente: o desespero comercial de parecer inclusiva à base de clichês forçados, descontos aleatórios e selos superficiais de aprovação. O "Pinkwashing" virou meme porque a realidade corporativa consegue ser assustadoramente caricata. É a partir dessa piada, porém, que precisamos falar sobre o que acontece quando a tela apaga e o expediente do dia a dia continua.
+Se você trabalha com marketing, RH ou só passa pelo LinkedIn em junho, já deve ter rido (de puro nervoso) com esse vídeo viral da jujudosteclados servindo *cunt* [^1]. A paródia escancara um roteiro que centenas de corporações seguem à risca: o desespero comercial de parecer inclusiva à base de clichês forçados, descontos aleatórios e selos superficiais. O "Pinkwashing" virou meme porque a realidade corporativa consegue ser bem caricata. É a partir dessa piada, porém, que precisamos falar sobre o que acontece quando a tela apaga e o expediente continua.
 
 > [!NOTE] Disclaimer
 > Este post traz uma mistura de desabafo pessoal e análise de cultura corporativa.
@@ -39,7 +40,7 @@ A empregabilidade LGBTQIAPN+ ainda é tratada por muitas marcas como uma cota te
 
 ## Diferenciando compromisso de fachada
 
-Não somos bobos: sabemos perfeitamente quais são as empresas sérias e quais são as de fachada. Diferenciamos quem investe em inclusão de longo prazo, com comitês com orçamento real, políticas ativas de retenção e ambientes psicologicamente seguros para pessoas trans e travestis, de quem está apenas tentando "lacrar nos copos coloridos" para faturar no próximo trimestre fiscal.
+Não somos bobos: sabemos muito bem quais são as empresas sérias e quais são de fachada. Diferenciamos quem investe em inclusão de longo prazo, com comitês com orçamento real, políticas ativas de retenção e ambientes psicologicamente seguros para pessoas trans e travestis, de quem só tenta "lacrar nos copos coloridos" para faturar no próximo trimestre.
 
 Mudar a cor do logotipo sem alterar a estrutura de contratação, acolhimento e plano de carreira é apenas maquiagem. Fica esteticamente bonito na superfície, mas desmorona no primeiro teste de compromisso real.
 

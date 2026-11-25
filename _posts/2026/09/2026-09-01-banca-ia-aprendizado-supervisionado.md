@@ -5,6 +5,7 @@ subtitle: "Notas de sobrevivência para apresentar aprendizado supervisionado e 
 author:
   - "Eduardo N. S. R."
 date: 2026-09-01 14:37:00 GMT-3
+modified_date: 2026-11-25 07:54:29 GMT-3
 permalink: /posts/banca-ia-aprendizado-supervisionado/
 tags: [Inteligência Artificial, Machine Learning, Algoritmos, Opinião]
 category: Ensaios
@@ -101,7 +102,7 @@ A **Regressão Logística** contorna essa fragilidade aplicando a função sigmo
 h(x) = 1 / (1 + e^(-w . x))
 ```
 
-Em vez de tomar uma decisão binária abrupta, o modelo entrega uma probabilidade contínua e bem calibrada entre 0 e 1. Por ser suave e derivável, sua superfície de custo permite uma otimização convexa e robusta mesmo quando as classes apresentam sobreposição natural.
+Em vez de tomar uma decisão binária abrupta, o modelo entrega uma probabilidade contínua e bem calibrada entre 0 e 1. Por ser suave e derivável, sua superfície de custo permite uma otimização convexa e estável mesmo quando as classes apresentam sobreposição natural.
 
 ### 3. Support Vector Machines (SVM) e o salto dimensional
 
@@ -113,11 +114,9 @@ Quando os dados não possuem separação linear no espaço original, entra em ce
 
 ### 4. Métodos de Ensemble: a força da combinação
 
-Nenhum modelo precisa carregar todo o peso da decisão sozinho. Os métodos de comitê combinam múltiplos aprendizes base para produzir estimativas mais robustas:
+Nenhum modelo precisa carregar o peso da decisão sozinho. Os métodos de comitê combinam múltiplos aprendizes base para reduzir erro e variância:
 
-* **Bagging:** Treina instâncias do mesmo algoritmo em diferentes amostras aleatórias com reposição (*bootstrapping*) e agrega os votos por maioria ou média. Seu principal efeito é a redução drástica de **variância** em modelos instáveis.
-* **Random Forests:** Sofistica o Bagging ao introduzir aleatoriedade também na escolha das variáveis avaliadas a cada divisão de nó (usando tipicamente a raiz quadrada do total de atributos). Isso quebra a correlação entre as árvores da floresta, gerando um conjunto muito mais diverso.
-* **Boosting (AdaBoost e Gradient Boosting):** Opera de forma sequencial. Cada novo modelo é construído com foco prioritário nas instâncias que os modelos anteriores classificaram incorretamente. O Gradient Boosting refina essa ideia ajustando os novos modelos diretamente aos resíduos (o gradiente negativo da função de perda), reduzindo progressivamente o **viés**.
+No **Bagging**, treinamos cópias do mesmo algoritmo em amostras com reposição (*bootstrapping*) e agregamos por voto ou média para domar a **variância**. As **Random Forests** levam isso adiante sorteando também subconjuntos de variáveis a cada nó (em geral a raiz quadrada do total de atributos), o que descorrelaciona as árvores. Já no **Boosting** (AdaBoost e Gradient Boosting), o treino é sequencial: cada novo modelo mira os erros (ou resíduos, via gradiente negativo da função de perda) deixados pelos anteriores, reduzindo o **viés**.
 
 ## A fronteira: por que o aprendizado por reforço é diferente
 
@@ -178,7 +177,7 @@ A mágica reside no conceito de **bootstrapping**: o algoritmo usa a sua própri
 
 ## RL Ativo: o controle e o equilíbrio da exploração
 
-Quando o agente precisa escolher ativamente as ações para maximizar o retorno, ele se depara imediatamente com o conflito entre **Exploração** e **Explotação**:
+Quando o agente escolhe ações para maximizar retorno, cai direto no dilema entre **Exploração** e **Explotação**:
 
 * **Explotação (*Exploitation*):** Escolher a ação que o agente atualmente acredita ser a melhor para garantir recompensas a curto prazo.
 * **Exploração (*Exploration*):** Tomar ações com retornos incertos na tentativa de descobrir rotas e estratégias potencialmente superiores.
@@ -216,7 +215,7 @@ No livro canônico de Sutton e Barto, os autores destacam um alerta fundamental 
 2. **Bootstrapping:** Atualização de estimativas baseada em estimativas seguintes (como no TD e Q-Learning).
 3. **Treinamento Off-policy:** Aprender sobre uma política enquanto os dados são coletados por outra política de exploração.
 
-O marco do algoritmo Deep Q-Network (DQN) da DeepMind em 2015 foi justamente conseguir estabilizar essa tríade ao jogar títulos do Atari a partir de pixels puros. A solução central foi o mecanismo de **Experience Replay**: as transições observadas são armazenadas em um buffer de memória e o modelo é atualizado a partir de mini-lotes sorteados aleatoriamente, quebrando a correlação temporal dos dados e restaurando a estabilidade do aprendizado.
+O marco do algoritmo Deep Q-Network (DQN) da DeepMind em 2015 foi estabilizar essa tríade jogando Atari a partir de pixels puros. A chave foi o **Experience Replay**: guardar transições num buffer e atualizar o modelo com mini-lotes sorteados ao acaso, quebrando a correlação temporal dos dados e segurando a estabilidade do treino.
 
 ## Roteiro cronometrado para a apresentação
 

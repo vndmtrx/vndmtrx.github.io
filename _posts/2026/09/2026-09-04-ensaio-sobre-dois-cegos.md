@@ -5,6 +5,7 @@ subtitle: "Para quem acha que escrever com IA te livra do trabalho de pensar"
 author:
 - "Eduardo N. S. R."
 date: 2026-09-04 06:53:00 GMT-3
+modified_date: 2026-11-25 07:54:29 GMT-3
 permalink: /posts/ensaio-sobre-dois-cegos/
 tags: [Inteligência Artificial, Escrita, Filosofia, Opinião]
 category: Ensaios
@@ -27,9 +28,9 @@ O título deste post não é metáfora fofa (Saramago que o diga) [^2]. Escrever
 
 A primeira é a **cegueira da máquina**. O modelo tem bilhões de parâmetros decorados, lê uma enciclopédia em três milissegundos, mas tem a sensibilidade de uma britadeira. Ele não tem corpo, nunca passou pela humilhação de reprovar numa prova de lógica e não faz a menor ideia da diferença entre uma ironia ácida e uma piada de tiozão no churrasco de domingo. Se você deixar a IA solta, ela vai invariavelmente produzir um texto engomado, prolixo e com aquele tom insuportável de coach motivacional de firma.
 
-A segunda é a **cegueira do autor**. E aqui entra a minha própria incompetência: quando estou escrevendo, perco completamente o senso de proporção. Fico apegado àquela piada ruim que achei genial às duas da manhã, empilho analogias (entre parênteses) como se não houvesse amanhã, repito as mesmas três palavras de efeito em todo santo parágrafo e tenho a ilusão de que o leitor tem a obrigação moral de acompanhar as voltas do meu labirinto mental.
+Do outro lado mora a **cegueira do autor**. E aqui entra a minha própria incompetência: quando estou escrevendo, perco completamente o senso de proporção. Fico apegado àquela piada ruim que achei genial às duas da manhã, empilho analogias (entre parênteses) como se não houvesse amanhã, repito as mesmas três palavras de efeito em todo santo parágrafo e tenho a ilusão de que o leitor tem a obrigação moral de acompanhar as voltas do meu labirinto mental.
 
-A mágica não acontece quando um cede ao outro. Acontece quando a gente se cansa das tosquices mútuas e começa a cortar excessos.
+O texto só melhora quando a gente se cansa das tosquices mútuas e começa a cortar excessos.
 
 ## Bakhtin e a palavra meio alheia
 
@@ -62,10 +63,7 @@ De um lado, o que a IA aponta sobre os meus cacoetes:
 * **O teste de estresse:** Levanta furos lógicos e contra-argumentos que eu ignorei porque estava apaixonado demais pela minha própria tese;
 * **A elasticidade:** Oferece rapidamente caminhos sintáticos diferentes quando uma transição fica estranha.
 
-Do outro lado, o que eu faço como a vigilância sanitária do texto:
-* **Podo o verniz corporativo:** Corto na hora a tentação da máquina de soar como texto de Linkedin ou de meter metáforas quinta-série;
-* **Puxo a orelha da superficialidade:** Se o modelo traz um consenso frouxo, eu jogo autores reais e contraexemplos na roda para forçar a discussão a descer um degrau;
-* **Auditoria implacável de fontes:** Cobro a validação exata de cada referência para garantir que ela não inventou uma citação com cara de verdade absoluta.
+Do outro lado, o meu papel é o de vigilância sanitária do texto: podo na hora o verniz corporativo e as metáforas quinta-série da máquina, puxo a orelha da superficialidade jogando autores reais e contraexemplos na roda quando ela entrega consenso frouxo, e audito cada fonte uma por uma para barrar citação inventada com cara de verdade absoluta.
 
 > [!NOTE] Como a peneira funciona
 > Não é instinto, é método. Há um conjunto explícito de restrições que funciona como peneira dupla: de um lado, regras que domesticam os meus vícios de escrita; do outro, regras que sanitizam os outputs da máquina. Mas esse conjunto não nasceu pronto. Ele foi construído a quatro mãos, regra por regra, conversa por conversa. O ciclo é sempre o mesmo: eu leio uma saída, faço cara de nojo e solto *"isso aqui nunca sairia da minha boca"*. A IA propõe uma restrição. Eu acho genérica demais, ajusto, testo no próximo parágrafo, vejo que ainda vazou um *"vale ressaltar"* e aperto o cerco. Na conversa seguinte, ela flagra um cacoete meu que tinha passado batido, e as regras crescem de novo. Travessões, expressões vazias, adjetivos pomposos (*"magistral"*, *"deveras"*): cada item dessa lista tem um histórico de atrito. Codifiquei o nojo em código, e a cada sessão de escrita o filtro fica mais afiado.
@@ -81,11 +79,11 @@ E aqui mora um detalhe que a turma do "a IA escreve tudo" ignora: o processo é 
 
 ## Onde mora a autoria?
 
-A discussão sobre "a IA vai matar a autoria" é de uma preguiça monumental. Ela assume que escrever é apenas a atividade física de bater dedos descontroladamente num teclado. Se fosse só isso, um gerador de lero-lero programado nos anos 90 seria autor de enormes *best-sellers*.
+A discussão sobre "a IA vai matar a autoria" é de uma preguiça monumental: trata escrever como simples digitação frenética.
 
-A verdade é que esse processo escancara uma realidade desconfortável: a máquina tem o viés probabilístico dela (aquela atração fatal pela média insossa e pelo clichê), mas eu tenho o viés das vozes da minha própria cabeça (com toda a dissonância cognitiva, rancores teóricos e certezas infundadas que acumulei pela vida). Nenhum dos dois sistemas é confiável sozinho.
+Esse processo escancara algo bem mais desconfortável: a máquina tem o viés probabilístico dela (aquela atração fatal pela média insossa e pelo clichê), mas eu tenho o viés das vozes da minha própria cabeça (com toda a dissonância cognitiva, rancores teóricos e certezas infundadas que acumulei pela vida). Nenhum dos dois sistemas é confiável sozinho.
 
-A autoria não mora na digitação; mora no **discernimento estético**. Mora no papel de ser o árbitro desse confronto: na recusa obstinada, no mau humor de ler uma frase empolada e dizer "isso aqui tá uma bosta", e na decisão consciente sobre cada vírgula que tem permissão para ficar no texto final (ok, não tão extremo, mas às vezes acontece).
+Autoria não mora na digitação; mora no **discernimento estético**. Mora no papel de árbitro desse confronto: na recusa obstinada, no mau humor de ler uma frase empolada e dizer "isso aqui tá uma bosta", e na decisão consciente sobre cada vírgula que tem permissão para ficar no texto final (ok, não tão extremo, mas às vezes acontece).
 
 E isso vale para todos os tipos de conteúdo que eu produzo. O mesmo método sustenta desde posts técnicos com código até posts onde eu destilo meu ranço com alguma situação ou ferramenta. A máquina ajuda a manter consistência terminológica, a checar se um bloco de código conversa com o que foi explicado antes, a organizar uma sequência didática. A decisão final sobre o que discutir e o que defender continua sendo minha. A ferramenta muda, o papel de cada um na mesa não.
 

@@ -5,16 +5,17 @@ subtitle: "Ansiedade acadêmica, modelos mentais de IA e como sobreviver à aval
 author:
   - "Eduardo N. S. R."
 date: 2026-08-17 07:19:00 GMT-3
+modified_date: 2026-11-25 07:54:29 GMT-3
 permalink: /posts/banca-ia-agentes-e-busca/
 tags: [Inteligência Artificial, Algoritmos, Faculdade, Opinião]
 category: Ensaios
 ---
 
-Hoje mais tarde eu tenho aula de Tópicos em Inteligência Artificial, e o professor resolveu implementar uma daquelas dinâmicas que colocam a minha ansiedade em órbita: bancas avaliadoras compostas pelos próprios alunos. Funciona assim: enquanto um grupo vai para a frente da sala defender o tema da semana, outro grupo senta na primeira fila com a nobre e ingrata missão de fazer perguntas, avaliar o conteúdo e fingir pleno controle da própria vida acadêmica.
+Hoje mais tarde tenho aula de Tópicos em Inteligência Artificial, e o professor inventou uma dinâmica que coloca minha ansiedade em órbita: bancas avaliadoras feitas pelos próprios alunos. Um grupo vai pra frente defender o tema da semana; outro senta na primeira fila com a missão ingrata de arguir, avaliar e fingir pleno controle da vida acadêmica.
 
-Para uma jovem idozah de 44 anos que já carrega uma preguiça quase divina de fazer qualquer obrigação fora da minha bolha de hiperfoco, a situação beira o tragicômico. Eu sou uma contradição ambulante: tenho uma resistência física a qualquer estudo que venha com carimbo de 'tarefa obrigatória', mas quando finalmente crio vergonha na cara, abro o PDF e a curiosidade bate, eu fico completamente absorvido pelas ideias. O problema é que isso só aconteceu no sábado e no domingo.
+Para uma jovem idozah de 44 anos com preguiça quase divina de obrigações fora da bolha de hiperfoco, a cena beira o tragicômico. Sou uma contradição ambulante: tenho alergia física a qualquer coisa carimbada como 'tarefa obrigatória', mas quando crio vergonha na cara, abro o PDF e a curiosidade bate, mergulho de cabeça nas ideias. Só que isso aconteceu no sábado e no domingo.
 
-O detalhe que eleva o desespero a níveis pouco saudáveis é simples: o meu grupo é a primeiríssima banca do semestre. Não temos nenhum histórico prévio de apresentações para balizar o rigor, nenhum exemplo do professor sobre o que ele considera uma arguição justa e absolutamente nenhum parâmetro de comparação. Não sabemos se a postura esperada é a de um revisor implacável de conferência internacional ou a de um colega compreensivo que entende o perrengue de condensar tópicos densos em uma janela minúscula. Haja Sertralina para hoje!
+E a cereja do desespero: meu grupo é a primeiríssima banca do semestre, sem histórico nem parâmetro nenhum pra calibrar o rigor. Haja Sertralina pra hoje!
 
 E a pauta de hoje é daquelas pesadas. Dois grupos de colegas vão apresentar temas fundamentais e complementares da base clássica e moderna de IA: o primeiro grupo falará sobre agentes racionais, percepção, ação, ambiente e a fronteira entre comportamento reativo e planejado; o segundo grupo entrará de cabeça na resolução de problemas como busca em espaço de estados, representação em grafos e a temida maldição da dimensionalidade.
 
@@ -50,7 +51,7 @@ Mas o que realmente me chamou atenção nos textos foi a diferença entre duas f
 1. **O comportamento puramente reativo**: O agente age no reflexo imediato (regras simples do tipo `se vir sujeira então aspire`), sem pensar no amanhã. Se o ambiente tiver qualquer ponto cego, ele entra em crise existencial e fica preso em loops infinitos, como o aspirador de pó do livro que perde o sensor de localização e fica patinando para sempre entre duas salas limpas.
 2. **O comportamento planejado (com modelo)**: O agente guarda um estado interno (uma memória de como o mundo funciona) e pensa antes de agir, ponderando as consequências das ações em direção a um objetivo ou utilidade.
 
-E se o grupo quiser brilhar de verdade, pode puxar a ponte com o texto do LeCun: a distinção entre o Modo-1 (o reflexo rápido, tipo os LLMs de hoje que só cospem o próximo *token* sem planejar) e o Modo-2 (o raciocínio deliberado, onde um modelo de mundo simula o que vai acontecer antes de tomar a decisão). Se falarem disso, já ganharam a banca.
+E se o grupo quiser brilhar de verdade, pode puxar a ponte com o texto do LeCun e a psicologia cognitiva [^3]: a distinção entre o Modo-1 (o reflexo rápido, tipo os LLMs de hoje que só cospem o próximo *token* sem planejar) e o Modo-2 (o raciocínio deliberado, onde um modelo de mundo simula o que vai acontecer antes de tomar a decisão). Se falarem disso, já ganharam a banca.
 
 ### O que o grupo pode deixar de lado
 
