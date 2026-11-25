@@ -4,7 +4,8 @@ title: "ML :: A História do Aprendizado de Máquina"
 subtitle: "Do neurônio desenhado no papel em 1943 aos modelos fundacionais: o mapa completo das ondas, invernos e viradas que vamos reconstruir em PyTorch"
 author:
   - "Eduardo N. S. R."
-date: 2026-11-25 10:00:00 GMT-3
+date: 2026-11-25 10:17:42 GMT-3
+modified_date: 2026-11-25 15:45:01 GMT-3
 permalink: /posts/ml-historia-aprendizado-de-maquina/
 category: Tutoriais
 tags: [História da IA, Deep Learning, Machine Learning, Inteligência Artificial]
@@ -56,7 +57,7 @@ Enquanto os teóricos discutiam filosofia, Arthur Samuel, pesquisador da IBM tra
 
 A cada partida, o programa ajustava os pesos dessa função conforme o resultado, além de memorizar posições já avaliadas (*rote learning*) para olhar mais jogadas à frente sem desperdiçar processamento. Em 1959, ao publicar os resultados no periódico técnico da IBM[^3], Samuel popularizou o termo *Machine Learning* (Aprendizado de Máquina) e deixou a definição que sobrevive intacta até hoje: o campo que dá aos computadores a capacidade de aprender sem serem explicitamente programados.
 
-O programa de Samuel chegou a vencer campeões humanos de damas na TV. Pela primeira vez na história, um computador tinha superado o próprio programador numa tarefa estratégica usando experiência acumulada.
+O programa de Samuel chegou a ganhar demonstração na TV pela IBM e, em 1962, venceu um forte jogador humano (Robert Nealey, campeão estadual de Connecticut). Pela primeira vez, um computador tinha superado o próprio programador numa tarefa estratégica usando experiência acumulada.
 
 ### Frank Rosenblatt e o Perceptron (1957 a 1958)
 
@@ -66,15 +67,15 @@ E não ficou só no papel. Rosenblatt construiu o **Mark I Perceptron**, uma má
 
 A imprensa dos EUA perdeu a linha na época. O *New York Times* publicou uma matéria celebrando o "embrião de um computador eletrônico que a Marinha espera que seja capaz de andar, falar, ver, escrever, reproduzir a si mesmo e ter consciência de sua própria existência".
 
-Na prática, o que o Perceptron fazia era bem mais pé no chão (e ainda assim genial): ele traçava um hiperplano (uma linha reta no plano 2D) separando duas classes de dados. Na **Fase 2** da nossa série, vamos construir esse Perceptron do zero em PyTorch e ver como o neurônio sai de um laço `for` lento e vira um produto escalar limpo, incluindo o truque do peso `w0` multiplicado por `1` para absorver o *bias*.
+Na prática, o que o Perceptron fazia era bem mais pé no chão (e ainda assim poderoso): ele traçava um hiperplano (uma linha reta no plano 2D) separando duas classes de dados usando uma soma ponderada simples das entradas.
 
 ### Bernard Widrow, Ted Hoff e o ADALINE (1960)
 
-Logo depois de Rosenblatt, em Stanford, Bernard Widrow e seu aluno de doutorado Ted Hoff (o mesmo Ted Hoff que uma década depois lideraria a invenção do primeiro microprocessador na Intel, o 4004) criaram o **ADALINE** (*Adaptive Linear Neuron*). À primeira vista, parecia quase igual ao Perceptron, mas havia uma diferença sutil que mudou tudo.
+Logo depois de Rosenblatt, em Stanford, Bernard Widrow e seu aluno de doutorado Ted Hoff (o mesmo Ted Hoff que uma década depois lideraria a invenção do primeiro microprocessador na Intel, o 4004) criaram o **ADALINE** (*Adaptive Linear Neuron*)[^31]. À primeira vista, parecia quase igual ao Perceptron, mas havia uma diferença sutil que mudou tudo.
 
 O Perceptron só corrigia os pesos olhando para a saída binária final (depois da função degrau): ou acertou (erro zero) ou errou (ajusta). Já o ADALINE media o erro usando a saída contínua *antes* do degrau, buscando minimizar o erro quadrático médio através da chamada Regra Delta (ou algoritmo LMS, *Least Mean Squares*).
 
-Essa troca parece detalhe de implementação, mas foi um divisor de águas. Medir o erro numa superfície contínua e suave permitiu calcular a inclinação desse erro e dar passos proporcionais na direção da descida: estava aberta a porta para o **Gradiente Descendente** que vamos dissecar no Jupyter na Fase 2 (inclusive quebrando o algoritmo de propósito aumentando a taxa de aprendizado `eta` até tudo sair voando).
+Essa troca parece detalhe de implementação, mas foi um divisor de águas. Medir o erro numa superfície contínua e suave permitiu calcular a inclinação desse erro e dar passos proporcionais na direção da descida: estava aberta a porta para o **Gradiente Descendente**.
 
 ### Minsky, Papert e o Muro do XOR (1969)
 
@@ -82,7 +83,7 @@ A festa otimista dos anos 1950 e 1960 acabou de forma brusca em 1969. Marvin Min
 
 O golpe fatal veio no exemplo mais simples possível: a porta lógica **XOR** (ou exclusivo). Tente desenhar os quatro pontos do XOR num papel: `(0,0)` e `(1,1)` dão saída `0`; `(0,1)` e `(1,0)` dão saída `1`. Você pode girar uma régua o dia inteiro sobre esse papel e nunca vai conseguir traçar uma única linha reta que deixe os zeros de um lado e os uns do outro. Minsky e Papert sabiam perfeitamente que redes com múltiplas camadas resolveriam o XOR sem esforço, mas deixaram registrado o ceticismo de que ninguém sabia treinar essas camadas ocultas de forma geral e eficiente.
 
-O efeito no mundo real foi imediato. O financiamento secou. O pessimismo tomou conta dos departamentos de pesquisa. Estava inaugurado o **Primeiro Inverno da IA**.
+O efeito no mundo real foi imediato. O financiamento secou e o pessimismo tomou conta dos departamentos de pesquisa. Na história da computação, esses ciclos em que o entusiasmo quebra, o dinheiro some e a área congela ficaram conhecidos como **Invernos da IA** (e é assim que vamos chamá-los daqui para frente). Estava inaugurado o **Primeiro Inverno da IA**.
 
 > [!NOTE] A Ironia de Seymour Papert
 > O mesmo Seymour Papert que coescreveu o livro responsável por frear as redes neurais em 1969 dedicou o resto da vida à educação no MIT, criando a linguagem Logo e o **Construcionismo** (aprender construindo, quebrando e depurando objetos reais). É exatamente essa filosofia de Papert que vai guiar a nossa bancada no Jupyter ao longo de toda a série.
@@ -91,7 +92,7 @@ O efeito no mundo real foi imediato. O financiamento secou. O pessimismo tomou c
 
 Com as redes neurais praticamente banidas das verbas de pesquisa, a década de 1970 e o início dos anos 1980 foram dominados pela chamada IA Simbólica (os famosos *Sistemas Especialistas*). Se não dava pra fazer a máquina aprender padrões estatísticos, a aposta passou a ser o caminho oposto: entrevistar especialistas humanos (médicos, geólogos, engenheiros, advogados) e traduzir o conhecimento deles em milhares de regras lógicas escritas à mão.
 
-### Sistemas Especialistas e o Segundo Inverno (Anos 1970 e 1980)
+### Sistemas Especialistas e o Segundo Inverno da IA (Anos 1970 e 1980)
 
 No começo, a abordagem brilhou em nichos bem fechados. Sistemas como o **MYCIN** (criado em Stanford para diagnosticar infecções bacterianas no sangue e sugerir antibióticos) e o **XCON** (usado pela DEC para configurar pedidos de servidores VAX) chegaram a rivalizar com especialistas humanos em testes controlados. Empresas correram para comprar "máquinas Lisp" dedicadas e contratar "engenheiros do conhecimento" a peso de ouro.
 
@@ -99,13 +100,16 @@ Só que a realidade cobrou a conta rápido. Manter dezenas de milhares de regras
 
 Mas, longe dos holofotes e do dinheiro fácil, um pequeno grupo de pesquisadores teimosos continuava cavando o caminho das redes neurais.
 
-### Backpropagation e a Queda do Muro do XOR (1974 a 1986)
+### Backpropagation e a Queda do Muro do XOR (1970 a 1986)
 
-O nó que travava tudo desde 1969 era o problema da atribuição de crédito: numa rede com várias camadas empilhadas, quando a saída final erra, quanta "culpa" pertence a cada peso lá da primeira camada oculta? A solução matemática já tinha aparecido em contextos de teoria de controle nos anos 1960, na dissertação de Seppo Linnainmaa (1970) sobre diferenciação automática reversa e na tese de doutorado de Paul Werbos em 1974. Mas a ideia só explodiu na computação em 1986, quando David Rumelhart, Geoffrey Hinton e Ronald Williams publicaram o artigo clássico na revista *Nature*[^6] demonstrando que o método funcionava de verdade para aprender representações internas úteis.
+O nó que travava tudo desde 1969 era o problema da atribuição de crédito: numa rede com várias camadas empilhadas, quando a saída final erra, quanta "culpa" pertence a cada peso lá da primeira camada oculta? A solução matemática já tinha aparecido em contextos de teoria de controle nos anos 1960, na dissertação de mestrado de Seppo Linnainmaa (1970, publicada em inglês em 1976[^29]) descrevendo o modo reverso da diferenciação automática e na tese de doutorado de Paul Werbos em 1974[^30]. Mas a ideia só explodiu na computação em 1986, quando David Rumelhart, Geoffrey Hinton e Ronald Williams publicaram o artigo clássico na revista *Nature*[^6] demonstrando que o método funcionava de verdade para aprender representações internas úteis.
 
 O algoritmo de **Backpropagation** (retropropagação do erro) aplica a regra da cadeia do cálculo de trás para frente, empurrando o gradiente do erro da última camada até a primeira. Com ativações suaves e diferenciáveis (como Sigmoid e Tanh) no lugar do degrau duro do Perceptron, treinar uma **MLP** (*Multi-Layer Perceptron*) com camadas ocultas finalmente se tornou prático.
 
-O muro do XOR caiu. A rede conseguia dobrar o espaço geométrico na camada oculta e separar classes que nenhuma reta sozinha jamais separaria. Na **Fase 3** da nossa série, vamos abrir o `torch.autograd` do PyTorch e comparar um backpropagation escrito na mão com o resultado exato de `loss.backward()`, desmontando qualquer sensação de caixa preta.
+O muro do XOR caiu. A rede conseguia dobrar o espaço geométrico na camada oculta e separar classes que nenhuma reta sozinha jamais separaria.
+
+> [!NOTE] Em 2 Linhas: O que é Gradiente?
+> Pense no gradiente como uma bússola numérica: para cada peso da rede, ele aponta qual direção faz o erro subir e qual é a inclinação da ladeira. Para a rede aprender, basta dar um passo na direção oposta (descendo a ladeira) até o erro diminuir.
 
 ### O Teorema da Aproximação Universal (1989)
 
@@ -119,23 +123,23 @@ O teorema é um resultado de *existência*, não uma receita de bolo. Ele garant
 
 Na visão computacional, essa lição ficou escancarada cedo. Se você pega uma imagem pequena de 28 por 28 pixels e achata tudo num vetor de 784 números para jogar numa MLP comum, joga no lixo uma informação óbvia: pixels vizinhos formam bordas, cantos e traços, e um dígito "7" continua sendo "7" mesmo se você deslocá-lo dois pixels para a direita.
 
-Inspirado na descoberta de David Hubel e Torsten Wiesel sobre o córtex visual dos gatos (células simples e complexas respondendo a regiões locais), o pesquisador japonês Kunihiko Fukushima propôs em 1980 o **Neocognitron**, já trazendo a ideia de campos receptivos locais. Nos laboratórios da Bell Labs, **Yann LeCun** e seus colaboradores combinaram essa arquitetura hierárquica com o treinamento por Backpropagation, criando as **Redes Neurais Convolucionais (CNNs)** e culminando na famosa **LeNet-5** em 1998[^8].
+Inspirado na descoberta de David Hubel e Torsten Wiesel sobre o córtex visual dos gatos (células simples e complexas respondendo a regiões locais), o pesquisador japonês Kunihiko Fukushima propôs em 1980 o **Neocognitron**[^32], já trazendo a ideia de campos receptivos locais. Nos laboratórios da Bell Labs, **Yann LeCun** e seus colaboradores combinaram essa arquitetura hierárquica com o treinamento por Backpropagation, criando as **Redes Neurais Convolucionais (CNNs)** e culminando na famosa **LeNet-5** em 1998[^8].
 
-Em vez de ligar todo pixel a todo neurônio, a CNN desliza pequenos filtros (matrizes 5 por 5) pela imagem inteira compartilhando os mesmos pesos, e usa camadas de *pooling* para reduzir a resolução mantendo o essencial. Não era brinquedo acadêmico: a LeNet foi colocada em produção real nos bancos dos EUA lendo milhões de cheques manuscritos por dia, e deixou de legado o dataset **MNIST** (70 mil dígitos manuscritos), que vamos explorar e confrontar com MLPs na **Fase 6**.
+Em vez de ligar todo pixel a todo neurônio, a CNN desliza pequenos filtros (matrizes 5 por 5) pela imagem inteira compartilhando os mesmos pesos, e usa camadas de *pooling* para reduzir a resolução mantendo o essencial. Não era brinquedo acadêmico: a LeNet foi colocada em produção real nos bancos dos EUA lendo milhões de cheques manuscritos por dia, e deixou de legado o famoso dataset **MNIST** (70 mil dígitos manuscritos).
 
 ### Q-Learning, TD-Learning e a Base do Reforço (1988 a 1992)
 
-Enquanto MLPs e CNNs brilhavam no aprendizado supervisionado (onde um humano precisa rotular cada exemplo de antemão), outra vertente amadurecia em paralelo com uma ambição muito diferente: o **Aprendizado por Reforço** (*Reinforcement Learning*). E se ninguém te disser qual é a resposta certa a cada passo, mas o ambiente só te der uma recompensa ou punição vários passos depois?
+Enquanto MLPs e CNNs brilhavam no aprendizado supervisionado (onde um humano precisa rotular cada exemplo de antemão), outra vertente amadurecia em paralelo com uma ambição muito diferente: o **Aprendizado por Reforço** (*Reinforcement Learning*). A premissa é a seguinte: e se ninguém te disser qual é a resposta certa a cada passo, mas o ambiente só te der uma recompensa ou punição vários passos depois?
 
-Richard Sutton formalizou o aprendizado por Diferença Temporal (*TD-Learning*, 1988), permitindo atualizar estimativas de valor passo a passo sem esperar o jogo acabar. Um ano depois, na sua tese de doutorado, Chris Watkins criou o **Q-Learning** (1989), um algoritmo elegante que aprende o valor ótimo de cada ação em cada estado mesmo sem conhecer as regras internas do ambiente. Em 1992, Gerald Tesauro na IBM usou TD-Learning com uma rede neural no **TD-Gammon**, que aprendeu a jogar gamão em nível de mestre mundial jogando contra si mesmo. Todo esse alicerce foi consolidado por Richard Sutton e Andrew Barto no livro que até hoje é a bíblia da área[^9], e que vamos trazer para o PyTorch na **Fase 11**.
+Richard Sutton formalizou o aprendizado por Diferença Temporal (*TD-Learning*, 1988)[^33], permitindo atualizar estimativas de valor passo a passo sem esperar o jogo acabar. Um ano depois, na sua tese de doutorado, Chris Watkins criou o **Q-Learning** (1989, formalizado em artigo com Peter Dayan em 1992[^34]), um algoritmo elegante que aprende o valor ótimo de cada ação em cada estado mesmo sem conhecer as regras internas do ambiente. Em 1992, Gerald Tesauro na IBM usou TD-Learning com uma rede neural no **TD-Gammon**, que aprendeu a jogar gamão em nível de mestre mundial jogando contra si mesmo. Todo esse alicerce foi consolidado por Richard Sutton e Andrew Barto no livro que até hoje é a bíblia da área[^9].
 
 ### O Muro da Profundidade e o Reinado Estatístico (Anos 1990)
 
-Apesar da LeNet e do Backpropagation, redes neurais com mais de três ou quatro camadas simplesmente se recusavam a treinar nos anos 1990. Quando você empilhava muitas camadas usando ativações Sigmoid ou Tanh, a derivada dessas funções era sempre menor que 1 (na Sigmoid, no máximo 0,25). Multiplicar números menores que 0,25 dez vezes seguidas durante a retropropagação fazia o gradiente encolher exponencialmente até virar praticamente zero nas primeiras camadas: o temido **Vanishing Gradient** (desvanecimento do gradiente). As camadas finais até se mexiam, enquanto as iniciais ficavam congeladas no ruído aleatório.
+Apesar do sucesso da LeNet e do Backpropagation, na prática ninguém conseguia treinar redes neurais com mais de três ou quatro camadas nos anos 1990. Quando você empilhava muitas camadas usando ativações Sigmoid ou Tanh, a derivada dessas funções era sempre menor que 1 (na Sigmoid, no máximo 0,25). Multiplicar números menores que 0,25 dez vezes seguidas durante a retropropagação fazia o gradiente encolher exponencialmente até virar praticamente zero nas primeiras camadas: o temido **Vanishing Gradient** (desvanecimento do gradiente). As camadas finais até se mexiam, enquanto as iniciais ficavam congeladas no ruído aleatório.
 
-Enquanto as redes neurais patinavam nesse muro e exigiam poder computacional que os processadores da época não entregavam, o Aprendizado de Máquina estatístico clássico tomou conta do mercado. Vladimir Vapnik e Corinna Cortes apresentaram as **SVMs** (*Support Vector Machines*, 1995), que resolviam problemas não lineares com garantias matemáticas limpas usando o *Kernel Trick* (projetando os dados para dimensões maiores sem pagar o custo explícito). Pouco depois, Leo Breiman criou as **Random Forests** (2001) e o *Gradient Boosting* se consolidou como o rei absoluto de dados tabulares (aliás, até hoje em tabelas estruturadas pequenas, árvores de decisão com boosting dão um baile em redes neurais).
+Enquanto as redes neurais patinavam nesse muro e exigiam poder computacional que os processadores da época não entregavam, o Aprendizado de Máquina estatístico clássico tomou conta do mercado. Vladimir Vapnik e Corinna Cortes apresentaram as **SVMs** (*Support Vector Machines*, 1995)[^35], que resolviam problemas não lineares com garantias matemáticas limpas usando o *Kernel Trick* (projetando os dados para dimensões maiores sem pagar o custo explícito). Pouco depois, Leo Breiman criou as **Random Forests** (2001)[^36] e o *Gradient Boosting* se consolidou como o rei absoluto de dados tabulares (aliás, até hoje em tabelas estruturadas pequenas, árvores de decisão com boosting dão um baile em redes neurais).
 
-Durante quase quinze anos, mencionar "redes neurais" numa conferência séria de IA era quase garantia de ter o artigo rejeitado.
+Durante mais de uma década, redes neurais perderam prestígio e enfrentaram forte resistência nas grandes conferências de visão computacional e IA frente ao domínio das SVMs.
 
 ## Onda 3: Sequências, Memória e o Despertar da Profundidade (1997 a 2012)
 
@@ -147,11 +151,11 @@ Para dados que têm ordem no tempo (texto, áudio, séries climáticas, cotaçõ
 
 Na prática, porém, a RNN simples sofria do mesmo veneno que travou as MLPs fundas, só que esticado no tempo. Quando você retropropagava o erro por uma frase de trinta palavras (*Backpropagation Through Time*), o gradiente multiplicado repetidamente ou encolhia até desaparecer (*vanishing*) ou crescia até estourar em `NaN` (*exploding*). Resultado: a rede esquecia o sujeito no começo da frase quando chegava no verbo lá no fim.
 
-Em 1997, Sepp Hochreiter (que já tinha identificado o problema na sua dissertação de diploma em 1991) e Jürgen Schmidhuber publicaram a **LSTM** (*Long Short-Term Memory*)[^10]. A sacada foi separar a memória de longo prazo (*cell state*) e protegê-la com portões treináveis (esquecimento, entrada e saída) que funcionam como válvulas: a rede aprende o que vale guardar por cinquenta passos e o que pode jogar fora agora. O gradiente ganhou uma "via expressa" linear pelo tempo. É exatamente esse salto que vamos sentir na prática na **Fase 9** (junto das GRUs, uma versão mais enxuta proposta em 2014 por Kyunghyun Cho).
+Em 1997, Sepp Hochreiter (que já tinha identificado o problema na sua dissertação de diploma em 1991) e Jürgen Schmidhuber publicaram a **LSTM** (*Long Short-Term Memory*)[^10]. A sacada foi separar a memória de longo prazo (*cell state*) e protegê-la com portões treináveis (esquecimento, entrada e saída) que funcionam como válvulas: a rede aprende o que vale guardar por cinquenta passos e o que pode jogar fora agora. O gradiente ganhou uma "via expressa" linear pelo tempo (e anos depois, em 2014, Kyunghyun Cho propôs a **GRU**[^37], uma variante mais enxuta da mesma ideia).
 
 ### O Renascimento do Deep Learning e o ImageNet (2006 a 2009)
 
-A partir de 2006, um trio que nunca desistiu das redes neurais durante o inverno (Geoffrey Hinton em Toronto, Yoshua Bengio em Montreal e Yann LeCun em Nova York) começou a virar a maré. Hinton mostrou que era possível treinar redes profundas com pré-treino não supervisionado camada por camada (*Deep Belief Networks*) e a comunidade adotou um novo nome para escapar do estigma dos anos 1990: **Deep Learning**.
+A partir de 2006, um trio que nunca desistiu das redes neurais durante os Invernos da IA (Geoffrey Hinton em Toronto, Yoshua Bengio em Montreal e Yann LeCun em Nova York) começou a virar a maré. Hinton mostrou que era possível treinar redes profundas com pré-treino não supervisionado camada por camada (*Deep Belief Networks*)[^38] e a comunidade adotou um novo nome para escapar do estigma dos anos 1990: **Deep Learning**.
 
 Só que algoritmo sozinho não faz milagre sem combustível. Esse combustível chegou em 2009, quando **Fei-Fei Li** e sua equipe (iniciando o projeto em Princeton e levando-o adiante em Stanford) lançaram o **ImageNet**[^11]. Na época, o consenso da área era focar quase exclusivamente em algoritmos melhores sobre datasets minúsculos de poucas dezenas de milhares de imagens. Fei-Fei Li apostou no contrário: organizou uma taxonomia baseada no WordNet e coordenou milhares de anotadores humanos para construir um banco que nasceu com mais de 3 milhões de imagens e cresceu até passar de 14 milhões de fotos rotuladas em milhares de categorias.
 
@@ -161,10 +165,10 @@ O ImageNet virou o campo de provas anual da visão computacional (ILSVRC) e prov
 
 Enquanto os dados cresciam, duas descobertas de engenharia aparentemente simples demoliram de vez o Muro da Profundidade dos anos 1990 sem precisar daquela ginástica complexa de pré-treino camada por camada:
 
-* **Inicialização consciente de variância:** em 2010, Xavier Glorot e Yoshua Bengio mostraram que inicializar os pesos aleatoriamente sem calibrar a variância pelo número de entradas e saídas fazia o sinal ou explodir ou morrer antes mesmo da primeira época terminar. Nascia a inicialização de **Xavier/Glorot** (seguida em 2015 pela inicialização de **Kaiming He**, calibrada para a ReLU).
+* **Inicialização consciente de variância:** em 2010, Xavier Glorot e Yoshua Bengio[^39] mostraram que inicializar os pesos aleatoriamente sem calibrar a variância pelo número de entradas e saídas fazia o sinal ou explodir ou morrer antes mesmo da primeira época terminar. Nascia a inicialização de **Xavier/Glorot** (seguida em 2015 pela inicialização de **Kaiming He**[^40], calibrada para a ReLU).
 * **A simplicidade brutal da ReLU:** trocar as curvas suaves e lentas da Sigmoid e da Tanh pela função retificadora `max(0, x)` resolveu o esmagamento do gradiente na região positiva (derivada constante igual a 1!).
 
-Parece bobo olhando de fora, mas na **Fase 4** vamos quebrar uma rede profunda de propósito no Jupyter usando inicialização ruim e Sigmoid, e depois ligar ReLU + He para ver o treino ganhar vida instantaneamente.
+Parece bobo olhando de fora, mas essas duas trocas bastaram para transformar redes profundas que antes ficavam congeladas em modelos que convergiam de forma estável do zero.
 
 ### AlexNet e o Big Bang das GPUs (2012)
 
@@ -176,6 +180,9 @@ Não foi uma melhora incremental. Foi um atropelamento.
 
 No ano seguinte, quase todas as equipes da competição abandonaram os métodos clássicos e migraram para CNNs em GPU. As placas de vídeo deixaram de ser hardware de videogame e viraram os motores de álgebra linear da era moderna.
 
+> [!TIP] Em 2 Linhas: Por que GPU e não CPU?
+> Uma CPU tem poucos núcleos muito rápidos e versáteis, excelentes para lógica sequencial cheia de desvios. Uma GPU tem milhares de núcleos mais simples trabalhando juntos, feitos sob medida para fazer milhões de multiplicações e somas de matrizes ao mesmo tempo, que é exatamente o que uma rede neural faz o dia inteiro.
+
 ## Onda 4: A Explosão das Arquiteturas e da Representação (2013 a 2016)
 
 Depois da AlexNet, a comunidade percebeu que tinha nas mãos um motor capaz de aprender representações ricas direto dos dados brutos, sem engenheiros gastando meses criando extratores manuais de características. Em apenas quatro anos frenéticos, nasceram quase todos os blocos modernos que ainda empilhamos hoje no PyTorch.
@@ -184,34 +191,35 @@ Depois da AlexNet, a comunidade percebeu que tinha nas mãos um motor capaz de a
 
 No processamento de linguagem natural, palavras ainda eram tratadas muitas vezes como rótulos atômicos desconectados (vetores *one-hot* gigantes onde "gato" e "cachorro" eram tão distantes entre si quanto "gato" e "carburador"). Em 2013, Tomas Mikolov e sua equipe no Google publicaram o **Word2Vec**[^13], operacionalizando em escala uma ideia antiga da linguística (a hipótese distribucional: você conhece uma palavra pela companhia que ela guarda).
 
-Usando redes neurais surpreendentemente rasas e rápidas (*Skip-Gram* e *CBOW*) treinadas apenas para prever palavras vizinhas em bilhões de frases, o subproduto mágico foram vetores densos de poucas centenas de dimensões (**Embeddings**). O espaço vetorial aprendeu sozinho relações semânticas e gramaticais que viravam aritmética simples: pegar o vetor de `rei`, subtrair `homem` e somar `mulher` apontava diretamente para `rainha`. Vamos construir Embeddings, Word2Vec e aprendizado contrastivo na **Fase 7**.
+Usando redes neurais surpreendentemente rasas e rápidas (*Skip-Gram* e *CBOW*) treinadas apenas para prever palavras vizinhas em bilhões de frases, o subproduto foram vetores densos de poucas centenas de dimensões (**Embeddings**). O espaço vetorial aprendeu sozinho relações semânticas e gramaticais que viravam aritmética simples: pegar o vetor de `rei`, subtrair `homem` e somar `mulher` apontava diretamente para `rainha`.
+
+> [!NOTE] Em 2 Linhas: O que são Embeddings?
+> Um *embedding* é um vetor de coordenadas numéricas que representa uma palavra, imagem ou conceito dentro de um espaço geométrico. Durante o treino, a rede ajusta essas coordenadas para que itens com significados parecidos fiquem próximos uns dos outros.
 
 ### VAEs, GANs e as Máquinas que Criam (2013 a 2014)
 
 Até ali, quase toda a atenção prática estava em modelos *discriminativos*: dar uma entrada e prever um rótulo ou um número. Entre o fim de 2013 e 2014, duas ideias colocaram os modelos *generativos* (máquinas capazes de inventar dados novos plausíveis) no centro do palco:
 
-* **VAE (Variational Autoencoder, 2013):** Diederik Kingma e Max Welling[^14] pegaram o Autoencoder clássico (que só comprimia e reconstruía imagens) e forçaram o gargalo latente a seguir uma distribuição probabilística contínua usando *KL-Divergence*. Para conseguir passar o gradiente através de uma amostragem aleatória, introduziram o famoso **truque da reparametrização** (que vamos abrir linha a linha no Jupyter).
+* **VAE (Variational Autoencoder, 2013):** Diederik Kingma e Max Welling[^14] pegaram o Autoencoder clássico (que só comprimia e reconstruía imagens) e forçaram o gargalo latente a seguir uma distribuição probabilística contínua usando *KL-Divergence*. Para conseguir passar o gradiente através de uma amostragem aleatória, introduziram o famoso **truque da reparametrização**.
 * **GAN (Generative Adversarial Network, 2014):** Ian Goodfellow e colegas[^15] (numa ideia que, segundo a lenda, nasceu numa discussão de bar em Montreal) colocaram duas redes em guerra: um Gerador tentando falsificar imagens realistas e um Discriminador tentando detectar a falsificação. As GANs produziram rostos fotorrealistas impressionantes, mas ficaram famosas por serem um pesadelo temperamental de estabilizar no treino.
-
-Na **Fase 7**, vamos construir Autoencoders para explorar compressão e espaço latente; logo em seguida, na **Fase 8**, avançamos para VAEs e para a evolução que depois destronou as GANs: Difusão.
 
 ### DQN e o Reforço Profundo (2013 a 2016)
 
 Em dezembro de 2013, uma startup londrina relativamente pequena chamada DeepMind publicou um artigo que deixou a comunidade de boca aberta: **DQN** (*Deep Q-Network*)[^16]. Eles juntaram uma CNN com o Q-Learning de 1989 e colocaram o agente para jogar dezenas de jogos clássicos de Atari 2600 (como *Breakout* e *Space Invaders*) recebendo apenas os pixels crus da tela e a pontuação no placar, sem nenhuma regra do jogo programada.
 
-O segredo para a rede neural não divergir enquanto aprendia jogando foram dois truques de engenharia simples: guardar experiências passadas num *Experience Replay Buffer* (para quebrar a correlação entre frames consecutivos) e manter uma *Target Network* congelada por alguns passos. O agente não só superou humanos em vários jogos como descobriu estratégias criativas (como cavar um túnel lateral no *Breakout*). Três anos depois, em 2016, a mesma DeepMind chocou o mundo com o **AlphaGo** derrotando o campeão mundial Lee Sedol no jogo de Go, incluindo o famoso *Lance 37* da segunda partida, uma jogada tão fora do padrão humano que os comentaristas acharam inicialmente que o programa tinha travado.
+O segredo para a rede neural não divergir enquanto aprendia jogando foram dois truques de engenharia simples: guardar experiências passadas num *Experience Replay Buffer* (para quebrar a correlação entre frames consecutivos) e manter uma *Target Network* congelada por alguns passos. O agente não só superou humanos em vários jogos como descobriu estratégias criativas (como cavar um túnel lateral no *Breakout*). Três anos depois, em 2016, a mesma DeepMind chocou o mundo com o **AlphaGo**[^41] derrotando o campeão mundial Lee Sedol no jogo de Go, incluindo o famoso *Lance 37* da segunda partida, uma jogada tão fora do padrão humano que os comentaristas acharam inicialmente que o programa tinha travado.
 
 ### Otimizadores Modernos, BatchNorm e ResNet (2014 a 2015)
 
 Enquanto as aplicações ganhavam manchetes, a engenharia de treinamento viveu um biênio de ouro com três peças que hoje você encontra em praticamente qualquer script PyTorch:
 
-* **Adam (2014):** Diederik Kingma e Jimmy Ba[^23] juntaram a inércia do Momentum com a adaptação de passo por parâmetro do RMSProp num otimizador que convergia rápido e com pouca sintonia manual (mais tarde refinado por Ilya Loshchilov e Frank Hutter para o **AdamW**, corrigindo a forma como o *weight decay* interagia com o passo adaptativo).
+* **Adam (2014):** Diederik Kingma e Jimmy Ba[^23] juntaram a inércia do Momentum com a adaptação de passo por parâmetro do RMSProp num otimizador que convergia rápido e com pouca sintonia manual (mais tarde refinado por Ilya Loshchilov e Frank Hutter para o **AdamW**[^42], corrigindo a forma como o *weight decay* interagia com o passo adaptativo).
 * **Batch Normalization (2015):** Sergey Ioffe e Christian Szegedy[^24] propuseram normalizar as ativações intermediárias de cada *mini-batch* durante o treino, permitindo taxas de aprendizado bem maiores e redes muito menos sensíveis à inicialização.
 * **ResNet (2015):** Kaiming He e sua equipe na Microsoft[^17] observaram um paradoxo bizarro: quando você empilhava 56 camadas convolucionais em vez de 20, até o **erro de treino** ficava pior (não era *overfitting*, era degradação pura do fluxo de sinal). A solução foi absurdamente simples: adicionar uma conexão de atalho somando a entrada direto à saída do bloco (`x + F(x)`), de modo que a camada só precisasse aprender o *resíduo*. A ResNet venceu o ImageNet de 2015 com 152 camadas e destravou a profundidade quase ilimitada.
 
 ### Seq2Seq e o Mecanismo de Atenção (2014 a 2015)
 
-Na tradução automática (por exemplo, transformar uma frase em inglês numa frase em francês ou português de tamanho diferente), Ilya Sutskever, Oriol Vinyals e Quoc Le (e em paralelo Kyunghyun Cho) popularizaram a arquitetura **Seq2Seq**: uma LSTM codificadora lia toda a frase de origem e comprimia o significado inteiro num único vetor de tamanho fixo; outra LSTM decodificadora recebia esse vetor solitário e tentava descompactar a frase traduzida palavra por palavra.
+Na tradução automática (por exemplo, transformar uma frase em inglês numa frase em francês ou português de tamanho diferente), Ilya Sutskever, Oriol Vinyals e Quoc Le[^43] (e em paralelo Kyunghyun Cho) popularizaram a arquitetura **Seq2Seq**: uma LSTM codificadora lia toda a frase de origem e comprimia o significado inteiro num único vetor de tamanho fixo; outra LSTM decodificadora recebia esse vetor solitário e tentava descompactar a frase traduzida palavra por palavra.
 
 Funcionava razoavelmente bem em frases curtas. Em parágrafos longos, a qualidade despencava: era como tentar resumir um capítulo inteiro de um livro num único post-it e pedir para alguém reescrever o capítulo olhando só pro post-it.
 
@@ -242,46 +250,46 @@ As LSTMs com atenção funcionavam bem, mas tinham um defeito fatal para o hardw
 
 Em junho de 2017, um grupo de oito pesquisadores do Google Brain e do Google Research (Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan Gomez, Lukasz Kaiser e Illia Polosukhin) publicou um dos artigos mais influentes da ciência da computação: *Attention Is All You Need*[^19]. A proposta era quase uma heresia na época: jogar fora completamente as RNNs, LSTMs e convoluções temporais e construir uma arquitetura inteira baseada apenas em **Self-Attention** (autoatenção).
 
-Nascia o **Transformer**. Em vez de ler uma frase palavra por palavra esperando o estado oculto chegar do começo ao fim, o Transformer projeta cada token em três vetores (*Query*, *Key* e *Value*) e deixa todos os tokens olharem uns para os outros ao mesmo tempo por meio de multiplicações de matrizes (`Q @ K.T`). Para não perder a noção de ordem já que não existe mais laço temporal, eles injetaram ondas senoidais de frequências diferentes (**Positional Encoding**, que vamos explicar pela analogia das engrenagens de um calendário). Empilharam várias cabeças de atenção em paralelo (**Multi-Head Attention**), amarraram tudo com conexões residuais da ResNet e trocaram BatchNorm por **LayerNorm**.
+Nascia o **Transformer**. Em vez de ler uma frase palavra por palavra esperando o estado oculto chegar do começo ao fim, o Transformer projeta cada token em três vetores (*Query*, *Key* e *Value*) e deixa todos os tokens olharem uns para os outros ao mesmo tempo por meio de multiplicações de matrizes (`Q @ K.T`). Para não perder a noção de ordem já que não existe mais laço temporal, eles injetaram ondas senoidais de frequências diferentes (**Positional Encoding**, funcionando como engrenagens de um calendário). Empilharam várias cabeças de atenção em paralelo (**Multi-Head Attention**), amarraram tudo com conexões residuais da ResNet e trocaram BatchNorm por **LayerNorm**.
 
-O impacto em hardware foi imediato. Pela primeira vez, modelos de linguagem conseguiam ocupar 100% da capacidade paralela de clusters gigantes de GPUs e TPUs durante o treinamento. Na **Fase 10**, vamos abrir e implementar cada peça do Transformer linha por linha em PyTorch puro, sem caixa preta, e testar o Encoder completo em séries climáticas reais no dataset Jena Climate.
+O impacto em hardware foi imediato. Pela primeira vez, modelos de linguagem conseguiam ocupar 100% da capacidade paralela de clusters gigantes de GPUs e TPUs durante o treinamento, derrubando o limite que travava as redes recorrentes.
+
+> [!NOTE] Em 2 Linhas: O que é um Token?
+> Redes neurais não leem letras nem frases diretamente: antes de entrar no modelo, o texto é fatiado em pequenos blocos chamados **tokens** (palavras curtas, sílabas ou sinais de pontuação) e cada bloco vira um número inteiro numa tabela de vocabulário.
 
 ### A Bifurcação BERT vs GPT e o Pré-Treino Autossupervisionado (2018 a 2020)
 
 O Transformer original de 2017 tinha dois lados (Encoder e Decoder) porque foi desenhado para tradução. Só que, entre 2018 e 2020, a comunidade percebeu que cada metade sozinha era uma potência quando pré-treinada em montanhas de texto sem nenhum rótulo humano (*Self-Supervised Learning*):
 
-* **BERT (Google, 2018):** pegou apenas o **Encoder** bidirecional e treinou o modelo num jogo de "complete a lacuna" (*Masked Language Modeling*), escondendo 15% das palavras de cada frase. Como ele enxergava o contexto à esquerda e à direita ao mesmo tempo, esmagou praticamente todos os benchmarks clássicos de compreensão de texto, busca e classificação.
+* **BERT (Google, 2018):** pegou apenas o **Encoder** bidirecional[^44] e treinou o modelo num jogo de "complete a lacuna" (*Masked Language Modeling*), escondendo 15% das palavras de cada frase. Como ele enxergava o contexto à esquerda e à direita ao mesmo tempo, esmagou praticamente todos os benchmarks clássicos de compreensão de texto, busca e classificação.
 * **Série GPT (OpenAI, 2018 a 2020):** apostou no **Decoder** com máscara causal (uma matriz triangular que proíbe cada token de espiar o futuro) e numa única tarefa que parecia simples demais para gerar inteligência: prever qual é o próximo token da frase.
 
 O **GPT-2** (2019, 1,5 bilhão de parâmetros) já assustou gerando textos longos coerentes. Mas foi com o **GPT-3** em 2020 (175 bilhões de parâmetros)[^20] que apareceu algo que pegou até os próprios pesquisadores de surpresa: o **In-Context Learning**. Sem atualizar um único peso da rede, sem rodar `.backward()`, bastava colocar dois ou três exemplos no *prompt* (*few-shot*) e o modelo resolvia tarefas inéditas de tradução, resumo, classificação e código para as quais nunca tinha sido treinado explicitamente.
 
-O paradigma de "um modelo treinado do zero por tarefa" estava morrendo ali. Nascia a era dos **Modelos Fundacionais** (nossa **Fase 12**).
-
-> [!TIP] Resumo Rápido: Encoder vs Decoder
-> Se você sempre confundiu BERT com GPT, a diferença de arquitetura cabe em duas linhas: o **Encoder (BERT)** olha para a frase inteira nos dois sentidos de uma vez (ótimo para entender, classificar e extrair embeddings); o **Decoder (GPT)** usa uma máscara causal que bloqueia o futuro para prever um token por vez (ótimo para gerar texto).
+O paradigma de "um modelo treinado do zero por tarefa" acabava de perder o monopólio. Nascia a era dos **Modelos Fundacionais**.
 
 ### Leis de Escala e Multimodalidade (2020 a 2021)
 
-Ao mesmo tempo em que os modelos cresciam, os pesquisadores perceberam que treinar redes gigantes não precisava ser pura aposta no escuro. Em 2020, Jared Kaplan e colegas na OpenAI (e depois a DeepMind com o famoso estudo *Chinchilla* em 2022[^25]) mediram empiricamente o comportamento da perda e descobriram as **Leis de Escala** (*Scaling Laws*): o erro de um Transformer cai segundo curvas suaves e previsíveis conforme você aumenta em equilíbrio três ingredientes: número de parâmetros, quantidade de tokens de treino e orçamento computacional.
+Ao mesmo tempo em que os modelos cresciam, os pesquisadores perceberam que treinar redes gigantes não precisava ser pura aposta no escuro. Em 2020, Jared Kaplan e colegas na OpenAI[^45] (e depois a DeepMind com o famoso estudo *Chinchilla* em 2022[^25]) mediram empiricamente o comportamento da perda e descobriram as **Leis de Escala** (*Scaling Laws*): o erro de um Transformer cai segundo curvas suaves e previsíveis conforme você aumenta em equilíbrio três ingredientes: número de parâmetros, quantidade de tokens de treino e orçamento computacional.
 
 Em paralelo, a barreira entre texto e imagem começou a derreter. Em 2021, a OpenAI lançou o **CLIP**[^26], usando aprendizado contrastivo (*InfoNCE*) em 400 milhões de pares de imagem e legenda coletados da internet. Em vez de classificar fotos em mil categorias fixas como no ImageNet, o CLIP alinhou o codificador de imagem e o codificador de texto no **mesmo espaço vetorial latente**. Isso permitiu busca semântica visual, classificação *zero-shot* e serviu de ponte para os geradores de imagem guiados por texto.
 
 ### Modelos de Difusão e a Revolução Visual (2020 a 2022)
 
-No mundo visual, as GANs dos anos 2010 tinham um problema crônico: eram instáveis, sofriam colapso de modos (gerando sempre as mesmas variações) e exigiam uma dança delicada entre Gerador e Discriminador. Em 2020, Jonathan Ho, Ajay Jain e Pieter Abbeel resgataram ideias da termodinâmica de fora do equilíbrio e publicaram os **DDPMs** (*Denoising Diffusion Probabilistic Models*)[^21].
+No mundo visual, as GANs dos anos 2010 tinham um problema crônico: eram instáveis, sofriam colapso de modos (gerando sempre as mesmas variações) e exigiam uma dança delicada entre Gerador e Discriminador. Em 2020, Jonathan Ho, Ajay Jain e Pieter Abbeel popularizaram os **DDPMs** (*Denoising Diffusion Probabilistic Models*)[^21], inspirados no processo físico de difusão.
 
-A sacada da Difusão é brilhante pela simplicidade do objetivo de treino: pegue uma imagem limpa e vá adicionando um pouquinho de ruído gaussiano em centenas de passos até sobrar apenas estática pura de TV fora do ar; depois, treine uma rede neural (normalmente uma U-Net) para olhar para uma imagem ruidosa e prever exatamente qual ruído foi adicionado ali. Na hora de gerar uma imagem inédita, você começa de ruído puro aleatório e pede para a rede limpar o ruído passo a passo. Quando pesquisadores combinaram isso com compressão em espaço latente (**Latent Diffusion / Stable Diffusion**, 2022) e condicionamento por texto via CLIP, a geração de imagens deu um salto assustador em qualidade e estabilidade.
+A sacada da Difusão é brilhante pela simplicidade do objetivo de treino: pegue uma imagem limpa e vá adicionando um pouquinho de ruído gaussiano em centenas de passos até sobrar apenas estática pura de TV fora do ar; depois, treine uma rede neural (normalmente uma U-Net) para olhar para uma imagem ruidosa e prever exatamente qual ruído foi adicionado ali. Na hora de gerar uma imagem inédita, você começa de ruído puro aleatório e pede para a rede limpar o ruído passo a passo. Quando pesquisadores combinaram isso com compressão em espaço latente (**Latent Diffusion / Stable Diffusion**, 2022)[^46] e condicionamento por texto via CLIP, a geração de imagens deu um salto assustador em qualidade e estabilidade.
 
 ### RLHF, PPO e a Virada para Assistentes (2022)
 
 Mesmo depois do GPT-3, havia um abismo entre um *Modelo Base* e um assistente útil. Um modelo treinado só para prever o próximo token é um imitador estatístico da internet: se você escrever *"Explique a gravidade para uma criança"*, ele pode muito bem completar com *"Explique a relatividade para um adolescente. Explique a mecânica quântica..."*, porque isso parece uma lista de exercícios que ele viu no treino.
 
-A virada que mudou a relação do público com a IA veio em 2022 (primeiro no *InstructGPT*, depois no *ChatGPT*) combinando duas etapas de pós-treino que também vamos percorrer na **Fase 13**:
+A virada que mudou a relação do público com a IA veio em 2022 (primeiro no *InstructGPT*[^47], depois no *ChatGPT*) combinando duas etapas de pós-treino:
 
 1. **SFT (Supervised Fine-Tuning):** treinar o modelo base em milhares de diálogos escritos por humanos, aplicando máscara na perda para ensinar o formato de pergunta e resposta.
-2. **Reward Modeling + RLHF:** treinar um modelo de recompensa com rankings de preferências humanas e usar **PPO** (*Proximal Policy Optimization*, criado por John Schulman em 2017) para ajustar a política do LLM até que ele gerasse respostas úteis, diretas e seguras.
+2. **Reward Modeling + RLHF:** treinar um modelo de recompensa com rankings de preferências humanas e usar **PPO** (*Proximal Policy Optimization*, criado por John Schulman em 2017[^48]) para ajustar a política do LLM até que ele gerasse respostas úteis, diretas e seguras.
 
-Foi essa costura inesperada entre Transformers (Fase 10) e Aprendizado por Reforço de Sutton & Barto (Fase 11) que tirou os LLMs dos laboratórios e os colocou na mão de centenas de milhões de pessoas.
+Foi essa costura inesperada entre Transformers e o Aprendizado por Reforço de Sutton & Barto que tirou os LLMs dos laboratórios e os colocou na mão de centenas de milhões de pessoas.
 
 | Grande Muro | Década | O que travava a área | O que destravou | Onde construímos na série |
 | :--- | :--- | :--- | :--- | :--- |
@@ -292,36 +300,39 @@ Foi essa costura inesperada entre Transformers (Fase 10) e Aprendizado por Refor
 
 ## Onda 6: A Fronteira Atual e o que Ainda Estamos Descobrindo (2022 a 2026)
 
-Se você acha que a história terminou no Transformer de 2017 e no ChatGPT de 2022, prepare-se: os últimos anos trouxeram tanto engenharia de sobrevivência (para fazer esses monstros caberem em hardware real) quanto descobertas empíricas que colocaram em xeque certezas antigas dos livros de estatística. Na nossa série, cobrimos a base prática dessas técnicas no fechamento da **Fase 13** e mergulhamos fundo nos **Extras (`E1` a `E9`)**.
+Se você acha que a história terminou no Transformer de 2017 e no ChatGPT de 2022, prepare-se: os últimos anos trouxeram tanto engenharia de sobrevivência (para fazer esses monstros caberem em hardware real) quanto descobertas empíricas que colocaram em xeque certezas antigas dos livros de estatística.
 
 ### Eficiência, Adaptação e Código Aberto
 
 Ninguém treina um modelo de 70 bilhões de parâmetros do zero em casa (a conta de energia e GPUs passa fácil de milhões de dólares). O que democratizou a IA de pesos abertos (como as famílias LLaMA, Qwen, Gemma e DeepSeek) foi uma enxurrada de engenharia focada em eficiência:
 
-* **LoRA e QLoRA:** em 2021, Edward Hu e colaboradores[^27] mostraram que, para adaptar um modelo gigante a uma tarefa nova, você não precisa atualizar bilhões de pesos. Basta congelar o modelo original e treinar apenas duas matrizes minúsculas de baixo posto (`W + B @ A`), cortando drasticamente a VRAM necessária (e com **QLoRA**, fazendo isso sobre pesos quantizados em 4 bits!).
+* **LoRA e QLoRA:** em 2021, Edward Hu e colaboradores[^27] mostraram que, para adaptar um modelo gigante a uma tarefa nova, você não precisa atualizar bilhões de pesos. Basta congelar o modelo original e treinar apenas duas matrizes minúsculas de baixo posto (`W + B @ A`), cortando drasticamente a VRAM necessária (e com **QLoRA**[^49], fazendo isso sobre pesos quantizados em 4 bits!).
 * **Anatomia Moderna de LLMs:** quase nenhum LLM atual usa o Transformer de 2017 intacto. A indústria convergiu para ajustes pontuais de estabilidade e velocidade: **RMSNorm** no lugar de LayerNorm, **SwiGLU** no bloco feed-forward, **RoPE** (codificação posicional rotativa) e **KV Cache**, que guarda chaves e valores já calculados para não refazer a conta quadrática da frase inteira a cada novo token gerado.
 * **Mixture of Experts (MoE):** por que acionar 100% dos neurônios para responder um simples "bom dia"? Em arquiteturas MoE, um pequeno roteador escolhe apenas alguns blocos "especialistas" por token, permitindo escalar o total de parâmetros do modelo sem explodir o custo de inferência.
+
+> [!TIP] Em 2 Linhas: Pré-Treino vs Fine-Tuning
+> O **pré-treino** é a formação geral e caríssima do modelo lendo bilhões de exemplos para aprender a estrutura da linguagem ou das imagens. O **fine-tuning** é a especialização barata feita depois, ajustando esse modelo base com um conjunto pequeno de dados para uma tarefa ou estilo específico.
 
 ### Fenômenos que Quebram os Livros Clássicos
 
 Nem tudo que aconteceu recentemente foi só engenharia de escala. Dois fenômenos empíricos obrigaram a comunidade científica a revisar a teoria clássica de generalização:
 
 * **Double Descent:** durante décadas, todo curso de estatística e ML ensinou o dogma da "curva em U": aumente a complexidade do modelo e o erro de teste cai até um ponto ótimo; passe daí e o *overfitting* destrói tudo. Pesquisadores (como Mikhail Belkin et al.[^28]) demonstraram que, no regime altamente superparametrizado das redes profundas modernas, depois que o modelo passa do ponto em que decora 100% do treino, continuar aumentando parâmetros faz o erro de teste **voltar a cair** numa segunda descida.
-* **Grokking (Power et al., 2022):** talvez o fenômeno mais fascinante dos últimos anos[^22]. Treinando Transformers pequenos em tarefas algorítmicas (como soma modular `a + b mod p`), os pesquisadores observaram a rede decorar 100% do treino rapidamente enquanto a acurácia de validação ficava travada perto de 0% (chute aleatório). Se você usasse *Early Stopping* clássico, desligaria o treino ali. Só que, deixando rodar por milhares de épocas sob a pressão constante do *Weight Decay* (puxando pesos grandes para baixo), o modelo de repente abandona a tabela decorada, descobre o circuito algorítmico real e a validação salta de 0% para 100% quase na vertical. Vamos reproduzir exatamente esse gráfico no Jupyter no **Extra E2**.
+* **Grokking (Power et al., 2022):** talvez o fenômeno mais fascinante dos últimos anos[^22]. Treinando Transformers pequenos em tarefas algorítmicas (como soma modular `a + b mod p`), os pesquisadores observaram a rede decorar 100% do treino rapidamente enquanto a acurácia de validação ficava travada perto de 0% (chute aleatório). Se você usasse *Early Stopping* clássico, desligaria o treino ali. Só que, deixando rodar por milhares de épocas sob a pressão constante do *Weight Decay* (puxando pesos grandes para baixo), o modelo de repente abandona a tabela decorada, descobre o circuito algorítmico real e a validação salta de 0% para 100% quase na vertical.
 
 ### Pós-Transformer, Interpretabilidade e Raciocínio
 
 Na fronteira de 2024 a 2026, três frentes abertas mostram que ainda estamos longe do ponto final:
 
-* **Além da Atenção Quadrática:** o custo de memória e cálculo da Self-Attention cresce com o quadrado do tamanho do contexto. Arquiteturas como **State Space Models** (com destaque para o **Mamba**) tentam recuperar a eficiência linear das RNNs no tempo de inferência sem abrir mão do treinamento paralelo em GPU.
-* **Interpretabilidade Mecanística:** redes neurais ainda são em grande parte caixas-pretas porque um mesmo neurônio costuma participar de vários conceitos diferentes ao mesmo tempo (*superposição*). Pesquisadores estão usando **Sparse Autoencoders (SAEs)** (parentes diretos dos Autoencoders da nossa Fase 7) para desembaraçar essas ativações e isolar "circuitos" legíveis dentro de LLMs.
-* **Raciocínio e Test-Time Compute:** métodos de alinhamento mais diretos que o RLHF clássico (como **DPO**, que dispensa o modelo de recompensa separado, e **GRPO**, que usa recompensas verificáveis em matemática e código) inauguraram a fase dos modelos de raciocínio: em vez de cuspir a resposta de bate-pronto, o modelo gasta mais computação *na hora da inferência* gerando cadeias de pensamento e corrigindo os próprios passos antes de responder.
+* **Além da Atenção Quadrática:** o custo de memória e cálculo da Self-Attention cresce com o quadrado do tamanho do contexto. Arquiteturas como **State Space Models** (com destaque para o **Mamba**[^50]) tentam recuperar a eficiência linear das RNNs no tempo de inferência sem abrir mão do treinamento paralelo em GPU.
+* **Interpretabilidade Mecanística:** redes neurais ainda são em grande parte caixas-pretas porque um mesmo neurônio costuma participar de vários conceitos diferentes ao mesmo tempo (*superposição*). Pesquisadores estão usando **Sparse Autoencoders (SAEs)** (parentes diretos dos Autoencoders clássicos) para desembaraçar essas ativações e isolar "circuitos" legíveis dentro de LLMs.
+* **Raciocínio e Test-Time Compute:** métodos de alinhamento mais diretos que o RLHF clássico (como **DPO**[^51], que dispensa o modelo de recompensa separado, e **GRPO**[^52], que usa recompensas verificáveis em matemática e código) inauguraram a fase dos modelos de raciocínio: em vez de cuspir a resposta de bate-pronto, o modelo gasta mais computação *na hora da inferência* gerando cadeias de pensamento e corrigindo os próprios passos antes de responder.
 
 ## De Brinquedo de Nerd a Bolha Bilionária: Como a Percepção Mudou
 
 Se você acompanhou essa linha do tempo até aqui, talvez tenha notado uma ironia curiosa. Quase todas as peças que sustentam a IA atual já existiam bem antes da febre recente. Convoluções estavam aí desde os anos 1990. O Transformer nasceu em 2017. O GPT-3 já escrevia textos assustadoramente coerentes em 2020. Mesmo assim, até poucos anos atrás, a percepção da sociedade sobre Aprendizado de Máquina era completamente diferente.
 
-Para quem estava fora dos laboratórios, isso tudo parecia assunto de nerd ou curiosidade científica sem muita utilidade prática. Quando o Google mostrou o **DeepDream** em 2015, gerando aquelas imagens psicodélicas cheias de olhos e cachorros derretidos a partir das ativações de uma CNN, a internet deu risada, achou bonito, chamou de "sonho de computador" e seguiu a vida. Quando o AlphaGo venceu no tabuleiro em 2016, o consenso geral era: legal, ganhou num jogo difícil, mas o que isso muda na minha segunda-feira? O Aprendizado de Máquina já rodava em silêncio nos bastidores (recomendando vídeo, filtrando spam, prevendo fraude de cartão), mas permanecia invisível.
+Para quem estava fora dos laboratórios, isso tudo parecia assunto de nerd ou curiosidade científica sem muita utilidade prática. Quando o Google mostrou o **DeepDream** em 2015[^53], gerando aquelas imagens psicodélicas cheias de olhos e cachorros derretidos a partir das ativações de uma CNN, a internet deu risada, achou bonito, chamou de "sonho de computador" e seguiu a vida. Quando o AlphaGo venceu no tabuleiro em 2016, o consenso geral era: legal, ganhou num jogo difícil, mas o que isso muda na minha segunda-feira? O Aprendizado de Máquina já rodava em silêncio nos bastidores (recomendando vídeo, filtrando spam, prevendo fraude de cartão), mas permanecia invisível.
 
 O primeiro susto público veio no meio de 2022, com a onda de geração de imagens (**DALL-E 2**, **Midjourney** e **Stable Diffusion**). De repente, qualquer pessoa digitava uma frase e recebia uma ilustração em segundos (com direito à clássica zoeira das mãos com seis dedos). Ainda assim, muita gente tratou aquilo como ferramenta de nicho ou fábrica de memes.
 
@@ -402,3 +413,28 @@ No próximo post (**Capítulo 01**), abrimos a caixa de ferramentas: vamos enten
 [^26]: **Learning Transferable Visual Models From Natural Language Supervision (CLIP)** {*Radford et al., OpenAI, 2021*} ([arXiv:2103.00020](https://arxiv.org/abs/2103.00020))
 [^27]: **LoRA: Low-Rank Adaptation of Large Language Models** {*Hu et al., Microsoft, 2021*} ([arXiv:2106.09685](https://arxiv.org/abs/2106.09685))
 [^28]: **Reconciling modern machine learning practice and the bias-variance trade-off (Double Descent)** {*Belkin, Hsu, Ma & Mandal, 2019*} ([arXiv:1812.11118](https://arxiv.org/abs/1812.11118))
+[^29]: **Taylor expansion of the accumulated rounding error** {*Seppo Linnainmaa, 1976, expandindo a dissertação de 1970*} ([BIT Numerical Mathematics / DOI](https://doi.org/10.1007/BF01931367))
+[^30]: **Beyond Regression: New Tools for Prediction and Analysis in the Behavioral Sciences** {*Paul J. Werbos, Ph.D. Dissertation, Harvard University, 1974*} ([Semantic Scholar](https://api.semanticscholar.org/CorpusID:207975157))
+[^31]: **Adaptive Switching Circuits** {*Bernard Widrow & Marcian E. Hoff, 1960*} ([IRE WESCON / DTIC DOI](https://doi.org/10.21236/AD0241531))
+[^32]: **Neocognitron: A self-organizing neural network model for a mechanism of pattern recognition unaffected by shift in position** {*Kunihiko Fukushima, 1980*} ([Biological Cybernetics / DOI](https://doi.org/10.1007/BF00344251))
+[^33]: **Learning to predict by the methods of temporal differences** {*Richard S. Sutton, 1988*} ([Machine Learning / DOI](https://doi.org/10.1007/BF00115009))
+[^34]: **Q-learning** {*Christopher J. C. H. Watkins & Peter Dayan, 1992*} ([Machine Learning / DOI](https://doi.org/10.1007/BF00992698))
+[^35]: **Support-Vector Networks** {*Corinna Cortes & Vladimir Vapnik, 1995*} ([Machine Learning / DOI](https://doi.org/10.1007/BF00994018))
+[^36]: **Random Forests** {*Leo Breiman, 2001*} ([Machine Learning / DOI](https://doi.org/10.1023/A:1010933404324))
+[^37]: **Learning Phrase Representations using RNN Encoder-Decoder for Statistical Machine Translation (GRU)** {*Cho et al., 2014*} ([arXiv:1406.1078](https://arxiv.org/abs/1406.1078))
+[^38]: **A Fast Learning Algorithm for Deep Belief Nets** {*Geoffrey E. Hinton, Simon Osindero & Yee-Whye Teh, 2006*} ([Neural Computation / DOI](https://doi.org/10.1162/neco.2006.18.7.1527))
+[^39]: **Understanding the difficulty of training deep feedforward neural networks** {*Xavier Glorot & Yoshua Bengio, 2010*} ([AISTATS / PMLR](https://proceedings.mlr.press/v9/glorot10a.html))
+[^40]: **Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet Classification** {*Kaiming He et al., 2015*} ([arXiv:1502.01852](https://arxiv.org/abs/1502.01852))
+[^41]: **Mastering the game of Go with deep neural networks and tree search (AlphaGo)** {*David Silver et al., DeepMind, 2016*} ([Nature / DOI](https://doi.org/10.1038/nature16961))
+[^42]: **Decoupled Weight Decay Regularization (AdamW)** {*Ilya Loshchilov & Frank Hutter, 2017*} ([arXiv:1711.05101](https://arxiv.org/abs/1711.05101))
+[^43]: **Sequence to Sequence Learning with Neural Networks** {*Ilya Sutskever, Oriol Vinyals & Quoc V. Le, 2014*} ([arXiv:1409.3215](https://arxiv.org/abs/1409.3215))
+[^44]: **BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding** {*Devlin, Chang, Lee & Toutanova, Google, 2018*} ([arXiv:1810.04805](https://arxiv.org/abs/1810.04805))
+[^45]: **Scaling Laws for Neural Language Models** {*Jared Kaplan et al., OpenAI, 2020*} ([arXiv:2001.08361](https://arxiv.org/abs/2001.08361))
+[^46]: **High-Resolution Image Synthesis with Latent Diffusion Models** {*Rombach, Blattmann, Lorenz, Esser & Ommer, 2022*} ([arXiv:2112.10752](https://arxiv.org/abs/2112.10752))
+[^47]: **Training language models to follow instructions with human feedback (InstructGPT)** {*Ouyang et al., OpenAI, 2022*} ([arXiv:2203.02155](https://arxiv.org/abs/2203.02155))
+[^48]: **Proximal Policy Optimization Algorithms (PPO)** {*John Schulman et al., OpenAI, 2017*} ([arXiv:1707.06347](https://arxiv.org/abs/1707.06347))
+[^49]: **QLoRA: Efficient Finetuning of Quantized LLMs** {*Tim Dettmers et al., 2023*} ([arXiv:2305.14314](https://arxiv.org/abs/2305.14314))
+[^50]: **Mamba: Linear-Time Sequence Modeling with Selective State Spaces** {*Albert Gu & Tri Dao, 2023*} ([arXiv:2312.00752](https://arxiv.org/abs/2312.00752))
+[^51]: **Direct Preference Optimization: Your Language Model is Secretly a Reward Model (DPO)** {*Rafael Rafailov et al., 2023*} ([arXiv:2305.18290](https://arxiv.org/abs/2305.18290))
+[^52]: **DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models (GRPO)** {*Zhihong Shao et al., DeepSeek, 2024*} ([arXiv:2402.03300](https://arxiv.org/abs/2402.03300))
+[^53]: **Inceptionism: Going Deeper into Neural Networks (DeepDream)** {*Alexander Mordvintsev, Christopher Olah & Mike Tyka, Google Research, 2015*} ([Google Research Blog](https://research.google/blog/inceptionism-going-deeper-into-neural-networks/))
