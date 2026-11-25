@@ -22,8 +22,8 @@ Herda integralmente voz, antipadrões, ritmo, invariantes e validação (`script
   math: true # Sempre que houver fórmulas KaTeX
   mermaid: true # Sempre que houver diagramas Mermaid
   ```
-- **Trilha e Repositório:** Página em `tutoriais/mente-latente.md` (`/tutoriais/mente-latente/`), metadados em `_data/series.yml` e repositório parceiro [vndmtrx/mente_latente](https://github.com/vndmtrx/mente_latente), onde cada post é um módulo Python importável (`cap_01_tensores/`, `cap_02_perceptron/`, ...).
-- **Callout de Abertura (na introdução, antes do primeiro `##`):**
+- **Trilha e Repositório:** Página em `tutoriais/mente-latente.md` (`/tutoriais/mente-latente/`), metadados em `_data/series.yml` e repositório parceiro [vndmtrx/mente_latente](https://github.com/vndmtrx/mente_latente), onde cada post é um módulo Python importável (`cap_01_introducao/`, `cap_02_tensores_basico/`, ...).
+- **Callout de Abertura (na introdução, sempre APÓS o 1º parágrafo para não poluir o `post.excerpt` do Jekyll, e antes do primeiro `##`):**
   ```markdown
   > [!NOTE] Nota da Série
   > Este post faz parte da série **Mente Latente**, onde construímos Aprendizado de Máquina tijolo por tijolo com **PyTorch**, dos primeiros tensores e do Perceptron até Transformers. Os notebooks de exploração, módulos reutilizáveis e testes `pytest` de cada capítulo estão no repositório parceiro [vndmtrx/mente_latente](https://github.com/vndmtrx/mente_latente).

@@ -198,7 +198,7 @@ mente-latente:
   slug: "mente-latente"
   url: "/tutoriais/mente-latente/"
   icon: "fas fa-brain"
-  total_planned: 98
+  total_planned: 99
   repo: "https://github.com/vndmtrx/mente_latente"
   description: "Jornada progressiva pelo Aprendizado de Máquina com PyTorch, construída tijolo por tijolo: da base numérica e Perceptron de Rosenblatt até CNNs, Modelos Generativos, RNNs, Aprendizado por Reforço, Modelos Fundacionais e Transformers."
   future_parts:

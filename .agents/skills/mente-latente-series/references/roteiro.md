@@ -10,6 +10,14 @@ Cada capítulo é um módulo Python importável (`cap_XX_<nome>/`) contendo `exp
 
 ---
 
+## Post 0 — Panorama Histórico
+
+### Post 0 — A História do Aprendizado de Máquina (`_posts/2026/11/2026-11-25-ml-historia-aprendizado-de-maquina.md`)
+- **Problema:** Dar contexto histórico progressivo antes da primeira linha de código, conectando cada onda e *breakthrough* às 13 Fases + 9 Extras da série.
+- **Conteúdo:** 6 ondas cronológicas (1943 a 2026): do neurônio lógico de McCulloch & Pitts, Turing, Rosenblatt e Muro do XOR até Backpropagation, LeNet, RL (Sutton & Barto), AlexNet, Word2Vec, VAE, ResNet, Atenção, Transformers, Modelos Fundacionais, Difusão, RLHF, LoRA, Double Descent, Grokking, Mamba, SAEs e GRPO.
+
+---
+
 ## Fase 1 — A Base Numérica (PyTorch como Motor Tensorial)
 
 ### Cap 01 — Introdução ao PyTorch, Laboratório e Hello World (`cap_01_introducao`)
