@@ -5,7 +5,7 @@ subtitle: "Do neurônio desenhado no papel em 1943 aos modelos fundacionais: o m
 author:
   - "Eduardo N. S. R."
 date: 2026-11-25 10:17:42 GMT-3
-modified_date: 2026-11-25 15:45:01 GMT-3
+modified_date: 2026-11-25 17:33:41 GMT-3
 permalink: /posts/ml-historia-aprendizado-de-maquina/
 category: Tutoriais
 tags: [História da IA, Deep Learning, Machine Learning, Inteligência Artificial]
@@ -304,29 +304,36 @@ Se você acha que a história terminou no Transformer de 2017 e no ChatGPT de 20
 
 ### Eficiência, Adaptação e Código Aberto
 
-Ninguém treina um modelo de 70 bilhões de parâmetros do zero em casa (a conta de energia e GPUs passa fácil de milhões de dólares). O que democratizou a IA de pesos abertos (como as famílias LLaMA, Qwen, Gemma e DeepSeek) foi uma enxurrada de engenharia focada em eficiência:
+Ninguém treina um modelo de 70 bilhões de parâmetros do zero em casa. A conta de energia e GPUs passa fácil de milhões de dólares, o que no começo parecia condenar a IA moderna a um clube fechado de meia dúzia de gigantes de tecnologia. O que virou o jogo e abriu espaço para ecossistemas de pesos abertos (como as famílias LLaMA, Qwen, Gemma e DeepSeek) foi uma corrida engenhosa por eficiência.
 
-* **LoRA e QLoRA:** em 2021, Edward Hu e colaboradores[^27] mostraram que, para adaptar um modelo gigante a uma tarefa nova, você não precisa atualizar bilhões de pesos. Basta congelar o modelo original e treinar apenas duas matrizes minúsculas de baixo posto (`W + B @ A`), cortando drasticamente a VRAM necessária (e com **QLoRA**[^49], fazendo isso sobre pesos quantizados em 4 bits!).
-* **Anatomia Moderna de LLMs:** quase nenhum LLM atual usa o Transformer de 2017 intacto. A indústria convergiu para ajustes pontuais de estabilidade e velocidade: **RMSNorm** no lugar de LayerNorm, **SwiGLU** no bloco feed-forward, **RoPE** (codificação posicional rotativa) e **KV Cache**, que guarda chaves e valores já calculados para não refazer a conta quadrática da frase inteira a cada novo token gerado.
-* **Mixture of Experts (MoE):** por que acionar 100% dos neurônios para responder um simples "bom dia"? Em arquiteturas MoE, um pequeno roteador escolhe apenas alguns blocos "especialistas" por token, permitindo escalar o total de parâmetros do modelo sem explodir o custo de inferência.
+A primeira grande quebra veio na forma de adaptar modelos já prontos. Em 2021, Edward Hu e colaboradores publicaram o **LoRA**[^27], mostrando que você não precisa atualizar bilhões de pesos para especializar um LLM numa tarefa nova. Basta congelar o modelo original e acoplar duas matrizes minúsculas de baixo posto (`W + B @ A`), derrubando em ordens de grandeza a memória de vídeo necessária. Dois anos depois, Tim Dettmers e equipe deram um passo além com o **QLoRA**[^49], combinando essa adaptação leve com pesos quantizados em 4 bits e permitindo ajustar modelos enormes numa única GPU de consumidor.
+
+Por dentro das arquiteturas, quase nenhum modelo recente usa o Transformer de 2017 intacto. A indústria convergiu para um conjunto de refinamentos práticos: trocar `LayerNorm` por **RMSNorm**, substituir a ativação clássica do bloco feed-forward por **SwiGLU**, adotar codificação posicional rotativa (**RoPE**) e usar **KV Cache** na inferência para guardar chaves e valores já calculados em vez de refazer a conta quadrática da frase inteira a cada novo token. E, quando o assunto é escalar sem derreter o servidor, entrou em cena o **Mixture of Experts (MoE)**: em vez de acionar 100% da rede para responder um simples "bom dia", um pequeno roteador escolhe apenas alguns blocos "especialistas" por token, mantendo o custo de inferência sob controle mesmo em modelos gigantescos.
 
 > [!TIP] Em 2 Linhas: Pré-Treino vs Fine-Tuning
 > O **pré-treino** é a formação geral e caríssima do modelo lendo bilhões de exemplos para aprender a estrutura da linguagem ou das imagens. O **fine-tuning** é a especialização barata feita depois, ajustando esse modelo base com um conjunto pequeno de dados para uma tarefa ou estilo específico.
 
 ### Fenômenos que Quebram os Livros Clássicos
 
-Nem tudo que aconteceu recentemente foi só engenharia de escala. Dois fenômenos empíricos obrigaram a comunidade científica a revisar a teoria clássica de generalização:
+Nem tudo nos últimos anos foi só engenharia de escala. Dois fenômenos empíricos obrigaram a comunidade científica a revisar certezas que pareciam escritas em pedra nos livros tradicionais de estatística.
 
-* **Double Descent:** durante décadas, todo curso de estatística e ML ensinou o dogma da "curva em U": aumente a complexidade do modelo e o erro de teste cai até um ponto ótimo; passe daí e o *overfitting* destrói tudo. Pesquisadores (como Mikhail Belkin et al.[^28]) demonstraram que, no regime altamente superparametrizado das redes profundas modernas, depois que o modelo passa do ponto em que decora 100% do treino, continuar aumentando parâmetros faz o erro de teste **voltar a cair** numa segunda descida.
-* **Grokking (Power et al., 2022):** talvez o fenômeno mais fascinante dos últimos anos[^22]. Treinando Transformers pequenos em tarefas algorítmicas (como soma modular `a + b mod p`), os pesquisadores observaram a rede decorar 100% do treino rapidamente enquanto a acurácia de validação ficava travada perto de 0% (chute aleatório). Se você usasse *Early Stopping* clássico, desligaria o treino ali. Só que, deixando rodar por milhares de épocas sob a pressão constante do *Weight Decay* (puxando pesos grandes para baixo), o modelo de repente abandona a tabela decorada, descobre o circuito algorítmico real e a validação salta de 0% para 100% quase na vertical.
+Durante décadas, todo curso de Aprendizado de Máquina ensinou o dogma da "curva em U": aumente a complexidade do modelo e o erro de teste cai até um ponto ótimo; passe desse ponto e o *overfitting* destrói a generalização. Mikhail Belkin e colegas[^28] mostraram que essa curva conta só metade da história. No regime altamente superparametrizado das redes profundas modernas, depois que o modelo ultrapassa o limiar em que decora 100% dos exemplos de treino, continuar aumentando o número de parâmetros faz o erro de teste **voltar a cair** numa segunda descida, fenômeno batizado de **Double Descent**.
+
+Mais desconcertante ainda foi o **Grokking**, documentado por pesquisadores da OpenAI em 2022[^22]. Treinando Transformers pequenos em tarefas algorítmicas simples (como soma modular `a + b mod p`), eles viram a rede decorar 100% do treino muito rápido enquanto a acurácia de validação continuava travada perto de zero, no puro chute aleatório. Qualquer engenheiro seguindo a cartilha clássica de *Early Stopping* mataria o treino ali.
+
+Só que eles deixaram rodando.
+
+Depois de milhares de épocas extras sob a pressão silenciosa do *Weight Decay* (que penaliza pesos grandes e favorece soluções mais simples), o modelo subitamente abandonou a tabela decorada, descobriu o circuito algorítmico real e a curva de validação saltou de 0% para 100% quase na vertical. Era a prova experimental de que ainda estamos longe de entender tudo o que acontece dentro da otimização de redes neurais.
 
 ### Pós-Transformer, Interpretabilidade e Raciocínio
 
-Na fronteira de 2024 a 2026, três frentes abertas mostram que ainda estamos longe do ponto final:
+Na fronteira de 2024 a 2026, três frentes abertas deixam claro que a história da área continua em pleno movimento. A primeira ataca o calcanhar de Aquiles do próprio Transformer: o custo de memória e cálculo da Self-Attention cresce com o quadrado do tamanho do contexto. Arquiteturas baseadas em **State Space Models**, com destaque para o **Mamba** de Albert Gu e Tri Dao[^50], buscam recuperar o custo linear das antigas RNNs na inferência sem abrir mão do treinamento paralelo em GPU.
 
-* **Além da Atenção Quadrática:** o custo de memória e cálculo da Self-Attention cresce com o quadrado do tamanho do contexto. Arquiteturas como **State Space Models** (com destaque para o **Mamba**[^50]) tentam recuperar a eficiência linear das RNNs no tempo de inferência sem abrir mão do treinamento paralelo em GPU.
-* **Interpretabilidade Mecanística:** redes neurais ainda são em grande parte caixas-pretas porque um mesmo neurônio costuma participar de vários conceitos diferentes ao mesmo tempo (*superposição*). Pesquisadores estão usando **Sparse Autoencoders (SAEs)** (parentes diretos dos Autoencoders clássicos) para desembaraçar essas ativações e isolar "circuitos" legíveis dentro de LLMs.
-* **Raciocínio e Test-Time Compute:** métodos de alinhamento mais diretos que o RLHF clássico (como **DPO**[^51], que dispensa o modelo de recompensa separado, e **GRPO**[^52], que usa recompensas verificáveis em matemática e código) inauguraram a fase dos modelos de raciocínio: em vez de cuspir a resposta de bate-pronto, o modelo gasta mais computação *na hora da inferência* gerando cadeias de pensamento e corrigindo os próprios passos antes de responder.
+A segunda frente tenta abrir a caixa-preta por dentro. Na chamada **Interpretabilidade Mecanística**, o obstáculo central é que um mesmo neurônio costuma participar de vários conceitos diferentes ao mesmo tempo (*superposição*). Para desembaraçar essa salada, pesquisadores resgataram parentes diretos dos Autoencoders clássicos, os **Sparse Autoencoders (SAEs)**, tentando isolar circuitos internos legíveis dentro das ativações de modelos de linguagem.
+
+Por fim, o pós-treino deu outra guinada importante. Métodos de alinhamento mais diretos que o RLHF tradicional ganharam terreno, como o **DPO**[^51] (que dispensa treinar um modelo de recompensa separado) e o **GRPO**[^52] (que usa recompensas verificáveis automaticamente em matemática e código). Esse movimento abriu a fase dos modelos de raciocínio e do **Test-Time Compute**: em vez de cuspir uma resposta de bate-pronto no primeiro milissegundo, o modelo aprende a gastar mais computação *na hora da inferência*, gerando cadeias de pensamento, testando hipóteses e corrigindo os próprios passos antes de entregar a resposta final.
+
+E olha que aqui eu nem estou entrando no mérito de toda a camada paralela de engenharia que cresceu em volta dos modelos, como **MCP**, **RAG**, bancos vetoriais e toda a parafernália de agentes que hoje todo mundo pluga nos seus *Claude Code*, *Antigravity* e *harnesses* de modelos fundacionais afora. Tudo isso é ecossistema importante, claro, mas são peças orbitando o motor; o nosso foco nesta jornada é desmontar o motor em si.
 
 ## De Brinquedo de Nerd a Bolha Bilionária: Como a Percepção Mudou
 
