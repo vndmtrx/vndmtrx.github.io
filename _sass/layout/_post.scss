@@ -45,6 +45,11 @@ main.container > section {
   border-bottom: 1px solid var(--pico-muted-border-color);
   padding-bottom: var(--pico-spacing);
   margin-bottom: var(--pico-spacing);
+
+  .post-title,
+  .post-subtitle {
+    margin-bottom: var(--pico-spacing);
+  }
 }
 
 /* Justificar o texto apenas do conteúdo do post e páginas, sem afetar o cabeçalho */
